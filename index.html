@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Vickhal Roopram: UX/UI, graphic and motion designer. A portfolio you play as a 3D synthesizer.">
+<title>Vick Does Creative</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="src/styles.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head>
+<body>
+<div id="stage"><div id="loading">POWERING ON…</div></div>
+<div class="top">
+  <div class="brand"><span class="logo" aria-hidden="true">[:]</span><div>VICK DOES CREATIVE<br><small>VR-17 · PORTFOLIO SYNTHESIZER</small></div></div>
+  <button class="btn" id="home" aria-label="Home: back to the full synth"><svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 7.5 8 2l6 5.5V14H10V10H6v4H2z" fill="currentColor"/></svg>Home</button>
+  <button class="btn" id="snd" aria-pressed="true">Sound on</button>
+</div>
+<div class="dock"><div id="hint"></div></div>
+<div id="lbl" hidden></div>
+<div id="card" hidden role="dialog" aria-label="Details">
+  <div class="ch"><div class="eyebrow" id="eb"></div><button id="prev" aria-label="Previous">‹</button><button id="next" aria-label="Next">›</button><button id="cls" aria-label="Close">✕</button></div>
+  <div class="content" id="ct"></div>
+</div>
+<div id="lb" hidden><img alt=""></div>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
