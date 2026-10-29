@@ -30,6 +30,7 @@ On phones the synth is locked to a top-down view, and cards open as a bottom she
 │   ├── content.js          # All portfolio content (edit this to update the site)
 │   ├── main.js             # 3D scene, audio engine, modes, camera, input
 │   └── styles.css          # Design tokens and UI styles
+├── docs/HANDOFF.md        # Full project context for the next iteration
 ├── assets/
 │   ├── img/                # Project images (g* = portfolio PDF page no., cv* = CV pages)
 │   └── cv/                 # Downloadable CV
