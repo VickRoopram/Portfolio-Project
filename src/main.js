@@ -78,7 +78,6 @@ function noteFor(i){playNote(60+[0,4,7,12,7,4,2,5,9,11,14,16][i%12])}
 $('home').onclick=()=>{ensureAudio();zoomOut()};
 function updateUI(){
   $('home').dataset.atHome=String(!S.mode&&!S.card);
-  $('hint').innerHTML=S.mode?`<b>${MODES[S.mode].part}</b> · hover to read titles · click to open · <b>Esc</b> zooms out`:`<b>Hover the synth</b> to see what each part holds · <b>click a part</b> to zoom in`;
 }
 
 /* ───────────── AUDIO ───────────── */
