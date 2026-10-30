@@ -34,13 +34,22 @@ const CTRL={kb:[],pad:[],info:[],cv:[]}, BIGCAPS=[], ROWBTN=[];
 const realCh=ch=>ch==='kb'?S.kb:ch==='pad'?S.pad:ch;
 
 /* ───────────── CARD ───────────── */
+/* Simple social glyphs for the Contact CTAs (generic marks, drawn in currentColor) */
+function SOCIAL_ICON(label){const k=label.toLowerCase().split(/[ (]/)[0];
+  const g={behance:'<text x="12" y="16.5" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="11" fill="currentColor">Bē</text>',
+   instagram:'<rect x="4" y="4" width="16" height="16" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3.6" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="16.6" cy="7.4" r="1.2" fill="currentColor"/>',
+   linkedin:'<rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="currentColor"/><text x="12" y="16.6" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="10" fill="#fff">in</text>',
+   threads:'<text x="12" y="17.5" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="17" fill="currentColor">@</text>',
+   x:'<path d="M5 4.5h3.6l10.4 15h-3.6z" fill="currentColor"/><path d="M18.6 4.5 5.4 19.5" stroke="currentColor" stroke-width="1.8"/>'}[k]||'<circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/>';
+  return `<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">${g}</svg>`}
+
 function cardHTML(ch,i){
   const c=CH[ch],it=c.items[i];
   let h=`<h2>${it.t}</h2><p class="k">${it.k}</p>`;
   if(it.hero) h+=`<div class="hero"><img src="assets/img/vick.jpg" alt="Portrait of Vickhal Roopram"><div class="d"><p><b>Vickhal Roopram</b><br>UX & Motion Designer<br>27 · South Africa</p></div></div>`;
   if(it.bars) h+=`<div class="bars">${it.bars.map(b=>`<div class="bar"><span>${b[0]}</span><small>${b[1]}</small><div><i style="--w:${b[2]*100}%"></i></div></div>`).join('')}</div>`;
   if(it.life) h+=``+CH.life.items.map(x=>`<div class="d"><h3>${x.t}</h3>${x.d}</div>`).join('');
-  if(it.contact) h+=`<div class="d"><p>For work, collaborations or a chat about design and faith:</p></div><div class="copy"><span id="em">vickhal10@gmail.com</span><button class="btn" id="cp">Copy email</button></div><div class="copy">Cell: +27 73 482 7221</div><div class="links">${LINKS.map(l=>`<a href="${l[1]}" target="_blank" rel="noopener">${l[0]}</a>`).join('')}</div>`;
+  if(it.contact) h+=`<div class="d"><p>For work, collaborations or a chat about design and faith:</p></div><div class="copy"><span id="em">vickhal10@gmail.com</span><button class="btn" id="cp">Copy email</button></div><div class="copy">Cell: +27 73 482 7221</div><div class="socials">${LINKS.map(l=>`<a class="soc" href="${l[1]}" target="_blank" rel="noopener">${SOCIAL_ICON(l[0])}<span>${l[0]}<small>${l[1].replace(/^https:\/\/(www\.)?/,'').replace(/\/$/,'')}</small></span><b aria-hidden="true">↗</b></a>`).join('')}</div>`;
   if(it.d) h+=`<div class="d">${it.d}</div>`;
   if(it.tags) h+=`<div class="tags">${it.tags.map(t=>`<span>${t}</span>`).join('')}</div>`;
   if(it.links) h+=`<div class="links">${it.links.map(l=>`<a href="${l[1]}" target="_blank" rel="noopener">${l[0]} ↗</a>`).join('')}</div>`;
@@ -50,7 +59,7 @@ function cardHTML(ch,i){
 function openCard(ch,i){
   const c=CH[ch],n=c.items.length; i=((i%n)+n)%n; S.card={ch,i}; updateUI(); if(ch==='life')S.persona=i;
   $('card').style.setProperty('--accent',c.col);
-  $('eb').innerHTML=`<i style="--c:${c.knob||c.col}"></i><span>${c.name} · ${pad(i+1)}/${pad(n)}</span>`;
+  $('eb').innerHTML='';
   $('ct').innerHTML=cardHTML(ch,i); $('ct').scrollTop=0;
   const card=$('card'); card.hidden=true; void card.offsetWidth; card.hidden=false;
   const rb=ROWBTN.find(a=>a[1]===ch);if(rb)press(rb[0]);
