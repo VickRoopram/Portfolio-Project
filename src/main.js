@@ -5,6 +5,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { CH, LINKS, im } from './content.js';
 
 /* ───────────── MODES (each part of the synth is a mode) ───────────── */
@@ -131,16 +132,38 @@ const stage=$('stage');
 await Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1500))]);
 const renderer=new THREE.WebGLRenderer({antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
+renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.0;
 stage.prepend(renderer.domElement); $('loading').remove();
 const scene=new THREE.Scene(); scene.background=new THREE.Color('#efefed');
 const camera=new THREE.PerspectiveCamera(32,1,.1,300);
-scene.add(new THREE.HemisphereLight('#ffffff','#b9bab6',1.15));
-const sun=new THREE.DirectionalLight('#fff6ea',2.2); sun.position.set(-7,16,9); sun.castShadow=true;
+scene.environment=new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(),0.04).texture; // studio reflections for the metal
+scene.add(new THREE.HemisphereLight('#ffffff','#b9bab6',.45));
+{const rim=new THREE.DirectionalLight('#dfe8ff',.9);rim.position.set(9,6,-12);scene.add(rim);}
+const sun=new THREE.DirectionalLight('#fff6ea',2.0); sun.position.set(-7,16,9); sun.castShadow=true;
 sun.shadow.mapSize.set(2048,2048); Object.assign(sun.shadow.camera,{left:-18,right:18,top:14,bottom:-14,near:1,far:50}); sun.shadow.radius=6; sun.shadow.bias=-.0004; scene.add(sun);
 const floor=new THREE.Mesh(new THREE.PlaneGeometry(200,200),new THREE.ShadowMaterial({opacity:.17})); floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; scene.add(floor);
 
-const mats={}; const M=(c,r=.62,m=0)=>mats[c+r+m]||(mats[c+r+m]=new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m}));
+/* ── Materials: Teenage-Engineering-style anodised & brushed aluminium, satin plastic ── */
+function noiseTex(w,h,draw,rep=[1,1]){const c=document.createElement('canvas');c.width=w;c.height=h;draw(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(...rep);t.anisotropy=8;return t}
+const TEX={
+  brush:noiseTex(512,512,(x,w,h)=>{x.fillStyle='#808080';x.fillRect(0,0,w,h);for(let i=0;i<2600;i++){const y=Math.random()*h,g=110+Math.random()*60|0;x.strokeStyle=`rgba(${g},${g},${g},${.15+Math.random()*.35})`;x.lineWidth=Math.random()*1.4+.3;x.beginPath();x.moveTo(0,y);x.lineTo(w,y+(Math.random()-.5)*2);x.stroke()}},[2,2]),
+  grain:noiseTex(256,256,(x,w,h)=>{const d=x.createImageData(w,h);for(let i=0;i<d.data.length;i+=4){const v=118+Math.random()*24|0;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255}x.putImageData(d,0,0)},[3,3]),
+  knurl:noiseTex(256,32,(x,w,h)=>{x.fillStyle='#777';x.fillRect(0,0,w,h);for(let i=0;i<w;i+=8){const g=x.createLinearGradient(i,0,i+8,0);g.addColorStop(0,'#333');g.addColorStop(.5,'#eee');g.addColorStop(1,'#333');x.fillStyle=g;x.fillRect(i,0,8,h)}},[6,1])};
+const PRESET={
+  '#d4d6db':{color:'#c9ccd2',metalness:.92,roughness:.34,roughnessMap:TEX.brush,bumpMap:TEX.brush,bumpScale:.4,anisotropy:.7},   // brushed aluminium body
+  '#e3e4e8':{color:'#dcdee2',metalness:.7,roughness:.48,roughnessMap:TEX.grain,bumpMap:TEX.grain,bumpScale:.25},                  // bead-blasted tiles
+  '#eeeff2':{color:'#f1f1ee',metalness:0,roughness:.5,clearcoat:.35,clearcoatRoughness:.4,bumpMap:TEX.grain,bumpScale:.15},       // satin key plastic
+  '#232427':{color:'#1e1f22',metalness:.85,roughness:.4,roughnessMap:TEX.brush,bumpMap:TEX.brush,bumpScale:.3,anisotropy:.5},      // black anodised strip
+  '#1c1c1e':{color:'#1c1c1e',metalness:.2,roughness:.55},
+  '#c4c6cc':{color:'#d6d8dc',metalness:1,roughness:.18},                                                                         // polished steel rings
+  '#1b1c1f':{color:'#16171a',metalness:.3,roughness:.7,bumpMap:TEX.grain,bumpScale:.2}};                                           // deck recess
+const mats={}; const M=(c,r=.62,m=0)=>{const k=c+r+m;if(mats[k])return mats[k];const p=PRESET[c.toLowerCase()];
+  return mats[k]=new THREE.MeshPhysicalMaterial(p?{...p}:{color:c,roughness:Math.min(r,.5),metalness:Math.max(m,.15),clearcoat:.25,clearcoatRoughness:.35,bumpMap:TEX.grain,bumpScale:.08,envMapIntensity:.9})};
+/* anodised coloured knob cap + knurled metal band */
+const A=c=>mats['A'+c]||(mats['A'+c]=new THREE.MeshPhysicalMaterial({color:c,metalness:.65,roughness:.28,clearcoat:.6,clearcoatRoughness:.2,bumpMap:TEX.grain,bumpScale:.05}));
+const KN=mats.KN=new THREE.MeshPhysicalMaterial({color:'#b9bcc2',metalness:1,roughness:.32,bumpMap:TEX.knurl,bumpScale:1.2,side:THREE.DoubleSide});
+function knurl(parent,r,h,y,proxy){const k=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,64,1,true),KN);k.position.y=y;k.castShadow=true;parent.add(k);k.userData.proxy=proxy;hits.push(k);return k}
+function screw(parent,x,y,z){const s=new THREE.Mesh(new THREE.CylinderGeometry(.075,.075,.025,20),M('#c4c6cc'));s.position.set(x,y,z);parent.add(s);const sl=new THREE.Mesh(new THREE.BoxGeometry(.11,.012,.022),new THREE.MeshStandardMaterial({color:'#55575c'}));sl.position.set(x,y+.014,z);sl.rotation.y=Math.random()*Math.PI;parent.add(sl)}
 const geos={}; function rbox(w,h,d,r,mat){const k=[w,h,d,r].join();const g=geos[k]||(geos[k]=new RoundedBoxGeometry(w,h,d,3,Math.min(r,w/2-.001,h/2-.001,d/2-.001)));const m=new THREE.Mesh(g,mat);m.castShadow=m.receiveShadow=true;return m}
 function cyl(rt,rb,h,mat,seg=40){const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg),mat);m.castShadow=m.receiveShadow=true;return m}
 function canvasTex(w,h,draw){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');draw?.(x,w,h);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;return {c,x,t}}
@@ -166,7 +189,7 @@ function paramKnob(pos,key,{r=.28,cap='#d0d2d6',ring='#3a3b3f',parent}){
   const g=new THREE.Group(); g.position.copy(pos); parent.add(g);
   const rg=cyl(r+.08,r+.1,.08,M(ring,.5)); rg.position.y=.04; g.add(rg);
   const rot=new THREE.Group(); g.add(rot);
-  const cp=cyl(r,r+.02,.3,M(cap,.45)); cp.position.y=.22; rot.add(cp);
+  const cp=cyl(r,r+.02,.3,A(cap)); cp.position.y=.22; rot.add(cp); knurl(rot,r+.028,.2,.17,cp);
   const ind=new THREE.Mesh(new THREE.BoxGeometry(.04,.02,r*.7),M('#e9e9ec')); ind.position.set(0,.38,-r*.5); rot.add(ind);
   rg.userData.proxy=cp; ind.userData.proxy=cp; hits.push(rg,ind);
   rot.userData.r=0; anim.push(rot);
@@ -176,11 +199,13 @@ function paramKnob(pos,key,{r=.28,cap='#d0d2d6',ring='#3a3b3f',parent}){
 }
 
 const C={tile:'#e3e4e8',cap:'#eeeff2',body:'#d4d6db',recess:'#1b1c1f',black:'#232427',ring:'#c4c6cc'};
+// (screws added after the body)
 const synth=new THREE.Group(); scene.add(synth);
 const TOP=.9, GX=c=>-8+c, GZ=r=>-2.5+r;
 {const body=rbox(18.9,.9,7.3,.3,M(C.body,.55)); body.position.y=.45; synth.add(body);
  const lip=rbox(18.9,.4,7.3,.2,M(C.black,.5)); lip.position.set(0,.2,.14); synth.add(lip);
  const rec=rbox(17.25,.12,6.25,.05,M(C.recess,.8)); rec.position.y=TOP; synth.add(rec);}
+[[-9.2,-3.4],[9.2,-3.4],[-9.2,3.4],[9.2,3.4]].forEach(([x,z])=>screw(synth,x,.905,z));
 function tile(c,r,w=1,h=1,mat=M(C.tile,.6)){const m=rbox(w-.07,.3,h-.07,.07,mat);m.position.set(GX(c)+(w-1)/2,TOP+.15,GZ(r)+(h-1)/2);synth.add(m);return m}
 function capMesh(c,r,label,lc){tile(c,r);const k=rbox(.72,.16,.72,.16,M(C.cap,.5));k.position.set(GX(c),TOP+.36,GZ(r));synth.add(k);if(label){const l=labelPlane(label,.66,.32,lc);l.position.y=.081;k.add(l)}return k}
 function capBtn(c,r,label,act,tip,lc){const k=capMesh(c,r,label,lc);pressable(k,act,tip);return k}
@@ -209,7 +234,7 @@ for(let i=0;i<4;i++){const c0=4+i*2;tile(c0,0,2,2);
   const g=new THREE.Group(); g.position.set(GX(c0+.5),TOP+.3,GZ(.5)); synth.add(g);
   const ring=cyl(.8,.84,.12,M(C.ring,.4)); ring.position.y=.06; g.add(ring);
   const rot=new THREE.Group(); g.add(rot); rot.userData.r=0; anim.push(rot);
-  const capm=cyl(.58,.62,.42,M(BIG[i],.42)); capm.position.y=.33; rot.add(capm);
+  const capm=cyl(.58,.62,.42,A(BIG[i])); capm.position.y=.33; rot.add(capm); knurl(rot,.63,.26,.26,capm);
   const ind=new THREE.Mesh(new THREE.BoxGeometry(.07,.02,.34),M(i===2?'#3a3b40':'#ffffff',.5)); ind.position.set(0,.55,-.3); rot.add(ind);
   ring.userData.proxy=capm; ind.userData.proxy=capm; hits.push(ring,ind);
   const L=labelPlane(TH_LABEL[i],1.5,.3,'#7b7e86',40); L.position.set(0,.01,.98); g.add(L);
@@ -244,7 +269,7 @@ for(let i=0;i<10;i++){const d=cyl(.035,.035,.02,M('#6a6c72'));d.position.set(9.1
 
 /* UX: the control strip */
 const TU=new THREE.Group(); TU.position.set(-3.1,0,-6.5); scene.add(TU);
-{const b=rbox(12.6,.8,2.7,.32,M(C.black,.5));b.position.y=.4;TU.add(b);
+{const b=rbox(12.6,.8,2.7,.32,M(C.black,.5));b.position.y=.4;TU.add(b);[[-6.05,-1.1],[6.05,-1.1],[-6.05,1.1],[6.05,1.1]].forEach(([x,z])=>screw(TU,x,.805,z));
  const bez=rbox(3.3,.08,1.9,.18,M('#36373b',.4)); bez.position.set(-4.35,.82,0); TU.add(bez);}
 const per=canvasTex(560,320); const perP=new THREE.Mesh(new THREE.PlaneGeometry(3.08,1.7),new THREE.MeshBasicMaterial({map:per.t,toneMapped:false}));
 perP.rotation.x=-Math.PI/2; perP.position.set(-4.35,.87,0); TU.add(perP);
