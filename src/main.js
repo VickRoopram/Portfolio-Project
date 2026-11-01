@@ -7,6 +7,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { CH, LINKS, im } from './content.js';
+import { applyCMS } from './cms.js';
+await applyCMS(CH, LINKS); // content saved in /admin replaces the defaults (draft on previews, live on the live site)
 
 /* ───────────── MODES (each part of the synth is a mode) ───────────── */
 const MODES={
@@ -29,6 +31,8 @@ let lastHit=null;
 { Object.assign(MODES,{xp:{dock:'Experimental',glow:'#ff5ec8'},ab:{dock:'About',glow:'#ff2a30'},sk:{dock:'Skills',glow:'#ffb020'},tl:{dock:'Tools',glow:'#a46bff'},aw:{dock:'Awards',glow:'#ffd400'},wk:{dock:'Work',glow:'#00e0cc'},sd:{dock:'Study',glow:'#ff5ec8'}});
  ['ab','sk','tl','aw','wk','sd','xp'].forEach(k=>Object.assign(MODES[k],{part:'The keyboard',box:'kb'}));
  ['ds','st','ar','te','ab','sk','tl','aw','wk','sd','xp'].forEach(k=>MODES[k].n=CH[k].items.length+' keys');}
+for(const k in MODES)if(CH[k]?.glow)MODES[k].glow=CH[k].glow; // glow colours can be changed in /admin
+MODES.gd.n=CH.gd.items.length+' projects';MODES.ux.n=CH.ux.items.length+' case notes';MODES.mo.n=CH.mo.items.length+' pieces';
 const $=id=>document.getElementById(id);
 const pad=n=>String(n).padStart(2,'0');
 const CTRL={kb:[],pad:[],info:[],cv:[]}, BIGCAPS=[], ROWBTN=[];
@@ -79,6 +83,7 @@ function noteFor(i){playNote(60+[0,4,7,12,7,4,2,5,9,11,14,16][i%12])}
 $('home').onclick=()=>{ensureAudio();zoomOut()};
 function updateUI(){
   $('home').dataset.atHome=String(!S.mode&&!S.card);
+  document.body.dataset.card=String(!!S.card); // phones hide the camera controls under the card sheet
   const g=S.card?MODES[S.card.ch]?.glow:S.mode?MODES[S.mode].glow:null;  // HUD buttons glow in the active mode's colour
   document.documentElement.style.setProperty('--glow',!g||g==='#ffffff'?'#ff5d1a':g);
 }
@@ -532,6 +537,74 @@ addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey)return;const k=
   else if(S.card&&k==='arrowright'){openCard(S.card.ch,S.card.i+1)} else if(S.card&&k==='arrowleft'){openCard(S.card.ch,S.card.i-1)}});
 addEventListener('keyup',e=>held.delete(e.key.toLowerCase()));
 
+/* ───────────── NAV: joystick (tilt) + zoom slider, with weight ─────────────
+   Joystick = rate control: pushing sets a target orbit speed; the camera eases up to it and glides to a stop
+   after release (inertia). The knob springs back with a little overshoot. A quick tap flies back to the resting view.
+   Slider = position control: the thumb follows the finger, the camera distance follows on a damped spring. */
+const joy=$('joy'), knob=$('joyKnob'), zoomEl=$('zoom');
+const NAV={jx:0,jy:0,kx:0,ky:0,kvx:0,kvy:0,vAz:0,vPol:0,keys:{x:0,y:0},zr:null,zv:0,zDrag:false,zu:.5};
+const sph=new THREE.Spherical(), navOff=new THREE.Vector3();
+let jp=null;
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+function takeOver(){if(fly){fly=null;if(!drag)controls.enabled=true}}
+function navZap(el){el.classList.remove('zap');void el.offsetWidth;el.classList.add('zap')}
+function resetView(){NAV.vAz=NAV.vPol=0;NAV.zr=null;NAV.zv=0;navZap(joy);joy.classList.add('reset');setTimeout(()=>joy.classList.remove('reset'),420);ensureAudio();drum('blip');flyTo(S.mode?MODES[S.mode].box:'all')}
+function setJoy(e){const dx=e.clientX-jp.cx,dy=e.clientY-jp.cy;if(Math.hypot(e.clientX-jp.sx,e.clientY-jp.sy)>6)jp.moved=true;
+  if(!jp.moved){NAV.jx=NAV.jy=0;return} let x=dx/jp.R,y=dy/jp.R;const l=Math.hypot(x,y);if(l>1){x/=l;y/=l}NAV.jx=x;NAV.jy=y;takeOver()}
+joy.addEventListener('pointerdown',e=>{e.preventDefault();ensureAudio();const r=joy.getBoundingClientRect();jp={id:e.pointerId,cx:r.left+r.width/2,cy:r.top+r.height/2,R:r.width*.3,t:performance.now(),sx:e.clientX,sy:e.clientY,moved:false};
+  try{joy.setPointerCapture(e.pointerId)}catch{} joy.classList.add('on');navZap(joy);setJoy(e)});
+joy.addEventListener('pointermove',e=>{if(jp&&e.pointerId===jp.id)setJoy(e)});
+const joyEnd=()=>{if(!jp)return;const tap=!jp.moved&&performance.now()-jp.t<400;jp=null;NAV.jx=NAV.jy=0;joy.classList.remove('on');if(tap)resetView()};
+joy.addEventListener('pointerup',joyEnd);joy.addEventListener('pointercancel',joyEnd);
+const JK={arrowleft:['x',-1],arrowright:['x',1],arrowup:['y',-1],arrowdown:['y',1]};
+joy.addEventListener('keydown',e=>{const k=e.key.toLowerCase();e.stopPropagation();
+  if(JK[k]){e.preventDefault();NAV.keys[JK[k][0]]=JK[k][1];takeOver();joy.classList.add('on')}
+  else if(k==='enter'||k===' '){e.preventDefault();resetView()}});
+joy.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(JK[k]){NAV.keys[JK[k][0]]=0;if(!NAV.keys.x&&!NAV.keys.y)joy.classList.remove('on')}});
+joy.addEventListener('blur',()=>{NAV.keys.x=NAV.keys.y=0;joy.classList.remove('on')});
+/* zoom: u = 0 (furthest) … 1 (closest), on a log scale between the current mode's min and max distance */
+const uToR=u=>Math.exp(Math.log(controls.maxDistance)+(Math.log(controls.minDistance)-Math.log(controls.maxDistance))*u);
+const rToU=r=>clamp((Math.log(controls.maxDistance)-Math.log(r))/(Math.log(controls.maxDistance)-Math.log(controls.minDistance)),0,1);
+function setZoom(u){NAV.zu=clamp(u,0,1);NAV.zr=uToR(NAV.zu);takeOver()}
+let zp=null;
+const zFromY=e=>{const r=zoomEl.querySelector('.z-track').getBoundingClientRect();return 1-(e.clientY-r.top)/r.height};
+zoomEl.addEventListener('pointerdown',e=>{e.preventDefault();ensureAudio();zp=e.pointerId;try{zoomEl.setPointerCapture(e.pointerId)}catch{}NAV.zDrag=true;zoomEl.classList.add('on');navZap(zoomEl);setZoom(zFromY(e))});
+zoomEl.addEventListener('pointermove',e=>{if(zp===e.pointerId)setZoom(zFromY(e))});
+const zEnd=()=>{zp=null;NAV.zDrag=false;zoomEl.classList.remove('on')};
+zoomEl.addEventListener('pointerup',zEnd);zoomEl.addEventListener('pointercancel',zEnd);
+zoomEl.addEventListener('wheel',e=>{e.preventDefault();setZoom((NAV.zr!=null?NAV.zu:rToU(camera.position.distanceTo(controls.target)))-e.deltaY*.0016)},{passive:false});
+zoomEl.addEventListener('keydown',e=>{const k=e.key,cur=NAV.zr!=null?NAV.zu:rToU(camera.position.distanceTo(controls.target));e.stopPropagation();
+  const d={ArrowUp:.06,ArrowRight:.06,ArrowDown:-.06,ArrowLeft:-.06,PageUp:.2,PageDown:-.2}[k];
+  if(d!==undefined){e.preventDefault();setZoom(cur+d)}else if(k==='Home'){e.preventDefault();setZoom(0)}else if(k==='End'){e.preventDefault();setZoom(1)}});
+function updateNav(dt){
+  // knob: damped spring toward the stick position (overshoots a touch when released)
+  const tx=jp?NAV.jx:NAV.keys.x*.85, ty=jp?NAV.jy:NAV.keys.y*.85;
+  NAV.kvx+=(260*(tx-NAV.kx)-20*NAV.kvx)*dt; NAV.kvy+=(260*(ty-NAV.ky)-20*NAV.kvy)*dt; NAV.kx+=NAV.kvx*dt; NAV.ky+=NAV.kvy*dt;
+  const m=Math.hypot(NAV.kx,NAV.ky);
+  knob.style.transform=`translate(calc(-50% + ${NAV.kx*42}%), calc(-50% + ${NAV.ky*42}%)) rotateX(${-NAV.ky*16}deg) rotateY(${NAV.kx*16}deg)`;
+  joy.style.setProperty('--k',Math.min(1,m).toFixed(3));
+  // orbit speed eases toward the stick (camera weight), then glides out
+  const ka=1-Math.exp(-dt/.22);
+  NAV.vAz+=(tx*1.25-NAV.vAz)*ka; NAV.vPol+=(ty*.85-NAV.vPol)*ka;
+  const moving=Math.abs(NAV.vAz)>1e-4||Math.abs(NAV.vPol)>1e-4, zooming=NAV.zr!=null;
+  if((moving||zooming)&&!fly){
+    navOff.copy(camera.position).sub(controls.target); sph.setFromVector3(navOff);
+    if(moving){
+      const th=sph.theta+NAV.vAz*dt, ph=sph.phi+NAV.vPol*dt;
+      sph.theta=clamp(th,controls.minAzimuthAngle,controls.maxAzimuthAngle); sph.phi=clamp(ph,Math.max(.001,controls.minPolarAngle),controls.maxPolarAngle);
+      if(sph.theta!==th)NAV.vAz*=.5; if(sph.phi!==ph)NAV.vPol*=.5;   // soft stop at the limits
+    }
+    if(zooming){ // spring with slight under-damping: the camera "lands" on the new distance
+      const K=34,C=2*.8*Math.sqrt(K); NAV.zv+=(K*(NAV.zr-sph.radius)-C*NAV.zv)*dt; sph.radius+=NAV.zv*dt;
+      if(Math.abs(NAV.zr-sph.radius)<.003&&Math.abs(NAV.zv)<.01){sph.radius=NAV.zr;NAV.zr=null;NAV.zv=0}
+    }
+    sph.makeSafe(); navOff.setFromSpherical(sph); camera.position.copy(controls.target).add(navOff);
+  }
+  // slider shows the finger while dragging, otherwise where the camera actually is
+  const u=NAV.zDrag?NAV.zu:rToU(camera.position.distanceTo(controls.target));
+  zoomEl.style.setProperty('--u',u.toFixed(4)); zoomEl.setAttribute('aria-valuenow',Math.round(u*100));
+}
+
 /* ───────────── THEME: light / dark, eased between the two looks ───────────── */
 const root=document.documentElement, themeBtn=$('thm'), sysDark=matchMedia('(prefers-color-scheme: dark)');
 const LOOK={ // light → dark
@@ -562,11 +635,12 @@ setTheme(themeT>.5,{save:false,sweep:false});
 
 /* ───────────── LOOP ───────────── */
 const ease=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2, v3=new THREE.Vector3();
-function resize(){const w=stage.clientWidth,h=stage.clientHeight,mob=!desktop();controls.enableRotate=!mob;controls.enableZoom=!mob;controls.minPolarAngle=mob?0:.12;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
+function resize(){const w=stage.clientWidth,h=stage.clientHeight,mob=!desktop();controls.enableRotate=true;controls.enableZoom=true;controls.minPolarAngle=mob?0:.12; /* touch: one finger orbits, pinch zooms; the on-screen controls are optional */renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
   if(!fly){const f=frameFor(S.mode?MODES[S.mode].box:'all');camera.position.copy(f.p);controls.target.copy(f.t);controls.minDistance=f.d*.55;controls.maxDistance=frameFor('all').d*1.4;controls.update()}}
 new ResizeObserver(resize).observe(stage); resize();
 const clock=new THREE.Clock();
-function loop(){const t=clock.getElapsedTime(),now=performance.now();
+let lastNow=performance.now();
+function loop(){const t=clock.getElapsedTime(),now=performance.now(),dt=Math.min(.05,(now-lastNow)/1000);lastNow=now;
   if(fly){const k=Math.min(1,(now-fly.s)/fly.dur),e=ease(k);camera.position.lerpVectors(fly.p0,fly.p1,e);controls.target.lerpVectors(fly.t0,fly.t1,e);if(k>=1){fly=null;if(!drag)controls.enabled=true}}
   // keep the zoomed part clear of the card
   const w=stage.clientWidth,h=stage.clientHeight, tx=S.card&&desktop()?Math.min(235,w*.18):0, ty=S.card&&!desktop()?h*.28:0;
@@ -579,5 +653,5 @@ function loop(){const t=clock.getElapsedTime(),now=performance.now();
     const x=(v3.x+1)/2*w, y=(1-v3.y)/2*h; lbl.hidden=false; lbl.style.left=x+'px'; lbl.style.top=y+'px';
     const html=lastLive||labelHTML(ho); if(lbl._h!==html){lbl.innerHTML=html;lbl._h=html}} else lbl.hidden=true;
   if(Math.abs(themeK-themeT)>.002){themeK=themeK<0?themeT:themeK+(themeT-themeK)*(reduceMotion?1:.075);if(Math.abs(themeK-themeT)<=.002)themeK=themeT;applyTheme(themeK)}
-  grille.scale.setScalar(1+level*.04); updateCables(); refreshGlow(t); updateFx(now); drawScreens(t); controls.update(); renderer.render(scene,camera); requestAnimationFrame(loop)}
+  grille.scale.setScalar(1+level*.04); updateCables(); refreshGlow(t); updateFx(now); drawScreens(t); updateNav(dt); controls.update(); renderer.render(scene,camera); requestAnimationFrame(loop)}
 updateUI(); loop();

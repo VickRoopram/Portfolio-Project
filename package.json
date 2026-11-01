@@ -1,0 +1,13 @@
+{
+  "name": "vick-does-creative",
+  "private": true,
+  "type": "module",
+  "description": "Vick Does Creative: a portfolio played as a 3D synthesizer. Static site; the only dependencies are for the content-admin functions on Netlify.",
+  "scripts": {
+    "dev": "netlify dev --port 8888"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^11.1.7",
+    "@netlify/functions": "^6.0.3"
+  }
+}

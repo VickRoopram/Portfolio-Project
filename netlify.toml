@@ -5,3 +5,7 @@
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=604800"
+
+[dev]
+  framework = "#static"
+  port = 8888
