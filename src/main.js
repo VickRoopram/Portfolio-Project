@@ -79,13 +79,18 @@ function noteFor(i){playNote(60+[0,4,7,12,7,4,2,5,9,11,14,16][i%12])}
 $('home').onclick=()=>{ensureAudio();zoomOut()};
 function updateUI(){
   $('home').dataset.atHome=String(!S.mode&&!S.card);
+  const g=S.card?MODES[S.card.ch]?.glow:S.mode?MODES[S.mode].glow:null;  // HUD buttons glow in the active mode's colour
+  document.documentElement.style.setProperty('--glow',!g||g==='#ffffff'?'#ff5d1a':g);
 }
+/* HUD buttons: glow pulse + stroke trace on every press, same language as the synth controls */
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('.btn,.ch button');if(!b)return;b.classList.remove('zap');void b.offsetWidth;b.classList.add('zap')});
+document.addEventListener('animationend',e=>{if(e.animationName==='zap')e.target.classList.remove('zap')});
 
 /* ───────────── AUDIO ───────────── */
 const P={cutoff:.62,q:.22,dtime:.35,fb:.3,wet:.22,detune:.15,decay:.45,attack:.03,sub:.3,drums:.8,vol:.7,wave:1};
 const PNAMES={cutoff:'Tone',q:'Resonance',dtime:'Echo time',fb:'Echo feedback',wet:'Echo mix',detune:'Detune',decay:'Decay',attack:'Attack',sub:'Sub osc',drums:'Drum level',vol:'Volume'};
 const WAVES=['triangle','square','sawtooth'];
-let ac,master,filter,delay,fb,wet,an,noiseBuf,muted=false,tdata,pulse=0;
+let ac,master,filter,delay,fb,wet,an,noiseBuf,muted=false,tdata;
 function ensureAudio(){
   if(ac){if(ac.state==='suspended')ac.resume();return}
   try{ac=new (window.AudioContext||window.webkitAudioContext)()}catch(e){return}
@@ -137,50 +142,125 @@ stage.prepend(renderer.domElement); $('loading').remove();
 const scene=new THREE.Scene(); scene.background=new THREE.Color('#efefed');
 const camera=new THREE.PerspectiveCamera(32,1,.1,300);
 scene.environment=new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(),0.04).texture; // studio reflections for the metal
-scene.add(new THREE.HemisphereLight('#ffffff','#b9bab6',.45));
-{const rim=new THREE.DirectionalLight('#dfe8ff',.9);rim.position.set(9,6,-12);scene.add(rim);}
+const hemi=new THREE.HemisphereLight('#ffffff','#b9bab6',.45); scene.add(hemi);
+const rim=new THREE.DirectionalLight('#dfe8ff',.9); rim.position.set(9,6,-12); scene.add(rim);
 const sun=new THREE.DirectionalLight('#fff6ea',2.0); sun.position.set(-7,16,9); sun.castShadow=true;
 sun.shadow.mapSize.set(2048,2048); Object.assign(sun.shadow.camera,{left:-18,right:18,top:14,bottom:-14,near:1,far:50}); sun.shadow.radius=6; sun.shadow.bias=-.0004; scene.add(sun);
 const floor=new THREE.Mesh(new THREE.PlaneGeometry(200,200),new THREE.ShadowMaterial({opacity:.17})); floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; scene.add(floor);
+/* soft studio "pool" of light under the synth: a brighter spot in light mode, a lit stage in dark mode */
+const pool=(()=>{const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d'),g=x.createRadialGradient(128,128,0,128,128,128);
+  g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.55,'rgba(255,255,255,.45)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,256,256);
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(64,36),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false,opacity:.5}));
+  m.rotation.x=-Math.PI/2;m.position.set(-1.5,-.01,-1.5);m.renderOrder=-1;scene.add(m);return m})();
 
 /* ── Materials: Teenage-Engineering-style anodised & brushed aluminium, satin plastic ── */
 function noiseTex(w,h,draw,rep=[1,1]){const c=document.createElement('canvas');c.width=w;c.height=h;draw(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(...rep);t.anisotropy=8;return t}
 const TEX={
   brush:noiseTex(512,512,(x,w,h)=>{x.fillStyle='#808080';x.fillRect(0,0,w,h);for(let i=0;i<2600;i++){const y=Math.random()*h,g=110+Math.random()*60|0;x.strokeStyle=`rgba(${g},${g},${g},${.15+Math.random()*.35})`;x.lineWidth=Math.random()*1.4+.3;x.beginPath();x.moveTo(0,y);x.lineTo(w,y+(Math.random()-.5)*2);x.stroke()}},[2,2]),
   grain:noiseTex(256,256,(x,w,h)=>{const d=x.createImageData(w,h);for(let i=0;i<d.data.length;i+=4){const v=118+Math.random()*24|0;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255}x.putImageData(d,0,0)},[3,3]),
-  knurl:noiseTex(256,32,(x,w,h)=>{x.fillStyle='#777';x.fillRect(0,0,w,h);for(let i=0;i<w;i+=8){const g=x.createLinearGradient(i,0,i+8,0);g.addColorStop(0,'#333');g.addColorStop(.5,'#eee');g.addColorStop(1,'#333');x.fillStyle=g;x.fillRect(i,0,8,h)}},[6,1])};
+  /* diamond knurl (crossed 45° grooves), as on precision audio knobs */
+  knurl:noiseTex(256,64,(x,w,h)=>{x.fillStyle='#8a8a8a';x.fillRect(0,0,w,h);x.lineWidth=3.2;
+    for(let i=-h;i<w+h;i+=8){x.strokeStyle='rgba(235,235,235,.9)';x.beginPath();x.moveTo(i,0);x.lineTo(i+h,h);x.stroke();x.strokeStyle='rgba(40,40,40,.9)';x.beginPath();x.moveTo(i+h,0);x.lineTo(i,h);x.stroke()}},[6,1])};
+/* Theme-aware presets. `dark` is the colour in dark mode, `denv` the env-reflection strength in dark mode.
+   Light: brushed aluminium + satin white keys. Dark: gunmetal anodised + graphite keys (studio product-shot look). */
 const PRESET={
-  '#d4d6db':{color:'#c9ccd2',metalness:.92,roughness:.34,roughnessMap:TEX.brush,bumpMap:TEX.brush,bumpScale:.4,anisotropy:.7},   // brushed aluminium body
-  '#e3e4e8':{color:'#dcdee2',metalness:.7,roughness:.48,roughnessMap:TEX.grain,bumpMap:TEX.grain,bumpScale:.25},                  // bead-blasted tiles
-  '#eeeff2':{color:'#f1f1ee',metalness:0,roughness:.5,clearcoat:.35,clearcoatRoughness:.4,bumpMap:TEX.grain,bumpScale:.15},       // satin key plastic
-  '#232427':{color:'#1e1f22',metalness:.85,roughness:.4,roughnessMap:TEX.brush,bumpMap:TEX.brush,bumpScale:.3,anisotropy:.5},      // black anodised strip
-  '#1c1c1e':{color:'#1c1c1e',metalness:.2,roughness:.55},
-  '#c4c6cc':{color:'#d6d8dc',metalness:1,roughness:.18},                                                                         // polished steel rings
-  '#1b1c1f':{color:'#16171a',metalness:.3,roughness:.7,bumpMap:TEX.grain,bumpScale:.2}};                                           // deck recess
+  '#d4d6db':{color:'#c9ccd2',dark:'#3d4047',denv:.5,metalness:.92,roughness:.34,roughnessMap:TEX.brush,bumpMap:TEX.brush,bumpScale:.4,anisotropy:.7},   // brushed aluminium body
+  '#e3e4e8':{color:'#dcdee2',dark:'#2c2e33',denv:.45,metalness:.7,roughness:.48,roughnessMap:TEX.grain,bumpMap:TEX.grain,bumpScale:.25},                  // bead-blasted tiles
+  '#eeeff2':{color:'#f1f1ee',dark:'#232428',denv:.85,metalness:0,roughness:.5,clearcoat:.35,clearcoatRoughness:.4,bumpMap:TEX.grain,bumpScale:.15},       // satin key plastic
+  '#2c2d31':{color:'#2c2d31',dark:'#17181b',denv:.85,metalness:0,roughness:.46,clearcoat:.45,clearcoatRoughness:.35,bumpMap:TEX.grain,bumpScale:.15},     // graphite pad caps (KO II style)
+  '#232427':{color:'#1e1f22',dark:'#121315',denv:.7,metalness:.85,roughness:.4,roughnessMap:TEX.brush,bumpMap:TEX.brush,bumpScale:.3,anisotropy:.5},      // black anodised strip
+  '#1c1c1e':{color:'#1c1c1e',dark:'#141416',metalness:.2,roughness:.55},
+  '#c4c6cc':{color:'#d6d8dc',dark:'#9a9da4',denv:.7,metalness:1,roughness:.18},                                                                         // polished steel rings
+  '#1b1c1f':{color:'#16171a',dark:'#0a0b0d',metalness:.3,roughness:.7,bumpMap:TEX.grain,bumpScale:.2}};                                           // deck recess
+/* tag a material with its light/dark colour; the theme engine lerps every tagged material */
+function themed(mt,l,d,le=mt.envMapIntensity,de=le){mt.userData.tc={l,d,le,de};return mt}
 const mats={}; const M=(c,r=.62,m=0)=>{const k=c+r+m;if(mats[k])return mats[k];const p=PRESET[c.toLowerCase()];
-  return mats[k]=new THREE.MeshPhysicalMaterial(p?{...p}:{color:c,roughness:Math.min(r,.5),metalness:Math.max(m,.15),clearcoat:.25,clearcoatRoughness:.35,bumpMap:TEX.grain,bumpScale:.08,envMapIntensity:.9})};
+  if(p){const {dark,denv,...o}=p;return mats[k]=themed(new THREE.MeshPhysicalMaterial(o),o.color,dark,1,denv??1)}
+  return mats[k]=new THREE.MeshPhysicalMaterial({color:c,roughness:Math.min(r,.5),metalness:Math.max(m,.15),clearcoat:.25,clearcoatRoughness:.35,bumpMap:TEX.grain,bumpScale:.08,envMapIntensity:.9})};
 /* anodised coloured knob cap + knurled metal band */
 const A=c=>mats['A'+c]||(mats['A'+c]=new THREE.MeshPhysicalMaterial({color:c,metalness:.65,roughness:.28,clearcoat:.6,clearcoatRoughness:.2,bumpMap:TEX.grain,bumpScale:.05}));
-const KN=mats.KN=new THREE.MeshPhysicalMaterial({color:'#b9bcc2',metalness:1,roughness:.32,bumpMap:TEX.knurl,bumpScale:1.2,side:THREE.DoubleSide});
+const KN=mats.KN=themed(new THREE.MeshPhysicalMaterial({color:'#b9bcc2',metalness:1,roughness:.32,bumpMap:TEX.knurl,bumpScale:1.2,side:THREE.DoubleSide}),'#b9bcc2','#868990',1,.8);
 function knurl(parent,r,h,y,proxy){const k=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,64,1,true),KN);k.position.y=y;k.castShadow=true;parent.add(k);k.userData.proxy=proxy;hits.push(k);return k}
 function screw(parent,x,y,z){const s=new THREE.Mesh(new THREE.CylinderGeometry(.075,.075,.025,20),M('#c4c6cc'));s.position.set(x,y,z);parent.add(s);const sl=new THREE.Mesh(new THREE.BoxGeometry(.11,.012,.022),new THREE.MeshStandardMaterial({color:'#55575c'}));sl.position.set(x,y+.014,z);sl.rotation.y=Math.random()*Math.PI;parent.add(sl)}
-const geos={}; function rbox(w,h,d,r,mat){const k=[w,h,d,r].join();const g=geos[k]||(geos[k]=new RoundedBoxGeometry(w,h,d,3,Math.min(r,w/2-.001,h/2-.001,d/2-.001)));const m=new THREE.Mesh(g,mat);m.castShadow=m.receiveShadow=true;return m}
+const geos={}; function rbox(w,h,d,r,mat){const k=[w,h,d,r].join();let g=geos[k];if(!g){const rr=Math.min(r,w/2-.001,h/2-.001,d/2-.001);g=geos[k]=new RoundedBoxGeometry(w,h,d,3,rr);g.userData.rr={w,h,d,r:rr}}const m=new THREE.Mesh(g,mat);m.castShadow=m.receiveShadow=true;return m}
 function cyl(rt,rb,h,mat,seg=40){const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg),mat);m.castShadow=m.receiveShadow=true;return m}
 function canvasTex(w,h,draw){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');draw?.(x,w,h);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;return {c,x,t}}
-function labelPlane(text,w=.62,h=.3,color='#6b6e76',size=50){const {t}=canvasTex(256,124,(x,W,H)=>{x.fillStyle=color;x.font=`600 ${size}px "IBM Plex Mono", monospace`;x.textAlign='center';x.textBaseline='middle';x.fillText(text,W/2,H/2+2)});const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false}));p.rotation.x=-Math.PI/2;return p}
+/* printed labels: white text tinted by the material colour, so the theme engine can recolour them */
+function labelPlane(text,w=.62,h=.3,color='#6b6e76',size=50,dark){const {t}=canvasTex(256,124,(x,W,H)=>{x.fillStyle='#fff';x.font=`600 ${size}px "IBM Plex Mono", monospace`;x.textAlign='center';x.textBaseline='middle';x.fillText(text,W/2,H/2+2)});
+  const mt=themed(new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,color}),color,dark||LABEL_DARK[color]||color);
+  const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mt);p.rotation.x=-Math.PI/2;return p}
+const LABEL_DARK={'#6b6e76':'#a3a6ae','#7b7e86':'#9ea1a9'};
+
+/* ───────────── PRESS FX: gap glow (light leaking around a cap) + comet stroke tracing the cap edge ───────────── */
+const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const FX=new Map(), FXL=[], FXMATS=[];
+/* rounded rect path for both a canvas context and a THREE.Shape (quadratic corners: both APIs support them) */
+function rrPath(p,x,y,w,h,r){r=Math.min(r,w/2,h/2);p.moveTo(x+r,y);p.lineTo(x+w-r,y);p.quadraticCurveTo(x+w,y,x+w,y+r);p.lineTo(x+w,y+h-r);p.quadraticCurveTo(x+w,y+h,x+w-r,y+h);p.lineTo(x+r,y+h);p.quadraticCurveTo(x,y+h,x,y+h-r);p.lineTo(x,y+r);p.quadraticCurveTo(x,y,x+r,y);p.closePath()}
+const haloTex={};
+/* blurred rounded-rect mask; drawn with an off-canvas shadow so it works in every browser (no ctx.filter needed) */
+function haloTexture(w,d,r){const k=[w,d,r].map(v=>v.toFixed(3)).join();if(haloTex[k])return haloTex[k];
+  const m=.3,s=96,W=Math.round((w+2*m)*s),H=Math.round((d+2*m)*s),c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d'),off=W*4;
+  x.shadowColor='#fff';x.shadowOffsetX=off;
+  x.shadowBlur=.16*s;x.fillStyle='#fff';x.beginPath();rrPath(x,m*s-off,m*s,w*s,d*s,r*s);x.fill();                  // wide soft bloom
+  x.shadowBlur=.035*s;x.lineWidth=.05*s;x.strokeStyle='#fff';x.beginPath();rrPath(x,m*s-off-.015*s,m*s-.015*s,(w+.03)*s,(d+.03)*s,(r+.015)*s);x.stroke(); // bright rim right at the gap
+  const t=new THREE.CanvasTexture(c);return haloTex[k]={t,m}}
+function dims(mesh){const g=mesh.geometry;if(g.userData.rr)return g.userData.rr;const p=g.parameters,R=Math.max(p.radiusTop,p.radiusBottom);return {w:2*R,h:p.height,d:2*R,r:R}}
+/* the effect record for a control; creates its gap halo the first time */
+function fxOf(mesh){let f=FX.get(mesh);if(f)return f;const {w,h,d,r}=dims(mesh),ht=haloTexture(w,d,r);
+  const halo=new THREE.Mesh(new THREE.PlaneGeometry(w+2*ht.m,d+2*ht.m),new THREE.MeshBasicMaterial({map:ht.t,transparent:true,opacity:0,depthWrite:false,toneMapped:false}));
+  halo.rotation.x=-Math.PI/2;halo.position.set(mesh.position.x,mesh.position.y-h/2+.026,mesh.position.z);halo.renderOrder=2;halo.visible=false;mesh.parent.add(halo);FXMATS.push(halo.material);
+  f={m:mesh,halo,w,h,d,r,stroke:null,t0:-1e9,amp:0,col:new THREE.Color('#ff5d1a'),colFn:null,managed:false};FX.set(mesh,f);FXL.push(f);return f}
+const STROKE_VS=`attribute float a;attribute float e;varying float vA;varying float vE;void main(){vA=a;vE=e;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
+const STROKE_FS=`uniform float uHead,uFade,uOp;uniform vec3 uCol;varying float vA;varying float vE;
+void main(){float d=uHead-vA;float trail=d<0.?0.:smoothstep(.6,0.,d);float head=smoothstep(.07,0.,abs(d));
+  float a=max(trail*.75+head,uFade);float edge=1.-pow(abs(vE*2.-1.),2.);
+  gl_FragColor=vec4(mix(uCol,vec3(1.),head*.55),clamp(a*edge*uOp,0.,1.));
+  #include <colorspace_fragment>
+}`;
+/* a thin ribbon hugging the cap outline; attribute a = distance from the front-centre (0) to the back (1), so two heads race round both sides */
+function strokeFor(f){if(f.stroke)return f.stroke;const o=.018,bw=.085,N=192,s=new THREE.Shape();
+  const hw=f.w/2,hd=f.d/2,r=Math.min(f.r,hw,hd);
+  if(r>=Math.min(hw,hd)-.002&&Math.abs(hw-hd)<.002)s.absarc(0,0,hw,0,Math.PI*2,false);else rrPath(s,-hw,-hd,f.w,f.d,r);
+  const P=s.getSpacedPoints(N);let i0=0;P.forEach((p,i)=>{if(p.y-Math.abs(p.x)*.01>P[i0].y-Math.abs(P[i0].x)*.01)i0=i});
+  const pos=[],A_=[],E=[],idx=[];
+  for(let i=0;i<=N;i++){const p=P[i%N],pa=P[(i-1+N)%N],pb=P[(i+1)%N];let nx=pb.y-pa.y,ny=-(pb.x-pa.x);const l=Math.hypot(nx,ny)||1;nx/=l;ny/=l;if(nx*p.x+ny*p.y<0){nx=-nx;ny=-ny}
+    const u=(((i-i0)/N)%1+1)%1,a=Math.min(u,1-u)*2;
+    pos.push(p.x+nx*o,0,p.y+ny*o, p.x+nx*(o+bw),0,p.y+ny*(o+bw));A_.push(a,a);E.push(0,1);
+    if(i<N){const k=i*2;idx.push(k,k+1,k+2,k+1,k+3,k+2)}}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('a',new THREE.Float32BufferAttribute(A_,1));g.setAttribute('e',new THREE.Float32BufferAttribute(E,1));g.setIndex(idx);
+  const mt=new THREE.ShaderMaterial({uniforms:{uHead:{value:0},uFade:{value:0},uOp:{value:0},uCol:{value:new THREE.Color()}},vertexShader:STROKE_VS,fragmentShader:STROKE_FS,transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:themeK>.5?THREE.AdditiveBlending:THREE.NormalBlending});
+  const st=new THREE.Mesh(g,mt);st.position.y=f.h*.12;st.renderOrder=3;st.frustumCulled=false;f.m.add(st);FXMATS.push(mt);return f.stroke=st}
+const defaultGlow=()=>S.mode?MODES[S.mode].glow:'#ff5d1a';
+/* fire a press: gap flash + stroke. delay (ms) lets waves ripple across many controls */
+function pulse(mesh,delay=0,amp=1){const f=fxOf(mesh);f.t0=performance.now()+delay;f.amp=amp;if(!f.managed)f.col.set((f.colFn||defaultGlow)())}
+const lightCol=new THREE.Color();
+function updateFx(now){const dark=themeK>.5, face=1-.72*Math.max(0,themeK); // dark caps light up fully, so in dark mode the light comes from the gap instead of the face
+  for(const f of FXL){const mm=f.m.material,age=(now-f.t0)/1000;
+    const flash=age<0?0:f.amp*Math.pow(Math.max(0,1-age/.6),1.4);
+    let base=0,col=f.col;
+    if(f.managed){base=mm.emissiveIntensity;col=mm.emissive;mm.emissiveIntensity=Math.max(base*face,flash*.85*face)}
+    else if(mm.emissive){mm.emissive.copy(f.col);mm.emissiveIntensity=flash*.5*face}
+    // white glow disappears on the light deck: use graphite instead
+    lightCol.copy(col);if(!dark&&col.r+col.g+col.b>2.4)lightCol.set('#55575e');
+    const op=Math.min(1,base*1.55+flash)*(dark?1:.85);
+    f.halo.visible=op>.004;if(f.halo.visible){f.halo.material.opacity=op;f.halo.material.color.copy(lightCol).multiplyScalar(dark?1.35:1)}
+    if(age>=0&&age<1.15&&f.amp>0){const st=strokeFor(f),u=st.material.uniforms;st.visible=true;
+      u.uHead.value=reduceMotion?1.3:Math.min(1.3,age/.42);u.uFade.value=age<.38?0:Math.max(0,1-(age-.38)/.7)*.85;u.uOp.value=Math.min(1,f.amp*1.2);u.uCol.value.copy(lightCol)}
+    else if(f.stroke)f.stroke.visible=false}}
 
 const hits=[], anim=[];
-function press(m){const u=m.userData;if(u.by===undefined)return;u.ty=u.by-.07;setTimeout(()=>u.ty=u.by,150)}
-/* generic controls */
-function pressable(mesh,act,tip){mesh.userData={tip,by:mesh.position.y,ty:mesh.position.y,down(){press(mesh);act()}};hits.push(mesh);anim.push(mesh)}
+function press(m){pulse(m);const u=m.userData;if(u.by===undefined)return;u.ty=u.by-.07;setTimeout(()=>u.ty=u.by,150)}
+/* generic controls (own material clone so each can flash on its own) */
+function pressable(mesh,act,tip){mesh.material=mesh.material.clone();fxOf(mesh);mesh.userData={tip,by:mesh.position.y,ty:mesh.position.y,down(){press(mesh);act()}};hits.push(mesh);anim.push(mesh)}
 /* item control: a control that holds a piece of the portfolio */
 function itemCtrl(mesh,ch,i,sound,{knob=null,pressy=true}={}){
   CTRL[ch][i]=mesh; mesh.material=mesh.material.clone(); mesh.material.emissive=new THREE.Color(MODES[realCh(ch)].glow);
+  fxOf(mesh).managed=true;
   const has=()=>i<CH[realCh(ch)].items.length;
   function go(){const c=realCh(ch); if(S.mode!==c)zoomTo(c); else openCard(c,i)}
   mesh.userData={get ch(){return realCh(ch)},i,get item(){return has()},tip:ch==='pad'?'Open slot · drum pad':'Play a note',
     ...(pressy?{by:mesh.position.y,ty:mesh.position.y}:{}),
-    down(){sound?.();if(pressy)press(mesh);if(has())go()},
+    down(){sound?.();if(pressy)press(mesh);else pulse(mesh);if(has())go()},
     drag(d){if(knob)knob.userData.r+=d/50},
     up(){}};
   hits.push(mesh); if(pressy)anim.push(mesh);
@@ -194,7 +274,8 @@ function paramKnob(pos,key,{r=.28,cap='#d0d2d6',ring='#3a3b3f',parent}){
   rg.userData.proxy=cp; ind.userData.proxy=cp; hits.push(rg,ind);
   rot.userData.r=0; anim.push(rot);
   if(key){const set=()=>{rot.userData.r=(.5-P[key])*4.4};set();rot.rotation.y=rot.userData.r;
-    cp.userData={tip:`${PNAMES[key]} · drag up/down`,live:()=>`${PNAMES[key]} ${Math.round(P[key]*100)}%`,drag(d){P[key]=Math.min(1,Math.max(0,P[key]+d/180));set();applyP()},up(){}};hits.push(cp);}
+    cp.material=cp.material.clone();fxOf(cp);
+    cp.userData={tip:`${PNAMES[key]} · drag up/down`,live:()=>`${PNAMES[key]} ${Math.round(P[key]*100)}%`,down(){pulse(cp)},drag(d){P[key]=Math.min(1,Math.max(0,P[key]+d/180));set();applyP()},up(){}};hits.push(cp);}
   return {g,rot,cp};
 }
 
@@ -207,13 +288,13 @@ const TOP=.9, GX=c=>-8+c, GZ=r=>-2.5+r;
  const rec=rbox(17.25,.12,6.25,.05,M(C.recess,.8)); rec.position.y=TOP; synth.add(rec);}
 [[-9.2,-3.4],[9.2,-3.4],[-9.2,3.4],[9.2,3.4]].forEach(([x,z])=>screw(synth,x,.905,z));
 function tile(c,r,w=1,h=1,mat=M(C.tile,.6)){const m=rbox(w-.07,.3,h-.07,.07,mat);m.position.set(GX(c)+(w-1)/2,TOP+.15,GZ(r)+(h-1)/2);synth.add(m);return m}
-function capMesh(c,r,label,lc){tile(c,r);const k=rbox(.72,.16,.72,.16,M(C.cap,.5));k.position.set(GX(c),TOP+.36,GZ(r));synth.add(k);if(label){const l=labelPlane(label,.66,.32,lc);l.position.y=.081;k.add(l)}return k}
-function capBtn(c,r,label,act,tip,lc){const k=capMesh(c,r,label,lc);pressable(k,act,tip);return k}
+function capMesh(c,r,label,lc,cc=C.cap,ldc){tile(c,r);const k=rbox(.72,.16,.72,.16,M(cc,.5));k.position.set(GX(c),TOP+.36,GZ(r));synth.add(k);if(label){const l=labelPlane(label,.66,.32,lc,50,ldc);l.position.y=.081;k.add(l)}return k}
+function capBtn(c,r,label,act,tip,lc,cc,ldc){const k=capMesh(c,r,label,lc,cc,ldc);pressable(k,act,tip);return k}
 
 // speaker (musical side: right)
 tile(12,0,2,2);
-const grille=(()=>{const {t}=canvasTex(256,256,(x)=>{x.fillStyle='#3a3b40';for(let i=0;i<11;i++)for(let j=0;j<11;j++){const dx=i-5,dy=j-5;if(dx*dx+dy*dy<=27){x.beginPath();x.arc(28+i*20,28+j*20,5.2,0,7);x.fill()}}});
- const p=new THREE.Mesh(new THREE.PlaneGeometry(1.7,1.7),new THREE.MeshBasicMaterial({map:t,transparent:true}));p.rotation.x=-Math.PI/2;p.position.set(GX(12.5),TOP+.305,GZ(.5));synth.add(p);return p})();
+const grille=(()=>{const {t}=canvasTex(256,256,(x)=>{x.fillStyle='#fff';for(let i=0;i<11;i++)for(let j=0;j<11;j++){const dx=i-5,dy=j-5;if(dx*dx+dy*dy<=27){x.beginPath();x.arc(28+i*20,28+j*20,5.2,0,7);x.fill()}}});
+ const p=new THREE.Mesh(new THREE.PlaneGeometry(1.7,1.7),themed(new THREE.MeshBasicMaterial({map:t,transparent:true,color:'#3a3b40'}),'#3a3b40','#0e0f11'));p.rotation.x=-Math.PI/2;p.position.set(GX(12.5),TOP+.305,GZ(.5));synth.add(p);return p})();
 // tone knob, wave, demo
 tile(14,0,2,1); paramKnob(new THREE.Vector3(GX(14),TOP+.3,GZ(0)),'cutoff',{r:.3,cap:'#f7f7f8',ring:C.ring,parent:synth});
 {const l=labelPlane('TONE',.6,.29);l.position.set(GX(15),TOP+.31,GZ(0));synth.add(l)}
@@ -221,7 +302,7 @@ capBtn(14,1,'WAVE',()=>{P.wave=(P.wave+1)%3;setSwitch();playNote(67,.4)},'Wavefo
 const beatsBtn=capBtn(15,1,'BEATS',()=>toggleDemo(),'Beats · each click plays the next of 5 tracks');
 const stopBtn=capBtn(16,0,'STOP',()=>{stopDemo();drum('rim')},'Stop the music');
 {const sq=new THREE.Mesh(new THREE.PlaneGeometry(.11,.11),new THREE.MeshBasicMaterial({color:'#d71920'}));sq.rotation.x=-Math.PI/2;sq.position.set(0,.082,-.27);stopBtn.add(sq);}
-[stopBtn,beatsBtn].forEach(m=>{m.material=m.material.clone();m.material.emissive=new THREE.Color('#ff5d1a')});
+[stopBtn,beatsBtn].forEach(m=>{m.material.emissive=new THREE.Color('#ff5d1a');fxOf(m).managed=true});
 capBtn(16,1,'MUTE',()=>toggleMute(),'Sound on / off');
 // screen
 tile(0,0,4,2,M(C.recess,.4));
@@ -238,23 +319,23 @@ for(let i=0;i<4;i++){const c0=4+i*2;tile(c0,0,2,2);
   const ind=new THREE.Mesh(new THREE.BoxGeometry(.07,.02,.34),M(i===2?'#3a3b40':'#ffffff',.5)); ind.position.set(0,.55,-.3); rot.add(ind);
   ring.userData.proxy=capm; ind.userData.proxy=capm; hits.push(ring,ind);
   const L=labelPlane(TH_LABEL[i],1.5,.3,'#7b7e86',40); L.position.set(0,.01,.98); g.add(L);
-  const RK=['ds','st','ar','te'][i]; capm.material=capm.material.clone(); capm.material.emissive=new THREE.Color(MODES[RK].glow); BIGCAPS.push([capm,RK]);
-  capm.userData={tip:`${CH[RK].name} mode · lights up the keys`,down(){playNote([48,52,55,60][i],1.4);zoomTo(RK)},drag(d){rot.userData.r+=d/50},up(){}}; hits.push(capm);
+  const RK=['ds','st','ar','te'][i]; capm.material=capm.material.clone(); capm.material.emissive=new THREE.Color(MODES[RK].glow); BIGCAPS.push([capm,RK]); fxOf(capm).managed=true;
+  capm.userData={tip:`${CH[RK].name} mode · lights up the keys`,down(){pulse(capm);playNote([48,52,55,60][i],1.4);zoomTo(RK)},drag(d){rot.userData.r+=d/50},up(){}}; hits.push(capm);
 }
 // ABOUT: red button row (cols 0-7, row 2); lead notes cols 8-16
 // About row: only content about Vick — 9 wide buttons across the full row
 CH.info.items.length=6;
-function wideBtn(x,w,label,lc){const t=rbox(w-.07,.3,.93,.07,M(C.tile,.6));t.position.set(x,TOP+.15,GZ(2));synth.add(t);
+function wideBtn(x,w,label,lc,ldc){const t=rbox(w-.07,.3,.93,.07,M(C.tile,.6));t.position.set(x,TOP+.15,GZ(2));synth.add(t);
   const k=rbox(w-.3,.16,.72,.16,M(C.cap,.5));k.position.set(x,TOP+.36,GZ(2));synth.add(k);
-  const l=labelPlane(label,1.6,.5,lc,Math.min(40,Math.floor(400/label.length)));l.position.y=.081;k.add(l);t.userData.proxy=k;hits.push(t);return k}
+  const l=labelPlane(label,1.6,.5,lc,Math.min(40,Math.floor(400/label.length)),ldc);l.position.y=.081;k.add(l);t.userData.proxy=k;hits.push(t);return k}
 {const F=['gd','ux','mo','tl','xp'],L=['DESIGN','UI/UX','MOTION','TOOLS','EXPERIMENTAL'],LC=['#1a9e4f','#2f86c2','#e5541a','#7c4ddb','#d14fa8'],W=17/5;
  for(let j=0;j<5;j++){const x=-8.5+W*(j+.5),f=F[j];
-  const k=wideBtn(x,W,L[j],LC[j]);
-  k.material=k.material.clone();k.material.emissive=new THREE.Color(MODES[f].glow);ROWBTN.push([k,f]);
-  pressable(k,()=>{playNote(72+[0,4,7,11,14][j],.5);zoomTo(f)},`Filter · ${CH[f].name} · ${MODES[f].n||CH[f].items.length+' keys'} on the keys`);k.userData.filter=f;}}
-// drum pads
+  const k=wideBtn(x,W,L[j],LC[j],MODES[f].glow);
+  pressable(k,()=>{playNote(72+[0,4,7,11,14][j],.5);zoomTo(f)},`Filter · ${CH[f].name} · ${MODES[f].n||CH[f].items.length+' keys'} on the keys`);k.userData.filter=f;
+  k.material.emissive=new THREE.Color(MODES[f].glow);ROWBTN.push([k,f]);fxOf(k).managed=true;}}
+// drum pads: graphite caps with light print (KO II style)
 const PADS=['kick','snare','hat','clap','tom','rim','shaker','crash','blip'];
-PADS.forEach((p,i)=>capBtn(14+i%3,3+Math.floor(i/3),p.toUpperCase(),()=>drum(p),`Drum pad · ${p}`));
+PADS.forEach((p,i)=>capBtn(14+i%3,3+Math.floor(i/3),p.toUpperCase(),()=>drum(p),`Drum pad · ${p}`,'#d9dade','#2c2d31','#a9acb3'));
 // GRAPHIC: the keyboard
 const WHITE=[0,2,4,5,7,9,11], sharpAfter={0:1,1:3,3:6,4:8,5:10};
 const wMidi=i=>60+12*Math.floor(i/7)+WHITE[i%7];
@@ -280,7 +361,8 @@ for(let j=0;j<8;j++){const c=j%4,rw=Math.floor(j/4);const pd=rbox(1.42,.18,.84,.
 {const d=rbox(1.6,.55,1.2,.2,M(C.black,.5));d.position.set(6.9,.28,.1);TU.add(d);
  const ring=new THREE.Mesh(new THREE.TorusGeometry(.33,.03,8,40),M('#1a1a1c'));ring.rotation.x=-Math.PI/2;ring.position.set(6.95,.56,.1);TU.add(ring);}
 const shuf=cyl(.3,.32,.14,M('#5a5b60',.4)); shuf.position.set(6.95,.6,.1); TU.add(shuf);
-shuf.userData={tip:'Shuffle · open a random piece of work',down(){const ch=KBM[Math.floor(Math.random()*KBM.length)];S.mode=null;zoomTo(ch);openCard(ch,Math.floor(Math.random()*CH[ch].items.length));drum('crash')}}; hits.push(shuf);
+shuf.material=shuf.material.clone();fxOf(shuf);
+shuf.userData={tip:'Shuffle · open a random piece of work',down(){pulse(shuf);const ch=KBM[Math.floor(Math.random()*KBM.length)];S.mode=null;zoomTo(ch);openCard(ch,Math.floor(Math.random()*CH[ch].items.length));drum('crash')}}; hits.push(shuf);
 
 /* MOTION: the remote */
 const RM=new THREE.Group(); RM.position.set(-11.7,0,.15); scene.add(RM);
@@ -342,7 +424,12 @@ function frameFor(key){
 let fly=null, offX=0, offY=0;
 function flyTo(key){const f=frameFor(key);fly={p0:camera.position.clone(),t0:controls.target.clone(),p1:f.p,t1:f.t,s:performance.now(),dur:1500};controls.enabled=false;
   controls.minDistance=f.d*.55;controls.maxDistance=Math.max(f.d*1.6,frameFor('all').d*1.3)}
-function zoomTo(ch){if(S.mode===ch)return;if(KBM.includes(ch))S.kb=ch;if(PADM.includes(ch))S.pad=ch;const same=S.mode&&MODES[S.mode].box===MODES[ch].box;S.mode=ch;closeCard();drum(same?'blip':'whoosh');if(!same)flyTo(MODES[ch].box);updateUI()}
+function zoomTo(ch){if(S.mode===ch)return;if(KBM.includes(ch))S.kb=ch;if(PADM.includes(ch))S.pad=ch;const same=S.mode&&MODES[S.mode].box===MODES[ch].box;S.mode=ch;closeCard();drum(same?'blip':'whoosh');if(!same)flyTo(MODES[ch].box);updateUI();modeWave(ch)}
+/* mode switch: the filter/knob that owns the mode strokes, then a wave of gap-glow + strokes ripples across the controls that now hold its projects */
+function modeWave(ch){
+  ROWBTN.concat(BIGCAPS).forEach(([m,k])=>{if(k===ch)pulse(m)});
+  const g=KBM.includes(ch)?'kb':PADM.includes(ch)?'pad':CTRL[ch]?ch:null; if(!g)return;
+  CTRL[g].forEach((m,j)=>{if(m&&j<CH[ch].items.length)pulse(m,180+j*45,.55)})}
 function zoomOut(){S.mode=null;closeCard();drum('whoosh');flyTo('all');updateUI()}
 
 /* ───────────── SCREENS ───────────── */
@@ -445,6 +532,34 @@ addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey)return;const k=
   else if(S.card&&k==='arrowright'){openCard(S.card.ch,S.card.i+1)} else if(S.card&&k==='arrowleft'){openCard(S.card.ch,S.card.i-1)}});
 addEventListener('keyup',e=>held.delete(e.key.toLowerCase()));
 
+/* ───────────── THEME: light / dark, eased between the two looks ───────────── */
+const root=document.documentElement, themeBtn=$('thm'), sysDark=matchMedia('(prefers-color-scheme: dark)');
+const LOOK={ // light → dark
+  bg:['#efefed','#0c0d0f'], sky:['#ffffff','#a9b8d8'], gnd:['#b9bab6','#0f1013'], hemi:[.45,.2], sun:[2,1.3], sunCol:['#fff6ea','#fff1e2'],
+  rim:[.9,2.1], rimCol:['#dfe8ff','#8fb4ff'], shadow:[.17,.5], exp:[1,1.12], pool:['#ffffff','#2b2f37'], poolOp:[.5,1]};
+const LC={};for(const k in LOOK)if(typeof LOOK[k][0]==='string')LC[k]=LOOK[k].map(c=>new THREE.Color(c));
+const lerp=(a,b,k)=>a+(b-a)*k;
+const THEMED=[];{const seen=new Set();scene.traverse(o=>[o.material].flat().forEach(m=>{if(m?.userData?.tc&&!seen.has(m)){seen.add(m);THEMED.push(m)}}))}
+let themeT=root.dataset.theme==='dark'?1:0, themeK=-1, blendDark=null;
+function applyTheme(k){
+  scene.background.lerpColors(LC.bg[0],LC.bg[1],k); hemi.color.lerpColors(LC.sky[0],LC.sky[1],k); hemi.groundColor.lerpColors(LC.gnd[0],LC.gnd[1],k);
+  hemi.intensity=lerp(...LOOK.hemi,k); sun.intensity=lerp(...LOOK.sun,k); sun.color.lerpColors(LC.sunCol[0],LC.sunCol[1],k);
+  rim.intensity=lerp(...LOOK.rim,k); rim.color.lerpColors(LC.rimCol[0],LC.rimCol[1],k); floor.material.opacity=lerp(...LOOK.shadow,k);
+  renderer.toneMappingExposure=lerp(...LOOK.exp,k); pool.material.color.lerpColors(LC.pool[0],LC.pool[1],k); pool.material.opacity=lerp(...LOOK.poolOp,k);
+  for(const m of THEMED){const u=m.userData.tc;m._tc||(m._tc=[new THREE.Color(u.l),new THREE.Color(u.d)]);m.color.lerpColors(m._tc[0],m._tc[1],k);if(u.le!==undefined&&'envMapIntensity' in m)m.envMapIntensity=lerp(u.le,u.de,k)}
+  const bd=k>.5; if(bd!==blendDark){blendDark=bd;FXMATS.forEach(m=>{m.blending=bd?THREE.AdditiveBlending:THREE.NormalBlending;m.needsUpdate=true})}}
+function setTheme(dark,{save=true,sweep=true}={}){
+  themeT=dark?1:0; root.dataset.theme=dark?'dark':'light';
+  if(save)try{localStorage.setItem('vdc-theme',dark?'dark':'light')}catch{}
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',dark?'#0c0d0f':'#efefed');
+  themeBtn.setAttribute('aria-pressed',String(dark)); themeBtn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode'); themeBtn.querySelector('span').textContent=dark?'Light':'Dark';
+  if(sweep){ // a light sweep runs across every control, left to right, as the synth "re-lights"
+    const v=new THREE.Vector3(); FXL.forEach(f=>{f.m.getWorldPosition(v);pulse(f.m,(v.x+13)*32,.6)}); drum(dark?'blip':'rim');}
+}
+themeBtn.onclick=()=>{ensureAudio();setTheme(themeT<.5)};
+sysDark.addEventListener?.('change',e=>{let saved=null;try{saved=localStorage.getItem('vdc-theme')}catch{}if(!saved)setTheme(e.matches,{save:false})});
+setTheme(themeT>.5,{save:false,sweep:false});
+
 /* ───────────── LOOP ───────────── */
 const ease=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2, v3=new THREE.Vector3();
 function resize(){const w=stage.clientWidth,h=stage.clientHeight,mob=!desktop();controls.enableRotate=!mob;controls.enableZoom=!mob;controls.minPolarAngle=mob?0:.12;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
@@ -463,5 +578,6 @@ function loop(){const t=clock.getElapsedTime(),now=performance.now();
   if(ho){ho.getWorldPosition(v3);v3.y+=.45;v3.project(camera);
     const x=(v3.x+1)/2*w, y=(1-v3.y)/2*h; lbl.hidden=false; lbl.style.left=x+'px'; lbl.style.top=y+'px';
     const html=lastLive||labelHTML(ho); if(lbl._h!==html){lbl.innerHTML=html;lbl._h=html}} else lbl.hidden=true;
-  grille.scale.setScalar(1+level*.04); updateCables(); refreshGlow(t); drawScreens(t); controls.update(); renderer.render(scene,camera); requestAnimationFrame(loop)}
+  if(Math.abs(themeK-themeT)>.002){themeK=themeK<0?themeT:themeK+(themeT-themeK)*(reduceMotion?1:.075);if(Math.abs(themeK-themeT)<=.002)themeK=themeT;applyTheme(themeK)}
+  grille.scale.setScalar(1+level*.04); updateCables(); refreshGlow(t); updateFx(now); drawScreens(t); controls.update(); renderer.render(scene,camera); requestAnimationFrame(loop)}
 updateUI(); loop();

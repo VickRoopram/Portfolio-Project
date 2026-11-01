@@ -2,7 +2,7 @@
 
 > **For the next Claude session.** This file is the full context for the "VR-17 portfolio synth" project built for **Vickhal (Vick) Roopram**. Read it fully before touching anything. It records what exists, where it lives, how the code works, which connectors worked or failed (and why), the decisions Vick made through feedback, and a concrete plan for v2.
 >
-> Last updated: 29 October 2026 · v1 status: **live on Netlify** (manual deploys) · Owner: Vick (vickhal@floodlightstudios.co.za)
+> Last updated: 1 November 2026 · v1 status: **live on Netlify** (manual deploys) · Owner: Vick (vickhal@floodlightstudios.co.za)
 
 ---
 
@@ -76,6 +76,7 @@ The idea behind it, in Vick's own framing: he is "a creative software clients us
 | **Built-in browser (Claude app pane on the Mac)** | ✅ Works | Used to test the artifact and the Netlify site; `request_access` per site | It renders WebGL at a **very low frame rate**, so animations lag in screenshots. Wait 3–8 s after an action before you screenshot. Approved sites: claude.ai, the artifact frame host, unicorn.studio (one-off), vick-does-creative-ztpv.netlify.app. |
 | **Desktop Commander (Mac shell)** | ✅ Works | `start_process` and `read_process_output` | The Mac has Homebrew, Node v25.2.1, npx, git and curl. Home is `/Users/vick`. |
 | **remote-devices file bridge** | ✅ Works | `device_request_folder_access` granted `/Users/vick/Projects/vick-does-creative`; `device_commit_files` copies container files to the Mac | Only stages from `/mnt/user-data/outputs/`. |
+| **Local render test (container)** | ✅ Works | Sparse-clone three.js r160 from GitHub (`git clone --depth 1 --branch r160 --filter=blob:none --sparse`), then Playwright routes `cdn.jsdelivr.net/npm/three@0.160.0/*` to it. SwiftShader runs ~1 fps, so use `page.clock.install()` + `pauseAt()` + `runFor()` to step animations. | npm and jsDelivr stay blocked. |
 | **Container network** | ⚠️ Restricted | pypi | **Blocked:** npm registry, jsDelivr, api.netlify.com, figma asset host, netlify-mcp.netlify.app. So you **can't run the site in a headless browser in the container**: three.js can't load. Test through the built-in browser instead. |
 
 ---
@@ -177,6 +178,14 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 8. The side units' **cables plug into the main board** when selected.
 9. TOUR became **BEATS** (5 tracks, cycled per click). The old HOME key on the synth became **STOP**, and both glow while music plays.
 10. The camera **pushes in** closer on selection (desktop margin 0.9, mobile 1.02, 1.5 s flight).
+11. Materials moved to Teenage-Engineering-style finishes: brushed/anodised aluminium, satin keys, knurled knobs, screws.
+12. **Nov 2026: press FX + light/dark mode** (refs: Pinterest industrial-design reels, a glowing pill toggle, a rim-lit dark device, a KO II and a gunmetal knob panel).
+    - **Gap glow:** every control has a blurred rounded-rect "halo" plane on the deck under its cap (`fxOf()`), so light leaks from the gap. Item controls mirror their emissive state into the halo, so active-mode keys glow in the mode colour.
+    - **Stroke:** on press, a ribbon shader (`strokeFor()`) traces the cap outline: two heads race from the front-centre round both sides to the back, then the full outline fades. `pulse(mesh, delayMs, amp)` fires both; `press()` calls it.
+    - **Mode wave:** `modeWave()` strokes the owning filter/knob and ripples pulses across the mode's item keys (45 ms stagger).
+    - **Theme:** `PRESET` entries carry a `dark` colour (+ `denv` env strength); `themed()` tags any material; `applyTheme(k)` lerps materials, lights, floor pool and exposure. Toggle `#thm`; saved in `localStorage['vdc-theme']`, else `prefers-color-scheme`. Inline script in `index.html` sets `data-theme` before paint. FX blend normally in light mode and additively in dark mode. In dark mode cap faces glow less (`face` factor) so the light comes from the gaps.
+    - Drum pads are now **graphite caps with light print** (KO II); knob bands use a **diamond knurl**.
+    - HUD: CSS tokens for both themes; `.btn`/card nav get a `zap` glow + conic-gradient stroke (`@property --sw`) on press; the card traces its outline in the project colour on open. `--glow` follows the active mode.
 
 **Commenting tip:** artifact comments anchored to the 3D canvas **don't carry the click position or selection rectangle**. Ask Vick to name the control instead of guessing (this happened twice).
 

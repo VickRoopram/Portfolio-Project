@@ -4,8 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Vickhal Roopram: UX/UI, graphic and motion designer. A portfolio you play as a 3D synthesizer.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#efefed">
 <title>Vick Does Creative</title>
-
+<script>
+/* Pick the theme before the first paint: saved choice, else the system setting */
+(function(){var t;try{t=localStorage.getItem('vdc-theme')}catch(e){}if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="src/styles.css">
@@ -16,6 +21,7 @@
 <div class="top">
   <div class="brand"><span class="logo" aria-hidden="true">[:]</span><span>VICK DOES CREATIVE</span></div>
   <button class="btn" id="home" aria-label="Home: back to the full synth"><svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 7.5 8 2l6 5.5V14H10V10H6v4H2z" fill="currentColor"/></svg>Home</button>
+  <button class="btn" id="thm" aria-pressed="false" aria-label="Switch to dark mode"><svg class="i-moon" width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.6 10.4A6 6 0 0 1 5.6 2.4a6 6 0 1 0 8 8z" fill="currentColor"/></svg><svg class="i-sun" width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><path d="M8 .8v2.1M8 13.1v2.1M.8 8h2.1M13.1 8h2.1M2.9 2.9l1.5 1.5M11.6 11.6l1.5 1.5M2.9 13.1l1.5-1.5M11.6 4.4l1.5-1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>Dark</span></button>
   <button class="btn" id="snd" aria-pressed="true">Sound on</button>
 </div>
 <div id="lbl" hidden></div>

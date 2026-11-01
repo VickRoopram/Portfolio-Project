@@ -17,6 +17,10 @@ The synth is the interface. Each part of the instrument holds a different side o
 | **CV remote** (left) | Full CV (PDF), contact details and social links. Also plugs in when selected. |
 | **Music side** (right): drum pads, Tone, Wave, BEATS, STOP, MUTE | Pure play. BEATS cycles five original tracks; STOP and BEATS glow while music runs. |
 
+**Light & dark mode:** the sun/moon button in the top bar switches between a brushed-aluminium studio look and a gunmetal, graphite-key dark look. It follows the system setting until you pick one, and remembers your choice.
+
+**Press feedback:** every control glows and traces a stroke of light around its edge when pressed. When you switch modes, the gaps around the keys that hold that mode's projects light up in its colour, in a wave from left to right. The HUD buttons and the project card use the same glow and stroke.
+
 **Keyboard shortcuts:** `A`–`;` play notes, `W E T Y U O P` play sharps, `Z`–`.` play drums, `1`–`6` jump to modes, `←`/`→` page through open cards, `0` or `Esc` go home.
 
 On phones the synth is locked to a top-down view, and cards open as a bottom sheet.
