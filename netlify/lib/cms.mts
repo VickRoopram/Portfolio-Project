@@ -74,7 +74,7 @@ export function cleanHTML(html: unknown): string {
       const a = an.toLowerCase(), v = String(d ?? q ?? u ?? "")
       if (a === "class" && /^[\w\s-]*$/.test(v)) keep.push(`class="${v}"`)
       else if (a === "style" && !/url\s*\(|expression|javascript:|@import|behavior/i.test(v)) keep.push(`style="${v.replace(/"/g, "&quot;")}"`)
-      else if (n === "a" && a === "href" && /^(https?:|mailto:|tel:|\/|#)/i.test(v.trim())) keep.push(`href="${v.replace(/"/g, "&quot;")}"`)
+      else if (n === "a" && a === "href" && /^(https?:|mailto:|tel:|\/|#|assets\/)/i.test(v.trim())) keep.push(`href="${v.replace(/"/g, "&quot;")}"`)
       return ""
     })
     if (n === "a") keep.push('target="_blank"', 'rel="noopener"')
@@ -84,7 +84,8 @@ export function cleanHTML(html: unknown): string {
 }
 
 const text = (v: unknown, max = 400) => (typeof v === "string" ? v.replace(/[<>]/g, "").slice(0, max) : "")
-const url = (v: unknown) => (typeof v === "string" && /^(https?:|mailto:|tel:|\/)/i.test(v.trim()) ? v.trim().slice(0, 1000) : "")
+// web addresses, email/phone links, and files on the site itself ("/…" or "assets/…", e.g. the CV PDF)
+const url = (v: unknown) => (typeof v === "string" && /^(https?:|mailto:|tel:|\/|assets\/)/i.test(v.trim()) && !/[<>"']/.test(v) ? v.trim().slice(0, 1000) : "")
 const img = (v: unknown) => (typeof v === "string" && /^(assets\/|\/assets\/|\/media\/|https:\/\/)/.test(v) && !/[<>"']/.test(v) ? v.slice(0, 500) : "")
 const colour = (v: unknown) => (typeof v === "string" && /^#[0-9a-f]{6}$/i.test(v) ? v : undefined)
 
