@@ -6,6 +6,16 @@
 
 ---
 
+## 0. Workflow (from 1 Nov 2026)
+
+- **`main` is the live site.** Netlify is linked to `VickRoopram/Portfolio-Project` and publishes every push to `main` to https://vick-does-creative.netlify.app. No manual deploys.
+- **`version-01` is where refined design, UX and development work happens.** Netlify branch deploys are on for it only, so every push updates https://version-01--vick-does-creative.netlify.app without touching the live site.
+- **Release:** when Vick approves what's on the preview, merge `version-01` into `main`. Netlify then publishes it. Don't push unapproved work to `main`.
+- **Pushing from Claude:** the cloud container's GitHub access is refused for this repo (org-level Claude GitHub App link). Push from Vick's Mac clone at `~/Projects/vick-does-creative/repo` through Desktop Commander; it uses his macOS keychain login.
+- Pull requests into `main` also get a Netlify deploy preview.
+
+---
+
 ## 1. What this project is
 
 A personal portfolio presented as a **playable 3D synthesizer**. The synth *is* the navigation: each physical part of the instrument holds a side of Vick's work. People hover to read labels, click a part to fly the camera in, press keys to open project cards, and can make music the whole time.
@@ -14,11 +24,12 @@ The idea behind it, in Vick's own framing: he is "a creative software clients us
 
 | | |
 |---|---|
-| **Live site (production)** | https://vick-does-creative-ztpv.netlify.app |
+| **Live site (production)** | https://vick-does-creative.netlify.app (auto-deploys from `main`) |
+| **Preview site (`version-01`)** | https://version-01--vick-does-creative.netlify.app (auto-deploys from `version-01`) |
 | **Claude artifact (single-file original)** | https://claude.ai/artifact/6QxmesfccrDMV55jaknhdK (shared "anyone with the link") |
-| **GitHub repo (empty, not yet pushed)** | https://github.com/VickRoopram/Portfolio-Project |
+| **GitHub repo** | https://github.com/VickRoopram/Portfolio-Project (`main` = live, `version-01` = work in progress). The older repo `VickRoopram/vick-does-creative` is no longer connected. |
 | **Figma synth design (visual source)** | https://www.figma.com/design/gXh33LpoadWI0B76ofjD56/Synth?node-id=1-2 |
-| **Netlify project** | `vick-does-creative-ztpv` · site ID `6b83ad40-bd2a-4ad8-b794-27ec134997ef` · team "Floodlight Studios" (slug `vickroopram`, Free plan, Vick is Owner) |
+| **Netlify project** | `vick-does-creative` (renamed from `vick-does-creative-ztpv`; the old URL now 404s) · site ID `6b83ad40-bd2a-4ad8-b794-27ec134997ef` · team "Floodlight Studios" (slug `vickroopram`, Free plan, Vick is Owner) |
 
 ---
 
@@ -73,7 +84,7 @@ The idea behind it, in Vick's own framing: he is "a creative software clients us
 | **Blender MCP (via the Mac)** | ✅ Available, unused | `mcp__remote-devices__Blender__execute_blender_code`, `render_viewport_to_path`, `get_objects_summary`, etc. | Needs Blender running on the Mac with its MCP add-on. Planned for v2 (§9, Phase 4). |
 | **Spline MCP (via the Mac)** | ✅ Newly available | `3d_create_file`, `3d_run_code`, `3d_generate_3d_model`, `3d_publish_export`, `3d_take_screenshot` | Unused. A faster alternative to Blender for web-ready 3D (§9, Phase 4b). |
 | **Unicorn Studio MCP** | ⚠️ Not connected | `list_designs` works | The editor tab never connected: the browser pane showed a login page. Vick must open a design link in a browser where he's signed in and turn on **Allow agents**. Newer tools (`create_design`, `upload_media`, `export_project_json`) now exist. |
-| **Built-in browser (Claude app pane on the Mac)** | ✅ Works | Used to test the artifact and the Netlify site; `request_access` per site | It renders WebGL at a **very low frame rate**, so animations lag in screenshots. Wait 3–8 s after an action before you screenshot. Approved sites: claude.ai, the artifact frame host, unicorn.studio (one-off), vick-does-creative-ztpv.netlify.app. |
+| **Built-in browser (Claude app pane on the Mac)** | ✅ Works | Used to test the artifact and the Netlify site; `request_access` per site | It renders WebGL at a **very low frame rate**, so animations lag in screenshots. Wait 3–8 s after an action before you screenshot. Approved sites: claude.ai, the artifact frame host, unicorn.studio (one-off), vick-does-creative.netlify.app, app.netlify.com, pin.it, za.pinterest.com. |
 | **Desktop Commander (Mac shell)** | ✅ Works | `start_process` and `read_process_output` | The Mac has Homebrew, Node v25.2.1, npx, git and curl. Home is `/Users/vick`. |
 | **remote-devices file bridge** | ✅ Works | `device_request_folder_access` granted `/Users/vick/Projects/vick-does-creative`; `device_commit_files` copies container files to the Mac | Only stages from `/mnt/user-data/outputs/`. |
 | **Local render test (container)** | ✅ Works | Sparse-clone three.js r160 from GitHub (`git clone --depth 1 --branch r160 --filter=blob:none --sparse`), then Playwright routes `cdn.jsdelivr.net/npm/three@0.160.0/*` to it. SwiftShader runs ~1 fps, so use `page.clock.install()` + `pauseAt()` + `runFor()` to step animations. | npm and jsDelivr stay blocked. |
