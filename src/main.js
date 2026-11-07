@@ -435,12 +435,12 @@ function updateCables(){CABLES.forEach(c=>{const tgt=c.isOn()?1:0;if(Math.abs(c.
    desktop that shows the keyboard's current channel as a grid of projects (click the screen to zoom in, click a tile to open it). */
 const OFF={};
 { // desk: oak top (top surface at y = 0, so everything else keeps its height) on grey metal legs
-  const wood=canvasTex(1024,512,(x,W,H)=>{x.fillStyle='#d9c6a6';x.fillRect(0,0,W,H);
-    for(let i=0;i<420;i++){const y=Math.random()*H,a=.03+Math.random()*.08,dk=Math.random()<.5;x.strokeStyle=dk?`rgba(120,86,48,${a})`:`rgba(255,240,215,${a})`;x.lineWidth=.6+Math.random()*2.2;
+  const wood=canvasTex(2048,1024,(x,W,H)=>{x.fillStyle='#d9c6a6';x.fillRect(0,0,W,H);
+    for(let i=0;i<900;i++){const y=Math.random()*H,a=.03+Math.random()*.08,dk=Math.random()<.5;x.strokeStyle=dk?`rgba(120,86,48,${a})`:`rgba(255,240,215,${a})`;x.lineWidth=.6+Math.random()*2.2;
       x.beginPath();x.moveTo(0,y);for(let s=0;s<=W;s+=64)x.lineTo(s,y+Math.sin(s*.004+i)*6+(Math.random()-.5)*2);x.stroke()}
-    for(let k=0;k<5;k++){const cx=Math.random()*W,cy=Math.random()*H;for(let r=4;r<38;r+=5){x.strokeStyle='rgba(120,86,48,.06)';x.beginPath();x.ellipse(cx,cy,r*3.2,r*.7,0,0,7);x.stroke()}}});
-  wood.t.wrapS=wood.t.wrapT=THREE.RepeatWrapping; wood.t.repeat.set(2,1);
-  const wm=themed(new THREE.MeshPhysicalMaterial({map:wood.t,roughness:.58,clearcoat:.25,clearcoatRoughness:.5,bumpMap:TEX.grain,bumpScale:.05}),'#ffffff','#8d8276',1,.6);
+    for(let k=0;k<9;k++){const cx=Math.random()*W,cy=Math.random()*H;for(let r=4;r<38;r+=5){x.strokeStyle='rgba(120,86,48,.06)';x.beginPath();x.ellipse(cx,cy,r*3.2,r*.7,0,0,7);x.stroke()}}});
+  wood.t.wrapS=wood.t.wrapT=THREE.ClampToEdgeWrapping; // one continuous plank pattern, no seam
+  const wm=themed(new THREE.MeshPhysicalMaterial({map:wood.t,roughness:.58,clearcoat:.25,clearcoatRoughness:.5,bumpMap:TEX.grain,bumpScale:.05}),'#ffffff','#5d4f41',1,.6); // light oak by day, walnut under the lamp at night
   const top=rbox(32.5,.9,23.5,.3,wm); top.position.set(.6,-.45,-2.6); top.castShadow=false; scene.add(top); OFF.top=top;
   const lm=themed(new THREE.MeshPhysicalMaterial({color:'#c3c6cc',metalness:.85,roughness:.38}),'#c3c6cc','#4a4d54',1,.7);
   [[-15.2,-13.8],[16.4,-13.8],[-15.2,8.6],[16.4,8.6]].forEach(([x,z])=>{const l=rbox(.85,30,.85,.2,lm);l.position.set(x,-15.9,z);l.castShadow=false;scene.add(l)});
@@ -568,7 +568,7 @@ function frameFor(key){
   const w=stage.clientWidth,h=stage.clientHeight, T=Math.tan(THREE.MathUtils.degToRad(camera.fov)/2);
   let tanV=T, tanH=T*w/h;
   if(key!=='all'&&!desktop()) tanV=T*.62;
-  const m=key==='all'?1.08:desktop()?.82:1.0;
+  const m=key==='all'?1.22:desktop()?.82:1.0;
   const d=Math.max((s.x/2*m)/tanH,((s.z*Math.cos(pol)+s.y*Math.sin(pol))/2*m+.3)/tanV)+s.y*.5;
   return {t:c,p:new THREE.Vector3(c.x,c.y+d*Math.cos(pol),c.z+d*Math.sin(pol)),d};
 }

@@ -212,6 +212,13 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - **Desktop screen** = `drawDesk()` on a 1920×1080 canvas, redrawn only when its key changes. Menu-bar tabs and the dock switch `S.kb`; the window shows `CH[S.kb]` as up to 18 tiles (first image, or a coloured placeholder); right-hand icons open About, Contact, CV, Life. Clickable regions live in `REG` and are hit-tested from the ray's UV (`regAt`). Mode `desk` (`MODES.desk`, box `screen`, polar 1.5, `maxPolarAngle` lifted to 1.56 while there). Click the screen to fly in; clicks then act on regions. Hovering a synth key highlights its tile.
     - **Lamp** (coral mushroom, PointLight + emissive shade + warm pool on the desk; click toggles) and **snake plant** (gentle leaf sway). Menu has a Desktop entry.
 
+15. **Nov 2026: playful stylised redesign** (ref: portfolio-zxc.com). The desktop monitor from step 14 was removed; desk, lamp and plant stayed.
+    - **Look:** warm, matte, toy-like `PRESET` (cream / warm-grey keycaps, brass rings, coral accents); `LOOK` is cream paper by day and warm charcoal with amber rim and lamp light at night; CSS tokens to match. Fonts: Montserrat, Courier Prime (typewriter UI), Pinyon Script (the "vick's" accent on cards).
+    - **Artisan keycaps:** `paintKeys()` prints each key's project image (or a numbered colour tile) on a sticker plane on the cap; redrawn when `S.kb` changes or an image loads.
+    - **Camera:** overview polar .3 (nearly top-down), parts at 1.0–1.08 (low and close). `flyTo()` interpolates in spherical coordinates around the moving target with a small mid-flight lift and quartic easing (2.1 s; intro 2.6 s from high above). OrbitControls: left rotate, right pan (along the desk, target clamped to `PANBOX`), wheel zoom to cursor. The joystick and zoom slider were removed; a legend sits under the bottom hairline.
+    - **Interactions counter** `#ix`: 12 discoveries (`FIND`), saved in `localStorage['vdc-found']`; `found(id, text)` updates the count and the last-interaction line.
+    - **Menu:** full-screen grid-paper overlay with a right-aligned typewriter list. **Intro** `#intro`: ENTER / PORTFOLIO or "enter without sound"; skipped for the rest of the session once entered (`sessionStorage['vdc-in']`).
+
 **Commenting tip:** artifact comments anchored to the 3D canvas **don't carry the click position or selection rectangle**. Ask Vick to name the control instead of guessing (this happened twice).
 
 ---
