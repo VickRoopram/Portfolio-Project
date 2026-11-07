@@ -206,6 +206,12 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - **Underlights:** one white soft-edged plane per device under it on the floor, tinted through `material.color`; fades in on hover in the overview. Vick asked for it subtle, *"almost like a bottom light under the synths"*, then a smaller area with the brightest part right on the device edge and the colour falling off immediately (`underlightTexture()`: exp falloff, λ = 0.09 world units, 56 px per unit; opacity .48 dark / .3 light), traced around each device's casing only (`foot` box: body mesh, plus the lip on the main synth) so knobs, the strip's cable dock and cables don't widen it. Titles anchor to the casing's top-back edge, baseline ~0.08em above it. The My Projects light follows `MODES[S.kb].glow` and stays on (.75) while a keyboard mode or card is open.
     - Clicking a title or a device body (not a control) zooms into that part.
 
+14. **Nov 2026: office set-up** (ref: pradiplabs.dev; Vick: only a desktop based on his laptop, a plant and a lamp).
+    - **Desk:** oak top whose top surface is y = 0 (so the synths kept their positions), grey metal legs; the shadow floor and light pool moved down to the room floor (y −30.9).
+    - **Monitor `MON`** behind the strip (silver back, black glass bezel, 16:9 screen, 15 units wide). Every synth has a permanent cable into its stand (`staticCable()`); the old synth-to-synth plug cables still animate.
+    - **Desktop screen** = `drawDesk()` on a 1920×1080 canvas, redrawn only when its key changes. Menu-bar tabs and the dock switch `S.kb`; the window shows `CH[S.kb]` as up to 18 tiles (first image, or a coloured placeholder); right-hand icons open About, Contact, CV, Life. Clickable regions live in `REG` and are hit-tested from the ray's UV (`regAt`). Mode `desk` (`MODES.desk`, box `screen`, polar 1.5, `maxPolarAngle` lifted to 1.56 while there). Click the screen to fly in; clicks then act on regions. Hovering a synth key highlights its tile.
+    - **Lamp** (coral mushroom, PointLight + emissive shade + warm pool on the desk; click toggles) and **snake plant** (gentle leaf sway). Menu has a Desktop entry.
+
 **Commenting tip:** artifact comments anchored to the 3D canvas **don't carry the click position or selection rectangle**. Ask Vick to name the control instead of guessing (this happened twice).
 
 ---

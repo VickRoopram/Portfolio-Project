@@ -429,8 +429,9 @@ const OFF={};
 const MON=new THREE.Group(); MON.position.set(-1.5,0,-11.7); scene.add(MON);
 const SCR_W=15, SCR_H=SCR_W*9/16, SCR_Y=2.9+SCR_H/2;
 { const al=M(C.body,.55);
-  const base=rbox(4.4,.18,2.9,.14,al); base.position.set(0,.09,.35); MON.add(base);
-  const neck=rbox(2.3,3.6,.32,.12,al); neck.position.set(0,1.9,-.35); neck.rotation.x=.1; MON.add(neck);
+  const sat=M(C.tile,.6); // bead-blasted: the stand doesn't mirror the rim light
+  const base=rbox(4.4,.18,2.9,.14,sat); base.position.set(0,.09,.35); MON.add(base);
+  const neck=rbox(2.3,3.6,.32,.12,sat); neck.position.set(0,1.9,-.35); neck.rotation.x=.1; MON.add(neck);
   const frame=rbox(SCR_W+.7,SCR_H+.7,.36,.32,al); frame.position.set(0,SCR_Y,0); MON.add(frame);
   const bezel=rbox(SCR_W+.56,SCR_H+.56,.06,.26,new THREE.MeshPhysicalMaterial({color:'#060607',roughness:.12,clearcoat:1,clearcoatRoughness:.05})); bezel.position.set(0,SCR_Y,.18); MON.add(bezel);
   const logo=new THREE.Mesh(new THREE.CircleGeometry(.32,32),M('#c4c6cc')); logo.position.set(0,SCR_Y,-.185); logo.rotation.y=Math.PI; MON.add(logo);
@@ -487,6 +488,7 @@ staticCable([[7.6,.45,-3.75],[7.7,.1,-4.6],[7.5,.1,-8.9],[4.6,.1,-11.6],[1.3,.1,
 /* ───────────── DESKTOP SCREEN: a live desktop showing the keyboard's current channel ───────────── */
 CH.desk={name:'DESKTOP',col:'#3d9ad8',items:[]};
 MODES.desk={part:'The desktop',n:'Projects on screen',dock:'Desktop',glow:'#3fb2ff',box:'screen'};
+const NICE={gd:['Design','projects'],ux:['UI/UX Design','case notes'],mo:['Motion & 3D','pieces'],tl:['Tools','tools'],xp:['Experimental','experiments'],ab:['About','pages'],sk:['Skills','skills'],aw:['Awards','awards'],wk:['Work','roles'],sd:['Study','courses'],ds:['Designer','projects'],st:['Strategist','projects'],ar:['Artist','projects'],te:['Teacher','projects']};
 const TABS=[['gd','Design'],['ux','UI/UX'],['mo','Motion'],['tl','Tools'],['xp','Experimental']];
 const DOCKCH=['gd','ux','mo','tl','xp','ab','sk','aw','wk','sd'];
 const DICONS=[['About me','ab',0,'#d71920'],['Contact','cv',1,'#ff5d1a'],['CV','cv',0,'#ff5d1a'],['Life','fm',0,'#1fa957']];
@@ -519,10 +521,10 @@ function drawDesk(){
   x.save(); x.shadowColor='rgba(0,0,0,.35)'; x.shadowBlur=40; x.shadowOffsetY=14; x.fillStyle=dark?'#1c1d22':'#ffffff'; rr(x,WX,WY,WW,WH,22); x.fill(); x.restore();
   x.fillStyle=dark?'#26272d':'#f3f3f5'; x.save(); rr(x,WX,WY,WW,WH,22); x.clip(); x.fillRect(WX,WY,WW,50); x.restore();
   ['#ff5f57','#febc2e','#28c840'].forEach((cl,i)=>{x.fillStyle=cl;x.beginPath();x.arc(WX+28+i*26,WY+25,8,0,7);x.fill()});
-  x.textAlign='center'; x.font='600 20px Montserrat, "Noto Sans", sans-serif'; x.fillStyle=dark?'#c9cad0':'#555'; x.fillText(c.name.charAt(0)+c.name.slice(1).toLowerCase(),WX+WW/2,WY+25); x.textAlign='left';
+  x.textAlign='center'; x.font='600 20px Montserrat, "Noto Sans", sans-serif'; x.fillStyle=dark?'#c9cad0':'#555'; x.fillText(NICE[ch]?.[0]||c.name,WX+WW/2,WY+25); x.textAlign='left';
   const n=c.items.length;
   x.font='800 50px Montserrat, "Noto Sans", sans-serif'; x.fillStyle=dark?'#f4f4f6':'#111'; x.textBaseline='alphabetic';
-  x.fillText(`${(MODES[ch]?.n||n+' pieces').replace(/^./,m=>m.toUpperCase())}, all mine.`,WX+56,WY+128);
+  x.fillText(`${n} ${NICE[ch]?.[1]||'pieces'}`,WX+56,WY+128);
   x.font='400 22px Montserrat, "Noto Sans", sans-serif'; x.fillStyle=dark?'#9a9ca3':'#666';
   x.fillText(S.mode==='desk'?'Click one to open it, or play the keys on the synth.':'Click the screen to look closer.',WX+56,WY+166);
   // project tiles: 6 across
@@ -649,7 +651,7 @@ function frameFor(key){
   const w=stage.clientWidth,h=stage.clientHeight, T=Math.tan(THREE.MathUtils.degToRad(camera.fov)/2);
   let tanV=T, tanH=T*w/h;
   if(key!=='all'&&!desktop()) tanV=T*.62;
-  const m=key==='all'?1.3:desktop()?.9:1.02;
+  const m=key==='all'?1.3:key==='screen'?1.14:desktop()?.9:1.02;
   const d=Math.max((s.x/2*m)/tanH,((s.z*Math.cos(pol)+s.y)/2*m+.3)/tanV)+(key==='screen'?0:s.y);
   return {t:c,p:new THREE.Vector3(c.x,c.y+d*Math.cos(pol),c.z+d*Math.sin(pol)),d};
 }
