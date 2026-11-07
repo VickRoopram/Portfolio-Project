@@ -425,9 +425,9 @@ const POLAR={all:.68,kb:.62,cv:.5,life:.55,info:.6};
    in a subtle light underneath it, like an LED strip under the hardware. Colours come from the Figma glow layers;
    the My Projects light takes the colour of the keyboard's current mode and stays on while you're in a keyboard mode. */
 const GROUPS={
-  about:{obj:TU,box:BOX.life,col:()=>'#00ff15',go:()=>zoomTo(S.pad)},
-  contact:{obj:RM,box:BOX.cv,col:()=>'#ff2020',go:()=>zoomTo('cv')},
-  projects:{obj:synth,box:boxOf([synth]),col:()=>MODES[S.kb]?.glow||'#00bfff',go:()=>zoomTo(S.kb)},
+  about:{obj:TU,box:BOX.life,foot:boxOf([TU.children[0]]),col:()=>'#00ff15',go:()=>zoomTo(S.pad)},
+  contact:{obj:RM,box:BOX.cv,foot:boxOf([RM.children[0]]),col:()=>'#ff2020',go:()=>zoomTo('cv')},
+  projects:{obj:synth,box:boxOf([synth]),foot:boxOf([synth.children[0],synth.children[1]]),col:()=>MODES[S.kb]?.glow||'#00bfff',go:()=>zoomTo(S.kb)},
 };
 function underlightTexture(w,d,lam){ // white rim light: brightest right at the device edge, falling off almost immediately
   const m=lam*7, PPU=56, W=Math.round((w+2*m)*PPU), H=Math.max(32,Math.round((d+2*m)*PPU)), sx=(w+2*m)/W, sz=(d+2*m)/H, c=document.createElement('canvas'); c.width=W; c.height=H;
@@ -435,18 +435,18 @@ function underlightTexture(w,d,lam){ // white rim light: brightest right at the 
   for(let j=0;j<H;j++)for(let i=0;i<W;i++){
     const px=(i+.5)*sx-m-w/2, pz=(j+.5)*sz-m-d/2, qx=Math.abs(px)-(w/2-r), qz=Math.abs(pz)-(d/2-r);
     const dist=Math.hypot(Math.max(qx,0),Math.max(qz,0))+Math.min(Math.max(qx,qz),0)-r;   // signed distance to the footprint edge
-    const a=dist<=0?1:Math.exp(-dist/lam)*.85+Math.exp(-dist/(lam*3))*.15;                // sharp peak at the edge + a short soft tail
+    const a=dist<=0?1:Math.exp(-dist/lam)*.8+Math.exp(-dist/(lam*3))*.12;                // sharp peak at the edge + a short soft tail
     const o=(j*W+i)*4; img.data[o]=img.data[o+1]=img.data[o+2]=255; img.data[o+3]=Math.min(1,a)*255}
   x.putImageData(img,0,0); const tx=new THREE.CanvasTexture(c); tx.anisotropy=8; return {tx,m}}
 for(const [key,g] of Object.entries(GROUPS)){
-  const s=g.box.getSize(new THREE.Vector3()), c=g.box.getCenter(new THREE.Vector3()), lam=.1;
+  const s=g.foot.getSize(new THREE.Vector3()), c=g.foot.getCenter(new THREE.Vector3()), lam=.09; // glow + title follow the casing, not knobs/docks/cables
   const {tx,m}=underlightTexture(s.x,s.z,lam);
   const mat=new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false,opacity:0,toneMapped:false,color:new THREE.Color(g.col())});
   const mesh=new THREE.Mesh(new THREE.PlaneGeometry(s.x+2*m,s.z+2*m),mat); mesh.rotation.x=-Math.PI/2; mesh.position.set(c.x,.004,c.z); mesh.renderOrder=1; mesh.visible=false; scene.add(mesh);
   FXMATS.push(mat); // additive on the dark stage, normal on the light deck (theme code switches it)
   const el=document.querySelector(`.grp[data-g="${key}"]`);
-  const b=g.box, a=el.dataset.a, inset=.35;
-  g.anchor=new THREE.Vector3(a==='l'?b.min.x+inset:a==='r'?b.max.x-inset:c.x,b.max.y,b.min.z);
+  const b=g.foot, a=el.dataset.a, inset=.35;
+  g.anchor=new THREE.Vector3(a==='l'?b.min.x+inset:a==='r'?b.max.x-inset:c.x,b.max.y,b.min.z); // top-back edge of the casing
   Object.assign(g,{key,mesh,mat,el,k:0,tint:new THREE.Color(g.col())});
   el.style.setProperty('--gc',g.col());
   el.addEventListener('pointerenter',()=>{S.grpLbl=key});
@@ -469,7 +469,7 @@ function updateGroups(dt){
     const on=g.key===act, target=on?1:(g.key==='projects'&&kbOn?.75:0); g.k+=(target-g.k)*ease;
     g.tint.lerp(tmpCol.set(g.col()),cEase); g.mat.color.copy(g.tint);
     const breathe=reduceMotion?1:1+.035*Math.sin(t*1.6);
-    g.mat.opacity=g.k*(dark?.55:.32)*breathe; g.mesh.visible=g.k>.004;
+    g.mat.opacity=g.k*(dark?.48:.3)*breathe; g.mesh.visible=g.k>.004;
     g.el.classList.toggle('on',on);
     if(overview||!$('groups').classList.contains('off')){gv.copy(g.anchor).project(camera);
       const vis=gv.z<1&&gv.x>-1.2&&gv.x<1.2&&gv.y>-1.2&&gv.y<1.2; g.el.style.visibility=vis?'visible':'hidden';
