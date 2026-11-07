@@ -429,18 +429,18 @@ const GROUPS={
   contact:{obj:RM,box:BOX.cv,col:()=>'#ff2020',go:()=>zoomTo('cv')},
   projects:{obj:synth,box:boxOf([synth]),col:()=>MODES[S.kb]?.glow||'#00bfff',go:()=>zoomTo(S.kb)},
 };
-function underlightTexture(w,d,sig){ // white, soft-edged footprint; tinted per device through the material colour
-  const m=sig*3.2, W=256, H=Math.max(32,Math.round(W*(d+2*m)/(w+2*m))), sx=(w+2*m)/W, sz=(d+2*m)/H, c=document.createElement('canvas'); c.width=W; c.height=H;
-  const x=c.getContext('2d'), img=x.createImageData(W,H), r=Math.min(.35,d/3);
+function underlightTexture(w,d,lam){ // white rim light: brightest right at the device edge, falling off almost immediately
+  const m=lam*7, PPU=56, W=Math.round((w+2*m)*PPU), H=Math.max(32,Math.round((d+2*m)*PPU)), sx=(w+2*m)/W, sz=(d+2*m)/H, c=document.createElement('canvas'); c.width=W; c.height=H;
+  const x=c.getContext('2d'), img=x.createImageData(W,H), r=Math.min(.32,d/3);
   for(let j=0;j<H;j++)for(let i=0;i<W;i++){
     const px=(i+.5)*sx-m-w/2, pz=(j+.5)*sz-m-d/2, qx=Math.abs(px)-(w/2-r), qz=Math.abs(pz)-(d/2-r);
-    const dist=Math.hypot(Math.max(qx,0),Math.max(qz,0))+Math.min(Math.max(qx,qz),0)-r;   // signed distance to the footprint
-    const a=dist<=0?1:Math.exp(-(dist*dist)/(2*sig*sig))*.9+Math.exp(-dist/(sig*2.2))*.1;  // tight falloff + a faint long tail
+    const dist=Math.hypot(Math.max(qx,0),Math.max(qz,0))+Math.min(Math.max(qx,qz),0)-r;   // signed distance to the footprint edge
+    const a=dist<=0?1:Math.exp(-dist/lam)*.85+Math.exp(-dist/(lam*3))*.15;                // sharp peak at the edge + a short soft tail
     const o=(j*W+i)*4; img.data[o]=img.data[o+1]=img.data[o+2]=255; img.data[o+3]=Math.min(1,a)*255}
-  x.putImageData(img,0,0); return {tx:new THREE.CanvasTexture(c),m}}
+  x.putImageData(img,0,0); const tx=new THREE.CanvasTexture(c); tx.anisotropy=8; return {tx,m}}
 for(const [key,g] of Object.entries(GROUPS)){
-  const s=g.box.getSize(new THREE.Vector3()), c=g.box.getCenter(new THREE.Vector3()), sig=Math.min(.42,Math.max(.26,Math.min(s.x,s.z)*.09));
-  const {tx,m}=underlightTexture(s.x,s.z,sig);
+  const s=g.box.getSize(new THREE.Vector3()), c=g.box.getCenter(new THREE.Vector3()), lam=.1;
+  const {tx,m}=underlightTexture(s.x,s.z,lam);
   const mat=new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false,opacity:0,toneMapped:false,color:new THREE.Color(g.col())});
   const mesh=new THREE.Mesh(new THREE.PlaneGeometry(s.x+2*m,s.z+2*m),mat); mesh.rotation.x=-Math.PI/2; mesh.position.set(c.x,.004,c.z); mesh.renderOrder=1; mesh.visible=false; scene.add(mesh);
   FXMATS.push(mat); // additive on the dark stage, normal on the light deck (theme code switches it)
@@ -469,7 +469,7 @@ function updateGroups(dt){
     const on=g.key===act, target=on?1:(g.key==='projects'&&kbOn?.75:0); g.k+=(target-g.k)*ease;
     g.tint.lerp(tmpCol.set(g.col()),cEase); g.mat.color.copy(g.tint);
     const breathe=reduceMotion?1:1+.035*Math.sin(t*1.6);
-    g.mat.opacity=g.k*(dark?.38:.22)*breathe; g.mesh.visible=g.k>.004;
+    g.mat.opacity=g.k*(dark?.55:.32)*breathe; g.mesh.visible=g.k>.004;
     g.el.classList.toggle('on',on);
     if(overview||!$('groups').classList.contains('off')){gv.copy(g.anchor).project(camera);
       const vis=gv.z<1&&gv.x>-1.2&&gv.x<1.2&&gv.y>-1.2&&gv.y<1.2; g.el.style.visibility=vis?'visible':'hidden';
