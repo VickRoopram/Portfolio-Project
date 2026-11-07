@@ -446,7 +446,7 @@ for(const [key,g] of Object.entries(GROUPS)){
   FXMATS.push(mat); // additive on the dark stage, normal on the light deck (theme code switches it)
   const el=document.querySelector(`.grp[data-g="${key}"]`);
   const b=g.foot, a=el.dataset.a, inset=.35;
-  g.anchor=new THREE.Vector3(a==='l'?b.min.x+inset:a==='r'?b.max.x-inset:c.x,b.max.y,b.min.z); // top-back edge of the casing
+  g.anchor=new THREE.Vector3(a==='l'?b.min.x+inset:a==='r'?b.max.x-inset:c.x,key==='contact'?1.02:b.max.y,b.min.z); // top-back edge of the casing (the remote's raised CV screen sits right at its back edge)
   Object.assign(g,{key,mesh,mat,el,k:0,tint:new THREE.Color(g.col())});
   el.style.setProperty('--gc',g.col());
   el.addEventListener('pointerenter',()=>{S.grpLbl=key});
