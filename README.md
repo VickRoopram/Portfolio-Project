@@ -13,7 +13,6 @@ The synth is the interface. Each part of the instrument holds a different side o
 | **Filter buttons**: Design · UI/UX · Motion · Tools · Experimental | Choose what the keyboard shows. The active button glows and the keys light up in its colour. |
 | **Keyboard** (14 keys) | One project, tool or experiment per key. Click a key to open its card. |
 | **Four big knobs**: Designer · Strategist · Artist · Teacher | Role filters for the keyboard. |
-| **Black life strip** (pixel screen + 8 pads) | Family Man · The Fighter · The Explorer. Its cable plugs into the main synth when you select it. |
 | **CV remote** (left) | Full CV (PDF), contact details and social links. Also plugs in when selected. |
 | **Music side** (right): drum pads, Tone, Wave, BEATS, STOP, MUTE | Pure play. BEATS cycles five original tracks; STOP and BEATS glow while music runs. |
 
@@ -67,7 +66,7 @@ Then open <http://localhost:8080>. Three.js loads from jsDelivr, pinned to `thre
 
 Projects, images and copy can be managed without touching code at **`/admin`** (password protected).
 
-- Groups follow the synth: **filter buttons** and **role knobs** fill the 14 keys, the **life strip** personas fill the 8 pads, the **CV remote** has 6 buttons, and the **screen** holds the About pages. A map shows which key, pad or button each item lands on. Drag to reorder.
+- Groups follow the synth: **filter buttons** and **role knobs** fill the 14 keys, the **CV remote** has 6 buttons, and the **screen** holds the About pages. A map shows which key, pad or button each item lands on. Drag to reorder.
 - Edit titles, kicker lines, descriptions (bold, italic, headings, bullets, links, or raw HTML), images (shrunk to WebP on upload, with alt text), tags, links and skill bars, and see the card exactly as the site renders it.
 - **Update preview** saves a draft that the `version-01` preview shows (https://version-01--vick-does-creative.netlify.app). **Publish to live** copies the draft to the live site. Every replaced live version is kept and can be restored from **Live versions**.
 - Content is stored in Netlify Blobs (store `cms`: `draft`, `live`, `history/*`; store `media`: uploaded images, served at `/media/img/…`). If nothing has been published, the live site uses the defaults in `src/content.js`.

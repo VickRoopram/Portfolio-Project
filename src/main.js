@@ -426,7 +426,7 @@ const OFF={};
   const apron=rbox(30.5,.7,.2,.05,lm); apron.position.set(.6,-1.25,-9.1); scene.add(apron);
 }
 /* plant: snake plant in a white ceramic pot */
-const PLANT=new THREE.Group(); PLANT.position.set(13.4,0,-6.6); scene.add(PLANT);
+const PLANT=new THREE.Group(); PLANT.position.set(14.7,0,-7.6); scene.add(PLANT);
 { const pot=cyl(1.25,1.0,2.1,new THREE.MeshPhysicalMaterial({color:'#f1efea',roughness:.32,clearcoat:.6,clearcoatRoughness:.25}),48); pot.position.y=1.05; PLANT.add(pot);
   const rimR=new THREE.Mesh(new THREE.TorusGeometry(1.2,.07,10,48),pot.material); rimR.rotation.x=-Math.PI/2; rimR.position.y=2.1; PLANT.add(rimR);
   const soil=new THREE.Mesh(new THREE.CircleGeometry(1.16,40),new THREE.MeshStandardMaterial({color:'#3b2c22',roughness:1})); soil.rotation.x=-Math.PI/2; soil.position.y=1.98; PLANT.add(soil);
@@ -439,7 +439,7 @@ const PLANT=new THREE.Group(); PLANT.position.set(13.4,0,-6.6); scene.add(PLANT)
     const l=new THREE.Mesh(leafGeo(h),i%3?leafM:leafM2); l.rotation.x=-lean; l.castShadow=true; g.add(l); OFF.leaves.push({g:l,base:-lean,ph:i*1.7})});
 }
 /* lamp: coral mushroom lamp with a cream shade and a warm light; click it to switch it on or off */
-const LAMP=new THREE.Group(); LAMP.position.set(12.9,0,-3.4); scene.add(LAMP);
+const LAMP=new THREE.Group(); LAMP.position.set(12.4,0,-1.6); scene.add(LAMP);
 const lampLight=new THREE.PointLight('#ffb36b',0,22,1.6); lampLight.position.set(0,3.1,0); LAMP.add(lampLight);
 const lampDome=(()=>{const coral=new THREE.MeshPhysicalMaterial({color:'#ea8a7d',roughness:.35,clearcoat:.5,clearcoatRoughness:.3});
   const b=cyl(.85,.92,.18,coral,48); b.position.y=.09; LAMP.add(b);
@@ -450,7 +450,7 @@ const lampDome=(()=>{const coral=new THREE.MeshPhysicalMaterial({color:'#ea8a7d'
   [b,st].forEach(m=>{m.userData.proxy=d;hits.push(m)}); return d})();
 const lampPool=(()=>{const {t}=canvasTex(256,256,(x)=>{const g=x.createRadialGradient(128,128,0,128,128,128);g.addColorStop(0,'rgba(255,190,120,1)');g.addColorStop(.35,'rgba(255,170,100,.45)');g.addColorStop(1,'rgba(255,160,90,0)');x.fillStyle=g;x.fillRect(0,0,256,256)});
   const m=new THREE.Mesh(new THREE.PlaneGeometry(13,13),new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,opacity:0,toneMapped:false}));
-  m.rotation.x=-Math.PI/2; m.position.set(12.9,.003,-3.4); m.renderOrder=1; scene.add(m); FXMATS.push(m.material); return m})();
+  m.rotation.x=-Math.PI/2; m.position.set(12.4,.003,-1.6); m.renderOrder=1; scene.add(m); FXMATS.push(m.material); return m})();
 const LAMPST={on:true,k:1};
 lampDome.userData={tip:'Lamp · click to switch it on or off',down(){LAMPST.on=!LAMPST.on;LAMPST.dip=1;drum(LAMPST.on?'blip':'rim');found('lamp',LAMPST.on?'Lamp on':'Lamp off')}}; hits.push(lampDome);
 function updateOffice(dt,t){
