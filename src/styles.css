@@ -6,27 +6,25 @@ img{max-width:100%}
 [hidden]{display:none!important}
 
 /* Layout: the synth IS the interface. Full-bleed 3D stage; a floating brand, a mode dock and floating cards sit over it. Single light studio look from the Figma synth. */
-:root{
-  --floor:#efefed; --card:#fbfbfa; --ink:#17181b; --mute:#62656d; --line:#dcdcd8;
-  --red:#d71920; --blue:#009fda;
-  --c-ux:#3d9ad8; --c-gd:#1fa957; --c-th:#8a8d95; --c-mo:#ff5d1a;
-  --card2:#ffffff; --chip:#efefec; --chip-ink:#3a3c42; --track:#e6e6e2; --btnbg:rgba(255,255,255,.9); --shadow:rgba(20,20,30,.18);
-  --glow:#ff5d1a;
-  --display:"Bungee", "Arial Black", Impact, sans-serif;
-  --body:"Noto Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
-  /* Figma uses Gotham (licensed); Montserrat is the closest free geometric sans */
+:root{ /* playful, stylised, warm (ref: portfolio-zxc.com): cream paper by day, warm charcoal at night */
+  --floor:#ece5d8; --card:#f6f0e4; --ink:#2a2620; --mute:#7c705e; --line:rgba(42,38,32,.22); --grid:rgba(60,48,30,.07);
+  --red:#e2614b; --blue:#4f8fc0;
+  --c-ux:#4f8fc0; --c-gd:#4fa66a; --c-th:#8c8172; --c-mo:#e2614b;
+  --card2:#fbf7ef; --chip:#e9e0cf; --chip-ink:#4a4236; --track:#e2d8c6; --btnbg:rgba(246,240,228,.9); --shadow:rgba(40,30,15,.2);
+  --glow:#e2614b;
+  --display:"Montserrat", "Arial Black", sans-serif;
+  --body:"Montserrat", "Noto Sans", system-ui, sans-serif;
+  --mono:"Courier Prime", "Courier New", ui-monospace, monospace;
+  --script:"Pinyon Script", "Edwardian Script ITC", cursive;
   --ui:"Gotham", "Montserrat", "Noto Sans", system-ui, sans-serif;
-  /* Figma frames are 4K (3840px wide): 1 design px = --px, so 1920px screens get exactly half size */
   --px:clamp(.36px, calc(100vw / 3840), .62px);
-  --hdr:#f6f6f4; --hdr-h:max(58px, calc(var(--px) * 170)); --title:rgba(13,14,17,.45);
+  --hdr:transparent; --hdr-h:max(58px, calc(var(--px) * 170)); --title:rgba(42,38,32,.55);
   color-scheme:light;
 }
-/* Dark mode: gunmetal studio. Same structure, inverted values. */
 :root[data-theme="dark"]{
-  --hdr:#0d0e11; --title:rgba(255,255,255,.45);
-  --floor:#0c0d0f; --card:#151619; --card2:#1c1d21; --ink:#ececea; --mute:#9a9ca4; --line:#2a2b31;
-  --chip:#23252a; --chip-ink:#c9cbd1; --track:#25262b; --btnbg:rgba(26,27,31,.86); --shadow:rgba(0,0,0,.55);
+  --title:rgba(239,230,212,.55);
+  --floor:#16140f; --card:#1d1a15; --card2:#24201a; --ink:#efe6d4; --mute:#a39782; --line:rgba(239,230,212,.2); --grid:rgba(239,230,212,.05);
+  --chip:#2c2720; --chip-ink:#d9ccb3; --track:#2c2720; --btnbg:rgba(29,26,21,.86); --shadow:rgba(0,0,0,.6);
   color-scheme:dark;
 }
 /* theme cross-fade for the 2D chrome (the 3D scene eases itself in JS) */
@@ -100,59 +98,6 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offse
   #hint{display:none}
   .content h2{font-size:24px}
 }
-/* ── Camera controls: joystick (tilt) + zoom slider, styled like synth hardware ── */
-:root{--hw-hi:#ffffff;--hw:#e4e5e8;--hw-lo:#c3c5ca;--hw-well:#d2d4d8;--hw-cap:#f4f4f2;--hw-ink:#8a8d95}
-:root[data-theme="dark"]{--hw-hi:#4a4d54;--hw:#2c2e33;--hw-lo:#16171a;--hw-well:#1b1c1f;--hw-cap:#33353a;--hw-ink:#7d8089}
-.nav{position:fixed;right:max(18px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 18px);display:flex;align-items:center;gap:12px;z-index:4;transition:opacity .3s,transform .3s}
-.joy{--k:0;position:relative;width:108px;height:108px;border-radius:50%;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;
-  background:radial-gradient(circle at 50% 30%,var(--hw-hi),var(--hw) 55%,var(--hw-lo));
-  box-shadow:inset 0 1.5px 1px rgba(255,255,255,.55),inset 0 -6px 12px rgba(0,0,0,.18),0 12px 26px var(--shadow),0 0 0 1px var(--line),
-    0 0 calc(var(--k)*26px) color-mix(in srgb,var(--glow) calc(var(--k)*60%),transparent);
-  transition:box-shadow .25s,transform .12s}
-.joy.on{cursor:grabbing}
-.joy:active{transform:scale(.985)}
-.joy.reset{animation:joyReset .42s cubic-bezier(.3,1.6,.5,1)}
-@keyframes joyReset{40%{transform:scale(.93)}}
-.joy-face{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.joy-face .rim{fill:none;stroke:var(--hw-ink);stroke-opacity:.35;stroke-width:.8;stroke-dasharray:1.4 3.2}
-.joy-face .well{fill:var(--hw-well);filter:drop-shadow(0 0 0 transparent)}
-.joy-face .chev{fill:var(--hw-ink);opacity:calc(.55 + var(--k)*.45)}
-/* light leaking from the gap around the knob, in the active mode colour (same language as the synth keys) */
-.joy::before{content:"";position:absolute;inset:17px;border-radius:50%;pointer-events:none;
-  box-shadow:inset 0 3px 7px rgba(0,0,0,.35),inset 0 0 calc(4px + var(--k)*16px) color-mix(in srgb,var(--glow) calc(15% + var(--k)*70%),transparent)}
-.joy-knob{position:absolute;left:50%;top:50%;width:46px;height:46px;border-radius:50%;transform:translate(-50%,-50%);will-change:transform;pointer-events:none;
-  background:radial-gradient(circle at 42% 34%,var(--hw-hi),var(--hw-cap) 45%,var(--hw-lo) 100%);
-  box-shadow:0 7px 12px rgba(0,0,0,.32),0 2px 3px rgba(0,0,0,.25),inset 0 1px 1px rgba(255,255,255,.6),0 0 0 2px var(--hw-lo),
-    0 0 0 3.5px color-mix(in srgb,var(--glow) calc(var(--k)*90%),transparent),0 0 calc(var(--k)*18px) color-mix(in srgb,var(--glow) calc(var(--k)*80%),transparent)}
-.joy-knob::before{content:"";position:absolute;inset:3px;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(0,0,0,.14) 0 4deg,transparent 4deg 9deg);-webkit-mask:radial-gradient(circle,transparent 62%,#000 64%);mask:radial-gradient(circle,transparent 62%,#000 64%)}
-.joy-knob i{position:absolute;left:50%;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;background:color-mix(in srgb,var(--glow) calc(35% + var(--k)*65%),var(--hw-lo));box-shadow:0 0 calc(3px + var(--k)*10px) var(--glow),inset 0 1px 1px rgba(0,0,0,.35)}
-.zoom{--u:.5;position:relative;width:38px;height:108px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;border-radius:19px;touch-action:none;cursor:ns-resize;user-select:none;-webkit-user-select:none;
-  background:linear-gradient(90deg,var(--hw-lo),var(--hw) 30%,var(--hw-hi) 55%,var(--hw) 80%,var(--hw-lo));
-  box-shadow:inset 0 1px 1px rgba(255,255,255,.5),0 12px 26px var(--shadow),0 0 0 1px var(--line);transition:box-shadow .25s}
-.zoom.on{box-shadow:inset 0 1px 1px rgba(255,255,255,.5),0 12px 26px var(--shadow),0 0 0 1px var(--line),0 0 18px color-mix(in srgb,var(--glow) 45%,transparent)}
-.z-sign{font:600 13px/1 var(--mono);color:var(--hw-ink)}
-.z-track{position:relative;flex:1;width:8px;border-radius:4px;background:var(--hw-well);box-shadow:inset 0 1px 3px rgba(0,0,0,.4)}
-.z-fill{position:absolute;left:0;right:0;bottom:0;height:calc(var(--u)*100%);border-radius:4px;background:linear-gradient(to top,color-mix(in srgb,var(--glow) 25%,transparent),var(--glow));box-shadow:0 0 10px color-mix(in srgb,var(--glow) 55%,transparent)}
-.z-ticks{position:absolute;left:-7px;right:-7px;top:6%;bottom:6%;background:repeating-linear-gradient(to bottom,var(--hw-ink) 0 1px,transparent 1px 20%);-webkit-mask:linear-gradient(90deg,#000 0 4px,transparent 4px calc(100% - 4px),#000 calc(100% - 4px));mask:linear-gradient(90deg,#000 0 4px,transparent 4px calc(100% - 4px),#000 calc(100% - 4px));opacity:.5}
-.z-thumb{position:absolute;left:50%;bottom:calc(var(--u)*100%);width:28px;height:15px;transform:translate(-50%,50%);border-radius:5px;
-  background:linear-gradient(var(--hw-hi),var(--hw-cap) 50%,var(--hw-lo));box-shadow:0 4px 8px rgba(0,0,0,.35),inset 0 1px 1px rgba(255,255,255,.6),0 0 0 1px var(--hw-lo);transition:transform .15s}
-.z-thumb::after{content:"";position:absolute;left:6px;right:6px;top:50%;height:2px;margin-top:-1px;border-radius:1px;background:var(--glow);box-shadow:0 0 6px var(--glow)}
-.zoom.on .z-thumb{transform:translate(-50%,50%) scale(1.08)}
-/* press stroke, same as the HUD buttons */
-.joy::after,.zoom::after{content:"";position:absolute;inset:-3px;border-radius:inherit;padding:2px;pointer-events:none;opacity:0;
-  background:conic-gradient(from 180deg,transparent 0deg,var(--glow) var(--sw),transparent var(--sw));
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
-.joy.zap::after,.zoom.zap::after{animation:stroke .62s cubic-bezier(.3,.7,.3,1) forwards}
-.joy:focus-visible,.zoom:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
-@media (max-width:760px){
-  .nav{right:max(12px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 12px);gap:8px}
-  .joy{width:86px;height:86px}.joy::before{inset:13px}.joy-knob{width:38px;height:38px}
-  .zoom{height:86px;width:32px}
-  body[data-card="true"] .nav{opacity:0;pointer-events:none;transform:translateY(12px)}
-}
-@media (prefers-reduced-motion:reduce){.joy.reset{animation:none}}
-
-
 /* ── Press FX for the 2D chrome: a glow pulse plus a light stroke that traces the button edge (matches the synth controls) ── */
 @property --sw{syntax:'<angle>';inherits:false;initial-value:0deg}
 .btn:hover,.ch button:hover{border-color:color-mix(in srgb,var(--glow) 55%,var(--line));box-shadow:0 0 0 3px color-mix(in srgb,var(--glow) 16%,transparent)}
@@ -208,23 +153,6 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offse
   background:conic-gradient(from 180deg,transparent 0deg,var(--glow) var(--sw),transparent var(--sw));
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 .ico.zap{animation:none}
-/* menu drop-down */
-#menu{position:fixed;top:calc(env(safe-area-inset-top,0px) + var(--hdr-h) + 10px);right:max(calc(var(--px) * 50),12px,env(safe-area-inset-right,0px));z-index:8;width:min(300px,calc(100vw - 24px));padding:8px;display:flex;flex-direction:column;gap:2px;
-  background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 60px var(--shadow);transform-origin:top right;animation:menuIn .32s cubic-bezier(.2,.9,.3,1.15)}
-#menu.out{animation:menuOut .18s ease-in forwards}
-@keyframes menuIn{from{opacity:0;transform:translateY(-8px) scale(.96)}}
-@keyframes menuOut{to{opacity:0;transform:translateY(-6px) scale(.97)}}
-#menu>*{--gc:var(--glow);display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;padding:12px 14px 12px 18px;border:0;border-radius:9px;background:none;color:var(--ink);text-decoration:none;cursor:pointer;text-align:left;position:relative;font-family:var(--ui);
-  animation:itemIn .4s cubic-bezier(.2,.9,.3,1.1) backwards;transition:background-color .2s,transform .2s}
-#menu>*:nth-child(2){animation-delay:.04s}#menu>*:nth-child(3){animation-delay:.08s}#menu>*:nth-child(4){animation-delay:.12s}#menu>*:nth-child(5){animation-delay:.16s}#menu>*:nth-child(6){animation-delay:.2s}
-@keyframes itemIn{from{opacity:0;transform:translateX(10px)}}
-#menu b{font-weight:800;font-size:17px;letter-spacing:.02em}
-#menu small{font:500 10.5px/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
-#menu>*::before{content:"";position:absolute;left:6px;top:50%;width:4px;height:0;border-radius:4px;background:var(--gc);box-shadow:0 0 10px var(--gc);transform:translateY(-50%);transition:height .25s cubic-bezier(.2,.9,.3,1.3)}
-#menu>*:hover,#menu>*:focus-visible{background:color-mix(in srgb,var(--gc) 10%,transparent);transform:translateX(3px)}
-#menu>*:hover::before,#menu>*:focus-visible::before{height:60%}
-#menu #home[data-at-home="true"] small::after{content:" · you are here"}
-
 /* ───────────── Figma: section titles over the synth (small → big on hover) ───────────── */
 #groups{position:fixed;inset:0;pointer-events:none;z-index:3;transition:opacity .35s ease}
 #groups.off{opacity:0}
@@ -237,8 +165,89 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offse
 .grp[data-a="r"]{--tx:-100%}
 .grp.on{font-size:max(30px, calc(var(--px) * 90));font-weight:900;transform:translate(var(--tx),calc(-100% + .2em));text-shadow:0 0 .6em color-mix(in srgb,var(--gc) 18%,transparent)}
 .grp:focus-visible{outline:2px solid var(--gc);outline-offset:4px;border-radius:4px}
-/* camera-control captions */
-.nav .cap{position:absolute;bottom:calc(100% + 8px);left:0;font:400 max(10px, calc(var(--px) * 14))/1 var(--ui);letter-spacing:.02em;color:var(--title);white-space:nowrap;pointer-events:none}
-.zoom .cap{left:50%;transform:translateX(-50%)}
-@media (max-width:760px){.nav .cap{display:none}}
 @media (prefers-reduced-motion:reduce){.grp,#menu,#menu>*,.burger i,.ico img,#thm.flip img{transition:none;animation:none}}
+
+/* ───────────── Stylised layer (ref: portfolio-zxc.com) ───────────── */
+body{font-family:var(--body)}
+/* soft vignette over the scene, like a lit desk in a dark room */
+#stage::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 95% at 50% 45%,transparent 55%,color-mix(in srgb,var(--floor) 70%,#000 30%) 100%);opacity:.55}
+:root:not([data-theme="dark"]) #stage::after{opacity:.25}
+/* header: transparent, with a hairline under it (top of the letterbox frame) */
+.top{background:none;border-bottom:1px solid var(--line)}
+.burger{--bw:30px;--bh:1.5px;width:44px;height:34px;padding:10px 7px;justify-content:space-between}
+.burger i{border-radius:0;background:var(--ink)!important}
+.burger[aria-expanded="true"] i:nth-child(1){transform:translateY(5.75px) rotate(45deg)}
+.burger[aria-expanded="true"] i:nth-child(3){transform:translateY(-5.75px) rotate(-45deg)}
+.burger:hover i:nth-child(2){transform:scaleX(.6)}
+#frame{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 40px);border-top:1px solid var(--line);pointer-events:none;z-index:2}
+#legend{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);margin:0;text-align:center;font:400 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);z-index:3;pointer-events:none;display:flex;justify-content:center;gap:18px}
+#legend em{font-style:normal;color:var(--ink);opacity:.8}
+.m-only{display:none}
+@media (hover:none),(max-width:760px){.d-only{display:none}.m-only{display:inline}#legend em{display:none}}
+/* interactions counter */
+#ix{position:fixed;left:max(calc(var(--px) * 50),16px,env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + var(--hdr-h) + 18px);z-index:3;display:grid;gap:2px;pointer-events:none;color:var(--ink)}
+#ix span,#ix small{font:700 10px/1 var(--body);letter-spacing:.12em;text-transform:uppercase}
+#ix small{margin-top:10px;color:var(--mute);font-weight:600}
+#ix b{font:400 30px/1.05 var(--mono);letter-spacing:.06em}
+#ix i{font:400 12px/1.3 var(--mono);font-style:normal;color:var(--mute);max-width:220px}
+#ix.new b{animation:ixPop .7s cubic-bezier(.2,.9,.3,1.5)}
+@keyframes ixPop{30%{transform:scale(1.25);color:var(--red)}}
+body[data-card="true"] #ix{opacity:.35;transition:opacity .3s}
+@media (max-width:760px){#ix small,#ix i{display:none}#ix b{font-size:22px}}
+/* hover label: cream tag, typewriter */
+#lbl{background:var(--ink);color:var(--floor);font:700 12px/1.25 var(--mono);border-radius:3px;letter-spacing:.04em}
+#lbl small{font-family:var(--mono)}
+/* section titles */
+.grp{font-family:var(--body)}
+/* full-screen menu: grid paper, right-aligned typewriter list */
+#menu{position:fixed;inset:0;z-index:6;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;padding:calc(var(--hdr-h) + 20px) max(calc(var(--px) * 120),28px) 60px;
+  background-color:color-mix(in srgb,var(--floor) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:44px 44px;animation:mFade .35s ease}
+#menu.out{animation:mFade .25s ease reverse forwards}
+@keyframes mFade{from{opacity:0}}
+.m-list{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.m-list>*{--gc:var(--red);display:flex;align-items:baseline;gap:16px;border:0;background:none;color:var(--ink);text-decoration:none;cursor:pointer;padding:6px 0;font:400 clamp(30px,5.4vw,72px)/1 var(--mono);letter-spacing:.02em;
+  animation:mItem .55s cubic-bezier(.2,.9,.3,1.1) backwards;position:relative}
+.m-list>*:nth-child(1){animation-delay:.05s}.m-list>*:nth-child(2){animation-delay:.1s}.m-list>*:nth-child(3){animation-delay:.15s}.m-list>*:nth-child(4){animation-delay:.2s}.m-list>*:nth-child(5){animation-delay:.25s}
+@keyframes mItem{from{opacity:0;transform:translateY(14px)}}
+.m-list b{font-weight:400;position:relative}
+.m-list b::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:2px;background:var(--gc);transform:scaleX(0);transform-origin:right;transition:transform .35s cubic-bezier(.2,.9,.3,1)}
+.m-list>*:hover b::after,.m-list>*:focus-visible b::after{transform:scaleX(1);transform-origin:left}
+.m-list small{font:700 11px/1 var(--body);letter-spacing:.14em;color:var(--mute)}
+.m-list #home[data-at-home="true"] b{opacity:.45}
+.m-foot{position:absolute;left:max(calc(var(--px) * 50),16px);bottom:22px;margin:0;font:400 12px var(--mono);letter-spacing:.08em;color:var(--mute)}
+/* cards: dark (or cream) grid paper with a thin inner frame and a script accent */
+#card{border-radius:4px;border:1px solid var(--line);background-color:var(--card);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px}
+#card::before{content:"";position:absolute;inset:7px;border:1px solid var(--line);pointer-events:none;border-radius:2px}
+.ch{border-bottom:1px solid var(--line);margin:8px 8px 0;padding:10px 10px 10px 14px}
+.eyebrow{font-family:var(--mono);font-weight:700}
+.ch button{font-family:var(--mono);border-radius:2px;background:transparent}
+.content{padding:18px 26px 30px}
+.content h2{font:800 28px/1.05 var(--display);text-transform:uppercase;letter-spacing:.01em}
+.content h2::before{content:"vick's";display:block;font:400 26px/1 var(--script);text-transform:none;color:var(--accent,var(--red));margin:0 0 4px -2px}
+.k,.d h3,.tags span,.tl time,.bar small,.links a,.soc span,.copy,.steps b{font-family:var(--mono)}
+.d{font-size:14.5px}
+.tags span,.steps div,.soc,.gal button{border-radius:2px}
+.quote{font-family:var(--script);font-size:40px;font-weight:400}
+/* intro: ENTER ——— PORTFOLIO on grid paper */
+#intro{position:fixed;inset:0;z-index:30;background-color:var(--floor);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:44px 44px;display:grid;padding:20px;transition:opacity .8s ease,visibility .8s}
+.entered #intro{display:none}
+#intro.out{opacity:0;visibility:hidden}
+.in-frame{position:relative;border:1px solid color-mix(in srgb,var(--ink) 40%,transparent);display:grid;grid-template-columns:1fr minmax(60px,34vw) 1fr;align-items:center;justify-items:center;padding:0 3vw}
+.in-yr,.in-name{position:absolute;top:34px;font:400 12px var(--mono);letter-spacing:.12em;color:var(--ink)}
+.in-yr{left:32px}.in-name{left:50%;transform:translateX(-50%)}
+.in-go{border:0;background:none;color:var(--ink);font:700 clamp(13px,1.3vw,18px)/1 var(--body);letter-spacing:.22em;text-transform:uppercase;cursor:wait;padding:14px 10px;position:relative}
+#intro.ready .in-go{cursor:pointer}
+.in-go span{transition:letter-spacing .4s cubic-bezier(.2,.9,.3,1),color .3s}
+#intro.ready .in-go:hover span{letter-spacing:.34em;color:var(--red)}
+.in-bar{display:block;height:1px;width:100%;background:color-mix(in srgb,var(--ink) 25%,transparent);position:relative;overflow:hidden}
+.in-bar::after{content:"";position:absolute;inset:0;background:var(--ink);transform-origin:left;transform:scaleX(.08);animation:inLoad 3s cubic-bezier(.2,.7,.2,1) forwards}
+#intro.ready .in-bar::after{animation:none;transform:scaleX(1);transition:transform .5s ease}
+@keyframes inLoad{to{transform:scaleX(.82)}}
+.in-quiet{position:absolute;bottom:54px;left:50%;transform:translateX(-50%);border:0;background:none;font:400 13px var(--body);color:var(--mute);cursor:pointer;text-decoration:underline;text-underline-offset:4px;text-decoration-color:transparent;transition:text-decoration-color .2s,color .2s}
+.in-quiet:hover{color:var(--ink);text-decoration-color:currentColor}
+.in-help{position:absolute;bottom:26px;left:0;right:0;margin:0;text-align:center;font:400 10px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+@media (max-width:760px){.in-frame{grid-template-columns:1fr;grid-template-rows:1fr auto auto auto 1fr}.in-frame>.in-go:first-of-type{grid-row:2}.in-bar{grid-row:3;width:40vw}.in-frame>#enter2{grid-row:4}.in-help{display:none}}
+@media (prefers-reduced-motion:reduce){#menu,.m-list>*,#ix.new b,.in-bar::after{animation:none}}

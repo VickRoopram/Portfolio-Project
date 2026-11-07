@@ -62,7 +62,7 @@ function cardHTML(ch,i){
   return h;
 }
 function openCard(ch,i){
-  const c=CH[ch],n=c.items.length; i=((i%n)+n)%n; S.card={ch,i}; updateUI(); if(ch==='life')S.persona=i;
+  const c=CH[ch],n=c.items.length; i=((i%n)+n)%n; S.card={ch,i}; updateUI(); found(ch,`${c.items[i].t}`); if(ch==='life')S.persona=i;
   $('card').style.setProperty('--accent',c.col);
   $('eb').innerHTML='';
   $('ct').innerHTML=cardHTML(ch,i); $('ct').scrollTop=0;
@@ -71,6 +71,12 @@ function openCard(ch,i){
   const m=(KBM.includes(ch)?CTRL.kb:PADM.includes(ch)?CTRL.pad:CTRL[ch])?.[i]; if(m) press(m);
   const cp=$('cp'); if(cp) cp.onclick=()=>{navigator.clipboard?.writeText('vickhal10@gmail.com').then(()=>cp.textContent='Copied',()=>{const r=document.createRange();r.selectNodeContents($('em'));getSelection().removeAllRanges();getSelection().addRange(r);cp.textContent='Selected'})};
 }
+/* INTERACTIONS: 12 things to discover; the counter and "last interaction" line sit top left */
+const FIND={gd:'Opened Design',ux:'Opened UI/UX',mo:'Opened Motion & 3D',tl:'Opened Tools',xp:'Opened Experimental',roles:'Turned a role knob',life:'Visited the life strip',cv:'Picked up the remote',about:'Read the About pages',beats:'Played the beats',drums:'Hit the drum pads',lamp:'Switched the lamp'};
+const FKEY=ch=>['ds','st','ar','te'].includes(ch)?'roles':PADM.includes(ch)?'life':['ab','sk','aw','wk','sd','info'].includes(ch)?'about':ch;
+const FOUND=new Set();try{JSON.parse(localStorage.getItem('vdc-found')||'[]').forEach(k=>FIND[k]&&FOUND.add(k))}catch{}
+function found(id,text){const k=FKEY(id);if(!FIND[k])return;const fresh=!FOUND.has(k);FOUND.add(k);try{localStorage.setItem('vdc-found',JSON.stringify([...FOUND]))}catch{}
+  $('ixn').textContent=`${FOUND.size}/${Object.keys(FIND).length}`;$('ixl').textContent=text||FIND[k];if(fresh){const b=$('ix');b.classList.remove('new');void b.offsetWidth;b.classList.add('new')}}
 function closeCard(){S.card=null;$('card').hidden=true;updateUI()}
 $('prev').onclick=()=>{ensureAudio();openCard(S.card.ch,S.card.i-1);noteFor(S.card.i)};
 $('next').onclick=()=>{ensureAudio();openCard(S.card.ch,S.card.i+1);noteFor(S.card.i)};
@@ -147,7 +153,7 @@ const renderer=new THREE.WebGLRenderer({antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.0;
 stage.prepend(renderer.domElement); $('loading').remove();
-const scene=new THREE.Scene(); scene.background=new THREE.Color('#efefed');
+const scene=new THREE.Scene(); scene.background=new THREE.Color('#ece5d8');
 const camera=new THREE.PerspectiveCamera(32,1,.1,300);
 scene.environment=new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(),0.04).texture; // studio reflections for the metal
 const hemi=new THREE.HemisphereLight('#ffffff','#b9bab6',.45); scene.add(hemi);
@@ -171,15 +177,15 @@ const TEX={
     for(let i=-h;i<w+h;i+=8){x.strokeStyle='rgba(235,235,235,.9)';x.beginPath();x.moveTo(i,0);x.lineTo(i+h,h);x.stroke();x.strokeStyle='rgba(40,40,40,.9)';x.beginPath();x.moveTo(i+h,0);x.lineTo(i,h);x.stroke()}},[6,1])};
 /* Theme-aware presets. `dark` is the colour in dark mode, `denv` the env-reflection strength in dark mode.
    Light: brushed aluminium + satin white keys. Dark: gunmetal anodised + graphite keys (studio product-shot look). */
-const PRESET={
-  '#d4d6db':{color:'#c9ccd2',dark:'#3d4047',denv:.5,metalness:.92,roughness:.34,roughnessMap:TEX.brush,bumpMap:TEX.brush,bumpScale:.4,anisotropy:.7},   // brushed aluminium body
-  '#e3e4e8':{color:'#dcdee2',dark:'#2c2e33',denv:.45,metalness:.7,roughness:.48,roughnessMap:TEX.grain,bumpMap:TEX.grain,bumpScale:.25},                  // bead-blasted tiles
-  '#eeeff2':{color:'#f1f1ee',dark:'#232428',denv:.85,metalness:0,roughness:.5,clearcoat:.35,clearcoatRoughness:.4,bumpMap:TEX.grain,bumpScale:.15},       // satin key plastic
-  '#2c2d31':{color:'#2c2d31',dark:'#17181b',denv:.85,metalness:0,roughness:.46,clearcoat:.45,clearcoatRoughness:.35,bumpMap:TEX.grain,bumpScale:.15},     // graphite pad caps (KO II style)
-  '#232427':{color:'#1e1f22',dark:'#121315',denv:.7,metalness:.85,roughness:.4,roughnessMap:TEX.brush,bumpMap:TEX.brush,bumpScale:.3,anisotropy:.5},      // black anodised strip
-  '#1c1c1e':{color:'#1c1c1e',dark:'#141416',metalness:.2,roughness:.55},
-  '#c4c6cc':{color:'#d6d8dc',dark:'#9a9da4',denv:.7,metalness:1,roughness:.18},                                                                         // polished steel rings
-  '#1b1c1f':{color:'#16171a',dark:'#0a0b0d',metalness:.3,roughness:.7,bumpMap:TEX.grain,bumpScale:.2}};                                           // deck recess
+const PRESET={ // playful, warm, matte: cream and warm-grey hardware (ref: portfolio-zxc.com), light → dark colour
+  '#d4d6db':{color:'#e7dcc8',dark:'#3a342c',denv:.45,metalness:.25,roughness:.52,roughnessMap:TEX.brush,bumpMap:TEX.brush,bumpScale:.18},   // body
+  '#e3e4e8':{color:'#d9cdb6',dark:'#2b2721',denv:.4,metalness:.15,roughness:.62,roughnessMap:TEX.grain,bumpMap:TEX.grain,bumpScale:.2},      // tiles
+  '#eeeff2':{color:'#f5eddc',dark:'#5a544a',denv:.7,metalness:0,roughness:.55,clearcoat:.3,clearcoatRoughness:.45,bumpMap:TEX.grain,bumpScale:.12}, // keycaps: cream / warm grey
+  '#2c2d31':{color:'#5b554b',dark:'#3d3932',denv:.7,metalness:0,roughness:.5,clearcoat:.35,clearcoatRoughness:.4,bumpMap:TEX.grain,bumpScale:.12},   // pad caps
+  '#232427':{color:'#4b453c',dark:'#28241f',denv:.55,metalness:.2,roughness:.55,roughnessMap:TEX.grain,bumpMap:TEX.grain,bumpScale:.15},       // strip
+  '#1c1c1e':{color:'#2b2823',dark:'#1d1a16',metalness:.1,roughness:.6},
+  '#c4c6cc':{color:'#d6c59e',dark:'#8c7b5a',denv:.7,metalness:.85,roughness:.28},                                                                   // brass rings + screws
+  '#1b1c1f':{color:'#24201b',dark:'#14120f',metalness:.1,roughness:.75,bumpMap:TEX.grain,bumpScale:.2}};                                         // deck recess
 /* tag a material with its light/dark colour; the theme engine lerps every tagged material */
 function themed(mt,l,d,le=mt.envMapIntensity,de=le){mt.userData.tc={l,d,le,de};return mt}
 const mats={}; const M=(c,r=.62,m=0)=>{const k=c+r+m;if(mats[k])return mats[k];const p=PRESET[c.toLowerCase()];
@@ -197,7 +203,7 @@ function canvasTex(w,h,draw){const c=document.createElement('canvas');c.width=w;
 function labelPlane(text,w=.62,h=.3,color='#6b6e76',size=50,dark){const {t}=canvasTex(256,124,(x,W,H)=>{x.fillStyle='#fff';x.font=`600 ${size}px "IBM Plex Mono", monospace`;x.textAlign='center';x.textBaseline='middle';x.fillText(text,W/2,H/2+2)});
   const mt=themed(new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,color}),color,dark||LABEL_DARK[color]||color);
   const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mt);p.rotation.x=-Math.PI/2;return p}
-const LABEL_DARK={'#6b6e76':'#a3a6ae','#7b7e86':'#9ea1a9'};
+const LABEL_DARK={'#6b6e76':'#b9ab92','#7b7e86':'#a99c86'};
 
 /* ───────────── PRESS FX: gap glow (light leaking around a cap) + comet stroke tracing the cap edge ───────────── */
 const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -304,7 +310,7 @@ tile(12,0,2,2);
 const grille=(()=>{const {t}=canvasTex(256,256,(x)=>{x.fillStyle='#fff';for(let i=0;i<11;i++)for(let j=0;j<11;j++){const dx=i-5,dy=j-5;if(dx*dx+dy*dy<=27){x.beginPath();x.arc(28+i*20,28+j*20,5.2,0,7);x.fill()}}});
  const p=new THREE.Mesh(new THREE.PlaneGeometry(1.7,1.7),themed(new THREE.MeshBasicMaterial({map:t,transparent:true,color:'#3a3b40'}),'#3a3b40','#0e0f11'));p.rotation.x=-Math.PI/2;p.position.set(GX(12.5),TOP+.305,GZ(.5));synth.add(p);return p})();
 // tone knob, wave, demo
-tile(14,0,2,1); paramKnob(new THREE.Vector3(GX(14),TOP+.3,GZ(0)),'cutoff',{r:.3,cap:'#f7f7f8',ring:C.ring,parent:synth});
+tile(14,0,2,1); paramKnob(new THREE.Vector3(GX(14),TOP+.3,GZ(0)),'cutoff',{r:.3,cap:'#f2e8d5',ring:C.ring,parent:synth});
 {const l=labelPlane('TONE',.6,.29);l.position.set(GX(15),TOP+.31,GZ(0));synth.add(l)}
 capBtn(14,1,'WAVE',()=>{P.wave=(P.wave+1)%3;setSwitch();playNote(67,.4)},'Waveform: triangle / square / saw');
 const beatsBtn=capBtn(15,1,'BEATS',()=>toggleDemo(),'Beats · each click plays the next of 5 tracks');
@@ -318,7 +324,7 @@ const scr=canvasTex(800,380); const scrP=new THREE.Mesh(new THREE.PlaneGeometry(
 scrP.rotation.x=-Math.PI/2; scrP.position.set(GX(1.5),TOP+.305,GZ(.5)); synth.add(scrP);
 scrP.userData={tip:'Screen · click for the About page',down(){zoomTo('ab');openCard('ab',0)}}; hits.push(scrP);
 // THEOLOGY: the four big knobs
-const TH_LABEL=['DESIGNER','STRATEGIST','ARTIST','TEACHER'], BIG=['#3d9ad8','#21b35c','#f1f1f1','#ff5d1a'];
+const TH_LABEL=['DESIGNER','STRATEGIST','ARTIST','TEACHER'], BIG=['#4f8fc0','#4fa66a','#f2e8d5','#e2614b'];
 for(let i=0;i<4;i++){const c0=4+i*2;tile(c0,0,2,2);
   const g=new THREE.Group(); g.position.set(GX(c0+.5),TOP+.3,GZ(.5)); synth.add(g);
   const ring=cyl(.8,.84,.12,M(C.ring,.4)); ring.position.y=.06; g.add(ring);
@@ -343,7 +349,7 @@ function wideBtn(x,w,label,lc,ldc){const t=rbox(w-.07,.3,.93,.07,M(C.tile,.6));t
   k.material.emissive=new THREE.Color(MODES[f].glow);ROWBTN.push([k,f]);fxOf(k).managed=true;}}
 // drum pads: graphite caps with light print (KO II style)
 const PADS=['kick','snare','hat','clap','tom','rim','shaker','crash','blip'];
-PADS.forEach((p,i)=>capBtn(14+i%3,3+Math.floor(i/3),p.toUpperCase(),()=>drum(p),`Drum pad · ${p}`,'#d9dade','#2c2d31','#a9acb3'));
+PADS.forEach((p,i)=>capBtn(14+i%3,3+Math.floor(i/3),p.toUpperCase(),()=>{drum(p);found('drums','Hit the '+p)},`Drum pad · ${p}`,'#efe4cf','#2c2d31','#cdbfa6'));
 // GRAPHIC: the keyboard
 const WHITE=[0,2,4,5,7,9,11], sharpAfter={0:1,1:3,3:6,4:8,5:10};
 const wMidi=i=>60+12*Math.floor(i/7)+WHITE[i%7];
@@ -354,6 +360,21 @@ for(let i=0;i<14;i++){ const c=i; tile(c,3); const kt=tile(c,4,1,2);
   if(i<13 && sharpAfter[i%7]!==undefined){ const s=cyl(.3,.3,.18,M('#111214',.35)); s.position.set(GX(c)+.5,TOP+.4,GZ(3)); synth.add(s);
     const m=60+12*Math.floor(i/7)+sharpAfter[i%7]; pressable(s,()=>playNote(m),'Sharp key'); sharpMeshes.push(s); }
 }
+/* artisan keycaps: like the reference's miniature-scene caps, each key prints the picture of the project it holds */
+const IMG={}; let imgTick=0;
+function imgOf(src){let e=IMG[src];if(!e){e=IMG[src]=new Image();e.onload=()=>imgTick++;e.src=src}return e.complete&&e.naturalWidth?e:null}
+const ART=keyMeshes.map(k=>{const t=canvasTex(160,340);const m=themed(new THREE.MeshBasicMaterial({map:t.t,transparent:true,depthWrite:false}),'#ffffff','#c9bda8');
+  const p=new THREE.Mesh(new THREE.PlaneGeometry(.6,1.44),m);p.rotation.x=-Math.PI/2;p.position.y=.081;k.add(p);return t});
+let artKey='';
+function paintKeys(){const ch=S.kb,c=CH[ch],key=ch+imgTick;if(key===artKey)return;artKey=key;
+  ART.forEach(({x,t},i)=>{const W=160,H=340,it=c.items[i];x.clearRect(0,0,W,H);if(!it){t.needsUpdate=true;return}
+    x.save();x.beginPath();rrPath(x,6,6,W-12,H-12,22);x.clip();
+    const im=it.img?.[0]&&imgOf(it.img[0].s);
+    if(im){const sc=Math.max((W-12)/im.naturalWidth,(H-12)/im.naturalHeight),iw=im.naturalWidth*sc,ih=im.naturalHeight*sc;x.drawImage(im,(W-iw)/2,(H-ih)/2,iw,ih);
+      const g=x.createLinearGradient(0,H*.55,0,H);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.55)');x.fillStyle=g;x.fillRect(0,0,W,H)}
+    else{const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,c.col);g.addColorStop(1,'#2a2621');x.fillStyle=g;x.fillRect(0,0,W,H)}
+    x.restore();x.fillStyle='rgba(255,248,235,.95)';x.font='600 30px "Courier Prime", "Courier New", monospace';x.textAlign='left';x.textBaseline='alphabetic';x.fillText(pad(i+1),18,H-22);
+    t.needsUpdate=true})}
 for(let i=0;i<10;i++){const d=cyl(.035,.035,.02,M('#6a6c72'));d.position.set(9.18,.91,-1.2+i*.22);synth.add(d)}
 
 /* UX: the control strip */
@@ -365,10 +386,10 @@ perP.rotation.x=-Math.PI/2; perP.position.set(-4.35,.87,0); TU.add(perP);
 perP.userData={tip:'Life screen · click a figure: Family Man, Fighter or Explorer',down(){const u=lastHit?.uv?.x??0;playNote(76,.5);zoomTo(PADM[Math.min(2,Math.max(0,Math.floor(u*3)))])}}; hits.push(perP);
 function setSwitch(){}
 for(let j=0;j<8;j++){const c=j%4,rw=Math.floor(j/4);const pd=rbox(1.42,.18,.84,.12,M('#3b3c41',.5));pd.position.set(-1.85+c*1.55,.89,-.47+rw*.94);TU.add(pd);itemCtrl(pd,'pad',j,()=>drum(PADS[j]))}
-[[4.2,-.42,'wet'],[4.2,.42,'cutoff'],[4.95,-.42,'decay'],[4.95,.42,'vol']].forEach(([x,z,k])=>paramKnob(new THREE.Vector3(x,.8,z),k,{r:.24,cap:'#6a6b70',ring:'#151517',parent:TU}));
+[[4.2,-.42,'wet'],[4.2,.42,'cutoff'],[4.95,-.42,'decay'],[4.95,.42,'vol']].forEach(([x,z,k])=>paramKnob(new THREE.Vector3(x,.8,z),k,{r:.24,cap:'#c9b99b',ring:'#1d1a16',parent:TU}));
 {const d=rbox(1.6,.55,1.2,.2,M(C.black,.5));d.position.set(6.9,.28,.1);TU.add(d);
  const ring=new THREE.Mesh(new THREE.TorusGeometry(.33,.03,8,40),M('#1a1a1c'));ring.rotation.x=-Math.PI/2;ring.position.set(6.95,.56,.1);TU.add(ring);}
-const shuf=cyl(.3,.32,.14,M('#5a5b60',.4)); shuf.position.set(6.95,.6,.1); TU.add(shuf);
+const shuf=cyl(.3,.32,.14,A('#e2614b')); shuf.position.set(6.95,.6,.1); TU.add(shuf);
 shuf.material=shuf.material.clone();fxOf(shuf);
 shuf.userData={tip:'Shuffle · open a random piece of work',down(){pulse(shuf);const ch=KBM[Math.floor(Math.random()*KBM.length)];S.mode=null;zoomTo(ch);openCard(ch,Math.floor(Math.random()*CH[ch].items.length));drum('crash')}}; hits.push(shuf);
 
@@ -380,7 +401,7 @@ const rmt=(w,d,x,z)=>{const m=rbox(w-.07,.26,d-.07,.07,M(C.tile,.6));m.position.
 rmt(1.9,1.3,0,-2.5); const rs=canvasTex(300,200); const rsP=new THREE.Mesh(new THREE.PlaneGeometry(1.74,1.14),new THREE.MeshBasicMaterial({map:rs.t,toneMapped:false}));
 rsP.rotation.x=-Math.PI/2; rsP.position.set(0,1.015,-2.5); RM.add(rsP);
 rmt(1.9,1.7,0,-1);
-{const k=paramKnob(new THREE.Vector3(0,1.01,-1),null,{r:.48,cap:'#ff5d1a',ring:C.ring,parent:RM});itemCtrl(k.cp,'cv',0,()=>playNote(55,1),{knob:k.rot,pressy:false})}
+{const k=paramKnob(new THREE.Vector3(0,1.01,-1),null,{r:.48,cap:'#e2614b',ring:C.ring,parent:RM});itemCtrl(k.cp,'cv',0,()=>playNote(55,1),{knob:k.rot,pressy:false})}
 rmt(1.9,.9,0,.35); {const pill=rbox(1.5,.16,.5,.24,M(C.cap,.5)); pill.position.set(0,1.08,.35); RM.add(pill);
  const l=labelPlane('CONTACT',.9,.25,'#ff5d1a',46);l.position.y=.081;pill.add(l); itemCtrl(pill,'cv',1,()=>drum('clap'))}
 [['BE',-.47,1.3],['IG',.47,1.3],['IN',-.47,2.25],['+',.47,2.25]].forEach(([t,x,z],j)=>{rmt(.95,.95,x,z);const k=rbox(.68,.16,.68,.16,M(C.cap,.5));k.position.set(x,1.08,z);RM.add(k);
@@ -425,21 +446,6 @@ const OFF={};
   [[-15.2,-13.8],[16.4,-13.8],[-15.2,8.6],[16.4,8.6]].forEach(([x,z])=>{const l=rbox(.85,30,.85,.2,lm);l.position.set(x,-15.9,z);l.castShadow=false;scene.add(l)});
   const apron=rbox(30.5,.7,.2,.05,lm); apron.position.set(.6,-1.25,-14.1); scene.add(apron);
 }
-/* desktop monitor: silver aluminium back + stand, black glass bezel, 16:9 screen */
-const MON=new THREE.Group(); MON.position.set(-1.5,0,-11.7); scene.add(MON);
-const SCR_W=15, SCR_H=SCR_W*9/16, SCR_Y=2.9+SCR_H/2;
-{ const al=M(C.body,.55);
-  const sat=M(C.tile,.6); // bead-blasted: the stand doesn't mirror the rim light
-  const base=rbox(4.4,.18,2.9,.14,sat); base.position.set(0,.09,.35); MON.add(base);
-  const neck=rbox(2.3,3.6,.32,.12,sat); neck.position.set(0,1.9,-.35); neck.rotation.x=.1; MON.add(neck);
-  const frame=rbox(SCR_W+.7,SCR_H+.7,.36,.32,al); frame.position.set(0,SCR_Y,0); MON.add(frame);
-  const bezel=rbox(SCR_W+.56,SCR_H+.56,.06,.26,new THREE.MeshPhysicalMaterial({color:'#060607',roughness:.12,clearcoat:1,clearcoatRoughness:.05})); bezel.position.set(0,SCR_Y,.18); MON.add(bezel);
-  const logo=new THREE.Mesh(new THREE.CircleGeometry(.32,32),M('#c4c6cc')); logo.position.set(0,SCR_Y,-.185); logo.rotation.y=Math.PI; MON.add(logo);
-  OFF.monParts=[base,neck,frame,bezel];
-}
-const desk=canvasTex(1920,1080); desk.t.anisotropy=8;
-const scrMesh=new THREE.Mesh(new THREE.PlaneGeometry(SCR_W,SCR_H),new THREE.MeshBasicMaterial({map:desk.t,toneMapped:false}));
-scrMesh.position.set(0,SCR_Y,.215); MON.add(scrMesh);
 /* plant: snake plant in a white ceramic pot */
 const PLANT=new THREE.Group(); PLANT.position.set(14.1,0,-11.2); scene.add(PLANT);
 { const pot=cyl(1.25,1.0,2.1,new THREE.MeshPhysicalMaterial({color:'#f1efea',roughness:.32,clearcoat:.6,clearcoatRoughness:.25}),48); pot.position.y=1.05; PLANT.add(pot);
@@ -467,7 +473,7 @@ const lampPool=(()=>{const {t}=canvasTex(256,256,(x)=>{const g=x.createRadialGra
   const m=new THREE.Mesh(new THREE.PlaneGeometry(13,13),new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,opacity:0,toneMapped:false}));
   m.rotation.x=-Math.PI/2; m.position.set(12.9,.003,-3.4); m.renderOrder=1; scene.add(m); FXMATS.push(m.material); return m})();
 const LAMPST={on:true,k:1};
-lampDome.userData={tip:'Lamp · click to switch it on or off',down(){LAMPST.on=!LAMPST.on;LAMPST.dip=1;drum(LAMPST.on?'blip':'rim')}}; hits.push(lampDome);
+lampDome.userData={tip:'Lamp · click to switch it on or off',down(){LAMPST.on=!LAMPST.on;LAMPST.dip=1;drum(LAMPST.on?'blip':'rim');found('lamp',LAMPST.on?'Lamp on':'Lamp off')}}; hits.push(lampDome);
 function updateOffice(dt,t){
   LAMPST.k+=((LAMPST.on?1:0)-LAMPST.k)*(reduceMotion?1:1-Math.exp(-dt*8));
   const dk=Math.max(0,themeK), k=LAMPST.k;
@@ -477,105 +483,16 @@ function updateOffice(dt,t){
   LAMPST.dip=Math.max(0,(LAMPST.dip||0)-dt*5); lampDome.position.y=3.05-.06*Math.sin(LAMPST.dip*Math.PI); // a little press on click
   if(!reduceMotion)OFF.leaves.forEach(l=>{l.g.rotation.x=l.base+Math.sin(t*.7+l.ph)*.025});
 }
-/* cables from every synth into the monitor (always plugged in) */
-function staticCable(pts,color,r){const mat=M(color,.5);const m=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(...p))),160,r,10),mat);m.castShadow=true;scene.add(m);
-  const e=pts.at(-1),e2=pts.at(-2),plug=rbox(.3,.22,.55,.06,mat);plug.position.set(e[0],Math.max(e[1],.11),e[2]);plug.lookAt(new THREE.Vector3(...e2));scene.add(plug);
-  const s=pts[0],s2=pts[1],plug2=rbox(.3,.22,.55,.06,mat);plug2.position.set(s[0],Math.max(s[1],.11),s[2]);plug2.lookAt(new THREE.Vector3(...s2));scene.add(plug2);return m}
-staticCable([[-11.7,.3,-3.35],[-11.8,.1,-4.6],[-12.3,.1,-7.6],[-10.6,.1,-10.7],[-6.2,.1,-13.2],[-3.6,.1,-13.7],[-2.7,.25,-13.0]],'#ff5d1a',.08);  // remote → monitor
-staticCable([[-6.6,.3,-7.95],[-6.7,.1,-9.3],[-5.4,.1,-11.9],[-3.2,.1,-13.9],[-1.5,.1,-13.9],[-1.5,.25,-13.1]],'#2a2b2e',.075);                    // life strip → monitor
-staticCable([[7.6,.45,-3.75],[7.7,.1,-4.6],[7.5,.1,-8.9],[4.6,.1,-11.6],[1.3,.1,-13.6],[-.35,.25,-13.0]],'#2a2b2e',.08);                          // main synth → monitor
-
-/* ───────────── DESKTOP SCREEN: a live desktop showing the keyboard's current channel ───────────── */
-CH.desk={name:'DESKTOP',col:'#3d9ad8',items:[]};
-MODES.desk={part:'The desktop',n:'Projects on screen',dock:'Desktop',glow:'#3fb2ff',box:'screen'};
-const NICE={gd:['Design','projects'],ux:['UI/UX Design','case notes'],mo:['Motion & 3D','pieces'],tl:['Tools','tools'],xp:['Experimental','experiments'],ab:['About','pages'],sk:['Skills','skills'],aw:['Awards','awards'],wk:['Work','roles'],sd:['Study','courses'],ds:['Designer','projects'],st:['Strategist','projects'],ar:['Artist','projects'],te:['Teacher','projects']};
-const TABS=[['gd','Design'],['ux','UI/UX'],['mo','Motion'],['tl','Tools'],['xp','Experimental']];
-const DOCKCH=['gd','ux','mo','tl','xp','ab','sk','aw','wk','sd'];
-const DICONS=[['About me','ab',0,'#d71920'],['Contact','cv',1,'#ff5d1a'],['CV','cv',0,'#ff5d1a'],['Life','fm',0,'#1fa957']];
-const IMG={}; let imgTick=0;
-function imgOf(src){let e=IMG[src];if(!e){e=IMG[src]=new Image();e.onload=()=>imgTick++;e.src=src}return e.complete&&e.naturalWidth?e:null}
-let REG=[], scrHover=-1, deskKey='';
-const rr=(x,X,Y,W,H,R)=>{x.beginPath();rrPath(x,X,Y,W,H,R)};
-function setKb(ch){if(S.kb===ch)return;S.kb=ch;playNote(72+DOCKCH.indexOf(ch)%7*2,.4);modeWave(ch);updateUI()}
-function deskAct(r){ensureAudio();if(S.mode!=='desk'){zoomTo('desk');return}if(!r)return;r.act()}
-function drawDesk(){
-  const ch=S.kb, c=CH[ch], dark=themeK>.5, hovItem=S.hover?.userData?.item&&S.hover.userData.ch===ch?S.hover.userData.i:-1, openI=S.card?.ch===ch?S.card.i:-1;
-  const now=new Date(), clock=now.toTimeString().slice(0,5);
-  const key=[ch,scrHover,hovItem,openI,imgTick,dark,clock,S.mode==='desk'].join();
-  if(key===deskKey)return; deskKey=key;
-  const x=desk.x,W=1920,H=1080; REG=[];
-  // wallpaper
-  const g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,dark?'#141a26':'#dfe6f2'); g.addColorStop(1,dark?'#2a1d28':'#f3e6e8'); x.fillStyle=g; x.fillRect(0,0,W,H);
-  const blob=x.createRadialGradient(W*.75,H*.25,0,W*.75,H*.25,W*.55); blob.addColorStop(0,c.col+(dark?'55':'40')); blob.addColorStop(1,c.col+'00'); x.fillStyle=blob; x.fillRect(0,0,W,H);
-  // menu bar
-  x.fillStyle=dark?'rgba(20,22,28,.82)':'rgba(250,250,252,.86)'; x.fillRect(0,0,W,46);
-  x.textBaseline='middle'; x.fillStyle=dark?'#f2f2f4':'#111'; x.font='800 22px Montserrat, "Noto Sans", sans-serif'; x.fillText('Vickhal Roopram',28,23);
-  let tx=250; x.font='500 20px Montserrat, "Noto Sans", sans-serif';
-  TABS.forEach(([k,l])=>{const w=x.measureText(l).width+28, i=REG.length, on=k===ch, hv=scrHover===i;
-    if(on||hv){x.fillStyle=on?CH[k].col+'33':(dark?'rgba(255,255,255,.08)':'rgba(0,0,0,.06)');rr(x,tx-4,8,w,30,8);x.fill()}
-    x.fillStyle=on?CH[k].col:(dark?'#d6d7db':'#333');x.fillText(l,tx+10,23);
-    REG.push({x:tx-4,y:8,w,h:30,tip:`${CH[k].name} · show on screen`,act:()=>setKb(k)});tx+=w+6});
-  x.textAlign='right'; x.fillStyle=dark?'#d6d7db':'#333'; x.fillText(clock,W-28,23); x.textAlign='left';
-  // window
-  const WX=90,WY=96,WW=1530,WH=850;
-  x.save(); x.shadowColor='rgba(0,0,0,.35)'; x.shadowBlur=40; x.shadowOffsetY=14; x.fillStyle=dark?'#1c1d22':'#ffffff'; rr(x,WX,WY,WW,WH,22); x.fill(); x.restore();
-  x.fillStyle=dark?'#26272d':'#f3f3f5'; x.save(); rr(x,WX,WY,WW,WH,22); x.clip(); x.fillRect(WX,WY,WW,50); x.restore();
-  ['#ff5f57','#febc2e','#28c840'].forEach((cl,i)=>{x.fillStyle=cl;x.beginPath();x.arc(WX+28+i*26,WY+25,8,0,7);x.fill()});
-  x.textAlign='center'; x.font='600 20px Montserrat, "Noto Sans", sans-serif'; x.fillStyle=dark?'#c9cad0':'#555'; x.fillText(NICE[ch]?.[0]||c.name,WX+WW/2,WY+25); x.textAlign='left';
-  const n=c.items.length;
-  x.font='800 50px Montserrat, "Noto Sans", sans-serif'; x.fillStyle=dark?'#f4f4f6':'#111'; x.textBaseline='alphabetic';
-  x.fillText(`${n} ${NICE[ch]?.[1]||'pieces'}`,WX+56,WY+128);
-  x.font='400 22px Montserrat, "Noto Sans", sans-serif'; x.fillStyle=dark?'#9a9ca3':'#666';
-  x.fillText(S.mode==='desk'?'Click one to open it, or play the keys on the synth.':'Click the screen to look closer.',WX+56,WY+166);
-  // project tiles: 6 across
-  const cols=6,gap=22,GX0=WX+56,GY0=WY+200,TW=(WW-112-gap*(cols-1))/cols,TH=TW*9/16,RH=TH+70;
-  c.items.slice(0,18).forEach((it,i)=>{const cx=GX0+(i%cols)*(TW+gap), cy=GY0+Math.floor(i/cols)*(RH+16), id=REG.length, hv=scrHover===id||hovItem===i||openI===i;
-    x.save(); rr(x,cx,cy,TW,TH,12); x.clip();
-    const im=it.img?.[0]&&imgOf(it.img[0].s);
-    if(im){const s=Math.max(TW/im.naturalWidth,TH/im.naturalHeight),iw=im.naturalWidth*s,ih=im.naturalHeight*s;x.drawImage(im,cx+(TW-iw)/2,cy+(TH-ih)/2,iw,ih)}
-    else{const gg=x.createLinearGradient(cx,cy,cx+TW,cy+TH);gg.addColorStop(0,c.col);gg.addColorStop(1,dark?'#15161a':'#2b2c31');x.fillStyle=gg;x.fillRect(cx,cy,TW,TH);
-      x.fillStyle='rgba(255,255,255,.9)';x.font='26px Bungee, Impact, sans-serif';x.textBaseline='middle';x.fillText(pad(i+1),cx+16,cy+30);
-      x.font='700 22px Montserrat, "Noto Sans", sans-serif';wrap(x,it.t,TW-32).slice(0,2).forEach((l,j)=>x.fillText(l,cx+16,cy+TH-44+j*26));x.textBaseline='alphabetic'}
-    x.restore();
-    if(hv){x.lineWidth=5;x.strokeStyle=MODES[ch]?.glow||c.col;rr(x,cx-3,cy-3,TW+6,TH+6,14);x.stroke()}
-    x.fillStyle=dark?'#f0f0f2':'#111';x.font='700 19px Montserrat, "Noto Sans", sans-serif';x.fillText(wrap(x,it.t,TW)[0],cx,cy+TH+30);
-    x.fillStyle=dark?'#8d8f96':'#777';x.font='400 16px Montserrat, "Noto Sans", sans-serif';x.fillText(wrap(x,it.k||'',TW)[0],cx,cy+TH+54);
-    REG.push({x:cx,y:cy,w:TW,h:RH,tip:`${c.name} · ${pad(i+1)} · ${it.t}`,act:()=>{openCard(ch,i);noteFor(i)}})});
-  // desktop icons (right)
-  x.textAlign='center';
-  DICONS.forEach(([l,cch,ci,col],j)=>{const ix=W-150,iy=120+j*170,id=REG.length,hv=scrHover===id;
-    x.save();x.shadowColor='rgba(0,0,0,.25)';x.shadowBlur=hv?22:12;x.fillStyle=dark?'#2a2b31':'#ffffff';rr(x,ix,iy,96,96,22);x.fill();x.restore();
-    if(hv){x.lineWidth=4;x.strokeStyle=col;rr(x,ix-2,iy-2,100,100,24);x.stroke()}
-    x.fillStyle=col;x.font='30px Bungee, Impact, sans-serif';x.textBaseline='middle';x.fillText(l==='About me'?'VR':l==='Contact'?'@':l==='CV'?'CV':'♥',ix+48,iy+50);
-    x.fillStyle=dark?'#e6e6ea':'#222';x.font='600 19px Montserrat, "Noto Sans", sans-serif';x.fillText(l,ix+48,iy+124);x.textBaseline='alphabetic';
-    REG.push({x:ix,y:iy,w:96,h:136,tip:l,act:()=>{openCard(cch,ci)}})});
-  // dock
-  const DS=78,DG=14,DW=DOCKCH.length*(DS+DG)+DG+20,DX=(W-DW)/2,DY=H-DS-46;
-  x.fillStyle=dark?'rgba(40,42,50,.75)':'rgba(255,255,255,.7)';rr(x,DX,DY-10,DW,DS+20,26);x.fill();
-  DOCKCH.forEach((k,i)=>{const dx=DX+20+i*(DS+DG),id=REG.length,hv=scrHover===id,on=k===ch,s=hv?8:0;
-    const gg=x.createLinearGradient(dx,DY,dx,DY+DS);gg.addColorStop(0,CH[k].col);gg.addColorStop(1,dark?'#121317':'#3a3b40');x.fillStyle=gg;rr(x,dx-s/2,DY-s,DS+s,DS+s,18);x.fill();
-    x.fillStyle='#fff';x.font='22px Bungee, Impact, sans-serif';x.textBaseline='middle';x.fillText(CH[k].name.replace(/[^A-Z]/g,'').slice(0,2),dx+DS/2,DY+DS/2-s/2);x.textBaseline='alphabetic';
-    if(on){x.fillStyle=dark?'#fff':'#111';x.beginPath();x.arc(dx+DS/2,DY+DS+6,4,0,7);x.fill()}
-    REG.push({x:dx,y:DY,w:DS,h:DS,tip:`${CH[k].name} · show on screen`,act:()=>setKb(k)})});
-  x.textAlign='left';
-  desk.t.needsUpdate=true;
-}
-function regAt(uv){if(!uv)return -1;const px=uv.x*1920,py=(1-uv.y)*1080;return REG.findIndex(r=>px>=r.x&&px<=r.x+r.w&&py>=r.y&&py<=r.y+r.h)}
-scrMesh.userData={get tip(){return S.mode!=='desk'?'Desktop · click to see the projects up close':(REG[scrHover]?.tip||'Desktop')},noLbl:()=>S.mode==='desk',
-  down(){const i=S.mode==='desk'&&lastHit?.object===scrMesh?regAt(lastHit.uv):-1;deskAct(REG[i])}}; hits.push(scrMesh);
-OFF.monParts.forEach(m=>{m.userData.proxy=scrMesh;hits.push(m)});
-
 /* ───────────── CAMERA: overview + per-part framing ───────────── */
 scene.updateMatrixWorld(true);
 const boxOf=objs=>{const b=new THREE.Box3();objs.forEach(o=>b.expandByObject(o));return b};
 const BOX={
-  all:new THREE.Box3(new THREE.Vector3(-13.6,0,-13.2),new THREE.Vector3(15.5,11.7,4.2)), // the whole desk: synths, monitor, lamp and plant
-  screen:new THREE.Box3(new THREE.Vector3(-1.5-SCR_W/2,SCR_Y-SCR_H/2,-11.6),new THREE.Vector3(-1.5+SCR_W/2,SCR_Y+SCR_H/2,-11.4)),
+  all:new THREE.Box3(new THREE.Vector3(-13.4,0,-12.8),new THREE.Vector3(15.6,2.4,6.2)), // the whole desk: synths, lamp and plant
   kb:boxOf([...keyMeshes,...sharpMeshes,...ROWBTN.map(a=>a[0])]), cv:boxOf([RM]), life:boxOf([TU]),
   th:new THREE.Box3(new THREE.Vector3(GX(4)-.5,TOP,GZ(0)-.6),new THREE.Vector3(GX(15)+.5,TOP+.8,GZ(1)+.9)),
   info:new THREE.Box3(new THREE.Vector3(-8.6,TOP,GZ(1)),new THREE.Vector3(8.6,TOP+.5,GZ(3)+.3)),
 };
-const POLAR={all:.82,kb:.62,cv:.5,life:.55,info:.6,screen:1.5};
+const POLAR={all:.3,kb:1.08,cv:1.0,life:1.02,info:1.05}; // overview is nearly top-down; parts get low, close, cinematic angles
 
 /* ───────────── FIGMA: section titles + soft underlight per device (About Me · Contact · My Projects) ─────────────
    Hovering anywhere on a device (or its title) grows the title from Gotham Medium 28.7 to Ultra 90 (4K px) and fades
@@ -643,22 +560,26 @@ function openMenu(){menu.classList.remove('out');menu.hidden=false;mnu.setAttrib
 function closeMenu(){if(menu.hidden)return;mnu.setAttribute('aria-expanded','false');mnu.setAttribute('aria-label','Menu');
   if(reduceMotion){menu.hidden=true;return}menu.classList.add('out');menu.addEventListener('animationend',()=>{if(menu.classList.contains('out')){menu.hidden=true;menu.classList.remove('out')}},{once:true})}
 mnu.onclick=()=>{ensureAudio();menu.hidden||menu.classList.contains('out')?openMenu():closeMenu()};
-menu.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b){if(e.target.closest('a'))closeMenu();return}const k=b.dataset.go;if(k==='home')return;closeMenu();ensureAudio();if(k==='desk'){zoomTo('desk');return}if(S.mode)S.mode=null;GROUPS[k].go()});
+menu.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b){closeMenu();return}/* links and empty space both close it */const k=b.dataset.go;if(k==='home')return;closeMenu();ensureAudio();if(S.mode)S.mode=null;GROUPS[k].go()});
 document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!menu.contains(e.target)&&!mnu.contains(e.target))closeMenu()});
 const desktop=()=>innerWidth>760;
 function frameFor(key){
-  const b=BOX[key],c=b.getCenter(new THREE.Vector3()),s=b.getSize(new THREE.Vector3()),pol=desktop()?POLAR[key]:key==='screen'?1.5:key==='all'?.5:.001;
+  const b=BOX[key],c=b.getCenter(new THREE.Vector3()),s=b.getSize(new THREE.Vector3()),pol=desktop()?POLAR[key]:key==='all'?.12:.78;
   const w=stage.clientWidth,h=stage.clientHeight, T=Math.tan(THREE.MathUtils.degToRad(camera.fov)/2);
   let tanV=T, tanH=T*w/h;
   if(key!=='all'&&!desktop()) tanV=T*.62;
-  const m=key==='all'?1.3:key==='screen'?1.14:desktop()?.9:1.02;
-  const d=Math.max((s.x/2*m)/tanH,((s.z*Math.cos(pol)+s.y)/2*m+.3)/tanV)+(key==='screen'?0:s.y);
+  const m=key==='all'?1.08:desktop()?.82:1.0;
+  const d=Math.max((s.x/2*m)/tanH,((s.z*Math.cos(pol)+s.y*Math.sin(pol))/2*m+.3)/tanV)+s.y*.5;
   return {t:c,p:new THREE.Vector3(c.x,c.y+d*Math.cos(pol),c.z+d*Math.sin(pol)),d};
 }
 let fly=null, offX=0, offY=0;
-function flyTo(key){const f=frameFor(key);controls.maxPolarAngle=key==='screen'?1.56:1.22;fly={p0:camera.position.clone(),t0:controls.target.clone(),p1:f.p,t1:f.t,s:performance.now(),dur:1500};controls.enabled=false;
-  controls.minDistance=f.d*.55;controls.maxDistance=Math.max(f.d*1.6,frameFor('all').d*1.3)}
-function zoomTo(ch){if(S.mode===ch)return;if(KBM.includes(ch))S.kb=ch;if(PADM.includes(ch))S.pad=ch;const same=S.mode&&MODES[S.mode].box===MODES[ch].box;S.mode=ch;closeCard();drum(same?'blip':'whoosh');if(!same)flyTo(MODES[ch].box);updateUI();modeWave(ch)}
+const sA=new THREE.Spherical(), sB=new THREE.Spherical(), flyOff=new THREE.Vector3();
+/* camera swoop: interpolate in spherical coordinates around a moving target, with a small lift mid-flight, so the camera arcs down to the part like a crane shot */
+function flyTo(key,dur=2100){const f=frameFor(key);sA.setFromVector3(flyOff.copy(camera.position).sub(controls.target));sB.setFromVector3(flyOff.copy(f.p).sub(f.t));
+  let dT=sB.theta-sA.theta;if(dT>Math.PI)dT-=2*Math.PI;if(dT<-Math.PI)dT+=2*Math.PI;
+  fly={t0:controls.target.clone(),t1:f.t,r0:sA.radius,r1:sB.radius,p0:sA.phi,p1:sB.phi,th0:sA.theta,dT,lift:Math.min(.35,Math.abs(sB.phi-sA.phi)*.3),s:performance.now(),dur:reduceMotion?1:dur};controls.enabled=false;
+  controls.minDistance=f.d*.35;controls.maxDistance=Math.max(f.d*1.8,frameFor('all').d*1.5)}
+function zoomTo(ch){found(ch);if(S.mode===ch)return;if(KBM.includes(ch))S.kb=ch;if(PADM.includes(ch))S.pad=ch;const same=S.mode&&MODES[S.mode].box===MODES[ch].box;S.mode=ch;closeCard();drum(same?'blip':'whoosh');if(!same)flyTo(MODES[ch].box);updateUI();modeWave(ch)}
 /* mode switch: the filter/knob that owns the mode strokes, then a wave of gap-glow + strokes ripples across the controls that now hold its projects */
 function modeWave(ch){
   ROWBTN.concat(BIGCAPS).forEach(([m,k])=>{if(k===ch)pulse(m)});
@@ -730,7 +651,7 @@ const TRACKS=[
 const SCALE=[0,2,3,5,7,8,10,12,14,15];
 let demo=null,step=0,track=-1;
 function stopDemo(){if(demo){clearInterval(demo);demo=null}}
-function toggleDemo(){ensureAudio();stopDemo();track=(track+1)%TRACKS.length;step=0;const T=TRACKS[track];P.wave=T.wave;
+function toggleDemo(){ensureAudio();found('beats','Playing '+TRACKS[(track+1)%TRACKS.length].n.toLowerCase());stopDemo();track=(track+1)%TRACKS.length;step=0;const T=TRACKS[track];P.wave=T.wave;
   demo=setInterval(()=>{const i=step%16,root=T.base+T.prog[Math.floor(step/16)%4];
     if(T.k[i]==='x')drum('kick'); if(T.s[i]==='x')drum('snare'); if(T.h[i]==='x')drum('hat'); if(T.c?.[i]==='x')drum('clap');
     if(T.bass[i]==='x')playNote(root-12,.22); const d=T.lead[i]; if(d!=='.')playNote(root+12+SCALE[+d],.3);
@@ -744,15 +665,18 @@ function labelHTML(o){const u=o.userData;
   if(u.item){const c=CH[u.ch];return S.mode===u.ch?`<small>${c.name} · ${pad(u.i+1)}</small>${c.items[u.i].t}`:`<small>${MODES[u.ch].part} · click to zoom in</small>${c.name} · ${MODES[u.ch].n}`}
   return u.tip}
 let drag=null, bodyTap=null;
-cv.addEventListener('pointerdown',e=>{ensureAudio();const o=pick(e);if(!o){const g=!S.mode&&!S.card&&groupAt(null);if(g)bodyTap={g,x:e.clientX,y:e.clientY};return}controls.enabled=false;drag={o,y:e.clientY,x:e.clientX,sx:e.clientX,sy:e.clientY,m:0};o.userData.down?.();
+cv.addEventListener('pointerdown',e=>{ensureAudio();if(e.button>0)return; // right drag pans, middle zooms
+  const o=pick(e);if(!o){const g=!S.mode&&!S.card&&groupAt(null);if(g)bodyTap={g,x:e.clientX,y:e.clientY};return}controls.enabled=false;drag={o,y:e.clientY,x:e.clientX,sx:e.clientX,sy:e.clientY,m:0};o.userData.down?.();
   if(e.pointerType!=='mouse'){S.hover=o;S.hoverUntil=performance.now()+1600}try{cv.setPointerCapture(e.pointerId)}catch{}});
-const controls=new OrbitControls(camera,cv); controls.enableDamping=true; controls.enablePan=false; controls.minPolarAngle=.12; controls.maxPolarAngle=1.22; controls.minAzimuthAngle=-.95; controls.maxAzimuthAngle=.95;
+const controls=new OrbitControls(camera,cv); controls.enableDamping=true; controls.dampingFactor=.06; controls.enablePan=true; controls.screenSpacePanning=false; controls.zoomToCursor=true; controls.rotateSpeed=.7; controls.zoomSpeed=.9;
+controls.minPolarAngle=.02; controls.maxPolarAngle=1.32; controls.minAzimuthAngle=-1.1; controls.maxAzimuthAngle=1.1;
+const PANBOX=new THREE.Box3(new THREE.Vector3(-14,0,-13),new THREE.Vector3(16,3,8)); // panning stays over the desk
 let lastLive='';
 cv.addEventListener('pointermove',e=>{
   if(drag){const dy=e.clientY-drag.y,dx=e.clientX-drag.x;drag.y=e.clientY;drag.x=e.clientX;drag.m+=Math.abs(dy)+Math.abs(dx);drag.o.userData.drag?.(-dy+dx*.5);lastLive=drag.o.userData.live?.()||'';return}
-  if(e.pointerType!=='mouse')return;const o=pick(e);S.grp=S.mode||S.card?null:groupAt(o);scrHover=o===scrMesh&&S.mode==='desk'&&lastHit?.object===scrMesh?regAt(lastHit.uv):-1;cv.style.cursor=o||S.grp?'pointer':'grab';S.hover=o||null;S.hoverUntil=Infinity});
+  if(e.pointerType!=='mouse')return;const o=pick(e);S.grp=S.mode||S.card?null:groupAt(o);cv.style.cursor=o||S.grp?'pointer':'grab';S.hover=o||null;S.hoverUntil=Infinity});
 const end=e=>{if(drag){drag.o.userData.up?.(e&&e.clientX!==undefined?Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy):drag.m);drag=null;lastLive='';if(!fly)controls.enabled=true}};
-cv.addEventListener('pointerup',e=>{if(bodyTap&&Math.hypot(e.clientX-bodyTap.x,e.clientY-bodyTap.y)<6&&!S.mode)GROUPS[bodyTap.g].go();bodyTap=null;end(e)});cv.addEventListener('pointercancel',end);cv.addEventListener('pointerleave',()=>{if(!drag)S.hover=null;S.grp=null;scrHover=-1});
+cv.addEventListener('pointerup',e=>{if(bodyTap&&Math.hypot(e.clientX-bodyTap.x,e.clientY-bodyTap.y)<6&&!S.mode)GROUPS[bodyTap.g].go();bodyTap=null;end(e)});cv.addEventListener('pointercancel',end);cv.addEventListener('pointerleave',()=>{if(!drag)S.hover=null;S.grp=null});
 const KW='asdfghjkl;', KS={w:0,e:1,t:2,y:3,u:4,o:5,p:6}, KD='zxcvbnm,.';
 const held=new Set();
 addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey)return;const k=e.key.toLowerCase();
@@ -766,79 +690,11 @@ addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey)return;const k=
   else if(S.card&&k==='arrowright'){openCard(S.card.ch,S.card.i+1)} else if(S.card&&k==='arrowleft'){openCard(S.card.ch,S.card.i-1)}});
 addEventListener('keyup',e=>held.delete(e.key.toLowerCase()));
 
-/* ───────────── NAV: joystick (tilt) + zoom slider, with weight ─────────────
-   Joystick = rate control: pushing sets a target orbit speed; the camera eases up to it and glides to a stop
-   after release (inertia). The knob springs back with a little overshoot. A quick tap flies back to the resting view.
-   Slider = position control: the thumb follows the finger, the camera distance follows on a damped spring. */
-const joy=$('joy'), knob=$('joyKnob'), zoomEl=$('zoom');
-const NAV={jx:0,jy:0,kx:0,ky:0,kvx:0,kvy:0,vAz:0,vPol:0,keys:{x:0,y:0},zr:null,zv:0,zDrag:false,zu:.5};
-const sph=new THREE.Spherical(), navOff=new THREE.Vector3();
-let jp=null;
-const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
-function takeOver(){if(fly){fly=null;if(!drag)controls.enabled=true}}
-function navZap(el){el.classList.remove('zap');void el.offsetWidth;el.classList.add('zap')}
-function resetView(){NAV.vAz=NAV.vPol=0;NAV.zr=null;NAV.zv=0;navZap(joy);joy.classList.add('reset');setTimeout(()=>joy.classList.remove('reset'),420);ensureAudio();drum('blip');flyTo(S.mode?MODES[S.mode].box:'all')}
-function setJoy(e){const dx=e.clientX-jp.cx,dy=e.clientY-jp.cy;if(Math.hypot(e.clientX-jp.sx,e.clientY-jp.sy)>6)jp.moved=true;
-  if(!jp.moved){NAV.jx=NAV.jy=0;return} let x=dx/jp.R,y=dy/jp.R;const l=Math.hypot(x,y);if(l>1){x/=l;y/=l}NAV.jx=x;NAV.jy=y;takeOver()}
-joy.addEventListener('pointerdown',e=>{e.preventDefault();ensureAudio();const r=joy.getBoundingClientRect();jp={id:e.pointerId,cx:r.left+r.width/2,cy:r.top+r.height/2,R:r.width*.3,t:performance.now(),sx:e.clientX,sy:e.clientY,moved:false};
-  try{joy.setPointerCapture(e.pointerId)}catch{} joy.classList.add('on');navZap(joy);setJoy(e)});
-joy.addEventListener('pointermove',e=>{if(jp&&e.pointerId===jp.id)setJoy(e)});
-const joyEnd=()=>{if(!jp)return;const tap=!jp.moved&&performance.now()-jp.t<400;jp=null;NAV.jx=NAV.jy=0;joy.classList.remove('on');if(tap)resetView()};
-joy.addEventListener('pointerup',joyEnd);joy.addEventListener('pointercancel',joyEnd);
-const JK={arrowleft:['x',-1],arrowright:['x',1],arrowup:['y',-1],arrowdown:['y',1]};
-joy.addEventListener('keydown',e=>{const k=e.key.toLowerCase();e.stopPropagation();
-  if(JK[k]){e.preventDefault();NAV.keys[JK[k][0]]=JK[k][1];takeOver();joy.classList.add('on')}
-  else if(k==='enter'||k===' '){e.preventDefault();resetView()}});
-joy.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(JK[k]){NAV.keys[JK[k][0]]=0;if(!NAV.keys.x&&!NAV.keys.y)joy.classList.remove('on')}});
-joy.addEventListener('blur',()=>{NAV.keys.x=NAV.keys.y=0;joy.classList.remove('on')});
-/* zoom: u = 0 (furthest) … 1 (closest), on a log scale between the current mode's min and max distance */
-const uToR=u=>Math.exp(Math.log(controls.maxDistance)+(Math.log(controls.minDistance)-Math.log(controls.maxDistance))*u);
-const rToU=r=>clamp((Math.log(controls.maxDistance)-Math.log(r))/(Math.log(controls.maxDistance)-Math.log(controls.minDistance)),0,1);
-function setZoom(u){NAV.zu=clamp(u,0,1);NAV.zr=uToR(NAV.zu);takeOver()}
-let zp=null;
-const zFromY=e=>{const r=zoomEl.querySelector('.z-track').getBoundingClientRect();return 1-(e.clientY-r.top)/r.height};
-zoomEl.addEventListener('pointerdown',e=>{e.preventDefault();ensureAudio();zp=e.pointerId;try{zoomEl.setPointerCapture(e.pointerId)}catch{}NAV.zDrag=true;zoomEl.classList.add('on');navZap(zoomEl);setZoom(zFromY(e))});
-zoomEl.addEventListener('pointermove',e=>{if(zp===e.pointerId)setZoom(zFromY(e))});
-const zEnd=()=>{zp=null;NAV.zDrag=false;zoomEl.classList.remove('on')};
-zoomEl.addEventListener('pointerup',zEnd);zoomEl.addEventListener('pointercancel',zEnd);
-zoomEl.addEventListener('wheel',e=>{e.preventDefault();setZoom((NAV.zr!=null?NAV.zu:rToU(camera.position.distanceTo(controls.target)))-e.deltaY*.0016)},{passive:false});
-zoomEl.addEventListener('keydown',e=>{const k=e.key,cur=NAV.zr!=null?NAV.zu:rToU(camera.position.distanceTo(controls.target));e.stopPropagation();
-  const d={ArrowUp:.06,ArrowRight:.06,ArrowDown:-.06,ArrowLeft:-.06,PageUp:.2,PageDown:-.2}[k];
-  if(d!==undefined){e.preventDefault();setZoom(cur+d)}else if(k==='Home'){e.preventDefault();setZoom(0)}else if(k==='End'){e.preventDefault();setZoom(1)}});
-function updateNav(dt){
-  // knob: damped spring toward the stick position (overshoots a touch when released)
-  const tx=jp?NAV.jx:NAV.keys.x*.85, ty=jp?NAV.jy:NAV.keys.y*.85;
-  NAV.kvx+=(260*(tx-NAV.kx)-20*NAV.kvx)*dt; NAV.kvy+=(260*(ty-NAV.ky)-20*NAV.kvy)*dt; NAV.kx+=NAV.kvx*dt; NAV.ky+=NAV.kvy*dt;
-  const m=Math.hypot(NAV.kx,NAV.ky);
-  knob.style.transform=`translate(calc(-50% + ${NAV.kx*42}%), calc(-50% + ${NAV.ky*42}%)) rotateX(${-NAV.ky*16}deg) rotateY(${NAV.kx*16}deg)`;
-  joy.style.setProperty('--k',Math.min(1,m).toFixed(3));
-  // orbit speed eases toward the stick (camera weight), then glides out
-  const ka=1-Math.exp(-dt/.22);
-  NAV.vAz+=(tx*1.25-NAV.vAz)*ka; NAV.vPol+=(ty*.85-NAV.vPol)*ka;
-  const moving=Math.abs(NAV.vAz)>1e-4||Math.abs(NAV.vPol)>1e-4, zooming=NAV.zr!=null;
-  if((moving||zooming)&&!fly){
-    navOff.copy(camera.position).sub(controls.target); sph.setFromVector3(navOff);
-    if(moving){
-      const th=sph.theta+NAV.vAz*dt, ph=sph.phi+NAV.vPol*dt;
-      sph.theta=clamp(th,controls.minAzimuthAngle,controls.maxAzimuthAngle); sph.phi=clamp(ph,Math.max(.001,controls.minPolarAngle),controls.maxPolarAngle);
-      if(sph.theta!==th)NAV.vAz*=.5; if(sph.phi!==ph)NAV.vPol*=.5;   // soft stop at the limits
-    }
-    if(zooming){ // spring with slight under-damping: the camera "lands" on the new distance
-      const K=34,C=2*.8*Math.sqrt(K); NAV.zv+=(K*(NAV.zr-sph.radius)-C*NAV.zv)*dt; sph.radius+=NAV.zv*dt;
-      if(Math.abs(NAV.zr-sph.radius)<.003&&Math.abs(NAV.zv)<.01){sph.radius=NAV.zr;NAV.zr=null;NAV.zv=0}
-    }
-    sph.makeSafe(); navOff.setFromSpherical(sph); camera.position.copy(controls.target).add(navOff);
-  }
-  // slider shows the finger while dragging, otherwise where the camera actually is
-  const u=NAV.zDrag?NAV.zu:rToU(camera.position.distanceTo(controls.target));
-  zoomEl.style.setProperty('--u',u.toFixed(4)); zoomEl.setAttribute('aria-valuenow',Math.round(u*100));
-}
-
 /* ───────────── THEME: light / dark, eased between the two looks ───────────── */
 const root=document.documentElement, themeBtn=$('thm'), sysDark=matchMedia('(prefers-color-scheme: dark)');
 const LOOK={ // light → dark
-  bg:['#efefed','#0c0d0f'], sky:['#ffffff','#a9b8d8'], gnd:['#b9bab6','#0f1013'], hemi:[.45,.2], sun:[2,1.3], sunCol:['#fff6ea','#fff1e2'],
-  rim:[.9,2.1], rimCol:['#dfe8ff','#8fb4ff'], shadow:[.17,.5], exp:[1,1.12], pool:['#ffffff','#2b2f37'], poolOp:[.5,1]};
+  bg:['#ece5d8','#16140f'], sky:['#fff8ec','#8f7a62'], gnd:['#c9bca6','#120f0c'], hemi:[.55,.22], sun:[1.9,.75], sunCol:['#fff1dc','#ffd9b0'],
+  rim:[.7,1.2], rimCol:['#ffe9cf','#ffab70'], shadow:[.2,.55], exp:[1,1.05], pool:['#ffffff','#2b241d'], poolOp:[.5,1]};
 const LC={};for(const k in LOOK)if(typeof LOOK[k][0]==='string')LC[k]=LOOK[k].map(c=>new THREE.Color(c));
 const lerp=(a,b,k)=>a+(b-a)*k;
 const THEMED=[];{const seen=new Set();scene.traverse(o=>[o.material].flat().forEach(m=>{if(m?.userData?.tc&&!seen.has(m)){seen.add(m);THEMED.push(m)}}))}
@@ -853,7 +709,7 @@ function applyTheme(k){
 function setTheme(dark,{save=true,sweep=true}={}){
   themeT=dark?1:0; root.dataset.theme=dark?'dark':'light';
   if(save)try{localStorage.setItem('vdc-theme',dark?'dark':'light')}catch{}
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',dark?'#0d0e11':'#f6f6f4');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',dark?'#16140f':'#ece5d8');
   themeBtn.setAttribute('aria-pressed',String(dark)); themeBtn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode'); if(sweep)flip(themeBtn);
   if(sweep){ // a light sweep runs across every control, left to right, as the synth "re-lights"
     const v=new THREE.Vector3(); FXL.forEach(f=>{f.m.getWorldPosition(v);pulse(f.m,(v.x+13)*32,.6)}); drum(dark?'blip':'rim');}
@@ -863,14 +719,15 @@ sysDark.addEventListener?.('change',e=>{let saved=null;try{saved=localStorage.ge
 setTheme(themeT>.5,{save:false,sweep:false});
 
 /* ───────────── LOOP ───────────── */
-const ease=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2, v3=new THREE.Vector3();
-function resize(){const w=stage.clientWidth,h=stage.clientHeight,mob=!desktop();controls.enableRotate=true;controls.enableZoom=true;controls.minPolarAngle=mob?0:.12; /* touch: one finger orbits, pinch zooms; the on-screen controls are optional */renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
-  if(!fly){const f=frameFor(S.mode?MODES[S.mode].box:'all');camera.position.copy(f.p);controls.target.copy(f.t);controls.minDistance=f.d*.55;controls.maxDistance=frameFor('all').d*1.4;controls.update()}}
+const ease=k=>k<.5?8*k*k*k*k:1-Math.pow(-2*k+2,4)/2, v3=new THREE.Vector3(); // quartic in-out: slow start, slow landing
+function resize(){const w=stage.clientWidth,h=stage.clientHeight,mob=!desktop();controls.enableRotate=true;controls.enableZoom=true;controls.minPolarAngle=.02; /* touch: one finger orbits, pinch zooms; the on-screen controls are optional */renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
+  if(!fly){const f=frameFor(S.mode?MODES[S.mode].box:'all');camera.position.copy(f.p);controls.target.copy(f.t);controls.minDistance=f.d*.35;controls.maxDistance=frameFor('all').d*1.5;controls.update()}}
 new ResizeObserver(resize).observe(stage); resize();
 const clock=new THREE.Clock();
 let lastNow=performance.now();
 function loop(){const t=clock.getElapsedTime(),now=performance.now(),dt=Math.min(.05,(now-lastNow)/1000);lastNow=now;
-  if(fly){const k=Math.min(1,(now-fly.s)/fly.dur),e=ease(k);camera.position.lerpVectors(fly.p0,fly.p1,e);controls.target.lerpVectors(fly.t0,fly.t1,e);if(k>=1){fly=null;if(!drag)controls.enabled=true}}
+  if(fly){const k=Math.min(1,(now-fly.s)/fly.dur),e=ease(k);controls.target.lerpVectors(fly.t0,fly.t1,e);
+    sA.set(lerp(fly.r0,fly.r1,e)*(1+fly.lift*Math.sin(Math.PI*e)),lerp(fly.p0,fly.p1,e),fly.th0+fly.dT*e);camera.position.copy(controls.target).add(flyOff.setFromSpherical(sA));if(k>=1){fly=null;if(!drag)controls.enabled=true}}
   // keep the zoomed part clear of the card
   const w=stage.clientWidth,h=stage.clientHeight, tx=S.card&&desktop()?Math.min(235,w*.18):0, ty=S.card&&!desktop()?h*.28:0;
   offX+=(tx-offX)*.08; offY+=(ty-offY)*.08; camera.setViewOffset(w,h,offX,offY,w,h);
@@ -881,7 +738,13 @@ function loop(){const t=clock.getElapsedTime(),now=performance.now(),dt=Math.min
   if(ho&&!ho.userData.noLbl?.()){ho.getWorldPosition(v3);v3.y+=.45;v3.project(camera);
     const x=(v3.x+1)/2*w, y=(1-v3.y)/2*h; lbl.hidden=false; lbl.style.left=x+'px'; lbl.style.top=y+'px';
     const html=lastLive||labelHTML(ho); if(lbl._h!==html){lbl.innerHTML=html;lbl._h=html}} else lbl.hidden=true;
-  updateGroups(dt); updateOffice(dt,t); drawDesk();
+  updateGroups(dt); updateOffice(dt,t); paintKeys(); PANBOX.clampPoint(controls.target,controls.target);
   if(Math.abs(themeK-themeT)>.002){themeK=themeK<0?themeT:themeK+(themeT-themeK)*(reduceMotion?1:.075);if(Math.abs(themeK-themeT)<=.002)themeK=themeT;applyTheme(themeK)}
-  grille.scale.setScalar(1+level*.04); updateCables(); refreshGlow(t); updateFx(now); drawScreens(t); updateNav(dt); controls.update(); renderer.render(scene,camera); requestAnimationFrame(loop)}
-updateUI(); loop();
+  grille.scale.setScalar(1+level*.04); updateCables(); refreshGlow(t); updateFx(now); drawScreens(t); controls.update(); renderer.render(scene,camera); requestAnimationFrame(loop)}
+updateUI();
+{const it=$('intro');$('ixn').textContent=`${FOUND.size}/${Object.keys(FIND).length}`;
+ const go=(sound)=>{if(it.classList.contains('out'))return;try{sessionStorage.setItem('vdc-in','1')}catch{}
+   if(!sound&&!muted)toggleMute();ensureAudio();if(sound)drum('whoosh');it.classList.add('out');setTimeout(()=>it.remove(),900);
+   const f=frameFor('all');camera.position.copy(f.t).add(new THREE.Vector3(0,f.d*1.9,f.d*.12));controls.update();flyTo('all',2600)};
+ if(it){if(document.documentElement.classList.contains('entered'))it.remove();else{it.classList.add('ready');$('enter').onclick=()=>go(true);$('enter2').onclick=()=>go(true);$('quiet').onclick=()=>go(false)}}}
+loop();

@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Vickhal Roopram: UX/UI, graphic and motion designer. A portfolio you play as a 3D synthesizer.">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#f6f6f4">
+<meta name="theme-color" content="#ece5d8">
 <title>Vick Does Creative</title>
 <script>
 /* Pick the theme before the first paint: saved choice, else the system setting */
-(function(){var t;try{t=localStorage.getItem('vdc-theme')}catch(e){}if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t})();
+(function(){var t,d=document.documentElement;try{t=localStorage.getItem('vdc-theme');if(sessionStorage.getItem('vdc-in'))d.classList.add('entered')}catch(e){}if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.dataset.theme=t})();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Montserrat:wght@400..900&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Montserrat:wght@400..900&family=Courier+Prime:wght@400;700&family=Pinyon+Script&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="src/styles.css">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
@@ -29,40 +29,37 @@
   </div>
 </header>
 <nav id="menu" hidden aria-label="Sections">
-  <button id="home" data-go="home"><b>Home</b><small>The full synth</small></button>
-  <button data-go="about" style="--gc:#00ff15"><b>About Me</b><small>The life strip</small></button>
-  <button data-go="projects" style="--gc:#00bfff"><b>My Projects</b><small>The keyboard</small></button>
-  <button data-go="contact" style="--gc:#ff2020"><b>Contact</b><small>CV, contact &amp; socials</small></button>
-  <button data-go="desk" style="--gc:#3fb2ff"><b>Desktop</b><small>Projects on the screen</small></button>
-  <a href="assets/cv/vickhal-roopram-cv.pdf" target="_blank" rel="noopener"><b>Download CV</b><small>PDF</small></a>
+  <div class="m-list">
+    <button id="home" data-go="home"><small>00</small><b>Home</b></button>
+    <button data-go="about" style="--gc:#4fa66a"><small>01</small><b>About</b></button>
+    <button data-go="projects" style="--gc:#4f8fc0"><small>02</small><b>Projects</b></button>
+    <button data-go="contact" style="--gc:#e2614b"><small>03</small><b>Contact</b></button>
+    <a href="assets/cv/vickhal-roopram-cv.pdf" target="_blank" rel="noopener"><small>04</small><b>CV ↗</b></a>
+  </div>
+  <p class="m-foot">Vickhal Roopram · UX &amp; Motion Designer · South Africa</p>
 </nav>
 <div id="groups">
   <button class="grp" data-g="about" data-a="l" style="--gc:#00ff15">About Me</button>
   <button class="grp" data-g="contact" data-a="c" style="--gc:#ff2020">Contact</button>
   <button class="grp" data-g="projects" data-a="r" style="--gc:#00bfff">My Projects</button>
 </div>
-<div class="nav" id="nav" role="group" aria-label="Camera controls">
-  <div class="joy" id="joy" tabindex="0" role="button" aria-label="Camera tilt. Drag, or hold the arrow keys, to orbit the synth. Tap or press Enter to reset the view." title="Drag to tilt · tap to reset">
-    <svg class="joy-face" viewBox="0 0 100 100" aria-hidden="true">
-      <circle cx="50" cy="50" r="46" class="rim"/><circle cx="50" cy="50" r="33" class="well"/>
-      <path d="M50 9 46 15h8zM50 91l-4-6h8zM9 50l6-4v8zM91 50l-6-4v8z" class="chev"/>
-    </svg>
-    <span class="joy-knob" id="joyKnob" aria-hidden="true"><i></i></span>
-    <span class="cap" aria-hidden="true">Rotate &amp; Tilt</span>
-  </div>
-  <div class="zoom" id="zoom" tabindex="0" role="slider" aria-label="Zoom" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" title="Zoom">
-    <span class="z-sign" aria-hidden="true">+</span>
-    <span class="z-track" aria-hidden="true"><span class="z-fill"></span><span class="z-ticks"></span><span class="z-thumb"></span></span>
-    <span class="z-sign" aria-hidden="true">−</span>
-    <span class="cap" aria-hidden="true">Zoom</span>
-  </div>
-</div>
+<div id="ix" aria-live="polite"><span>Interactions</span><b id="ixn">0/12</b><small>Last interaction</small><i id="ixl">Nothing yet. Click a key.</i></div>
+<div id="frame" aria-hidden="true"></div>
+<p id="legend"><span class="d-only">Left drag rotate · Right drag pan · Scroll zoom</span><span class="m-only">Drag rotate · Pinch zoom · Two fingers pan</span><em>Click a key to explore</em></p>
 <div id="lbl" hidden></div>
 <div id="card" hidden role="dialog" aria-label="Details">
   <div class="ch"><div class="eyebrow" id="eb"></div><button id="prev" aria-label="Previous">‹</button><button id="next" aria-label="Next">›</button><button id="cls" aria-label="Close">✕</button></div>
   <div class="content" id="ct"></div>
 </div>
 <div id="lb" hidden><img alt=""></div>
+<div id="intro" role="dialog" aria-label="Welcome">
+  <div class="in-frame">
+    <span class="in-yr">2026</span><span class="in-name">Vickhal Roopram</span>
+    <button class="in-go" id="enter"><span>Enter</span></button><i class="in-bar" aria-hidden="true"></i><button class="in-go" id="enter2"><span>Portfolio</span></button>
+    <button class="in-quiet" id="quiet">enter without sound</button>
+    <p class="in-help">Use left / right click and the mouse wheel to navigate</p>
+  </div>
+</div>
 <script type="module" src="src/main.js"></script>
 </body>
 </html>
