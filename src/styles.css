@@ -235,7 +235,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offse
   transition:font-size .48s cubic-bezier(.2,.9,.25,1.12),font-weight .48s cubic-bezier(.2,.9,.25,1.12),transform .48s cubic-bezier(.2,.9,.25,1.12),color .6s ease,text-shadow .4s ease;visibility:hidden}
 .grp[data-a="c"]{--tx:-50%}
 .grp[data-a="r"]{--tx:-100%}
-.grp.on{font-size:max(30px, calc(var(--px) * 90));font-weight:900;transform:translate(var(--tx),calc(-100% + .16em));text-shadow:0 0 .5em color-mix(in srgb,var(--gc) 35%,transparent)}
+.grp.on{font-size:max(30px, calc(var(--px) * 90));font-weight:900;transform:translate(var(--tx),calc(-100% + .16em));text-shadow:0 0 .6em color-mix(in srgb,var(--gc) 18%,transparent)}
 .grp:focus-visible{outline:2px solid var(--gc);outline-offset:4px;border-radius:4px}
 /* camera-control captions */
 .nav .cap{position:absolute;bottom:calc(100% + 8px);left:0;font:400 max(10px, calc(var(--px) * 14))/1 var(--ui);letter-spacing:.02em;color:var(--title);white-space:nowrap;pointer-events:none}

@@ -104,7 +104,7 @@ The idea behind it, in Vick's own framing: he is "a creative software clients us
 
 ### Files
 ```
-index.html            Page shell: top bar (brand, Home, Sound), hint line, hover label (#lbl),
+index.html            Page shell: header (logo, theme, sound, menu #menu), section titles (#groups), hover label (#lbl),
                       detail card (#card), lightbox (#lb), import map, <script type=module src=src/main.js>
 src/content.js        All portfolio data (exports CH, LINKS, im). ~96 lines.
 src/main.js           Everything else. ~434 lines, sectioned with /* ─── NAME ─── */ banners:
@@ -199,6 +199,12 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - Drum pads are now **graphite caps with light print** (KO II); knob bands use a **diamond knurl**.
     - **Camera controls (`#nav`, section `NAV` in main.js):** joystick = rate control (stick sets target orbit speed; `vAz`/`vPol` ease toward it with τ≈0.22 s, so the camera accelerates and glides), knob is a damped spring (k 260, c 20) so it overshoots back to centre; tap (<6 px, <400 ms) = `resetView()` → `flyTo(current box)`. Zoom slider = position control on a log scale between `controls.minDistance`/`maxDistance`; radius follows a slightly under-damped spring (k 34, ζ 0.8). Any input cancels a running `fly`. Sits bottom right at every size (desktop card ends 140 px above the bottom to clear it; on phones it hides while a card sheet is open). Vick: users must still be able to use mouse, trackpad or touch instead, so OrbitControls rotate/zoom are now on for phones too (one-finger orbit, pinch zoom; they start top-down and the joystick tap resets).
     - HUD: CSS tokens for both themes; `.btn`/card nav get a `zap` glow + conic-gradient stroke (`@property --sw`) on press; the card traces its outline in the project colour on open. `--glow` follows the active mode.
+
+13. **Nov 2026: Figma header, section titles and underlights** (Figma file *Other Designs* → page *Portfolio-Project*: Empty State, 1) Home-Hover, 2) About Me-Hover, 3) Contact-Hover).
+    - **Header:** solid bar (`--hdr`, 170 px at 4K), logo + sun/moon + sound + hamburger SVGs from Figma in `assets/ui/` (`*-on-dark` / `*-on-light`, swapped by CSS per theme). Menu `#menu` (Home, About Me, My Projects, Contact, Download CV); burger bars morph to a cross. Sizes scale with `--px` = 100vw/3840 (clamped).
+    - **Section titles** `.grp` (About Me = life strip, Contact = remote, My Projects = main synth) are projected each frame from the top-back edge of each device's box in `updateGroups()`; they grow Medium 28.7 → Ultra 90 (`.on`). Font stack `--ui`: Gotham, then Montserrat (Gotham is licensed, not loaded).
+    - **Underlights:** one white soft-edged plane per device under it on the floor, tinted through `material.color`; fades in on hover in the overview. Vick asked for it subtle, *"almost like a bottom light under the synths"* (opacity .38 dark / .22 light). The My Projects light follows `MODES[S.kb].glow` and stays on (.75) while a keyboard mode or card is open.
+    - Clicking a title or a device body (not a control) zooms into that part.
 
 **Commenting tip:** artifact comments anchored to the 3D canvas **don't carry the click position or selection rectangle**. Ask Vick to name the control instead of guessing (this happened twice).
 

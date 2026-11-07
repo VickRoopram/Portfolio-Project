@@ -420,36 +420,35 @@ const BOX={
 };
 const POLAR={all:.68,kb:.62,cv:.5,life:.55,info:.6};
 
-/* ───────────── FIGMA: section titles + coloured underglow per device (About Me · Contact · My Projects) ─────────────
-   Hovering anywhere on a device (or its title) grows the title from Gotham Medium 28.7 to Ultra 90 (4K px) and
-   lights a soft halo under it, using the radial gradients from the Figma glow layers (150px layer blur at 4K). */
+/* ───────────── FIGMA: section titles + soft underlight per device (About Me · Contact · My Projects) ─────────────
+   Hovering anywhere on a device (or its title) grows the title from Gotham Medium 28.7 to Ultra 90 (4K px) and fades
+   in a subtle light underneath it, like an LED strip under the hardware. Colours come from the Figma glow layers;
+   the My Projects light takes the colour of the keyboard's current mode and stays on while you're in a keyboard mode. */
 const GROUPS={
-  about:{obj:TU,box:BOX.life,stops:[[0,'#007618'],[.79,'#9cffc5'],[1,'#00ff15']],go:()=>zoomTo(S.pad)},
-  contact:{obj:RM,box:BOX.cv,stops:[[.68,'#760000'],[.9,'#ff9c9c'],[1,'#ff0000']],go:()=>zoomTo('cv')},
-  projects:{obj:synth,box:boxOf([synth]),stops:[[0,'#000076'],[.79,'#9ce8ff'],[1,'#00bfff']],go:()=>zoomTo(S.kb)},
+  about:{obj:TU,box:BOX.life,col:()=>'#00ff15',go:()=>zoomTo(S.pad)},
+  contact:{obj:RM,box:BOX.cv,col:()=>'#ff2020',go:()=>zoomTo('cv')},
+  projects:{obj:synth,box:boxOf([synth]),col:()=>MODES[S.kb]?.glow||'#00bfff',go:()=>zoomTo(S.kb)},
 };
-function glowTexture(w,d,sig,stops){ // soft rounded-rect halo, computed per pixel so it needs no canvas filter support
-  const m=sig*3, W=256, H=Math.max(32,Math.round(W*(d+2*m)/(w+2*m))), sx=(w+2*m)/W, sz=(d+2*m)/H, c=document.createElement('canvas'); c.width=W; c.height=H;
-  const x=c.getContext('2d'), img=x.createImageData(W,H), col=stops.map(([p,h])=>[p,new THREE.Color(h)]), tmp=new THREE.Color(), r=Math.min(.35,d/3);
+function underlightTexture(w,d,sig){ // white, soft-edged footprint; tinted per device through the material colour
+  const m=sig*3.2, W=256, H=Math.max(32,Math.round(W*(d+2*m)/(w+2*m))), sx=(w+2*m)/W, sz=(d+2*m)/H, c=document.createElement('canvas'); c.width=W; c.height=H;
+  const x=c.getContext('2d'), img=x.createImageData(W,H), r=Math.min(.35,d/3);
   for(let j=0;j<H;j++)for(let i=0;i<W;i++){
     const px=(i+.5)*sx-m-w/2, pz=(j+.5)*sz-m-d/2, qx=Math.abs(px)-(w/2-r), qz=Math.abs(pz)-(d/2-r);
     const dist=Math.hypot(Math.max(qx,0),Math.max(qz,0))+Math.min(Math.max(qx,qz),0)-r;   // signed distance to the footprint
-    const a=dist<=0?1:Math.exp(-(dist*dist)/(2*sig*sig));
-    const t=Math.min(1,Math.hypot(px/(w/2),pz/(d/2))/Math.SQRT2*1.25);                 // elliptical gradient position
-    let k=0;while(k<col.length-1&&t>col[k+1][0])k++;
-    const [p0,c0]=col[k],[p1,c1]=col[Math.min(k+1,col.length-1)]; tmp.copy(c0).lerp(c1,p1>p0?Math.max(0,Math.min(1,(t-p0)/(p1-p0))):0);
-    const o=(j*W+i)*4; img.data[o]=tmp.r*255; img.data[o+1]=tmp.g*255; img.data[o+2]=tmp.b*255; img.data[o+3]=a*255}
-  x.putImageData(img,0,0); const tx=new THREE.CanvasTexture(c); tx.colorSpace=THREE.SRGBColorSpace; return {tx,m}}
+    const a=dist<=0?1:Math.exp(-(dist*dist)/(2*sig*sig))*.9+Math.exp(-dist/(sig*2.2))*.1;  // tight falloff + a faint long tail
+    const o=(j*W+i)*4; img.data[o]=img.data[o+1]=img.data[o+2]=255; img.data[o+3]=Math.min(1,a)*255}
+  x.putImageData(img,0,0); return {tx:new THREE.CanvasTexture(c),m}}
 for(const [key,g] of Object.entries(GROUPS)){
-  const s=g.box.getSize(new THREE.Vector3()), c=g.box.getCenter(new THREE.Vector3()), sig=Math.min(.75,Math.max(.45,Math.min(s.x,s.z)*.16));
-  const {tx,m}=glowTexture(s.x,s.z,sig,g.stops);
-  const mat=new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false,opacity:0,toneMapped:false});
+  const s=g.box.getSize(new THREE.Vector3()), c=g.box.getCenter(new THREE.Vector3()), sig=Math.min(.42,Math.max(.26,Math.min(s.x,s.z)*.09));
+  const {tx,m}=underlightTexture(s.x,s.z,sig);
+  const mat=new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false,opacity:0,toneMapped:false,color:new THREE.Color(g.col())});
   const mesh=new THREE.Mesh(new THREE.PlaneGeometry(s.x+2*m,s.z+2*m),mat); mesh.rotation.x=-Math.PI/2; mesh.position.set(c.x,.004,c.z); mesh.renderOrder=1; mesh.visible=false; scene.add(mesh);
   FXMATS.push(mat); // additive on the dark stage, normal on the light deck (theme code switches it)
   const el=document.querySelector(`.grp[data-g="${key}"]`);
   const b=g.box, a=el.dataset.a, inset=.35;
   g.anchor=new THREE.Vector3(a==='l'?b.min.x+inset:a==='r'?b.max.x-inset:c.x,b.max.y,b.min.z);
-  Object.assign(g,{key,mesh,mat,el,k:0});
+  Object.assign(g,{key,mesh,mat,el,k:0,tint:new THREE.Color(g.col())});
+  el.style.setProperty('--gc',g.col());
   el.addEventListener('pointerenter',()=>{S.grpLbl=key});
   el.addEventListener('pointerleave',()=>{if(S.grpLbl===key)S.grpLbl=null});
   el.addEventListener('focus',()=>{S.grpLbl=key}); el.addEventListener('blur',()=>{if(S.grpLbl===key)S.grpLbl=null});
@@ -464,17 +463,21 @@ function groupAt(o){ // which device the pointer is over: the control's parent c
 const gv=new THREE.Vector3();
 function updateGroups(dt){
   const w=stage.clientWidth,h=stage.clientHeight, overview=!S.mode&&!S.card&&!fly, act=overview?(S.grpLbl||S.grp||(S.hover&&groupAt(S.hover))):null;
-  const ease=reduceMotion?1:1-Math.exp(-dt*9), dark=themeK>.5, t=performance.now()/1000;
+  const ease=reduceMotion?1:1-Math.exp(-dt*6), cEase=reduceMotion?1:1-Math.exp(-dt*4), dark=themeK>.5, t=performance.now()/1000;
+  const kbOn=S.mode&&MODES[S.mode]?.box==='kb'||S.card&&KBM.includes(S.card.ch); // the keyboard is in a mode: keep its underlight on
   for(const g of Object.values(GROUPS)){
-    const on=g.key===act; g.k+=((on?1:0)-g.k)*ease;
-    const breathe=reduceMotion?1:1+.08*Math.sin(t*2.4);
-    g.mat.opacity=g.k*(dark?.85:.5)*breathe; g.mesh.visible=g.k>.004;
+    const on=g.key===act, target=on?1:(g.key==='projects'&&kbOn?.75:0); g.k+=(target-g.k)*ease;
+    g.tint.lerp(tmpCol.set(g.col()),cEase); g.mat.color.copy(g.tint);
+    const breathe=reduceMotion?1:1+.035*Math.sin(t*1.6);
+    g.mat.opacity=g.k*(dark?.38:.22)*breathe; g.mesh.visible=g.k>.004;
     g.el.classList.toggle('on',on);
     if(overview||!$('groups').classList.contains('off')){gv.copy(g.anchor).project(camera);
       const vis=gv.z<1&&gv.x>-1.2&&gv.x<1.2&&gv.y>-1.2&&gv.y<1.2; g.el.style.visibility=vis?'visible':'hidden';
       if(vis){g.el.style.left=((gv.x+1)/2*w).toFixed(1)+'px';g.el.style.top=((1-gv.y)/2*h).toFixed(1)+'px'}}
   }
+  GROUPS.projects.el.style.setProperty('--gc','#'+GROUPS.projects.tint.getHexString());
 }
+const tmpCol=new THREE.Color();
 
 /* ───────────── MENU (hamburger) ───────────── */
 const menu=$('menu'), mnu=$('mnu');
