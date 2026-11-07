@@ -153,13 +153,13 @@ scene.environment=new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironme
 const hemi=new THREE.HemisphereLight('#ffffff','#b9bab6',.45); scene.add(hemi);
 const rim=new THREE.DirectionalLight('#dfe8ff',.9); rim.position.set(9,6,-12); scene.add(rim);
 const sun=new THREE.DirectionalLight('#fff6ea',2.0); sun.position.set(-7,16,9); sun.castShadow=true;
-sun.shadow.mapSize.set(2048,2048); Object.assign(sun.shadow.camera,{left:-18,right:18,top:14,bottom:-14,near:1,far:50}); sun.shadow.radius=6; sun.shadow.bias=-.0004; scene.add(sun);
-const floor=new THREE.Mesh(new THREE.PlaneGeometry(200,200),new THREE.ShadowMaterial({opacity:.17})); floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; scene.add(floor);
+sun.shadow.mapSize.set(2048,2048); Object.assign(sun.shadow.camera,{left:-24,right:24,top:20,bottom:-20,near:1,far:60}); sun.shadow.radius=6; sun.shadow.bias=-.0004; scene.add(sun);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(200,200),new THREE.ShadowMaterial({opacity:.17})); floor.rotation.x=-Math.PI/2; floor.position.y=-30.9; floor.receiveShadow=true; scene.add(floor); // the room floor, under the desk
 /* soft studio "pool" of light under the synth: a brighter spot in light mode, a lit stage in dark mode */
 const pool=(()=>{const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d'),g=x.createRadialGradient(128,128,0,128,128,128);
   g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.55,'rgba(255,255,255,.45)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,256,256);
   const m=new THREE.Mesh(new THREE.PlaneGeometry(64,36),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false,opacity:.5}));
-  m.rotation.x=-Math.PI/2;m.position.set(-1.5,-.01,-1.5);m.renderOrder=-1;scene.add(m);return m})();
+  m.rotation.x=-Math.PI/2;m.position.set(-1.5,-30.89,-1.5);m.renderOrder=-1;scene.add(m);return m})();
 
 /* ── Materials: Teenage-Engineering-style anodised & brushed aluminium, satin plastic ── */
 function noiseTex(w,h,draw,rep=[1,1]){const c=document.createElement('canvas');c.width=w;c.height=h;draw(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(...rep);t.anisotropy=8;return t}
@@ -409,16 +409,171 @@ cable([[4.6,.3,-6.5],[6,.12,-7.4],[8.2,.1,-8.1],[10.4,.1,-7.2],[12.6,.1,-8.2],[1
 function updateCables(){CABLES.forEach(c=>{const tgt=c.isOn()?1:0;if(Math.abs(c.t-tgt)<.002){if(c.t!==tgt){c.t=tgt;c.build();if(tgt===1)drum('rim')}}else{c.t+=(tgt-c.t)*.06;c.build()}
   c.led.material.emissiveIntensity=c.t>.97?1.6:0})}
 
+/* ───────────── OFFICE: desk, desktop monitor (styled on the reference laptop), plant and lamp ─────────────
+   The synths sit on a light-oak desk. Every synth is cabled into the monitor, and the monitor's screen is a live
+   desktop that shows the keyboard's current channel as a grid of projects (click the screen to zoom in, click a tile to open it). */
+const OFF={};
+{ // desk: oak top (top surface at y = 0, so everything else keeps its height) on grey metal legs
+  const wood=canvasTex(1024,512,(x,W,H)=>{x.fillStyle='#d9c6a6';x.fillRect(0,0,W,H);
+    for(let i=0;i<420;i++){const y=Math.random()*H,a=.03+Math.random()*.08,dk=Math.random()<.5;x.strokeStyle=dk?`rgba(120,86,48,${a})`:`rgba(255,240,215,${a})`;x.lineWidth=.6+Math.random()*2.2;
+      x.beginPath();x.moveTo(0,y);for(let s=0;s<=W;s+=64)x.lineTo(s,y+Math.sin(s*.004+i)*6+(Math.random()-.5)*2);x.stroke()}
+    for(let k=0;k<5;k++){const cx=Math.random()*W,cy=Math.random()*H;for(let r=4;r<38;r+=5){x.strokeStyle='rgba(120,86,48,.06)';x.beginPath();x.ellipse(cx,cy,r*3.2,r*.7,0,0,7);x.stroke()}}});
+  wood.t.wrapS=wood.t.wrapT=THREE.RepeatWrapping; wood.t.repeat.set(2,1);
+  const wm=themed(new THREE.MeshPhysicalMaterial({map:wood.t,roughness:.58,clearcoat:.25,clearcoatRoughness:.5,bumpMap:TEX.grain,bumpScale:.05}),'#ffffff','#8d8276',1,.6);
+  const top=rbox(32.5,.9,23.5,.3,wm); top.position.set(.6,-.45,-2.6); top.castShadow=false; scene.add(top); OFF.top=top;
+  const lm=themed(new THREE.MeshPhysicalMaterial({color:'#c3c6cc',metalness:.85,roughness:.38}),'#c3c6cc','#4a4d54',1,.7);
+  [[-15.2,-13.8],[16.4,-13.8],[-15.2,8.6],[16.4,8.6]].forEach(([x,z])=>{const l=rbox(.85,30,.85,.2,lm);l.position.set(x,-15.9,z);l.castShadow=false;scene.add(l)});
+  const apron=rbox(30.5,.7,.2,.05,lm); apron.position.set(.6,-1.25,-14.1); scene.add(apron);
+}
+/* desktop monitor: silver aluminium back + stand, black glass bezel, 16:9 screen */
+const MON=new THREE.Group(); MON.position.set(-1.5,0,-11.7); scene.add(MON);
+const SCR_W=15, SCR_H=SCR_W*9/16, SCR_Y=2.9+SCR_H/2;
+{ const al=M(C.body,.55);
+  const base=rbox(4.4,.18,2.9,.14,al); base.position.set(0,.09,.35); MON.add(base);
+  const neck=rbox(2.3,3.6,.32,.12,al); neck.position.set(0,1.9,-.35); neck.rotation.x=.1; MON.add(neck);
+  const frame=rbox(SCR_W+.7,SCR_H+.7,.36,.32,al); frame.position.set(0,SCR_Y,0); MON.add(frame);
+  const bezel=rbox(SCR_W+.56,SCR_H+.56,.06,.26,new THREE.MeshPhysicalMaterial({color:'#060607',roughness:.12,clearcoat:1,clearcoatRoughness:.05})); bezel.position.set(0,SCR_Y,.18); MON.add(bezel);
+  const logo=new THREE.Mesh(new THREE.CircleGeometry(.32,32),M('#c4c6cc')); logo.position.set(0,SCR_Y,-.185); logo.rotation.y=Math.PI; MON.add(logo);
+  OFF.monParts=[base,neck,frame,bezel];
+}
+const desk=canvasTex(1920,1080); desk.t.anisotropy=8;
+const scrMesh=new THREE.Mesh(new THREE.PlaneGeometry(SCR_W,SCR_H),new THREE.MeshBasicMaterial({map:desk.t,toneMapped:false}));
+scrMesh.position.set(0,SCR_Y,.215); MON.add(scrMesh);
+/* plant: snake plant in a white ceramic pot */
+const PLANT=new THREE.Group(); PLANT.position.set(14.1,0,-11.2); scene.add(PLANT);
+{ const pot=cyl(1.25,1.0,2.1,new THREE.MeshPhysicalMaterial({color:'#f1efea',roughness:.32,clearcoat:.6,clearcoatRoughness:.25}),48); pot.position.y=1.05; PLANT.add(pot);
+  const rimR=new THREE.Mesh(new THREE.TorusGeometry(1.2,.07,10,48),pot.material); rimR.rotation.x=-Math.PI/2; rimR.position.y=2.1; PLANT.add(rimR);
+  const soil=new THREE.Mesh(new THREE.CircleGeometry(1.16,40),new THREE.MeshStandardMaterial({color:'#3b2c22',roughness:1})); soil.rotation.x=-Math.PI/2; soil.position.y=1.98; PLANT.add(soil);
+  const leafM=new THREE.MeshPhysicalMaterial({color:'#3f8a47',roughness:.45,clearcoat:.4,clearcoatRoughness:.4,side:THREE.DoubleSide});
+  const leafM2=new THREE.MeshPhysicalMaterial({color:'#5aa15a',roughness:.45,clearcoat:.4,clearcoatRoughness:.4,side:THREE.DoubleSide});
+  const leafGeo=h=>{const s=new THREE.Shape();s.moveTo(-.26,0);s.bezierCurveTo(-.36,h*.45,-.2,h*.8,0,h);s.bezierCurveTo(.2,h*.8,.36,h*.45,.26,0);s.closePath();return new THREE.ShapeGeometry(s,12)};
+  OFF.leaves=[];
+  [[0,5.2,0,.06],[1.1,4.4,.35,.22],[2.2,4.8,-.3,.18],[3.3,3.9,.4,.3],[4.3,4.6,.2,.14],[5.2,3.6,-.4,.32],[.6,3.4,-.2,.36],[2.8,3.2,.5,.4],[4.9,5.0,0,.1]].forEach(([a,h,o,lean],i)=>{
+    const g=new THREE.Group(); g.position.set(Math.cos(a)*o*.9,1.98,Math.sin(a)*o*.9); g.rotation.y=a; PLANT.add(g);
+    const l=new THREE.Mesh(leafGeo(h),i%3?leafM:leafM2); l.rotation.x=-lean; l.castShadow=true; g.add(l); OFF.leaves.push({g:l,base:-lean,ph:i*1.7})});
+}
+/* lamp: coral mushroom lamp with a cream shade and a warm light; click it to switch it on or off */
+const LAMP=new THREE.Group(); LAMP.position.set(12.9,0,-3.4); scene.add(LAMP);
+const lampLight=new THREE.PointLight('#ffb36b',0,22,1.6); lampLight.position.set(0,3.1,0); LAMP.add(lampLight);
+const lampDome=(()=>{const coral=new THREE.MeshPhysicalMaterial({color:'#ea8a7d',roughness:.35,clearcoat:.5,clearcoatRoughness:.3});
+  const b=cyl(.85,.92,.18,coral,48); b.position.y=.09; LAMP.add(b);
+  const st=cyl(.075,.075,3.1,coral,20); st.position.y=1.7; LAMP.add(st);
+  const d=new THREE.Mesh(new THREE.SphereGeometry(1.35,48,24,0,Math.PI*2,0,Math.PI/2),new THREE.MeshPhysicalMaterial({color:'#f6ecdc',roughness:.6,emissive:'#ffcf96',emissiveIntensity:0,side:THREE.DoubleSide,transmission:0}));
+  d.scale.y=.78; d.position.y=3.05; d.castShadow=true; LAMP.add(d);
+  const bulb=new THREE.Mesh(new THREE.SphereGeometry(.28,20,12),new THREE.MeshBasicMaterial({color:'#fff1d6'})); bulb.position.y=3.0; LAMP.add(bulb); OFF.bulb=bulb;
+  [b,st].forEach(m=>{m.userData.proxy=d;hits.push(m)}); return d})();
+const lampPool=(()=>{const {t}=canvasTex(256,256,(x)=>{const g=x.createRadialGradient(128,128,0,128,128,128);g.addColorStop(0,'rgba(255,190,120,1)');g.addColorStop(.35,'rgba(255,170,100,.45)');g.addColorStop(1,'rgba(255,160,90,0)');x.fillStyle=g;x.fillRect(0,0,256,256)});
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(13,13),new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,opacity:0,toneMapped:false}));
+  m.rotation.x=-Math.PI/2; m.position.set(12.9,.003,-3.4); m.renderOrder=1; scene.add(m); FXMATS.push(m.material); return m})();
+const LAMPST={on:true,k:1};
+lampDome.userData={tip:'Lamp · click to switch it on or off',down(){LAMPST.on=!LAMPST.on;LAMPST.dip=1;drum(LAMPST.on?'blip':'rim')}}; hits.push(lampDome);
+function updateOffice(dt,t){
+  LAMPST.k+=((LAMPST.on?1:0)-LAMPST.k)*(reduceMotion?1:1-Math.exp(-dt*8));
+  const dk=Math.max(0,themeK), k=LAMPST.k;
+  lampLight.intensity=k*lerp(9,26,dk); lampDome.material.emissiveIntensity=k*lerp(.25,.85,dk);
+  OFF.bulb.material.color.setRGB(1,lerp(.8,.95,k),lerp(.62,.84,k)).multiplyScalar(.35+.65*k);
+  lampPool.material.opacity=k*lerp(.18,.55,dk); lampPool.visible=k>.01;
+  LAMPST.dip=Math.max(0,(LAMPST.dip||0)-dt*5); lampDome.position.y=3.05-.06*Math.sin(LAMPST.dip*Math.PI); // a little press on click
+  if(!reduceMotion)OFF.leaves.forEach(l=>{l.g.rotation.x=l.base+Math.sin(t*.7+l.ph)*.025});
+}
+/* cables from every synth into the monitor (always plugged in) */
+function staticCable(pts,color,r){const mat=M(color,.5);const m=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(...p))),160,r,10),mat);m.castShadow=true;scene.add(m);
+  const e=pts.at(-1),e2=pts.at(-2),plug=rbox(.3,.22,.55,.06,mat);plug.position.set(e[0],Math.max(e[1],.11),e[2]);plug.lookAt(new THREE.Vector3(...e2));scene.add(plug);
+  const s=pts[0],s2=pts[1],plug2=rbox(.3,.22,.55,.06,mat);plug2.position.set(s[0],Math.max(s[1],.11),s[2]);plug2.lookAt(new THREE.Vector3(...s2));scene.add(plug2);return m}
+staticCable([[-11.7,.3,-3.35],[-11.8,.1,-4.6],[-12.3,.1,-7.6],[-10.6,.1,-10.7],[-6.2,.1,-13.2],[-3.6,.1,-13.7],[-2.7,.25,-13.0]],'#ff5d1a',.08);  // remote → monitor
+staticCable([[-6.6,.3,-7.95],[-6.7,.1,-9.3],[-5.4,.1,-11.9],[-3.2,.1,-13.9],[-1.5,.1,-13.9],[-1.5,.25,-13.1]],'#2a2b2e',.075);                    // life strip → monitor
+staticCable([[7.6,.45,-3.75],[7.7,.1,-4.6],[7.5,.1,-8.9],[4.6,.1,-11.6],[1.3,.1,-13.6],[-.35,.25,-13.0]],'#2a2b2e',.08);                          // main synth → monitor
+
+/* ───────────── DESKTOP SCREEN: a live desktop showing the keyboard's current channel ───────────── */
+CH.desk={name:'DESKTOP',col:'#3d9ad8',items:[]};
+MODES.desk={part:'The desktop',n:'Projects on screen',dock:'Desktop',glow:'#3fb2ff',box:'screen'};
+const TABS=[['gd','Design'],['ux','UI/UX'],['mo','Motion'],['tl','Tools'],['xp','Experimental']];
+const DOCKCH=['gd','ux','mo','tl','xp','ab','sk','aw','wk','sd'];
+const DICONS=[['About me','ab',0,'#d71920'],['Contact','cv',1,'#ff5d1a'],['CV','cv',0,'#ff5d1a'],['Life','fm',0,'#1fa957']];
+const IMG={}; let imgTick=0;
+function imgOf(src){let e=IMG[src];if(!e){e=IMG[src]=new Image();e.onload=()=>imgTick++;e.src=src}return e.complete&&e.naturalWidth?e:null}
+let REG=[], scrHover=-1, deskKey='';
+const rr=(x,X,Y,W,H,R)=>{x.beginPath();rrPath(x,X,Y,W,H,R)};
+function setKb(ch){if(S.kb===ch)return;S.kb=ch;playNote(72+DOCKCH.indexOf(ch)%7*2,.4);modeWave(ch);updateUI()}
+function deskAct(r){ensureAudio();if(S.mode!=='desk'){zoomTo('desk');return}if(!r)return;r.act()}
+function drawDesk(){
+  const ch=S.kb, c=CH[ch], dark=themeK>.5, hovItem=S.hover?.userData?.item&&S.hover.userData.ch===ch?S.hover.userData.i:-1, openI=S.card?.ch===ch?S.card.i:-1;
+  const now=new Date(), clock=now.toTimeString().slice(0,5);
+  const key=[ch,scrHover,hovItem,openI,imgTick,dark,clock,S.mode==='desk'].join();
+  if(key===deskKey)return; deskKey=key;
+  const x=desk.x,W=1920,H=1080; REG=[];
+  // wallpaper
+  const g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,dark?'#141a26':'#dfe6f2'); g.addColorStop(1,dark?'#2a1d28':'#f3e6e8'); x.fillStyle=g; x.fillRect(0,0,W,H);
+  const blob=x.createRadialGradient(W*.75,H*.25,0,W*.75,H*.25,W*.55); blob.addColorStop(0,c.col+(dark?'55':'40')); blob.addColorStop(1,c.col+'00'); x.fillStyle=blob; x.fillRect(0,0,W,H);
+  // menu bar
+  x.fillStyle=dark?'rgba(20,22,28,.82)':'rgba(250,250,252,.86)'; x.fillRect(0,0,W,46);
+  x.textBaseline='middle'; x.fillStyle=dark?'#f2f2f4':'#111'; x.font='800 22px Montserrat, "Noto Sans", sans-serif'; x.fillText('Vickhal Roopram',28,23);
+  let tx=250; x.font='500 20px Montserrat, "Noto Sans", sans-serif';
+  TABS.forEach(([k,l])=>{const w=x.measureText(l).width+28, i=REG.length, on=k===ch, hv=scrHover===i;
+    if(on||hv){x.fillStyle=on?CH[k].col+'33':(dark?'rgba(255,255,255,.08)':'rgba(0,0,0,.06)');rr(x,tx-4,8,w,30,8);x.fill()}
+    x.fillStyle=on?CH[k].col:(dark?'#d6d7db':'#333');x.fillText(l,tx+10,23);
+    REG.push({x:tx-4,y:8,w,h:30,tip:`${CH[k].name} · show on screen`,act:()=>setKb(k)});tx+=w+6});
+  x.textAlign='right'; x.fillStyle=dark?'#d6d7db':'#333'; x.fillText(clock,W-28,23); x.textAlign='left';
+  // window
+  const WX=90,WY=96,WW=1530,WH=850;
+  x.save(); x.shadowColor='rgba(0,0,0,.35)'; x.shadowBlur=40; x.shadowOffsetY=14; x.fillStyle=dark?'#1c1d22':'#ffffff'; rr(x,WX,WY,WW,WH,22); x.fill(); x.restore();
+  x.fillStyle=dark?'#26272d':'#f3f3f5'; x.save(); rr(x,WX,WY,WW,WH,22); x.clip(); x.fillRect(WX,WY,WW,50); x.restore();
+  ['#ff5f57','#febc2e','#28c840'].forEach((cl,i)=>{x.fillStyle=cl;x.beginPath();x.arc(WX+28+i*26,WY+25,8,0,7);x.fill()});
+  x.textAlign='center'; x.font='600 20px Montserrat, "Noto Sans", sans-serif'; x.fillStyle=dark?'#c9cad0':'#555'; x.fillText(c.name.charAt(0)+c.name.slice(1).toLowerCase(),WX+WW/2,WY+25); x.textAlign='left';
+  const n=c.items.length;
+  x.font='800 50px Montserrat, "Noto Sans", sans-serif'; x.fillStyle=dark?'#f4f4f6':'#111'; x.textBaseline='alphabetic';
+  x.fillText(`${(MODES[ch]?.n||n+' pieces').replace(/^./,m=>m.toUpperCase())}, all mine.`,WX+56,WY+128);
+  x.font='400 22px Montserrat, "Noto Sans", sans-serif'; x.fillStyle=dark?'#9a9ca3':'#666';
+  x.fillText(S.mode==='desk'?'Click one to open it, or play the keys on the synth.':'Click the screen to look closer.',WX+56,WY+166);
+  // project tiles: 6 across
+  const cols=6,gap=22,GX0=WX+56,GY0=WY+200,TW=(WW-112-gap*(cols-1))/cols,TH=TW*9/16,RH=TH+70;
+  c.items.slice(0,18).forEach((it,i)=>{const cx=GX0+(i%cols)*(TW+gap), cy=GY0+Math.floor(i/cols)*(RH+16), id=REG.length, hv=scrHover===id||hovItem===i||openI===i;
+    x.save(); rr(x,cx,cy,TW,TH,12); x.clip();
+    const im=it.img?.[0]&&imgOf(it.img[0].s);
+    if(im){const s=Math.max(TW/im.naturalWidth,TH/im.naturalHeight),iw=im.naturalWidth*s,ih=im.naturalHeight*s;x.drawImage(im,cx+(TW-iw)/2,cy+(TH-ih)/2,iw,ih)}
+    else{const gg=x.createLinearGradient(cx,cy,cx+TW,cy+TH);gg.addColorStop(0,c.col);gg.addColorStop(1,dark?'#15161a':'#2b2c31');x.fillStyle=gg;x.fillRect(cx,cy,TW,TH);
+      x.fillStyle='rgba(255,255,255,.9)';x.font='26px Bungee, Impact, sans-serif';x.textBaseline='middle';x.fillText(pad(i+1),cx+16,cy+30);
+      x.font='700 22px Montserrat, "Noto Sans", sans-serif';wrap(x,it.t,TW-32).slice(0,2).forEach((l,j)=>x.fillText(l,cx+16,cy+TH-44+j*26));x.textBaseline='alphabetic'}
+    x.restore();
+    if(hv){x.lineWidth=5;x.strokeStyle=MODES[ch]?.glow||c.col;rr(x,cx-3,cy-3,TW+6,TH+6,14);x.stroke()}
+    x.fillStyle=dark?'#f0f0f2':'#111';x.font='700 19px Montserrat, "Noto Sans", sans-serif';x.fillText(wrap(x,it.t,TW)[0],cx,cy+TH+30);
+    x.fillStyle=dark?'#8d8f96':'#777';x.font='400 16px Montserrat, "Noto Sans", sans-serif';x.fillText(wrap(x,it.k||'',TW)[0],cx,cy+TH+54);
+    REG.push({x:cx,y:cy,w:TW,h:RH,tip:`${c.name} · ${pad(i+1)} · ${it.t}`,act:()=>{openCard(ch,i);noteFor(i)}})});
+  // desktop icons (right)
+  x.textAlign='center';
+  DICONS.forEach(([l,cch,ci,col],j)=>{const ix=W-150,iy=120+j*170,id=REG.length,hv=scrHover===id;
+    x.save();x.shadowColor='rgba(0,0,0,.25)';x.shadowBlur=hv?22:12;x.fillStyle=dark?'#2a2b31':'#ffffff';rr(x,ix,iy,96,96,22);x.fill();x.restore();
+    if(hv){x.lineWidth=4;x.strokeStyle=col;rr(x,ix-2,iy-2,100,100,24);x.stroke()}
+    x.fillStyle=col;x.font='30px Bungee, Impact, sans-serif';x.textBaseline='middle';x.fillText(l==='About me'?'VR':l==='Contact'?'@':l==='CV'?'CV':'♥',ix+48,iy+50);
+    x.fillStyle=dark?'#e6e6ea':'#222';x.font='600 19px Montserrat, "Noto Sans", sans-serif';x.fillText(l,ix+48,iy+124);x.textBaseline='alphabetic';
+    REG.push({x:ix,y:iy,w:96,h:136,tip:l,act:()=>{openCard(cch,ci)}})});
+  // dock
+  const DS=78,DG=14,DW=DOCKCH.length*(DS+DG)+DG+20,DX=(W-DW)/2,DY=H-DS-46;
+  x.fillStyle=dark?'rgba(40,42,50,.75)':'rgba(255,255,255,.7)';rr(x,DX,DY-10,DW,DS+20,26);x.fill();
+  DOCKCH.forEach((k,i)=>{const dx=DX+20+i*(DS+DG),id=REG.length,hv=scrHover===id,on=k===ch,s=hv?8:0;
+    const gg=x.createLinearGradient(dx,DY,dx,DY+DS);gg.addColorStop(0,CH[k].col);gg.addColorStop(1,dark?'#121317':'#3a3b40');x.fillStyle=gg;rr(x,dx-s/2,DY-s,DS+s,DS+s,18);x.fill();
+    x.fillStyle='#fff';x.font='22px Bungee, Impact, sans-serif';x.textBaseline='middle';x.fillText(CH[k].name.replace(/[^A-Z]/g,'').slice(0,2),dx+DS/2,DY+DS/2-s/2);x.textBaseline='alphabetic';
+    if(on){x.fillStyle=dark?'#fff':'#111';x.beginPath();x.arc(dx+DS/2,DY+DS+6,4,0,7);x.fill()}
+    REG.push({x:dx,y:DY,w:DS,h:DS,tip:`${CH[k].name} · show on screen`,act:()=>setKb(k)})});
+  x.textAlign='left';
+  desk.t.needsUpdate=true;
+}
+function regAt(uv){if(!uv)return -1;const px=uv.x*1920,py=(1-uv.y)*1080;return REG.findIndex(r=>px>=r.x&&px<=r.x+r.w&&py>=r.y&&py<=r.y+r.h)}
+scrMesh.userData={get tip(){return S.mode!=='desk'?'Desktop · click to see the projects up close':(REG[scrHover]?.tip||'Desktop')},noLbl:()=>S.mode==='desk',
+  down(){const i=S.mode==='desk'&&lastHit?.object===scrMesh?regAt(lastHit.uv):-1;deskAct(REG[i])}}; hits.push(scrMesh);
+OFF.monParts.forEach(m=>{m.userData.proxy=scrMesh;hits.push(m)});
+
 /* ───────────── CAMERA: overview + per-part framing ───────────── */
 scene.updateMatrixWorld(true);
 const boxOf=objs=>{const b=new THREE.Box3();objs.forEach(o=>b.expandByObject(o));return b};
 const BOX={
-  all:new THREE.Box3(new THREE.Vector3(-12.9,0,-7.9),new THREE.Vector3(9.6,1.4,3.8)),
+  all:new THREE.Box3(new THREE.Vector3(-13.6,0,-13.2),new THREE.Vector3(15.5,11.7,4.2)), // the whole desk: synths, monitor, lamp and plant
+  screen:new THREE.Box3(new THREE.Vector3(-1.5-SCR_W/2,SCR_Y-SCR_H/2,-11.6),new THREE.Vector3(-1.5+SCR_W/2,SCR_Y+SCR_H/2,-11.4)),
   kb:boxOf([...keyMeshes,...sharpMeshes,...ROWBTN.map(a=>a[0])]), cv:boxOf([RM]), life:boxOf([TU]),
   th:new THREE.Box3(new THREE.Vector3(GX(4)-.5,TOP,GZ(0)-.6),new THREE.Vector3(GX(15)+.5,TOP+.8,GZ(1)+.9)),
   info:new THREE.Box3(new THREE.Vector3(-8.6,TOP,GZ(1)),new THREE.Vector3(8.6,TOP+.5,GZ(3)+.3)),
 };
-const POLAR={all:.68,kb:.62,cv:.5,life:.55,info:.6};
+const POLAR={all:.82,kb:.62,cv:.5,life:.55,info:.6,screen:1.5};
 
 /* ───────────── FIGMA: section titles + soft underlight per device (About Me · Contact · My Projects) ─────────────
    Hovering anywhere on a device (or its title) grows the title from Gotham Medium 28.7 to Ultra 90 (4K px) and fades
@@ -457,6 +612,7 @@ for(const [key,g] of Object.entries(GROUPS)){
 const GSET=new Map([[TU,'about'],[RM,'contact'],[synth,'projects']]);
 function groupAt(o){ // which device the pointer is over: the control's parent chain first, then the devices' bounding boxes
   for(let p=o;p;p=p.parent)if(GSET.has(p))return GSET.get(p);
+  if(o)return null; // a control that isn't on a synth (monitor, lamp)
   let best=null,bd=Infinity;const hit=new THREE.Vector3();
   for(const g of Object.values(GROUPS))if(ray.ray.intersectBox(g.box,hit)){const d=hit.distanceTo(ray.ray.origin);if(d<bd){bd=d;best=g.key}}
   return best}
@@ -485,20 +641,20 @@ function openMenu(){menu.classList.remove('out');menu.hidden=false;mnu.setAttrib
 function closeMenu(){if(menu.hidden)return;mnu.setAttribute('aria-expanded','false');mnu.setAttribute('aria-label','Menu');
   if(reduceMotion){menu.hidden=true;return}menu.classList.add('out');menu.addEventListener('animationend',()=>{if(menu.classList.contains('out')){menu.hidden=true;menu.classList.remove('out')}},{once:true})}
 mnu.onclick=()=>{ensureAudio();menu.hidden||menu.classList.contains('out')?openMenu():closeMenu()};
-menu.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b){if(e.target.closest('a'))closeMenu();return}const k=b.dataset.go;if(k==='home')return;closeMenu();ensureAudio();if(S.mode)S.mode=null;GROUPS[k].go()});
+menu.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b){if(e.target.closest('a'))closeMenu();return}const k=b.dataset.go;if(k==='home')return;closeMenu();ensureAudio();if(k==='desk'){zoomTo('desk');return}if(S.mode)S.mode=null;GROUPS[k].go()});
 document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!menu.contains(e.target)&&!mnu.contains(e.target))closeMenu()});
 const desktop=()=>innerWidth>760;
 function frameFor(key){
-  const b=BOX[key],c=b.getCenter(new THREE.Vector3()),s=b.getSize(new THREE.Vector3()),pol=desktop()?POLAR[key]:.001;
+  const b=BOX[key],c=b.getCenter(new THREE.Vector3()),s=b.getSize(new THREE.Vector3()),pol=desktop()?POLAR[key]:key==='screen'?1.5:key==='all'?.5:.001;
   const w=stage.clientWidth,h=stage.clientHeight, T=Math.tan(THREE.MathUtils.degToRad(camera.fov)/2);
   let tanV=T, tanH=T*w/h;
   if(key!=='all'&&!desktop()) tanV=T*.62;
   const m=key==='all'?1.3:desktop()?.9:1.02;
-  const d=Math.max((s.x/2*m)/tanH,((s.z*Math.cos(pol)+s.y)/2*m+.3)/tanV)+s.y;
+  const d=Math.max((s.x/2*m)/tanH,((s.z*Math.cos(pol)+s.y)/2*m+.3)/tanV)+(key==='screen'?0:s.y);
   return {t:c,p:new THREE.Vector3(c.x,c.y+d*Math.cos(pol),c.z+d*Math.sin(pol)),d};
 }
 let fly=null, offX=0, offY=0;
-function flyTo(key){const f=frameFor(key);fly={p0:camera.position.clone(),t0:controls.target.clone(),p1:f.p,t1:f.t,s:performance.now(),dur:1500};controls.enabled=false;
+function flyTo(key){const f=frameFor(key);controls.maxPolarAngle=key==='screen'?1.56:1.22;fly={p0:camera.position.clone(),t0:controls.target.clone(),p1:f.p,t1:f.t,s:performance.now(),dur:1500};controls.enabled=false;
   controls.minDistance=f.d*.55;controls.maxDistance=Math.max(f.d*1.6,frameFor('all').d*1.3)}
 function zoomTo(ch){if(S.mode===ch)return;if(KBM.includes(ch))S.kb=ch;if(PADM.includes(ch))S.pad=ch;const same=S.mode&&MODES[S.mode].box===MODES[ch].box;S.mode=ch;closeCard();drum(same?'blip':'whoosh');if(!same)flyTo(MODES[ch].box);updateUI();modeWave(ch)}
 /* mode switch: the filter/knob that owns the mode strokes, then a wave of gap-glow + strokes ripples across the controls that now hold its projects */
@@ -592,9 +748,9 @@ const controls=new OrbitControls(camera,cv); controls.enableDamping=true; contro
 let lastLive='';
 cv.addEventListener('pointermove',e=>{
   if(drag){const dy=e.clientY-drag.y,dx=e.clientX-drag.x;drag.y=e.clientY;drag.x=e.clientX;drag.m+=Math.abs(dy)+Math.abs(dx);drag.o.userData.drag?.(-dy+dx*.5);lastLive=drag.o.userData.live?.()||'';return}
-  if(e.pointerType!=='mouse')return;const o=pick(e);S.grp=S.mode||S.card?null:groupAt(o);cv.style.cursor=o||S.grp?'pointer':'grab';S.hover=o||null;S.hoverUntil=Infinity});
+  if(e.pointerType!=='mouse')return;const o=pick(e);S.grp=S.mode||S.card?null:groupAt(o);scrHover=o===scrMesh&&S.mode==='desk'&&lastHit?.object===scrMesh?regAt(lastHit.uv):-1;cv.style.cursor=o||S.grp?'pointer':'grab';S.hover=o||null;S.hoverUntil=Infinity});
 const end=e=>{if(drag){drag.o.userData.up?.(e&&e.clientX!==undefined?Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy):drag.m);drag=null;lastLive='';if(!fly)controls.enabled=true}};
-cv.addEventListener('pointerup',e=>{if(bodyTap&&Math.hypot(e.clientX-bodyTap.x,e.clientY-bodyTap.y)<6&&!S.mode)GROUPS[bodyTap.g].go();bodyTap=null;end(e)});cv.addEventListener('pointercancel',end);cv.addEventListener('pointerleave',()=>{if(!drag)S.hover=null;S.grp=null});
+cv.addEventListener('pointerup',e=>{if(bodyTap&&Math.hypot(e.clientX-bodyTap.x,e.clientY-bodyTap.y)<6&&!S.mode)GROUPS[bodyTap.g].go();bodyTap=null;end(e)});cv.addEventListener('pointercancel',end);cv.addEventListener('pointerleave',()=>{if(!drag)S.hover=null;S.grp=null;scrHover=-1});
 const KW='asdfghjkl;', KS={w:0,e:1,t:2,y:3,u:4,o:5,p:6}, KD='zxcvbnm,.';
 const held=new Set();
 addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey)return;const k=e.key.toLowerCase();
@@ -720,10 +876,10 @@ function loop(){const t=clock.getElapsedTime(),now=performance.now(),dt=Math.min
   if(S.hover&&now>S.hoverUntil&&!drag)S.hover=null;
   // floating label
   const ho=drag?.o||S.hover;
-  if(ho){ho.getWorldPosition(v3);v3.y+=.45;v3.project(camera);
+  if(ho&&!ho.userData.noLbl?.()){ho.getWorldPosition(v3);v3.y+=.45;v3.project(camera);
     const x=(v3.x+1)/2*w, y=(1-v3.y)/2*h; lbl.hidden=false; lbl.style.left=x+'px'; lbl.style.top=y+'px';
     const html=lastLive||labelHTML(ho); if(lbl._h!==html){lbl.innerHTML=html;lbl._h=html}} else lbl.hidden=true;
-  updateGroups(dt);
+  updateGroups(dt); updateOffice(dt,t); drawDesk();
   if(Math.abs(themeK-themeT)>.002){themeK=themeK<0?themeT:themeK+(themeT-themeK)*(reduceMotion?1:.075);if(Math.abs(themeK-themeT)<=.002)themeK=themeT;applyTheme(themeK)}
   grille.scale.setScalar(1+level*.04); updateCables(); refreshGlow(t); updateFx(now); drawScreens(t); updateNav(dt); controls.update(); renderer.render(scene,camera); requestAnimationFrame(loop)}
 updateUI(); loop();
