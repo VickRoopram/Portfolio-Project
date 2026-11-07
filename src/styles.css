@@ -15,10 +15,16 @@ img{max-width:100%}
   --display:"Bungee", "Arial Black", Impact, sans-serif;
   --body:"Noto Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  /* Figma uses Gotham (licensed); Montserrat is the closest free geometric sans */
+  --ui:"Gotham", "Montserrat", "Noto Sans", system-ui, sans-serif;
+  /* Figma frames are 4K (3840px wide): 1 design px = --px, so 1920px screens get exactly half size */
+  --px:clamp(.36px, calc(100vw / 3840), .62px);
+  --hdr:#f6f6f4; --hdr-h:max(58px, calc(var(--px) * 170)); --title:rgba(13,14,17,.45);
   color-scheme:light;
 }
 /* Dark mode: gunmetal studio. Same structure, inverted values. */
 :root[data-theme="dark"]{
+  --hdr:#0d0e11; --title:rgba(255,255,255,.45);
   --floor:#0c0d0f; --card:#151619; --card2:#1c1d21; --ink:#ececea; --mute:#9a9ca4; --line:#2a2b31;
   --chip:#23252a; --chip-ink:#c9cbd1; --track:#25262b; --btnbg:rgba(26,27,31,.86); --shadow:rgba(0,0,0,.55);
   color-scheme:dark;
@@ -29,14 +35,8 @@ html,body{height:100%}
 body{background:var(--floor);color:var(--ink);font-family:var(--body);overflow:hidden}
 #stage{position:fixed;inset:0;touch-action:none}
 #stage canvas{display:block;width:100%;height:100%}
-.top{position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));display:flex;align-items:center;gap:12px;pointer-events:none;z-index:4}
-.top>*{pointer-events:auto}
-.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-size:17px;letter-spacing:.02em;white-space:nowrap;line-height:1.1}
 .logo{display:inline-grid;place-items:center;width:34px;height:34px;background:var(--red);color:#fff;font-family:var(--mono);font-weight:600;font-size:15px;border-radius:4px}
-.brand small{font-family:var(--mono);font-size:11px;color:var(--mute);letter-spacing:.08em}
 .btn{font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:9px 11px;border:1px solid var(--line);background:var(--btnbg);color:var(--ink);border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;position:relative;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-#home{margin-left:auto}
-#home[data-at-home="true"]{opacity:.55}
 .dock{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);display:flex;flex-direction:column;align-items:center;gap:8px;z-index:4;max-width:calc(100% - 32px)}
 #hint{font:500 11px/1.3 var(--mono);color:var(--mute);text-align:center;text-wrap:balance}
 #hint b{color:var(--ink)}
@@ -49,7 +49,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offse
 #lbl small{display:block;font-weight:500;font-size:10px;opacity:.65;letter-spacing:.08em}
 #lbl::after{content:"";position:absolute;left:50%;bottom:-5px;width:10px;height:10px;background:var(--ink);transform:translateX(-50%) rotate(45deg)}
 #loading{position:fixed;inset:0;display:grid;place-items:center;font:600 12px var(--mono);color:var(--mute);letter-spacing:.1em}
-#card{position:fixed;top:calc(env(safe-area-inset-top,0px) + 64px);right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 140px);width:min(430px,calc(100% - 32px));background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 20px 50px var(--shadow);display:flex;flex-direction:column;z-index:6;overflow:hidden;animation:pop .28s cubic-bezier(.2,.9,.3,1.2)}
+#card{position:fixed;top:calc(env(safe-area-inset-top,0px) + var(--hdr-h) + 14px);right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 140px);width:min(430px,calc(100% - 32px));background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 20px 50px var(--shadow);display:flex;flex-direction:column;z-index:6;overflow:hidden;animation:pop .28s cubic-bezier(.2,.9,.3,1.2)}
 @keyframes pop{from{opacity:0;transform:translateY(12px) scale(.97)}}
 .ch{display:flex;align-items:center;gap:8px;padding:12px 14px 10px 18px;border-bottom:1px solid var(--line)}
 .eyebrow{font:600 11px/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);display:flex;align-items:center;gap:8px;min-width:0;flex:1}
@@ -97,13 +97,9 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offse
 #lb img{max-width:100%;max-height:100%;border-radius:4px}
 @media (max-width:760px){
   #card{top:auto;left:max(8px,env(safe-area-inset-left,0px));right:max(8px,env(safe-area-inset-right,0px));width:auto;height:min(62%,560px);bottom:calc(env(safe-area-inset-bottom,0px) + 8px)}
-  .brand small{display:none}
-  .top{gap:8px}
   #hint{display:none}
   .content h2{font-size:24px}
 }
-/* narrow phones: logo only, icon-only theme button, so the top bar fits */
-@media (max-width:520px){.brand>span:not(.logo){display:none}#thm span{display:none}#thm{padding:9px}}
 /* ── Camera controls: joystick (tilt) + zoom slider, styled like synth hardware ── */
 :root{--hw-hi:#ffffff;--hw:#e4e5e8;--hw-lo:#c3c5ca;--hw-well:#d2d4d8;--hw-cap:#f4f4f2;--hw-ink:#8a8d95}
 :root[data-theme="dark"]{--hw-hi:#4a4d54;--hw:#2c2e33;--hw-lo:#16171a;--hw-well:#1b1c1f;--hw-cap:#33353a;--hw-ink:#7d8089}
@@ -156,10 +152,6 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offse
 }
 @media (prefers-reduced-motion:reduce){.joy.reset{animation:none}}
 
-/* theme toggle icon */
-#thm .i-sun{display:none}
-[data-theme="dark"] #thm .i-sun{display:block}
-[data-theme="dark"] #thm .i-moon{display:none}
 
 /* ── Press FX for the 2D chrome: a glow pulse plus a light stroke that traces the button edge (matches the synth controls) ── */
 @property --sw{syntax:'<angle>';inherits:false;initial-value:0deg}
@@ -178,3 +170,75 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offse
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
   animation:stroke .9s .08s cubic-bezier(.3,.7,.3,1) forwards}
 @media (prefers-reduced-motion:reduce){#card{animation:none}#card::after,.zap,.zap::after{animation:none}}
+
+/* ───────────── Figma: header (logo · theme · sound · menu) ───────────── */
+.on-l{display:none}
+:root:not([data-theme="dark"]) .on-d{display:none}
+:root:not([data-theme="dark"]) .on-l{display:block}
+.top{position:fixed;top:0;left:0;right:0;height:calc(var(--hdr-h) + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) max(calc(var(--px) * 50),16px,env(safe-area-inset-right,0px)) 0 max(calc(var(--px) * 50),16px,env(safe-area-inset-left,0px));
+  display:flex;align-items:center;justify-content:space-between;background:var(--hdr);z-index:7;transition:background-color .6s ease}
+.brand{display:block;height:max(34px, calc(var(--px) * 101));margin-top:calc(var(--px) * 28);transition:transform .25s cubic-bezier(.2,.9,.3,1.3),filter .25s}
+.brand img{height:100%;width:auto}
+.brand:hover{transform:translateY(-1px) scale(1.03);filter:drop-shadow(0 0 10px color-mix(in srgb,var(--glow) 55%,transparent))}
+.brand:active{transform:scale(.97)}
+.hud{display:flex;align-items:center;gap:max(18px, calc(var(--px) * 60 - 12px))}
+.pair{display:flex;align-items:center;gap:max(2px, calc(var(--px) * 20 - 12px))}
+.ico{position:relative;display:grid;place-items:center;padding:6px;border:0;background:none;border-radius:10px;cursor:pointer;color:inherit;transition:transform .14s ease,background-color .2s}
+.ico img{width:max(22px, calc(var(--px) * 50));height:auto;transition:transform .35s cubic-bezier(.2,.9,.3,1.4),filter .25s}
+.ico:hover img{filter:drop-shadow(0 0 6px color-mix(in srgb,var(--glow) 70%,transparent))}
+.ico:active{transform:scale(.9)}
+#thm:hover img{transform:rotate(28deg)}
+#thm.flip img{animation:spinIn .55s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes spinIn{from{transform:rotate(-120deg) scale(.4);opacity:0}}
+#snd .s-off{display:none}
+#snd[aria-pressed="false"] .s-on{display:none!important}
+#snd[aria-pressed="false"] .s-off.on-d{display:block}
+:root:not([data-theme="dark"]) #snd[aria-pressed="false"] .s-off.on-d{display:none}
+:root:not([data-theme="dark"]) #snd[aria-pressed="false"] .s-off.on-l{display:block}
+#snd.flip img{animation:pop .3s cubic-bezier(.2,.9,.3,1.6)}
+/* hamburger: Figma Menu component (three 70×10 bars, 10 gap, fully rounded) that morphs into a close cross */
+.burger{--bw:max(28px, calc(var(--px) * 70));--bh:max(4px, calc(var(--px) * 10));width:calc(var(--bw) + 12px);height:calc(var(--bh) * 5 + 12px);display:flex;flex-direction:column;justify-content:space-between;padding:6px}
+.burger i{display:block;width:100%;height:var(--bh);border-radius:var(--bh);background:#0d0e11;transition:transform .42s cubic-bezier(.7,-.4,.25,1.4),opacity .2s,background-color .6s}
+:root[data-theme="dark"] .burger i{background:#fafbfe}
+.burger:hover i:nth-child(2){transform:scaleX(.72);transform-origin:right}
+.burger[aria-expanded="true"] i:nth-child(1){transform:translateY(calc(var(--bh) * 2)) rotate(45deg)}
+.burger[aria-expanded="true"] i:nth-child(2){opacity:0;transform:scaleX(0)}
+.burger[aria-expanded="true"] i:nth-child(3){transform:translateY(calc(var(--bh) * -2)) rotate(-45deg)}
+.ico::after{content:"";position:absolute;inset:-2px;border-radius:inherit;padding:2px;pointer-events:none;opacity:0;
+  background:conic-gradient(from 180deg,transparent 0deg,var(--glow) var(--sw),transparent var(--sw));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.ico.zap{animation:none}
+/* menu drop-down */
+#menu{position:fixed;top:calc(env(safe-area-inset-top,0px) + var(--hdr-h) + 10px);right:max(calc(var(--px) * 50),12px,env(safe-area-inset-right,0px));z-index:8;width:min(300px,calc(100vw - 24px));padding:8px;display:flex;flex-direction:column;gap:2px;
+  background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 60px var(--shadow);transform-origin:top right;animation:menuIn .32s cubic-bezier(.2,.9,.3,1.15)}
+#menu.out{animation:menuOut .18s ease-in forwards}
+@keyframes menuIn{from{opacity:0;transform:translateY(-8px) scale(.96)}}
+@keyframes menuOut{to{opacity:0;transform:translateY(-6px) scale(.97)}}
+#menu>*{--gc:var(--glow);display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;padding:12px 14px 12px 18px;border:0;border-radius:9px;background:none;color:var(--ink);text-decoration:none;cursor:pointer;text-align:left;position:relative;font-family:var(--ui);
+  animation:itemIn .4s cubic-bezier(.2,.9,.3,1.1) backwards;transition:background-color .2s,transform .2s}
+#menu>*:nth-child(2){animation-delay:.04s}#menu>*:nth-child(3){animation-delay:.08s}#menu>*:nth-child(4){animation-delay:.12s}#menu>*:nth-child(5){animation-delay:.16s}
+@keyframes itemIn{from{opacity:0;transform:translateX(10px)}}
+#menu b{font-weight:800;font-size:17px;letter-spacing:.02em}
+#menu small{font:500 10.5px/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+#menu>*::before{content:"";position:absolute;left:6px;top:50%;width:4px;height:0;border-radius:4px;background:var(--gc);box-shadow:0 0 10px var(--gc);transform:translateY(-50%);transition:height .25s cubic-bezier(.2,.9,.3,1.3)}
+#menu>*:hover,#menu>*:focus-visible{background:color-mix(in srgb,var(--gc) 10%,transparent);transform:translateX(3px)}
+#menu>*:hover::before,#menu>*:focus-visible::before{height:60%}
+#menu #home[data-at-home="true"] small::after{content:" · you are here"}
+
+/* ───────────── Figma: section titles over the synth (small → big on hover) ───────────── */
+#groups{position:fixed;inset:0;pointer-events:none;z-index:3;transition:opacity .35s ease}
+#groups.off{opacity:0}
+#groups.off .grp{pointer-events:none}
+.grp{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;border:0;background:none;padding:0;margin:0;color:var(--title);white-space:nowrap;
+  font-family:var(--ui);font-weight:500;font-size:max(13px, calc(var(--px) * 28.7));line-height:1;letter-spacing:.02em;
+  --tx:0%;transform:translate(var(--tx),calc(-100% - 6px));will-change:transform,font-size;
+  transition:font-size .48s cubic-bezier(.2,.9,.25,1.12),font-weight .48s cubic-bezier(.2,.9,.25,1.12),transform .48s cubic-bezier(.2,.9,.25,1.12),color .6s ease,text-shadow .4s ease;visibility:hidden}
+.grp[data-a="c"]{--tx:-50%}
+.grp[data-a="r"]{--tx:-100%}
+.grp.on{font-size:max(30px, calc(var(--px) * 90));font-weight:900;transform:translate(var(--tx),calc(-100% + .16em));text-shadow:0 0 .5em color-mix(in srgb,var(--gc) 35%,transparent)}
+.grp:focus-visible{outline:2px solid var(--gc);outline-offset:4px;border-radius:4px}
+/* camera-control captions */
+.nav .cap{position:absolute;bottom:calc(100% + 8px);left:0;font:400 max(10px, calc(var(--px) * 14))/1 var(--ui);letter-spacing:.02em;color:var(--title);white-space:nowrap;pointer-events:none}
+.zoom .cap{left:50%;transform:translateX(-50%)}
+@media (max-width:760px){.nav .cap{display:none}}
+@media (prefers-reduced-motion:reduce){.grp,#menu,#menu>*,.burger i,.ico img,#thm.flip img{transition:none;animation:none}}

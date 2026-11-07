@@ -17,6 +17,8 @@ The synth is the interface. Each part of the instrument holds a different side o
 | **CV remote** (left) | Full CV (PDF), contact details and social links. Also plugs in when selected. |
 | **Music side** (right): drum pads, Tone, Wave, BEATS, STOP, MUTE | Pure play. BEATS cycles five original tracks; STOP and BEATS glow while music runs. |
 
+**Header & section titles (from the Figma hover states):** the top bar carries the Vickhal Roopram logo (click to go home), the sun/moon theme icon, the sound icon and a hamburger menu (Home, About Me, My Projects, Contact, Download CV) that morphs into a cross. Over the overview, each device has a title: **About Me** (life strip), **Contact** (remote) and **My Projects** (main synth). Hover a device or its title and the title grows from Medium to Ultra weight while a soft halo lights up under that device: green, red or cyan, taken from the Figma glow gradients. Click a title or the device body to zoom in. Titles use Gotham where installed, otherwise Montserrat.
+
 **Camera controls (bottom right):** a joystick and a zoom slider. Push the joystick to orbit: left and right swing round the synth, up and down raise or lower the view. The camera has weight: it eases up to speed and glides to a stop. Tap the joystick (or focus it and press Enter) to fly back to the resting view. Slide up to zoom in, down to zoom out; the camera follows on a spring. Both work with the keyboard (arrow keys, Page Up/Down, Home/End).
 
 **Light & dark mode:** the sun/moon button in the top bar switches between a brushed-aluminium studio look and a gunmetal, graphite-key dark look. It follows the system setting until you pick one, and remembers your choice.

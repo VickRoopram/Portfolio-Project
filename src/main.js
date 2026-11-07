@@ -26,7 +26,7 @@ const MODES={
   cv:{part:'The remote',n:'CV, contact & socials',dock:'CV & Contact',glow:'#ff6a20',box:'cv'},
 };
 const ORDER=['gd','ux','mo','tl','xp','ab','ds','st','ar','te','fm','fi','ex','cv'], KBM=['gd','ux','mo','ab','sk','tl','aw','wk','sd','xp','ds','st','ar','te'], PADM=['fm','fi','ex'], DOCK=['ab','gd','ux','mo','ds','fm','cv'];
-const S={mode:null,card:null,persona:0,hover:null,hoverUntil:0,kb:'gd',pad:'fm'};
+const S={mode:null,card:null,persona:0,hover:null,hoverUntil:0,kb:'gd',pad:'fm',grp:null,grpLbl:null};
 let lastHit=null;
 { Object.assign(MODES,{xp:{dock:'Experimental',glow:'#ff5ec8'},ab:{dock:'About',glow:'#ff2a30'},sk:{dock:'Skills',glow:'#ffb020'},tl:{dock:'Tools',glow:'#a46bff'},aw:{dock:'Awards',glow:'#ffd400'},wk:{dock:'Work',glow:'#00e0cc'},sd:{dock:'Study',glow:'#ff5ec8'}});
  ['ab','sk','tl','aw','wk','sd','xp'].forEach(k=>Object.assign(MODES[k],{part:'The keyboard',box:'kb'}));
@@ -80,15 +80,17 @@ $('lb').onclick=()=>$('lb').hidden=true;
 function noteFor(i){playNote(60+[0,4,7,12,7,4,2,5,9,11,14,16][i%12])}
 
 /* dock + hint */
-$('home').onclick=()=>{ensureAudio();zoomOut()};
+$('home').onclick=()=>{ensureAudio();closeMenu();zoomOut()};
+$('brand').onclick=e=>{e.preventDefault();ensureAudio();closeMenu();if(S.mode||S.card)zoomOut()};
 function updateUI(){
   $('home').dataset.atHome=String(!S.mode&&!S.card);
+  $('groups').classList.toggle('off',!!(S.mode||S.card)); // section titles belong to the overview
   document.body.dataset.card=String(!!S.card); // phones hide the camera controls under the card sheet
   const g=S.card?MODES[S.card.ch]?.glow:S.mode?MODES[S.mode].glow:null;  // HUD buttons glow in the active mode's colour
   document.documentElement.style.setProperty('--glow',!g||g==='#ffffff'?'#ff5d1a':g);
 }
 /* HUD buttons: glow pulse + stroke trace on every press, same language as the synth controls */
-document.addEventListener('pointerdown',e=>{const b=e.target.closest('.btn,.ch button');if(!b)return;b.classList.remove('zap');void b.offsetWidth;b.classList.add('zap')});
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('.btn,.ico,.ch button');if(!b)return;b.classList.remove('zap');void b.offsetWidth;b.classList.add('zap')});
 document.addEventListener('animationend',e=>{if(e.animationName==='zap')e.target.classList.remove('zap')});
 
 /* ───────────── AUDIO ───────────── */
@@ -134,7 +136,8 @@ function drum(k){
     blip:()=>env(osc('square',1200,2400,.08),.2,.08),
     whoosh:()=>{const f=nz(.6,'bandpass',600);f.frequency.setValueAtTime(300,t);f.frequency.exponentialRampToValueAtTime(3000,t+.5);env(f,.35,.55)}})[k]?.();
 }
-function toggleMute(){muted=!muted;if(muted)stopDemo();$('snd').textContent=muted?'Sound off':'Sound on';$('snd').setAttribute('aria-pressed',!muted);ensureAudio();applyP()}
+function toggleMute(){muted=!muted;if(muted)stopDemo();const b=$('snd');b.setAttribute('aria-label',muted?'Sound off: unmute':'Sound on: mute');b.setAttribute('aria-pressed',!muted);flip(b);ensureAudio();applyP()}
+function flip(b){b.classList.remove('flip');void b.offsetWidth;b.classList.add('flip')}
 $('snd').onclick=toggleMute;
 
 /* ───────────── 3D SCENE ───────────── */
@@ -416,6 +419,71 @@ const BOX={
   info:new THREE.Box3(new THREE.Vector3(-8.6,TOP,GZ(1)),new THREE.Vector3(8.6,TOP+.5,GZ(3)+.3)),
 };
 const POLAR={all:.68,kb:.62,cv:.5,life:.55,info:.6};
+
+/* ───────────── FIGMA: section titles + coloured underglow per device (About Me · Contact · My Projects) ─────────────
+   Hovering anywhere on a device (or its title) grows the title from Gotham Medium 28.7 to Ultra 90 (4K px) and
+   lights a soft halo under it, using the radial gradients from the Figma glow layers (150px layer blur at 4K). */
+const GROUPS={
+  about:{obj:TU,box:BOX.life,stops:[[0,'#007618'],[.79,'#9cffc5'],[1,'#00ff15']],go:()=>zoomTo(S.pad)},
+  contact:{obj:RM,box:BOX.cv,stops:[[.68,'#760000'],[.9,'#ff9c9c'],[1,'#ff0000']],go:()=>zoomTo('cv')},
+  projects:{obj:synth,box:boxOf([synth]),stops:[[0,'#000076'],[.79,'#9ce8ff'],[1,'#00bfff']],go:()=>zoomTo(S.kb)},
+};
+function glowTexture(w,d,sig,stops){ // soft rounded-rect halo, computed per pixel so it needs no canvas filter support
+  const m=sig*3, W=256, H=Math.max(32,Math.round(W*(d+2*m)/(w+2*m))), sx=(w+2*m)/W, sz=(d+2*m)/H, c=document.createElement('canvas'); c.width=W; c.height=H;
+  const x=c.getContext('2d'), img=x.createImageData(W,H), col=stops.map(([p,h])=>[p,new THREE.Color(h)]), tmp=new THREE.Color(), r=Math.min(.35,d/3);
+  for(let j=0;j<H;j++)for(let i=0;i<W;i++){
+    const px=(i+.5)*sx-m-w/2, pz=(j+.5)*sz-m-d/2, qx=Math.abs(px)-(w/2-r), qz=Math.abs(pz)-(d/2-r);
+    const dist=Math.hypot(Math.max(qx,0),Math.max(qz,0))+Math.min(Math.max(qx,qz),0)-r;   // signed distance to the footprint
+    const a=dist<=0?1:Math.exp(-(dist*dist)/(2*sig*sig));
+    const t=Math.min(1,Math.hypot(px/(w/2),pz/(d/2))/Math.SQRT2*1.25);                 // elliptical gradient position
+    let k=0;while(k<col.length-1&&t>col[k+1][0])k++;
+    const [p0,c0]=col[k],[p1,c1]=col[Math.min(k+1,col.length-1)]; tmp.copy(c0).lerp(c1,p1>p0?Math.max(0,Math.min(1,(t-p0)/(p1-p0))):0);
+    const o=(j*W+i)*4; img.data[o]=tmp.r*255; img.data[o+1]=tmp.g*255; img.data[o+2]=tmp.b*255; img.data[o+3]=a*255}
+  x.putImageData(img,0,0); const tx=new THREE.CanvasTexture(c); tx.colorSpace=THREE.SRGBColorSpace; return {tx,m}}
+for(const [key,g] of Object.entries(GROUPS)){
+  const s=g.box.getSize(new THREE.Vector3()), c=g.box.getCenter(new THREE.Vector3()), sig=Math.min(.75,Math.max(.45,Math.min(s.x,s.z)*.16));
+  const {tx,m}=glowTexture(s.x,s.z,sig,g.stops);
+  const mat=new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false,opacity:0,toneMapped:false});
+  const mesh=new THREE.Mesh(new THREE.PlaneGeometry(s.x+2*m,s.z+2*m),mat); mesh.rotation.x=-Math.PI/2; mesh.position.set(c.x,.004,c.z); mesh.renderOrder=1; mesh.visible=false; scene.add(mesh);
+  FXMATS.push(mat); // additive on the dark stage, normal on the light deck (theme code switches it)
+  const el=document.querySelector(`.grp[data-g="${key}"]`);
+  const b=g.box, a=el.dataset.a, inset=.35;
+  g.anchor=new THREE.Vector3(a==='l'?b.min.x+inset:a==='r'?b.max.x-inset:c.x,b.max.y,b.min.z);
+  Object.assign(g,{key,mesh,mat,el,k:0});
+  el.addEventListener('pointerenter',()=>{S.grpLbl=key});
+  el.addEventListener('pointerleave',()=>{if(S.grpLbl===key)S.grpLbl=null});
+  el.addEventListener('focus',()=>{S.grpLbl=key}); el.addEventListener('blur',()=>{if(S.grpLbl===key)S.grpLbl=null});
+  el.addEventListener('click',()=>{ensureAudio();S.grpLbl=null;drum('blip');g.go()});
+}
+const GSET=new Map([[TU,'about'],[RM,'contact'],[synth,'projects']]);
+function groupAt(o){ // which device the pointer is over: the control's parent chain first, then the devices' bounding boxes
+  for(let p=o;p;p=p.parent)if(GSET.has(p))return GSET.get(p);
+  let best=null,bd=Infinity;const hit=new THREE.Vector3();
+  for(const g of Object.values(GROUPS))if(ray.ray.intersectBox(g.box,hit)){const d=hit.distanceTo(ray.ray.origin);if(d<bd){bd=d;best=g.key}}
+  return best}
+const gv=new THREE.Vector3();
+function updateGroups(dt){
+  const w=stage.clientWidth,h=stage.clientHeight, overview=!S.mode&&!S.card&&!fly, act=overview?(S.grpLbl||S.grp||(S.hover&&groupAt(S.hover))):null;
+  const ease=reduceMotion?1:1-Math.exp(-dt*9), dark=themeK>.5, t=performance.now()/1000;
+  for(const g of Object.values(GROUPS)){
+    const on=g.key===act; g.k+=((on?1:0)-g.k)*ease;
+    const breathe=reduceMotion?1:1+.08*Math.sin(t*2.4);
+    g.mat.opacity=g.k*(dark?.85:.5)*breathe; g.mesh.visible=g.k>.004;
+    g.el.classList.toggle('on',on);
+    if(overview||!$('groups').classList.contains('off')){gv.copy(g.anchor).project(camera);
+      const vis=gv.z<1&&gv.x>-1.2&&gv.x<1.2&&gv.y>-1.2&&gv.y<1.2; g.el.style.visibility=vis?'visible':'hidden';
+      if(vis){g.el.style.left=((gv.x+1)/2*w).toFixed(1)+'px';g.el.style.top=((1-gv.y)/2*h).toFixed(1)+'px'}}
+  }
+}
+
+/* ───────────── MENU (hamburger) ───────────── */
+const menu=$('menu'), mnu=$('mnu');
+function openMenu(){menu.classList.remove('out');menu.hidden=false;mnu.setAttribute('aria-expanded','true');mnu.setAttribute('aria-label','Close menu');drum('blip');menu.querySelector('button')?.focus({preventScroll:true})}
+function closeMenu(){if(menu.hidden)return;mnu.setAttribute('aria-expanded','false');mnu.setAttribute('aria-label','Menu');
+  if(reduceMotion){menu.hidden=true;return}menu.classList.add('out');menu.addEventListener('animationend',()=>{if(menu.classList.contains('out')){menu.hidden=true;menu.classList.remove('out')}},{once:true})}
+mnu.onclick=()=>{ensureAudio();menu.hidden||menu.classList.contains('out')?openMenu():closeMenu()};
+menu.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b){if(e.target.closest('a'))closeMenu();return}const k=b.dataset.go;if(k==='home')return;closeMenu();ensureAudio();if(S.mode)S.mode=null;GROUPS[k].go()});
+document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!menu.contains(e.target)&&!mnu.contains(e.target))closeMenu()});
 const desktop=()=>innerWidth>760;
 function frameFor(key){
   const b=BOX[key],c=b.getCenter(new THREE.Vector3()),s=b.getSize(new THREE.Vector3()),pol=desktop()?POLAR[key]:.001;
@@ -514,20 +582,20 @@ function pick(e){const r=cv.getBoundingClientRect();ptr.set((e.clientX-r.left)/r
 function labelHTML(o){const u=o.userData;
   if(u.item){const c=CH[u.ch];return S.mode===u.ch?`<small>${c.name} · ${pad(u.i+1)}</small>${c.items[u.i].t}`:`<small>${MODES[u.ch].part} · click to zoom in</small>${c.name} · ${MODES[u.ch].n}`}
   return u.tip}
-let drag=null;
-cv.addEventListener('pointerdown',e=>{ensureAudio();const o=pick(e);if(!o)return;controls.enabled=false;drag={o,y:e.clientY,x:e.clientX,sx:e.clientX,sy:e.clientY,m:0};o.userData.down?.();
+let drag=null, bodyTap=null;
+cv.addEventListener('pointerdown',e=>{ensureAudio();const o=pick(e);if(!o){const g=!S.mode&&!S.card&&groupAt(null);if(g)bodyTap={g,x:e.clientX,y:e.clientY};return}controls.enabled=false;drag={o,y:e.clientY,x:e.clientX,sx:e.clientX,sy:e.clientY,m:0};o.userData.down?.();
   if(e.pointerType!=='mouse'){S.hover=o;S.hoverUntil=performance.now()+1600}try{cv.setPointerCapture(e.pointerId)}catch{}});
 const controls=new OrbitControls(camera,cv); controls.enableDamping=true; controls.enablePan=false; controls.minPolarAngle=.12; controls.maxPolarAngle=1.22; controls.minAzimuthAngle=-.95; controls.maxAzimuthAngle=.95;
 let lastLive='';
 cv.addEventListener('pointermove',e=>{
   if(drag){const dy=e.clientY-drag.y,dx=e.clientX-drag.x;drag.y=e.clientY;drag.x=e.clientX;drag.m+=Math.abs(dy)+Math.abs(dx);drag.o.userData.drag?.(-dy+dx*.5);lastLive=drag.o.userData.live?.()||'';return}
-  if(e.pointerType!=='mouse')return;const o=pick(e);cv.style.cursor=o?'pointer':'grab';S.hover=o||null;S.hoverUntil=Infinity});
+  if(e.pointerType!=='mouse')return;const o=pick(e);S.grp=S.mode||S.card?null:groupAt(o);cv.style.cursor=o||S.grp?'pointer':'grab';S.hover=o||null;S.hoverUntil=Infinity});
 const end=e=>{if(drag){drag.o.userData.up?.(e&&e.clientX!==undefined?Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy):drag.m);drag=null;lastLive='';if(!fly)controls.enabled=true}};
-cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);cv.addEventListener('pointerleave',()=>{if(!drag)S.hover=null});
+cv.addEventListener('pointerup',e=>{if(bodyTap&&Math.hypot(e.clientX-bodyTap.x,e.clientY-bodyTap.y)<6&&!S.mode)GROUPS[bodyTap.g].go();bodyTap=null;end(e)});cv.addEventListener('pointercancel',end);cv.addEventListener('pointerleave',()=>{if(!drag)S.hover=null;S.grp=null});
 const KW='asdfghjkl;', KS={w:0,e:1,t:2,y:3,u:4,o:5,p:6}, KD='zxcvbnm,.';
 const held=new Set();
 addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey)return;const k=e.key.toLowerCase();
-  if(k==='escape'){if(!$('lb').hidden)$('lb').hidden=true;else if(S.card)closeCard();else if(S.mode)zoomOut();return}
+  if(k==='escape'){if(!$('menu').hidden){closeMenu();$('mnu').focus()}else if(!$('lb').hidden)$('lb').hidden=true;else if(S.card)closeCard();else if(S.mode)zoomOut();return}
   if(held.has(k))return;held.add(k);
   if(KW.includes(k)){ensureAudio();const i=KW.indexOf(k);press(keyMeshes[i]);playNote(wMidi(i))}
   else if(k in KS){ensureAudio();sharpMeshes[KS[k]]?.userData.down()}
@@ -624,8 +692,8 @@ function applyTheme(k){
 function setTheme(dark,{save=true,sweep=true}={}){
   themeT=dark?1:0; root.dataset.theme=dark?'dark':'light';
   if(save)try{localStorage.setItem('vdc-theme',dark?'dark':'light')}catch{}
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',dark?'#0c0d0f':'#efefed');
-  themeBtn.setAttribute('aria-pressed',String(dark)); themeBtn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode'); themeBtn.querySelector('span').textContent=dark?'Light':'Dark';
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',dark?'#0d0e11':'#f6f6f4');
+  themeBtn.setAttribute('aria-pressed',String(dark)); themeBtn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode'); if(sweep)flip(themeBtn);
   if(sweep){ // a light sweep runs across every control, left to right, as the synth "re-lights"
     const v=new THREE.Vector3(); FXL.forEach(f=>{f.m.getWorldPosition(v);pulse(f.m,(v.x+13)*32,.6)}); drum(dark?'blip':'rim');}
 }
@@ -652,6 +720,7 @@ function loop(){const t=clock.getElapsedTime(),now=performance.now(),dt=Math.min
   if(ho){ho.getWorldPosition(v3);v3.y+=.45;v3.project(camera);
     const x=(v3.x+1)/2*w, y=(1-v3.y)/2*h; lbl.hidden=false; lbl.style.left=x+'px'; lbl.style.top=y+'px';
     const html=lastLive||labelHTML(ho); if(lbl._h!==html){lbl.innerHTML=html;lbl._h=html}} else lbl.hidden=true;
+  updateGroups(dt);
   if(Math.abs(themeK-themeT)>.002){themeK=themeK<0?themeT:themeK+(themeT-themeK)*(reduceMotion?1:.075);if(Math.abs(themeK-themeT)<=.002)themeK=themeT;applyTheme(themeK)}
   grille.scale.setScalar(1+level*.04); updateCables(); refreshGlow(t); updateFx(now); drawScreens(t); updateNav(dt); controls.update(); renderer.render(scene,camera); requestAnimationFrame(loop)}
 updateUI(); loop();
