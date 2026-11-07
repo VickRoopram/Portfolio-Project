@@ -19,13 +19,10 @@ const MODES={
   st:{part:'The keyboard',n:'Strategist',dock:'Strategist',glow:'#2bd67b',box:'kb'},
   ar:{part:'The keyboard',n:'Artist',dock:'Artist',glow:'#ffffff',box:'kb'},
   te:{part:'The keyboard',n:'Teacher',dock:'Teacher',glow:'#ff7a2a',box:'kb'},
-  fm:{part:'The life strip',n:'Family Man',dock:'Life',glow:'#2bd67b',box:'life'},
-  fi:{part:'The life strip',n:'The Fighter',dock:'Fighter',glow:'#3db4ff',box:'life'},
-  ex:{part:'The life strip',n:'The Explorer',dock:'Explorer',glow:'#ff3fb4',box:'life'},
   info:{part:'The About row',n:'6 pages',dock:'About',glow:'#ff2a30',box:'info'},
   cv:{part:'The remote',n:'CV, contact & socials',dock:'CV & Contact',glow:'#ff6a20',box:'cv'},
 };
-const ORDER=['gd','ux','mo','tl','xp','ab','ds','st','ar','te','fm','fi','ex','cv'], KBM=['gd','ux','mo','ab','sk','tl','aw','wk','sd','xp','ds','st','ar','te'], PADM=['fm','fi','ex'], DOCK=['ab','gd','ux','mo','ds','fm','cv'];
+const ORDER=['gd','ux','mo','tl','xp','ab','ds','st','ar','te','cv'], KBM=['gd','ux','mo','ab','sk','tl','aw','wk','sd','xp','ds','st','ar','te'], PADM=[], DOCK=['ab','gd','ux','mo','ds','cv']; // PADM: the life strip was removed (Nov 2026); kept empty so the shared code paths stay simple
 const S={mode:null,card:null,persona:0,hover:null,hoverUntil:0,kb:'gd',pad:'fm',grp:null,grpLbl:null};
 let lastHit=null;
 { Object.assign(MODES,{xp:{dock:'Experimental',glow:'#ff5ec8'},ab:{dock:'About',glow:'#ff2a30'},sk:{dock:'Skills',glow:'#ffb020'},tl:{dock:'Tools',glow:'#a46bff'},aw:{dock:'Awards',glow:'#ffd400'},wk:{dock:'Work',glow:'#00e0cc'},sd:{dock:'Study',glow:'#ff5ec8'}});
@@ -72,7 +69,7 @@ function openCard(ch,i){
   const cp=$('cp'); if(cp) cp.onclick=()=>{navigator.clipboard?.writeText('vickhal10@gmail.com').then(()=>cp.textContent='Copied',()=>{const r=document.createRange();r.selectNodeContents($('em'));getSelection().removeAllRanges();getSelection().addRange(r);cp.textContent='Selected'})};
 }
 /* INTERACTIONS: 12 things to discover; the counter and "last interaction" line sit top left */
-const FIND={gd:'Opened Design',ux:'Opened UI/UX',mo:'Opened Motion & 3D',tl:'Opened Tools',xp:'Opened Experimental',roles:'Turned a role knob',life:'Visited the life strip',cv:'Picked up the remote',about:'Read the About pages',beats:'Played the beats',drums:'Hit the drum pads',lamp:'Switched the lamp'};
+const FIND={gd:'Opened Design',ux:'Opened UI/UX',mo:'Opened Motion & 3D',tl:'Opened Tools',xp:'Opened Experimental',roles:'Turned a role knob',theme:'Switched day and night',cv:'Picked up the remote',about:'Read the About pages',beats:'Played the beats',drums:'Hit the drum pads',lamp:'Switched the lamp'};
 const FKEY=ch=>['ds','st','ar','te'].includes(ch)?'roles':PADM.includes(ch)?'life':['ab','sk','aw','wk','sd','info'].includes(ch)?'about':ch;
 const FOUND=new Set();try{JSON.parse(localStorage.getItem('vdc-found')||'[]').forEach(k=>FIND[k]&&FOUND.add(k))}catch{}
 function found(id,text){const k=FKEY(id);if(!FIND[k])return;const fresh=!FOUND.has(k);FOUND.add(k);try{localStorage.setItem('vdc-found',JSON.stringify([...FOUND]))}catch{}
@@ -377,22 +374,6 @@ function paintKeys(){const ch=S.kb,c=CH[ch],key=ch+imgTick;if(key===artKey)retur
     t.needsUpdate=true})}
 for(let i=0;i<10;i++){const d=cyl(.035,.035,.02,M('#6a6c72'));d.position.set(9.18,.91,-1.2+i*.22);synth.add(d)}
 
-/* UX: the control strip */
-const TU=new THREE.Group(); TU.position.set(-3.1,0,-6.5); scene.add(TU);
-{const b=rbox(12.6,.8,2.7,.32,M(C.black,.5));b.position.y=.4;TU.add(b);[[-6.05,-1.1],[6.05,-1.1],[-6.05,1.1],[6.05,1.1]].forEach(([x,z])=>screw(TU,x,.805,z));
- const bez=rbox(3.3,.08,1.9,.18,M('#36373b',.4)); bez.position.set(-4.35,.82,0); TU.add(bez);}
-const per=canvasTex(560,320); const perP=new THREE.Mesh(new THREE.PlaneGeometry(3.08,1.7),new THREE.MeshBasicMaterial({map:per.t,toneMapped:false}));
-perP.rotation.x=-Math.PI/2; perP.position.set(-4.35,.87,0); TU.add(perP);
-perP.userData={tip:'Life screen · click a figure: Family Man, Fighter or Explorer',down(){const u=lastHit?.uv?.x??0;playNote(76,.5);zoomTo(PADM[Math.min(2,Math.max(0,Math.floor(u*3)))])}}; hits.push(perP);
-function setSwitch(){}
-for(let j=0;j<8;j++){const c=j%4,rw=Math.floor(j/4);const pd=rbox(1.42,.18,.84,.12,M('#3b3c41',.5));pd.position.set(-1.85+c*1.55,.89,-.47+rw*.94);TU.add(pd);itemCtrl(pd,'pad',j,()=>drum(PADS[j]))}
-[[4.2,-.42,'wet'],[4.2,.42,'cutoff'],[4.95,-.42,'decay'],[4.95,.42,'vol']].forEach(([x,z,k])=>paramKnob(new THREE.Vector3(x,.8,z),k,{r:.24,cap:'#c9b99b',ring:'#1d1a16',parent:TU}));
-{const d=rbox(1.6,.55,1.2,.2,M(C.black,.5));d.position.set(6.9,.28,.1);TU.add(d);
- const ring=new THREE.Mesh(new THREE.TorusGeometry(.33,.03,8,40),M('#1a1a1c'));ring.rotation.x=-Math.PI/2;ring.position.set(6.95,.56,.1);TU.add(ring);}
-const shuf=cyl(.3,.32,.14,A('#e2614b')); shuf.position.set(6.95,.6,.1); TU.add(shuf);
-shuf.material=shuf.material.clone();fxOf(shuf);
-shuf.userData={tip:'Shuffle · open a random piece of work',down(){pulse(shuf);const ch=KBM[Math.floor(Math.random()*KBM.length)];S.mode=null;zoomTo(ch);openCard(ch,Math.floor(Math.random()*CH[ch].items.length));drum('crash')}}; hits.push(shuf);
-
 /* MOTION: the remote */
 const RM=new THREE.Group(); RM.position.set(-11.7,0,.15); scene.add(RM);
 {const b=rbox(2.15,.75,6.6,.3,M(C.body,.55));b.position.y=.375;RM.add(b);
@@ -422,11 +403,9 @@ function cable(loose,plug,color,r,isOn){
 function socket(pos,rot){const g=new THREE.Group();g.position.set(...pos);scene.add(g);
   const s=cyl(.2,.2,.14,M('#1a1a1c',.4));s.rotation.set(...rot);g.add(s);
   const led=cyl(.06,.06,.04,new THREE.MeshStandardMaterial({color:'#3a3b40',emissive:'#ff5d1a',emissiveIntensity:0}));led.position.set(rot[2]?0:.35,.47,rot[2]?.35:0);g.add(led);return led}
-const remoteLed=socket([-9.5,.45,1.5],[0,0,Math.PI/2]), stripLed=socket([5.3,.45,-3.68],[Math.PI/2,0,0]);
+const remoteLed=socket([-9.5,.45,1.5],[0,0,Math.PI/2]);
 cable([[-11.7,.3,3.45],[-11.6,.12,4.6],[-10.2,.1,5.5],[-8,.1,5.2],[-6.4,.1,6.2],[-6,.11,7.4]],
       [[-11.7,.3,3.45],[-11.6,.12,4.4],[-11,.1,4.6],[-10.4,.1,3.4],[-10.25,.3,1.5],[-9.75,.45,1.5]],'#ff5d1a',.085,()=>S.mode==='cv').led=remoteLed;
-cable([[4.6,.3,-6.5],[6,.12,-7.4],[8.2,.1,-8.1],[10.4,.1,-7.2],[12.6,.1,-8.2],[13.2,.11,-9.4]],
-      [[4.6,.3,-6.5],[5.6,.12,-6.9],[6.2,.1,-6.0],[5.7,.1,-4.6],[5.3,.3,-4.15],[5.3,.45,-3.92]],'#1c1c1e',.07,()=>PADM.includes(S.mode)).led=stripLed;
 function updateCables(){CABLES.forEach(c=>{const tgt=c.isOn()?1:0;if(Math.abs(c.t-tgt)<.002){if(c.t!==tgt){c.t=tgt;c.build();if(tgt===1)drum('rim')}}else{c.t+=(tgt-c.t)*.06;c.build()}
   c.led.material.emissiveIntensity=c.t>.97?1.6:0})}
 
@@ -441,13 +420,13 @@ const OFF={};
     for(let k=0;k<9;k++){const cx=Math.random()*W,cy=Math.random()*H;for(let r=4;r<38;r+=5){x.strokeStyle='rgba(120,86,48,.06)';x.beginPath();x.ellipse(cx,cy,r*3.2,r*.7,0,0,7);x.stroke()}}});
   wood.t.wrapS=wood.t.wrapT=THREE.ClampToEdgeWrapping; // one continuous plank pattern, no seam
   const wm=themed(new THREE.MeshPhysicalMaterial({map:wood.t,roughness:.58,clearcoat:.25,clearcoatRoughness:.5,bumpMap:TEX.grain,bumpScale:.05}),'#ffffff','#5d4f41',1,.6); // light oak by day, walnut under the lamp at night
-  const top=rbox(32.5,.9,23.5,.3,wm); top.position.set(.6,-.45,-2.6); top.castShadow=false; scene.add(top); OFF.top=top;
+  const top=rbox(32.5,.9,18.5,.3,wm); top.position.set(.6,-.45,-.1); top.castShadow=false; scene.add(top); OFF.top=top;
   const lm=themed(new THREE.MeshPhysicalMaterial({color:'#c3c6cc',metalness:.85,roughness:.38}),'#c3c6cc','#4a4d54',1,.7);
-  [[-15.2,-13.8],[16.4,-13.8],[-15.2,8.6],[16.4,8.6]].forEach(([x,z])=>{const l=rbox(.85,30,.85,.2,lm);l.position.set(x,-15.9,z);l.castShadow=false;scene.add(l)});
-  const apron=rbox(30.5,.7,.2,.05,lm); apron.position.set(.6,-1.25,-14.1); scene.add(apron);
+  [[-15.2,-8.8],[16.4,-8.8],[-15.2,8.6],[16.4,8.6]].forEach(([x,z])=>{const l=rbox(.85,30,.85,.2,lm);l.position.set(x,-15.9,z);l.castShadow=false;scene.add(l)});
+  const apron=rbox(30.5,.7,.2,.05,lm); apron.position.set(.6,-1.25,-9.1); scene.add(apron);
 }
 /* plant: snake plant in a white ceramic pot */
-const PLANT=new THREE.Group(); PLANT.position.set(14.1,0,-11.2); scene.add(PLANT);
+const PLANT=new THREE.Group(); PLANT.position.set(13.4,0,-6.6); scene.add(PLANT);
 { const pot=cyl(1.25,1.0,2.1,new THREE.MeshPhysicalMaterial({color:'#f1efea',roughness:.32,clearcoat:.6,clearcoatRoughness:.25}),48); pot.position.y=1.05; PLANT.add(pot);
   const rimR=new THREE.Mesh(new THREE.TorusGeometry(1.2,.07,10,48),pot.material); rimR.rotation.x=-Math.PI/2; rimR.position.y=2.1; PLANT.add(rimR);
   const soil=new THREE.Mesh(new THREE.CircleGeometry(1.16,40),new THREE.MeshStandardMaterial({color:'#3b2c22',roughness:1})); soil.rotation.x=-Math.PI/2; soil.position.y=1.98; PLANT.add(soil);
@@ -487,19 +466,18 @@ function updateOffice(dt,t){
 scene.updateMatrixWorld(true);
 const boxOf=objs=>{const b=new THREE.Box3();objs.forEach(o=>b.expandByObject(o));return b};
 const BOX={
-  all:new THREE.Box3(new THREE.Vector3(-13.4,0,-12.8),new THREE.Vector3(15.6,2.4,6.2)), // the whole desk: synths, lamp and plant
-  kb:boxOf([...keyMeshes,...sharpMeshes,...ROWBTN.map(a=>a[0])]), cv:boxOf([RM]), life:boxOf([TU]),
+  all:new THREE.Box3(new THREE.Vector3(-13.4,0,-8.2),new THREE.Vector3(15.0,2.4,6.4)), // the whole desk: synths, lamp and plant
+  kb:boxOf([...keyMeshes,...sharpMeshes,...ROWBTN.map(a=>a[0])]), cv:boxOf([RM]),
   th:new THREE.Box3(new THREE.Vector3(GX(4)-.5,TOP,GZ(0)-.6),new THREE.Vector3(GX(15)+.5,TOP+.8,GZ(1)+.9)),
   info:new THREE.Box3(new THREE.Vector3(-8.6,TOP,GZ(1)),new THREE.Vector3(8.6,TOP+.5,GZ(3)+.3)),
 };
-const POLAR={all:.3,kb:1.08,cv:1.0,life:1.02,info:1.05}; // overview is nearly top-down; parts get low, close, cinematic angles
+const POLAR={all:.3,kb:1.08,cv:1.0,info:1.05}; // overview is nearly top-down; parts get low, close, cinematic angles
 
 /* ───────────── FIGMA: section titles + soft underlight per device (About Me · Contact · My Projects) ─────────────
    Hovering anywhere on a device (or its title) grows the title from Gotham Medium 28.7 to Ultra 90 (4K px) and fades
    in a subtle light underneath it, like an LED strip under the hardware. Colours come from the Figma glow layers;
    the My Projects light takes the colour of the keyboard's current mode and stays on while you're in a keyboard mode. */
 const GROUPS={
-  about:{obj:TU,box:BOX.life,foot:boxOf([TU.children[0]]),col:()=>'#00ff15',go:()=>zoomTo(S.pad)},
   contact:{obj:RM,box:BOX.cv,foot:boxOf([RM.children[0]]),col:()=>'#ff2020',go:()=>zoomTo('cv')},
   projects:{obj:synth,box:boxOf([synth]),foot:boxOf([synth.children[0],synth.children[1]]),col:()=>MODES[S.kb]?.glow||'#00bfff',go:()=>zoomTo(S.kb)},
 };
@@ -528,7 +506,7 @@ for(const [key,g] of Object.entries(GROUPS)){
   el.addEventListener('focus',()=>{S.grpLbl=key}); el.addEventListener('blur',()=>{if(S.grpLbl===key)S.grpLbl=null});
   el.addEventListener('click',()=>{ensureAudio();S.grpLbl=null;drum('blip');g.go()});
 }
-const GSET=new Map([[TU,'about'],[RM,'contact'],[synth,'projects']]);
+const GSET=new Map([[RM,'contact'],[synth,'projects']]);
 function groupAt(o){ // which device the pointer is over: the control's parent chain first, then the devices' bounding boxes
   for(let p=o;p;p=p.parent)if(GSET.has(p))return GSET.get(p);
   if(o)return null; // a control that isn't on a synth (monitor, lamp)
@@ -560,7 +538,7 @@ function openMenu(){menu.classList.remove('out');menu.hidden=false;mnu.setAttrib
 function closeMenu(){if(menu.hidden)return;mnu.setAttribute('aria-expanded','false');mnu.setAttribute('aria-label','Menu');
   if(reduceMotion){menu.hidden=true;return}menu.classList.add('out');menu.addEventListener('animationend',()=>{if(menu.classList.contains('out')){menu.hidden=true;menu.classList.remove('out')}},{once:true})}
 mnu.onclick=()=>{ensureAudio();menu.hidden||menu.classList.contains('out')?openMenu():closeMenu()};
-menu.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b){closeMenu();return}/* links and empty space both close it */const k=b.dataset.go;if(k==='home')return;closeMenu();ensureAudio();if(S.mode)S.mode=null;GROUPS[k].go()});
+menu.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b){closeMenu();return}/* links and empty space both close it */const k=b.dataset.go;if(k==='home')return;closeMenu();ensureAudio();if(k==='about'){zoomTo('ab');openCard('ab',0);return}if(S.mode)S.mode=null;GROUPS[k].go()});
 document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!menu.contains(e.target)&&!mnu.contains(e.target))closeMenu()});
 const desktop=()=>innerWidth>760;
 function frameFor(key){
@@ -616,12 +594,6 @@ function drawScreens(time){
   x.strokeStyle=T.col;x.lineWidth=3;x.beginPath();const y0=320;
   for(let i=0;i<=200;i++){const px=30+i*(W-60)/200;let v=wave?(wave[Math.floor(i*wave.length/201)]-128)/128*55:Math.sin(i*.12+time*2)*5;i?x.lineTo(px,y0+v):x.moveTo(px,y0+v)}x.stroke();
   scr.t.needsUpdate=true;
-  const p=per.x;p.fillStyle='#08090b';p.fillRect(0,0,560,320);
-  FIG.forEach((f,k)=>{const sel=PADM.indexOf(S.pad)===k,ps=17,cx=95+k*185,bob=Math.sin(time*6+k)*level*14*(sel?1:.5)+(sel?Math.sin(time*2)*3:0);
-    p.globalAlpha=sel?1:.38;p.fillStyle=FCOL[k];f.forEach((row,ry)=>[...row].forEach((ch,rx)=>{if(ch==='X')p.fillRect(cx-60+rx*ps,40+ry*ps-bob,ps-2,ps-2)}));
-    p.font='20px Bungee, Impact, sans-serif';p.textAlign='center';p.fillText(FN[k],cx,200);p.textAlign='left'});
-  p.globalAlpha=1;p.font='600 20px "IBM Plex Mono", monospace';p.fillStyle='#55575d';p.fillText('VICK.LIFE · CLICK A FIGURE',24,276);
-  per.t.needsUpdate=true;
   const key=[muted,P.vol,demo?track+1:0,S.mode].join();
   if(key!==lastKey){lastKey=key;const r=rs.x;r.fillStyle='#0c0c0e';r.fillRect(0,0,300,200);r.fillStyle='#ff5d1a';r.font='34px Bungee, Impact, sans-serif';r.fillText('CV',22,26);
     r.font='600 20px "IBM Plex Mono", monospace';r.fillStyle='#8a8c92';r.fillText(muted?'MUTED':`VOL ${Math.round(P.vol*100)}%`,22,100);r.fillStyle=demo?'#ff5d1a':'#6b6d73';r.fillText(demo?`● TRACK ${track+1}/5`:'CONTACT · SOCIALS',22,140);rs.t.needsUpdate=true}
@@ -670,7 +642,7 @@ cv.addEventListener('pointerdown',e=>{ensureAudio();if(e.button>0)return; // rig
   if(e.pointerType!=='mouse'){S.hover=o;S.hoverUntil=performance.now()+1600}try{cv.setPointerCapture(e.pointerId)}catch{}});
 const controls=new OrbitControls(camera,cv); controls.enableDamping=true; controls.dampingFactor=.06; controls.enablePan=true; controls.screenSpacePanning=false; controls.zoomToCursor=true; controls.rotateSpeed=.7; controls.zoomSpeed=.9;
 controls.minPolarAngle=.02; controls.maxPolarAngle=1.32; controls.minAzimuthAngle=-1.1; controls.maxAzimuthAngle=1.1;
-const PANBOX=new THREE.Box3(new THREE.Vector3(-14,0,-13),new THREE.Vector3(16,3,8)); // panning stays over the desk
+const PANBOX=new THREE.Box3(new THREE.Vector3(-14,0,-8),new THREE.Vector3(16,3,8)); // panning stays over the desk
 let lastLive='';
 cv.addEventListener('pointermove',e=>{
   if(drag){const dy=e.clientY-drag.y,dx=e.clientX-drag.x;drag.y=e.clientY;drag.x=e.clientX;drag.m+=Math.abs(dy)+Math.abs(dx);drag.o.userData.drag?.(-dy+dx*.5);lastLive=drag.o.userData.live?.()||'';return}
@@ -711,6 +683,7 @@ function setTheme(dark,{save=true,sweep=true}={}){
   if(save)try{localStorage.setItem('vdc-theme',dark?'dark':'light')}catch{}
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content',dark?'#16140f':'#ece5d8');
   themeBtn.setAttribute('aria-pressed',String(dark)); themeBtn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode'); if(sweep)flip(themeBtn);
+  if(sweep)found('theme',dark?'Night mode':'Day mode');
   if(sweep){ // a light sweep runs across every control, left to right, as the synth "re-lights"
     const v=new THREE.Vector3(); FXL.forEach(f=>{f.m.getWorldPosition(v);pulse(f.m,(v.x+13)*32,.6)}); drum(dark?'blip':'rim');}
 }
