@@ -374,13 +374,13 @@ const coreTex=canvasTex(256,64,(x,W,H)=>{x.save();x.translate(W/2,H/2);x.scale(W
 function wideBtn(x,w,label){const t=rbox(w-.07,.3,.93,.07,M(C.tile,.6));t.position.set(x,TOP+.15,GZ(2));synth.add(t);
   const k=rbox(w-.3,.16,.72,.16,RUBBER());k.position.set(x,TOP+.36,GZ(2));synth.add(k);
   const core=new THREE.Mesh(new THREE.PlaneGeometry(w-.62,.5),new THREE.MeshBasicMaterial({map:coreTex,transparent:true,opacity:0,depthWrite:false,toneMapped:false}));
-  core.rotation.x=-Math.PI/2;core.position.y=.0802;core.visible=false;k.add(core);k.userData.core=core;FXMATS.push(core.material);
+  core.rotation.x=-Math.PI/2;core.position.y=.0802;core.visible=false;k.add(core);k.core=core; /* not in userData: pressable() replaces userData */FXMATS.push(core.material);
   const l=engravedLabel(label,1.6,.5,30);l.position.y=.0805;k.add(l);t.userData.proxy=k;hits.push(t);return k}
 {const F=['gd','ux','mo','tl','xp'],L=['DESIGN','UI/UX','MOTION','TOOLS','EXPERIMENTAL'],W=17/5;
  for(let j=0;j<5;j++){const x=-8.5+W*(j+.5),f=F[j];
   const k=wideBtn(x,W,L[j]);
   pressable(k,()=>{playNote(72+[0,4,7,11,14][j],.5);zoomTo(f)},`Filter · ${CH[f].name} · ${MODES[f].n||CH[f].items.length+' keys'} on the keys`);k.userData.filter=f;
-  k.material.emissive=new THREE.Color(MODES[f].glow);k.userData.core.material.color.set(MODES[f].glow);ROWBTN.push([k,f]);fxOf(k).managed=true;}}
+  k.material.emissive=new THREE.Color(MODES[f].glow);k.core.material.color.set(MODES[f].glow);ROWBTN.push([k,f]);fxOf(k).managed=true;}}
 // drum pads: graphite caps with light print (KO II style)
 const PADS=['kick','snare','hat','clap','tom','rim','shaker','crash','blip'];
 PADS.forEach((p,i)=>capBtn(14+i%3,3+Math.floor(i/3),p.toUpperCase(),()=>drum(p),`Drum pad · ${p}`,'#efe4cf','#2c2d31','#cdbfa6'));
@@ -615,7 +615,7 @@ function refreshGlow(t){
     if(S.card?.ch===k||S.mode===k&&S.hover?.userData?.item&&S.hover.userData.ch===k)edge=1;
     if(S.hover===m)edge=1;                                           // hovered
     m.userData.edge=edge;m.material.emissiveIntensity=edge?.035:0; // the solid cap only shows a faint glow when lit
-    const c=m.userData.core,dark=themeK>.5;c.userData.k=(c.userData.k||0)+((edge?1:0)-(c.userData.k||0))*.12; // ease the core in and out
+    const c=m.core,dark=themeK>.5;c.userData.k=(c.userData.k||0)+((edge?1:0)-(c.userData.k||0))*.12; // ease the core in and out
     c.material.opacity=c.userData.k*edge*(dark?.32:.22);c.visible=c.material.opacity>.003});
   BIGCAPS.forEach(([m,k])=>m.material.emissiveIntensity=S.mode===k?.3+.1*Math.sin(t*3):(S.hover===m?.2:0));
   for(const g in CTRL){const ch=realCh(g);CTRL[g].forEach((m,j)=>{if(!m)return;let e=0;
