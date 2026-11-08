@@ -227,6 +227,8 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 
 19. **Nov 2026: interactions counter removed** (Vick asked). `#ix`, `FIND`/`found()` and `localStorage['vdc-found']` are gone.
 
+20. **Nov 2026: knobs are sound controls.** The four big knobs no longer open the role channels (Designer, Strategist, Artist, Teacher); they set FILTER (`cutoff`), RESONANCE (`q`), DECAY and ECHO (`wet`). The small knob is DETUNE and the remote knob is master VOLUME. Every knob cap is one brushed-steel material (`STEEL`) with a dark indicator. Hovering a knob shows its value on the synth screen. The role channels stay in the content but no longer have a control; the full CV is reached from the menu's Download CV.
+
 **Commenting tip:** artifact comments anchored to the 3D canvas **don't carry the click position or selection rectangle**. Ask Vick to name the control instead of guessing (this happened twice).
 
 ---

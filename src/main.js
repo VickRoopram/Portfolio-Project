@@ -22,7 +22,7 @@ const MODES={
   info:{part:'The About row',n:'6 pages',dock:'About',glow:'#ff2a30',box:'info'},
   cv:{part:'The remote',n:'CV, contact & socials',dock:'CV & Contact',glow:'#ff6a20',box:'cv'},
 };
-const ORDER=['gd','ux','mo','tl','xp','ab','ds','st','ar','te','cv'], KBM=['gd','ux','mo','ab','sk','tl','aw','wk','sd','xp','ds','st','ar','te'], PADM=[], DOCK=['ab','gd','ux','mo','ds','cv']; // PADM: the life strip was removed (Nov 2026); kept empty so the shared code paths stay simple
+const ORDER=['gd','ux','mo','tl','xp','ab','cv'], KBM=['gd','ux','mo','ab','sk','tl','aw','wk','sd','xp','ds','st','ar','te'], PADM=[], DOCK=['ab','gd','ux','mo','ds','cv']; // PADM: the life strip was removed (Nov 2026); kept empty so the shared code paths stay simple
 const S={mode:null,card:null,persona:0,hover:null,hoverUntil:0,kb:'gd',pad:'fm',grp:null,grpLbl:null};
 let lastHit=null;
 { Object.assign(MODES,{xp:{dock:'Experimental',glow:'#ff5ec8'},ab:{dock:'About',glow:'#ff2a30'},sk:{dock:'Skills',glow:'#ffb020'},tl:{dock:'Tools',glow:'#a46bff'},aw:{dock:'Awards',glow:'#ffd400'},wk:{dock:'Work',glow:'#00e0cc'},sd:{dock:'Study',glow:'#ff5ec8'}});
@@ -103,7 +103,7 @@ document.addEventListener('animationend',e=>{if(e.animationName==='zap')e.target
 
 /* ───────────── AUDIO ───────────── */
 const P={cutoff:.62,q:.22,dtime:.35,fb:.3,wet:.22,detune:.15,decay:.45,attack:.03,sub:.3,drums:.8,vol:.7,wave:1};
-const PNAMES={cutoff:'Tone',q:'Resonance',dtime:'Echo time',fb:'Echo feedback',wet:'Echo mix',detune:'Detune',decay:'Decay',attack:'Attack',sub:'Sub osc',drums:'Drum level',vol:'Volume'};
+const PNAMES={cutoff:'Filter',q:'Resonance',dtime:'Echo time',fb:'Echo feedback',wet:'Echo mix',detune:'Detune',decay:'Decay',attack:'Attack',sub:'Sub osc',drums:'Drum level',vol:'Volume'};
 const WAVES=['triangle','square','sawtooth'];
 let ac,master,filter,delay,fb,wet,an,noiseBuf,muted=false,tdata;
 function ensureAudio(){
@@ -195,6 +195,8 @@ const mats={}; const M=(c,r=.62,m=0)=>{const k=c+r+m;if(mats[k])return mats[k];c
   return mats[k]=new THREE.MeshPhysicalMaterial({color:c,roughness:Math.min(r,.5),metalness:Math.max(m,.15),clearcoat:.25,clearcoatRoughness:.35,bumpMap:TEX.grain,bumpScale:.08,envMapIntensity:.9})};
 /* anodised coloured knob cap + knurled metal band */
 const A=c=>mats['A'+c]||(mats['A'+c]=new THREE.MeshPhysicalMaterial({color:c,metalness:.65,roughness:.28,clearcoat:.6,clearcoatRoughness:.2,bumpMap:TEX.grain,bumpScale:.05}));
+/* brushed steel: the one finish for every knob cap */
+const STEEL=mats.STEEL=themed(new THREE.MeshPhysicalMaterial({color:'#b3b6bc',metalness:.92,roughness:.3,clearcoat:.4,clearcoatRoughness:.3,bumpMap:TEX.brush,bumpScale:.12}),'#b3b6bc','#8a8e95',.9,.85);
 const KN=mats.KN=themed(new THREE.MeshPhysicalMaterial({color:'#b9bcc2',metalness:1,roughness:.32,bumpMap:TEX.knurl,bumpScale:1.2,side:THREE.DoubleSide}),'#b9bcc2','#868990',1,.8);
 function knurl(parent,r,h,y,proxy){const k=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,64,1,true),KN);k.position.y=y;k.castShadow=true;parent.add(k);k.userData.proxy=proxy;hits.push(k);return k}
 function screw(parent,x,y,z){const s=new THREE.Mesh(new THREE.CylinderGeometry(.075,.075,.025,20),M('#c4c6cc'));s.position.set(x,y,z);parent.add(s);const sl=new THREE.Mesh(new THREE.BoxGeometry(.11,.012,.022),new THREE.MeshStandardMaterial({color:'#55575c'}));sl.position.set(x,y+.014,z);sl.rotation.y=Math.random()*Math.PI;parent.add(sl)}
@@ -285,13 +287,13 @@ function paramKnob(pos,key,{r=.28,cap='#d0d2d6',ring='#3a3b3f',parent}){
   const g=new THREE.Group(); g.position.copy(pos); parent.add(g);
   const rg=cyl(r+.08,r+.1,.08,M(ring,.5)); rg.position.y=.04; g.add(rg);
   const rot=new THREE.Group(); g.add(rot);
-  const cp=cyl(r,r+.02,.3,A(cap)); cp.position.y=.22; rot.add(cp); knurl(rot,r+.028,.2,.17,cp);
-  const ind=new THREE.Mesh(new THREE.BoxGeometry(.04,.02,r*.7),M('#e9e9ec')); ind.position.set(0,.38,-r*.5); rot.add(ind);
+  const cp=cyl(r,r+.02,.3,STEEL); cp.position.y=.22; rot.add(cp); knurl(rot,r+.028,.2,.17,cp);
+  const ind=new THREE.Mesh(new THREE.BoxGeometry(.04,.02,r*.7),M('#1d1e21')); ind.position.set(0,.38,-r*.5); rot.add(ind);
   rg.userData.proxy=cp; ind.userData.proxy=cp; hits.push(rg,ind);
   rot.userData.r=0; anim.push(rot);
   if(key){const set=()=>{rot.userData.r=(.5-P[key])*4.4};set();rot.rotation.y=rot.userData.r;
     cp.material=cp.material.clone();fxOf(cp);
-    cp.userData={tip:`${PNAMES[key]} · drag up/down`,live:()=>`${PNAMES[key]} ${Math.round(P[key]*100)}%`,down(){pulse(cp)},drag(d){P[key]=Math.min(1,Math.max(0,P[key]+d/180));set();applyP()},up(){}};hits.push(cp);}
+    cp.userData={tip:`${PNAMES[key]} · drag up or down`,live:()=>`${PNAMES[key]} ${Math.round(P[key]*100)}%`,down(){pulse(cp);ensureAudio();if(key!=='vol')playNote(60,.6)},drag(d){P[key]=Math.min(1,Math.max(0,P[key]+d/180));set();applyP()},up(){}};hits.push(cp);}
   return {g,rot,cp};
 }
 
@@ -312,8 +314,8 @@ tile(12,0,2,2);
 const grille=(()=>{const {t}=canvasTex(256,256,(x)=>{x.fillStyle='#fff';for(let i=0;i<11;i++)for(let j=0;j<11;j++){const dx=i-5,dy=j-5;if(dx*dx+dy*dy<=27){x.beginPath();x.arc(28+i*20,28+j*20,5.2,0,7);x.fill()}}});
  const p=new THREE.Mesh(new THREE.PlaneGeometry(1.7,1.7),themed(new THREE.MeshBasicMaterial({map:t,transparent:true,color:'#3a3b40'}),'#3a3b40','#0e0f11'));p.rotation.x=-Math.PI/2;p.position.set(GX(12.5),TOP+.305,GZ(.5));synth.add(p);return p})();
 // tone knob, wave, demo
-tile(14,0,2,1); paramKnob(new THREE.Vector3(GX(14),TOP+.3,GZ(0)),'cutoff',{r:.3,cap:'#f2e8d5',ring:C.ring,parent:synth});
-{const l=labelPlane('TONE',.6,.29);l.position.set(GX(15),TOP+.31,GZ(0));synth.add(l)}
+tile(14,0,2,1); paramKnob(new THREE.Vector3(GX(14),TOP+.3,GZ(0)),'detune',{r:.3,ring:C.ring,parent:synth});
+{const l=labelPlane('DETUNE',.6,.29);l.position.set(GX(15),TOP+.31,GZ(0));synth.add(l)}
 capBtn(14,1,'WAVE',()=>{P.wave=(P.wave+1)%3;setSwitch();playNote(67,.4)},'Waveform: triangle / square / saw');
 const beatsBtn=capBtn(15,1,'BEATS',()=>toggleDemo(),'Beats · each click plays the next of 5 tracks');
 const stopBtn=capBtn(16,0,'STOP',()=>{stopDemo();drum('rim')},'Stop the music');
@@ -325,19 +327,22 @@ tile(0,0,4,2,M(C.recess,.4));
 const scr=canvasTex(800,380); const scrP=new THREE.Mesh(new THREE.PlaneGeometry(3.78,1.8),new THREE.MeshBasicMaterial({map:scr.t,toneMapped:false}));
 scrP.rotation.x=-Math.PI/2; scrP.position.set(GX(1.5),TOP+.305,GZ(.5)); synth.add(scrP);
 scrP.userData={tip:'Screen · click for the About page',down(){zoomTo('ab');openCard('ab',0)}}; hits.push(scrP);
-// THEOLOGY: the four big knobs
-const TH_LABEL=['DESIGNER','STRATEGIST','ARTIST','TEACHER'], BIG=['#4f8fc0','#4fa66a','#f2e8d5','#e2614b'];
-for(let i=0;i<4;i++){const c0=4+i*2;tile(c0,0,2,2);
+// SOUND: the four big knobs shape the synth voice (drag up/down; click to hear a note)
+const BIGK=[['cutoff','FILTER'],['q','RESONANCE'],['decay','DECAY'],['wet','ECHO']];
+BIGK.forEach(([key,label],i)=>{const c0=4+i*2;tile(c0,0,2,2);
   const g=new THREE.Group(); g.position.set(GX(c0+.5),TOP+.3,GZ(.5)); synth.add(g);
   const ring=cyl(.8,.84,.12,M(C.ring,.4)); ring.position.y=.06; g.add(ring);
-  const rot=new THREE.Group(); g.add(rot); rot.userData.r=0; anim.push(rot);
-  const capm=cyl(.58,.62,.42,A(BIG[i])); capm.position.y=.33; rot.add(capm); knurl(rot,.63,.26,.26,capm);
-  const ind=new THREE.Mesh(new THREE.BoxGeometry(.07,.02,.34),M(i===2?'#3a3b40':'#ffffff',.5)); ind.position.set(0,.55,-.3); rot.add(ind);
+  const rot=new THREE.Group(); g.add(rot); anim.push(rot);
+  const capm=cyl(.58,.62,.42,STEEL); capm.position.y=.33; rot.add(capm); knurl(rot,.63,.26,.26,capm);
+  const ind=new THREE.Mesh(new THREE.BoxGeometry(.07,.02,.34),M('#1d1e21',.5)); ind.position.set(0,.55,-.3); rot.add(ind);
   ring.userData.proxy=capm; ind.userData.proxy=capm; hits.push(ring,ind);
-  const L=labelPlane(TH_LABEL[i],1.5,.3,'#7b7e86',40); L.position.set(0,.01,.98); g.add(L);
-  const RK=['ds','st','ar','te'][i]; capm.material=capm.material.clone(); capm.material.emissive=new THREE.Color(MODES[RK].glow); BIGCAPS.push([capm,RK]); fxOf(capm).managed=true;
-  capm.userData={tip:`${CH[RK].name} mode · lights up the keys`,down(){pulse(capm);playNote([48,52,55,60][i],1.4);zoomTo(RK)},drag(d){rot.userData.r+=d/50},up(){}}; hits.push(capm);
-}
+  const L=labelPlane(label,1.5,.3,'#7b7e86',40); L.position.set(0,.01,.98); g.add(L);
+  const set=()=>{rot.userData.r=(.5-P[key])*4.4}; set(); rot.rotation.y=rot.userData.r;
+  capm.material=capm.material.clone(); fxOf(capm);
+  capm.userData={tip:`${PNAMES[key]} · drag up or down`,live:()=>`${PNAMES[key]} ${Math.round(P[key]*100)}%`,
+    down(){pulse(capm);ensureAudio();playNote([48,52,55,60][i],1.2)},drag(d){P[key]=Math.min(1,Math.max(0,P[key]+d/180));set();applyP()},up(){}};
+  hits.push(capm);
+});
 // ABOUT: red button row (cols 0-7, row 2); lead notes cols 8-16
 // About row: only content about Vick — 9 wide buttons across the full row
 CH.info.items.length=6;
@@ -372,7 +377,7 @@ const rmt=(w,d,x,z)=>{const m=rbox(w-.07,.26,d-.07,.07,M(C.tile,.6));m.position.
 rmt(1.9,1.3,0,-2.5); const rs=canvasTex(300,200); const rsP=new THREE.Mesh(new THREE.PlaneGeometry(1.74,1.14),new THREE.MeshBasicMaterial({map:rs.t,toneMapped:false}));
 rsP.rotation.x=-Math.PI/2; rsP.position.set(0,1.015,-2.5); RM.add(rsP);
 rmt(1.9,1.7,0,-1);
-{const k=paramKnob(new THREE.Vector3(0,1.01,-1),null,{r:.48,cap:'#e2614b',ring:C.ring,parent:RM});itemCtrl(k.cp,'cv',0,()=>playNote(55,1),{knob:k.rot,pressy:false})}
+paramKnob(new THREE.Vector3(0,1.01,-1),'vol',{r:.48,ring:C.ring,parent:RM}); // master volume
 rmt(1.9,.9,0,.35); {const pill=rbox(1.5,.16,.5,.24,M(C.cap,.5)); pill.position.set(0,1.08,.35); RM.add(pill);
  const l=labelPlane('CONTACT',.9,.25,'#ff5d1a',46);l.position.y=.081;pill.add(l); itemCtrl(pill,'cv',1,()=>drum('clap'))}
 [['BE',-.47,1.3],['IG',.47,1.3],['IN',-.47,2.25],['+',.47,2.25]].forEach(([t,x,z],j)=>{rmt(.95,.95,x,z);const k=rbox(.68,.16,.68,.16,M(C.cap,.5));k.position.set(x,1.08,z);RM.add(k);
@@ -554,6 +559,7 @@ function screenText(){
     return S.mode===o.ch?{h:c.name,r:`${pad(o.i+1)}/${pad(c.items.length)}`,t:it.t.toUpperCase(),col:scrCol(o.ch)}
       :{h:c.name,r:MODES[o.ch].n.toUpperCase(),t:`${MODES[o.ch].part.toUpperCase()} · CLICK TO ZOOM IN`,col:scrCol(o.ch)}}
   if(demo&&!o) return {h:'NOW PLAYING',r:`TRACK ${track+1}/5`,t:TRACKS[track].n,col:'#ff5d1a'};
+  if(o?.live) return {h:'SOUND',r:'DRAG TO CHANGE',t:o.live().toUpperCase(),col:'#d8d2c6'};
   if(o?.tip) return {h:'VICKHAL ROOPRAM',r:'',t:o.tip.toUpperCase(),col:'#9a9ca3'};
   if(S.card){const c=CH[S.card.ch];return {h:c.name,r:`${pad(S.card.i+1)}/${pad(c.items.length)}`,t:c.items[S.card.i].t.toUpperCase(),col:scrCol(S.card.ch)}}
   if(S.mode) return {h:CH[S.mode].name,r:MODES[S.mode].n.toUpperCase(),t:'HOVER A CONTROL · CLICK TO OPEN',col:scrCol(S.mode)};

@@ -12,7 +12,7 @@ The synth is the interface. Each part of the instrument holds a different side o
 | --- | --- |
 | **Filter buttons**: Design · UI/UX · Motion · Tools · Experimental | Choose what the keyboard shows. The active button glows and the keys light up in its colour. |
 | **Keyboard** (14 keys) | One project, tool or experiment per key. Click a key to open its card. |
-| **Four big knobs**: Designer · Strategist · Artist · Teacher | Role filters for the keyboard. |
+| **Four big knobs** | Sound: Filter, Resonance, Decay, Echo. Drag up or down; click to hear a note. |
 | **CV remote** (left) | Full CV (PDF), contact details and social links. Also plugs in when selected. |
 | **Music side** (right): drum pads, Tone, Wave, BEATS, STOP, MUTE | Pure play. BEATS cycles five original tracks; STOP and BEATS glow while music runs. |
 
