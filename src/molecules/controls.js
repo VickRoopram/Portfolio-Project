@@ -44,7 +44,7 @@ export function screw(parent, x, y, z) {
 }
 /* a keycap with a printed legend: a word, or a coolicons glyph when glyph is set */
 export function cap(w, d, r, label, { col = C.cap, ink, inkDark, size = 50, lw = .66, lh = .32, glyph } = {}) {
-  const k = rbox(w, .16, d, r, M(col, .5)), l = glyph ? printedIcon(glyph, lw, lh, ink, 84, inkDark) : label && printed(label, lw, lh, ink, size, inkDark);
+  const k = rbox(w, .16, d, r, M(col, .5)), l = glyph ? printedIcon(glyph, lw, lh, ink, undefined, inkDark) : label && printed(label, lw, lh, ink, size, inkDark);
   if (l) { l.position.y = .081; k.add(l) } return k;
 }
 /* a sound knob: brass ring, forged steel cap, knurled band and an indicator. Drag up/down to set P[key]; click for a note.

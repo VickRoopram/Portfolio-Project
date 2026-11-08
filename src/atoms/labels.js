@@ -13,8 +13,8 @@ export function printed(text, w = .62, h = .3, color = '#6b6e76', size = 50, dar
   return tinted(t, w, h, color, dark);
 }
 /* a printed coolicons glyph instead of a word (same tinting) */
-export function printedIcon(name, w = .6, h = .3, color = '#6b6e76', s = 84, dark) {
-  return tinted(canvasTex(256, 124, (x, W, H) => drawIcon(x, name, W / 2, H / 2, s, '#fff', 2.2)).t, w, h, color, dark);
+export function printedIcon(name, w = .6, h = .3, color = '#6b6e76', s = 104, dark) {
+  return tinted(canvasTex(256, 124, (x, W, H) => drawIcon(x, name, W / 2, H / 2, s, '#fff', 2.4)).t, w, h, color, dark);
 }
 const tinted = (t, w, h, color, dark) => flat(w, h, decal(themed(new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false, color }), color, dark || PRINT_DARK[color] || color)));
 /* inlaid white letters a touch below the surface: a shadowed top wall and a catch-light on the lower lip.
