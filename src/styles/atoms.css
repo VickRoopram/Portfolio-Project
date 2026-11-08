@@ -1,6 +1,7 @@
 /* ── ATOMS: the smallest pieces. Icon button, primary/ghost button, kicker, chip, picture, spinner. ── */
 .ico{position:relative;display:grid;place-items:center;padding:6px;border:0;background:none;border-radius:10px;cursor:pointer;color:inherit;transition:transform .14s ease,background-color .2s}
-.ico img{width:max(22px,calc(var(--px) * 50));height:auto;transition:transform .35s cubic-bezier(.2,.9,.3,1.4)}
+:where(.ic){display:block;flex:none}
+.ico .ic{width:max(22px,calc(var(--px) * 50));height:max(22px,calc(var(--px) * 50));transition:transform .35s cubic-bezier(.2,.9,.3,1.4)}
 .ico:active{transform:scale(.9)}
 
 .cta{display:inline-flex;align-items:center;justify-content:center;gap:var(--s2);min-height:44px;padding:0 var(--s4);border:1px solid var(--accent-ui);border-radius:var(--r2);background:var(--accent-ui);color:var(--on-accent);font:700 var(--t-md)/1 var(--body);text-decoration:none;cursor:pointer;transition:transform .12s ease,background-color .2s,color .2s,box-shadow .2s}

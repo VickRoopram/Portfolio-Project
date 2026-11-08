@@ -43,7 +43,7 @@ Mouse, trackpad and touch work too: drag to orbit, scroll or pinch to zoom. On p
 │   ├── content.js          # Built-in default content (used until something is published in /admin)
 │   ├── cms.js              # Loads draft/live content from the admin over the defaults
 │   ├── core/               # Engine: state, data (content + modes), audio (synth, drums, beats), scene (renderer, lights)
-│   ├── atoms/              # geometry, textures, materials, labels
+│   ├── atoms/              # geometry, textures, materials, labels, icons (coolicons)
 │   ├── molecules/          # fx (press glow + stroke), controls (keys, buttons, knobs), cable
 │   ├── organisms/          # synth, remote, desk, underlights, screens, card, menu, intro
 │   ├── page/               # camera (framing, swoops), theme (light/dark), input (pointer, keyboard, hover tip)

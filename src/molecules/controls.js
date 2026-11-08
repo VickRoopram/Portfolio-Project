@@ -5,7 +5,7 @@ import { CH, MODES } from '../core/data.js';
 import { P, PNAMES, ensureAudio, applyP, playNote } from '../core/audio.js';
 import { rbox, cyl } from '../atoms/geometry.js';
 import { M, C, STEEL, KNURL } from '../atoms/materials.js';
-import { printed } from '../atoms/labels.js';
+import { printed, printedIcon } from '../atoms/labels.js';
 import { fxOf, pulse } from './fx.js';
 
 /* NB: these set mesh.userData wholesale, so keep extra per-mesh data on the mesh itself (e.g. mesh.core), never in userData beforehand */
@@ -42,9 +42,10 @@ export function screw(parent, x, y, z) {
   const s = new THREE.Mesh(new THREE.CylinderGeometry(.075, .075, .025, 20), M(C.ring)); s.position.set(x, y, z); parent.add(s);
   const sl = new THREE.Mesh(new THREE.BoxGeometry(.11, .012, .022), new THREE.MeshStandardMaterial({ color: '#55575c' })); sl.position.set(x, y + .014, z); sl.rotation.y = Math.random() * Math.PI; parent.add(sl);
 }
-/* a square keycap with a printed legend */
-export function cap(w, d, r, label, { col = C.cap, ink, inkDark, size = 50, lw = .66, lh = .32 } = {}) {
-  const k = rbox(w, .16, d, r, M(col, .5)); if (label) { const l = printed(label, lw, lh, ink, size, inkDark); l.position.y = .081; k.add(l) } return k;
+/* a keycap with a printed legend: a word, or a coolicons glyph when glyph is set */
+export function cap(w, d, r, label, { col = C.cap, ink, inkDark, size = 50, lw = .66, lh = .32, glyph } = {}) {
+  const k = rbox(w, .16, d, r, M(col, .5)), l = glyph ? printedIcon(glyph, lw, lh, ink, 84, inkDark) : label && printed(label, lw, lh, ink, size, inkDark);
+  if (l) { l.position.y = .081; k.add(l) } return k;
 }
 /* a sound knob: brass ring, forged steel cap, knurled band and an indicator. Drag up/down to set P[key]; click for a note.
    sm and lg are the two sizes on the hardware: [ring grow top, bottom, height] · [cap height, y] · [knurl grow, height, y] · [indicator width, length/r, z/r] */

@@ -4,6 +4,7 @@
  * the CV remote has 6 buttons, and the screen holds the About pages.
  * "Update preview" saves the draft (shown on the version-01 preview); "Publish to live" copies it to the live site.
  */
+import { icon, socialIcon } from '/src/atoms/icons.js'; // the site's coolicons, so the preview matches
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const clone = o => JSON.parse(JSON.stringify(o));
@@ -327,9 +328,9 @@ function cardHTML(it) { // mirrors the site's card (src/organisms/card.js) so th
   h += `<header class="hd"><h2>${esc(it.t)}</h2><p class="k">${esc(it.k)}</p></header>`;
   if (it.hero) h += `<div class="hero"><img src="/assets/img/vick.jpg" alt=""><div class="d"><p><b>Vickhal Roopram</b><br>UX & Motion Designer<br>27 · South Africa</p></div></div>`;
   if (it.bars) h += `<div class="bars">${it.bars.map(b => `<div class="bar"><span>${esc(b[0])}</span><small>${esc(b[1])}</small><div><i style="--w:${b[2] * 100}%"></i></div></div>`).join('')}</div>`;
-  if (it.contact) h += `<div class="d"><p>For work, collaborations or a chat about design and faith:</p></div><div class="cta-row"><a class="cta">Email vickhal10@gmail.com</a><button class="cta ghost">Copy</button></div><p class="copy">Cell <span class="num">+27 73 482 7221</span></p><div class="socials">${doc.links.map(l => `<a class="soc" href="${esc(l[1])}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>${esc(l[0])}<small>${esc(String(l[1]).replace(/^https:\/\/(www\.)?/, ''))}</small></span><svg viewBox="0 0 24 24" width="16" height="16"><path d="M8 16L16 8M9 8h7v7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>`).join('')}</div>`;
+  if (it.contact) h += `<div class="d"><p>For work, collaborations or a chat about design and faith:</p></div><div class="cta-row"><a class="cta">${icon('mail', 18)}<span>Email vickhal10@gmail.com</span></a><button class="cta ghost">${icon('copy', 18)}<span>Copy</span></button></div><p class="copy">${icon('phone', 16)}Cell <span class="num">+27 73 482 7221</span></p><div class="socials">${doc.links.map(l => `<a class="soc" href="${esc(l[1])}" target="_blank" rel="noopener">${socialIcon(String(l[0]))}<span>${esc(l[0])}<small>${esc(String(l[1]).replace(/^https:\/\/(www\.)?/, ''))}</small></span>${icon('external-link', 16)}</a>`).join('')}</div>`;
   if (it.d) h += `<div class="d">${it.d}</div>`;
-  if (it.links?.length) h += `<div class="cta-row">${it.links.map((l, k) => `<a class="cta${k ? ' ghost' : ''}" href="${esc(l[1])}" target="_blank" rel="noopener">${esc(l[0])} ↗</a>`).join('')}</div>`;
+  if (it.links?.length) h += `<div class="cta-row">${it.links.map((l, k) => `<a class="cta${k ? ' ghost' : ''}" href="${esc(l[1])}" target="_blank" rel="noopener"><span>${esc(l[0])}</span>${icon(/\.pdf$/i.test(l[1]) ? 'download' : 'external-link', 16)}</a>`).join('')}</div>`;
   if (it.img?.length > 1) h += `<div class="gal">${it.img.slice(1).map(g => pic(g)).join('')}</div>`;
   return h;
 }
@@ -338,7 +339,7 @@ function updatePreview() {
   const th = document.documentElement.dataset.theme;
   $('cardFrame').srcdoc = `<!doctype html><html data-theme="${th}"><head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400..900&family=Noto+Sans:wght@400;600;700&display=swap"><link rel="stylesheet" href="/src/styles.css">
 <style>html,body{height:auto;overflow:auto}body{padding:18px}#card{position:relative!important;inset:auto!important;width:100%!important;max-width:430px;height:auto!important;margin:0 auto}.content{overflow:visible}</style></head>
-<body><div id="card" style="--accent:${esc(G().col)}"><div class="ch"><button>‹</button><button>›</button><button>✕</button></div><div class="content">${cardHTML(I())}</div></div></body></html>`;
+<body><div id="card" style="--accent:${esc(G().col)}"><div class="ch"><button>${icon('chevron-left', 20)}</button><button>${icon('chevron-right', 20)}</button><button>${icon('close', 20)}</button></div><div class="content">${cardHTML(I())}</div></div></body></html>`;
 }
 
 /* ───────────── small UI helpers ───────────── */

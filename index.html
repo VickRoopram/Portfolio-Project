@@ -22,10 +22,10 @@
   <a class="brand" id="brand" href="./" aria-label="Vickhal Roopram: back to the full synth"><img class="on-d" src="assets/ui/logo-on-dark.svg" width="290" height="101" alt=""><img class="on-l" src="assets/ui/logo-on-light.svg" width="290" height="101" alt=""></a>
   <div class="hud">
     <div class="pair">
-    <button class="ico" id="thm" aria-pressed="false" aria-label="Switch to dark mode"><img class="i-sun on-d" src="assets/ui/sun-on-dark.svg" width="24" height="24" alt=""><img class="i-moon on-l" src="assets/ui/moon-on-light.svg" width="24" height="24" alt=""></button>
-    <button class="ico" id="snd" aria-pressed="true" aria-label="Sound on: mute"><img class="s-on on-d" src="assets/ui/sound-on-on-dark.svg" width="24" height="24" alt=""><img class="s-on on-l" src="assets/ui/sound-on-on-light.svg" width="24" height="24" alt=""><img class="s-off on-d" src="assets/ui/sound-off-on-dark.svg" width="24" height="24" alt=""><img class="s-off on-l" src="assets/ui/sound-off-on-light.svg" width="24" height="24" alt=""></button>
+    <button class="ico" id="thm" aria-pressed="false" aria-label="Switch to dark mode"><i class="on-d" data-icon="sun"></i><i class="on-l" data-icon="moon"></i></button>
+    <button class="ico" id="snd" aria-pressed="true" aria-label="Sound on: mute"><i class="s-on" data-icon="volume-high"></i><i class="s-off" data-icon="volume-off"></i></button>
     </div>
-    <button class="ico burger" id="mnu" aria-expanded="false" aria-controls="menu" aria-label="Menu"><i></i><i></i><i></i></button>
+    <button class="ico burger" id="mnu" aria-expanded="false" aria-controls="menu" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7H19"/><path d="M5 12H19"/><path d="M5 17H19"/></svg></button>
   </div>
 </header>
 <nav id="menu" hidden aria-label="Sections">
@@ -34,7 +34,7 @@
     <button data-go="about"><b>About</b></button>
     <button data-go="projects"><b>Projects</b></button>
     <button data-go="contact"><b>Contact</b></button>
-    <a href="assets/cv/vickhal-roopram-cv.pdf" target="_blank" rel="noopener"><b>Download CV</b></a>
+    <a href="assets/cv/vickhal-roopram-cv.pdf" target="_blank" rel="noopener"><b>Download CV</b><i data-icon="download"></i></a>
   </div>
 </nav>
 <div id="toast" role="status" hidden></div>
@@ -44,15 +44,16 @@
   <div class="ch"><button id="prev" aria-label="Previous project"></button><button id="next" aria-label="Next project"></button><button id="cls" aria-label="Close"></button></div>
   <div class="content" id="ct"></div>
 </div>
-<div id="lb" hidden><img alt=""></div>
+<div id="lb" hidden><img alt=""><button class="ico lb-x" aria-label="Close image"><i data-icon="close"></i></button></div>
 <div id="intro" role="dialog" aria-labelledby="in-h">
   <div class="in-card">
     <h1 id="in-h">Vickhal Roopram</h1>
     <p class="in-sub">UX &amp; motion designer. Explore my work by playing a 3D synth.</p>
-    <button class="cta in-go" id="enter" disabled><i class="spin" aria-hidden="true"></i><span>Loading the synth…</span></button>
-    <button class="in-quiet" id="quiet">Enter without sound</button>
+    <button class="cta in-go" id="enter" disabled><i class="spin" aria-hidden="true"></i><span>Loading the synth…</span><i class="go" data-icon="arrow-right" data-size="20"></i></button>
+    <button class="in-quiet" id="quiet"><i data-icon="volume-off" data-size="18"></i><span>Enter without sound</span></button>
   </div>
 </div>
+<script type="module" src="src/atoms/icons.js"></script>
 <script type="module" src="src/main.js"></script>
 </body>
 </html>

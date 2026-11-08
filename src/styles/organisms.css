@@ -19,7 +19,10 @@
 .m-list>*:nth-child(2){animation-delay:.03s}.m-list>*:nth-child(3){animation-delay:.06s}.m-list>*:nth-child(4){animation-delay:.09s}.m-list>*:nth-child(5){animation-delay:.12s}
 .m-list b{font-weight:inherit;transition:color .2s}
 .m-list>*:hover b,.m-list>*:focus-visible b{color:var(--accent-ui)}
+.m-list>a{display:inline-flex;align-items:center;gap:.2em;color:var(--mute)}
 .m-list>a b{font-size:.5em;font-weight:600;letter-spacing:0;color:var(--mute)}
+.m-list>a .ic{width:.42em;height:.42em;transition:transform .2s var(--ease)}
+.m-list>a:hover .ic{color:var(--accent-ui);transform:translateY(2px)}
 .m-list #home[data-at-home="true"] b{color:var(--mute)}
 
 /* detail card: floats right on desktop, a bottom sheet on phones */
@@ -34,6 +37,7 @@
 
 #lb{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:rgba(18,18,20,.88);cursor:zoom-out}
 #lb img{max-width:100%;max-height:100%;border-radius:4px}
+.lb-x{position:absolute;top:max(16px,env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));color:#fff}
 
 #legend{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4));z-index:3;margin:0;pointer-events:none;text-align:center;font:500 var(--t-xs)/1 var(--body);letter-spacing:.06em;color:var(--mute)}
 
@@ -47,11 +51,14 @@
 .in-go{min-height:52px;padding:0 var(--s5);font-size:var(--t-md)}
 .in-go:disabled{cursor:progress;opacity:.85}
 .in-go:disabled .spin{display:inline-block}
-.in-quiet{padding:var(--s2);border:0;background:none;font:600 var(--t-sm)/1 var(--body);color:var(--mute);cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+.in-go:disabled .go{display:none}
+.in-go .go{transition:transform .2s var(--ease)}
+.in-go:hover .go{transform:translateX(3px)}
+.in-quiet{display:inline-flex;align-items:center;gap:6px;padding:var(--s2);border:0;background:none;font:600 var(--t-sm)/1 var(--body);color:var(--mute);cursor:pointer;text-decoration:underline;text-underline-offset:4px}
 .in-quiet:hover{color:var(--ink)}
 
 @media (prefers-reduced-motion:reduce){
-  #card,#menu,#menu>*,.m-list>*,.burger i,.ico img,#thm.flip img,#toast.show,.spin,.cta .tick,.pic:not(.ok)::after{animation:none;transition:none}
+  #card,#menu,#menu>*,.m-list>*,.burger path,.ico .ic,#thm.flip .ic,#toast.show,.spin,.cta .tick,.pic:not(.ok)::after{animation:none;transition:none}
   .cta .tick{stroke-dashoffset:0}
   .soc{transition:none}.soc:hover{transform:none}
 }
