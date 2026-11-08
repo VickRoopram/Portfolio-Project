@@ -237,8 +237,8 @@ body[data-card="true"] #ix{opacity:.4;transition:opacity .3s}
 .steps b{font:700 var(--t-xs)/1.2 var(--body)}
 .tl time,.bar small{font-family:var(--body)}
 /* pictures: the work leads the card; placeholder shimmer until loaded, then fade in */
-.pic{position:relative;display:block;width:100%;padding:0;border:0;border-radius:var(--r2);overflow:hidden;cursor:zoom-in;background:var(--chip);min-height:120px}
-.pic.lead{margin:calc(var(--s3) * -1) 0 0;aspect-ratio:4/3;min-height:0}
+.pic{flex:none;position:relative;display:block;width:100%;padding:0;border:0;border-radius:var(--r2);overflow:hidden;cursor:zoom-in;background:var(--chip);min-height:120px}
+.pic.lead{margin:calc(var(--s3) * -1) 0 0;aspect-ratio:16/10;min-height:0}
 .pic.lead img{width:100%;height:100%;object-fit:cover}
 .pic img{display:block;width:100%;height:auto;opacity:0;transition:opacity .4s ease}
 .pic.ok{min-height:0}

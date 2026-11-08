@@ -462,7 +462,7 @@ function updateOffice(dt,t){
 scene.updateMatrixWorld(true);
 const boxOf=objs=>{const b=new THREE.Box3();objs.forEach(o=>b.expandByObject(o));return b};
 const BOX={
-  all:new THREE.Box3(new THREE.Vector3(-12.6,0,-4.6),new THREE.Vector3(13.6,1.6,4.6)), // the synths fill the view; lamp and plant sit at the edge
+  all:new THREE.Box3(new THREE.Vector3(-13.6,0,-4.6),new THREE.Vector3(13.6,1.6,4.6)), // the synths fill the view; lamp and plant sit at the edge
   kb:boxOf([...keyMeshes,...sharpMeshes,...ROWBTN.map(a=>a[0])]), cv:boxOf([RM]),
   th:new THREE.Box3(new THREE.Vector3(GX(4)-.5,TOP,GZ(0)-.6),new THREE.Vector3(GX(15)+.5,TOP+.8,GZ(1)+.9)),
   info:new THREE.Box3(new THREE.Vector3(-8.6,TOP,GZ(1)),new THREE.Vector3(8.6,TOP+.5,GZ(3)+.3)),
@@ -528,7 +528,7 @@ function frameFor(key){
   const w=stage.clientWidth,h=stage.clientHeight, T=Math.tan(THREE.MathUtils.degToRad(camera.fov)/2);
   let tanV=T, tanH=T*w/h;
   if(key!=='all'&&!desktop()) tanV=T*.62;
-  const m=key==='all'?1.04:desktop()?.82:1.0;
+  const m=key==='all'?1.04:desktop()?.96:1.04;
   const d=Math.max((s.x/2*m)/tanH,((s.z*Math.cos(pol)+s.y*Math.sin(pol))/2*m+.3)/tanV)+s.y*.5;
   return {t:c,p:new THREE.Vector3(c.x,c.y+d*Math.cos(pol),c.z+d*Math.sin(pol)),d};
 }
