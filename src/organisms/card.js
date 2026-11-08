@@ -1,5 +1,5 @@
 /* Detail card: the work first, a tight headline group, then the story, links and gallery. Plus toast, lightbox and HUD state. */
-import { $, S, CTRL, ROWBTN } from '../core/state.js';
+import { $, S, CTRL, ROWBTN, act } from '../core/state.js';
 import { CH, LINKS, MODES, onKeys } from '../core/data.js';
 import { ensureAudio, playNote, drum } from '../core/audio.js';
 import { press } from '../molecules/controls.js';
@@ -26,21 +26,26 @@ function cardHTML(ch, i) {
 export function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; t.classList.remove('show'); void t.offsetWidth; t.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => { t.hidden = true }, 2600) }
 /* HUD: Home greys out at home; header icons glow in the active mode's colour; phones hide the legend under the card sheet */
 export function updateUI() {
-  $('home').dataset.atHome = String(!S.mode && !S.card); document.body.dataset.card = String(!!S.card);
+  $('home')?.setAttribute('data-at-home', String(!S.mode && !S.card)); document.body.dataset.card = String(!!S.card);
   const g = S.card ? MODES[S.card.ch]?.glow : S.mode ? MODES[S.mode].glow : null;
   document.documentElement.style.setProperty('--glow', !g || g === '#ffffff' ? '#ff5d1a' : g);
 }
-const card = $('card'), ct = $('ct');
-export function openCard(ch, i) {
-  const n = CH[ch].items.length; i = ((i % n) + n) % n; S.card = { ch, i }; updateUI();
+const card = $('card'), ct = $('ct'), cf = $('cf');
+/* o.from 'menu': opened through the menu, so the footer offers Back to menu and Cancel (kept while paging with prev/next).
+   o.quiet: the key was already pushed on the way in, so don't press it again */
+export function openCard(ch, i, o = {}) {
+  const n = CH[ch].items.length; i = ((i % n) + n) % n;
+  const from = o.from ?? (S.card?.ch === ch ? S.card.from : undefined); S.card = { ch, i, from }; updateUI(); cf.hidden = from !== 'menu';
   card.style.setProperty('--accent', CH[ch].col); ct.innerHTML = cardHTML(ch, i); ct.scrollTop = 0;
   card.hidden = true; void card.offsetWidth; card.hidden = false; // replay the pop-in
-  const rb = ROWBTN.find(a => a[1] === ch); if (rb) press(rb[0]);
-  const m = (onKeys(ch) ? CTRL.kb : CTRL[ch])?.[i]; if (m) press(m);
+  if (!o.quiet) { const rb = ROWBTN.find(a => a[1] === ch); if (rb) press(rb[0]); const m = (onKeys(ch) ? CTRL.kb : CTRL[ch])?.[i]; if (m) press(m) }
   const cp = $('cp'); if (cp) cp.onclick = () => navigator.clipboard?.writeText(EMAIL).then(() => {
     cp.classList.add('done'); cp.innerHTML = icon('check', 18, 'tick') + '<span>Copied</span>'; toast('Email copied to your clipboard'); drum('blip') }, () => toast(`Copy blocked: the address is ${EMAIL}`));
 }
-export function closeCard() { S.card = null; card.hidden = true; updateUI() }
+export function closeCard() { S.card = null; card.hidden = true; cf.hidden = true; updateUI() }
+/* footer CTAs (secondary): back to the menu level this card came from, or just close and stay on the synth */
+$('tomenu').onclick = () => { const c = S.card; drum('blip'); closeCard(); if (c) act.openMenuFor(c.ch, c.i) };
+$('cancel').onclick = () => { drum('blip'); closeCard() };
 const step = d => { ensureAudio(); openCard(S.card.ch, S.card.i + d); playNote(60 + [0, 4, 7, 12, 7, 4, 2, 5, 9, 11, 14, 16][S.card.i % 12]) };
 $('prev').innerHTML = icon('chevron-left', 20); $('next').innerHTML = icon('chevron-right', 20); $('cls').innerHTML = icon('close', 20);
 $('prev').onclick = () => step(-1); $('next').onclick = () => step(1); $('cls').onclick = closeCard;

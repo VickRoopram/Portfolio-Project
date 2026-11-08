@@ -16,13 +16,13 @@ import { updateDesk } from './organisms/desk.js';
 import { groupAt, updateUnderlights } from './organisms/underlights.js';
 import { drawScreens } from './organisms/screens.js';
 import { openCard, closeCard, updateUI } from './organisms/card.js';
-import './organisms/menu.js';
+import { openMenuFor } from './organisms/menu.js';
 import { initIntro } from './organisms/intro.js';
-import { zoomTo, zoomOut, updateCamera, swoopIn } from './page/camera.js';
+import { zoomTo, zoomOut, journey, cancelJourney, updateCamera, swoopIn } from './page/camera.js';
 import { updateTheme } from './page/theme.js';
 import { ray, updateHover } from './page/input.js';
 
-Object.assign(act, { zoomTo, zoomOut, openCard, closeCard });
+Object.assign(act, { zoomTo, zoomOut, openCard, closeCard, journey, cancelJourney, openMenuFor });
 
 const clock = new THREE.Clock(); let last = performance.now();
 function loop() {

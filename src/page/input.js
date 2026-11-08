@@ -7,7 +7,7 @@ import { camera, controls, cv, stage } from '../core/scene.js';
 import { press } from '../molecules/controls.js';
 import { keyMeshes, sharpMeshes, PADS, wMidi } from '../organisms/synth.js';
 import { GROUPS, groupAt } from '../organisms/underlights.js';
-import { menuOpen, closeMenu } from '../organisms/menu.js';
+import { menuOpen, menuEsc } from '../organisms/menu.js';
 
 export const ray = new THREE.Raycaster();
 const ptr = new THREE.Vector2(), lbl = $('lbl'), lb = $('lb');
@@ -20,7 +20,7 @@ const tipHTML = ({ userData: u }) => u.item ? (S.mode === u.ch ? CH[u.ch].items[
 let tap = null, live = '';
 /* capture phase: runs before OrbitControls, so grabbing a control never also orbits the camera */
 cv.addEventListener('pointerdown', e => {
-  ensureAudio(); if (e.button > 0) return; // right drag pans, middle zooms
+  ensureAudio(); act.cancelJourney(); if (e.button > 0) return; // any click on the synth takes over from a running menu journey; right drag pans, middle zooms
   const o = pick(e); if (!o) { const g = !S.mode && !S.card && groupAt(null, ray); if (g) tap = { g, x: e.clientX, y: e.clientY }; return }
   controls.enabled = false; V.drag = { o, x: e.clientX, y: e.clientY }; o.userData.down?.();
   if (e.pointerType !== 'mouse') { S.hover = o; S.hoverUntil = performance.now() + 1600 } try { cv.setPointerCapture(e.pointerId) } catch {}
@@ -50,7 +50,7 @@ export function updateHover(now) {
 const KW = 'asdfghjkl;', KS = { w: 0, e: 1, t: 2, y: 3, u: 4, o: 5, p: 6 }, KD = 'zxcvbnm,.', held = new Set();
 addEventListener('keydown', e => {
   if (e.metaKey || e.ctrlKey || e.altKey) return; const k = e.key.toLowerCase();
-  if (k === 'escape') { if (menuOpen()) { closeMenu(); $('mnu').focus() } else if (!lb.hidden) lb.hidden = true; else if (S.card) act.closeCard(); else if (S.mode) act.zoomOut(); return }
+  if (k === 'escape') { if (menuOpen()) menuEsc(); else if (!lb.hidden) lb.hidden = true; else if (S.card) act.closeCard(); else if (S.mode) act.zoomOut(); return }
   if (held.has(k)) return; held.add(k);
   const one = k.length === 1, i = one ? KW.indexOf(k) : -1;
   if (i >= 0) { ensureAudio(); press(keyMeshes[i]); playNote(wMidi(i)) }

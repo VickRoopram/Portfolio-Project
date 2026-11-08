@@ -9,6 +9,8 @@
 .cta:active{transform:scale(.97)}
 .cta.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
 .cta.ghost:hover{border-color:var(--ink);box-shadow:none}
+.cta.sm{min-height:40px;padding:0 var(--s3);font-size:var(--t-sm)}
+.cta.sm .ic{width:18px;height:18px}
 .cta.done{border-color:#3f9a5b;color:#3f9a5b}
 .cta .tick{stroke-dasharray:24;stroke-dashoffset:24;animation:tick .4s .05s var(--ease) forwards}
 @keyframes tick{to{stroke-dashoffset:0}}

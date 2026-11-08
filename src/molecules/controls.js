@@ -10,6 +10,8 @@ import { fxOf, pulse } from './fx.js';
 
 /* NB: these set mesh.userData wholesale, so keep extra per-mesh data on the mesh itself (e.g. mesh.core), never in userData beforehand */
 export function press(m) { pulse(m); const u = m.userData; if (u.by === undefined) return; u.ty = u.by - .07; setTimeout(() => u.ty = u.by, 150) }
+/* a slow, deep push you can watch (the menu's project journey): the cap sinks almost flush with its tile and holds, then springs back */
+export function push(m, hold = 420) { if (!m) return; pulse(m); const u = m.userData; if (u.by === undefined) return; u.ty = u.by - .13; clearTimeout(m.upT); m.upT = setTimeout(() => u.ty = u.by, hold) }
 const sprung = m => ({ by: m.position.y, ty: m.position.y });
 /* a plain control (own material, so it can flash on its own) */
 export function pressable(mesh, onPress, tip) {
@@ -18,7 +20,7 @@ export function pressable(mesh, onPress, tip) {
 }
 /* an item control: item i of channel ch ('kb' follows the keyboard's current mode). First click zooms to the mode, the next opens the card */
 export function itemCtrl(mesh, ch, i, sound) {
-  CTRL[ch][i] = mesh; mesh.material = mesh.material.clone(); mesh.material.emissive = new THREE.Color(MODES[realCh(ch)].glow); fxOf(mesh).managed = true;
+  CTRL[ch][i] = mesh; mesh.sound = sound; mesh.material = mesh.material.clone(); mesh.material.emissive = new THREE.Color(MODES[realCh(ch)].glow); fxOf(mesh).managed = true;
   const has = () => i < CH[realCh(ch)].items.length;
   mesh.userData = { get ch() { return realCh(ch) }, i, get item() { return has() }, tip: 'Play a note', ...sprung(mesh),
     down() { sound?.(); press(mesh); if (!has()) return; const c = realCh(ch); S.mode !== c ? act.zoomTo(c) : act.openCard(c, i) } };

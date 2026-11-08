@@ -29,13 +29,8 @@
   </div>
 </header>
 <nav id="menu" hidden aria-label="Sections">
-  <div class="m-list">
-    <button id="home" data-go="home"><b>Home</b></button>
-    <button data-go="about"><b>About</b></button>
-    <button data-go="projects"><b>Projects</b></button>
-    <button data-go="contact"><b>Contact</b></button>
-    <a href="assets/cv/vickhal-roopram-cv.pdf" target="_blank" rel="noopener"><b>Download CV</b><i data-icon="download"></i></a>
-  </div>
+  <header class="m-head" id="m-head" hidden><button class="cta ghost sm m-back" id="m-back"><i data-icon="chevron-left" data-size="18"></i><span>Menu</span></button></header>
+  <div class="m-body" id="m-body"></div>
 </nav>
 <div id="toast" role="status" hidden></div>
 <p id="legend"><span class="d-only">Drag to rotate · Right-drag to pan · Scroll to zoom</span><span class="m-only">Drag to rotate · Pinch to zoom</span></p>
@@ -43,6 +38,7 @@
 <div id="card" hidden role="dialog" aria-label="Details">
   <div class="ch"><button id="prev" aria-label="Previous project"></button><button id="next" aria-label="Next project"></button><button id="cls" aria-label="Close"></button></div>
   <div class="content" id="ct"></div>
+  <div class="cf" id="cf" hidden><button class="cta ghost sm" id="tomenu"><i data-icon="chevron-left" data-size="18"></i><span>Back to menu</span></button><button class="cta ghost sm" id="cancel"><i data-icon="close" data-size="18"></i><span>Cancel</span></button></div>
 </div>
 <div id="lb" hidden><img alt=""><button class="ico lb-x" aria-label="Close image"><i data-icon="close"></i></button></div>
 <div id="intro" role="dialog" aria-labelledby="in-h">

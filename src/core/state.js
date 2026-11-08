@@ -7,11 +7,11 @@ export const desktop = () => innerWidth > 760;
 /* restart a one-shot CSS animation (icon flips) */
 export const flip = b => { b.classList.remove('flip'); void b.offsetWidth; b.classList.add('flip') };
 
-export const S = { mode: null, card: null, hover: null, hoverUntil: 0, kb: 'gd', grp: null }; // what the visitor is doing
-export const V = { themeK: -1, themeT: 0, fly: null, drag: null };                           // eased theme, camera flight, active drag
+export const S = { mode: null, card: null, hover: null, hoverUntil: 0, kb: 'gd', grp: null, menu: false }; // what the visitor is doing (menu: the side panel is open)
+export const V = { themeK: -1, themeT: 0, fly: null, drag: null, side: false };             // eased theme, camera flight, active drag, a panel is about to open
 export const hits = [], anim = [];          // raycast targets · meshes easing toward userData.ty / .r
 export const CTRL = { kb: [], cv: [] };     // item controls: the keys (current keyboard mode) and the remote
 export const ROWBTN = [];                   // mode buttons: [mesh, mode]
 export const realCh = ch => ch === 'kb' ? S.kb : ch;
-/* app actions (zoomTo, zoomOut, openCard, closeCard), wired in main.js once the page exists */
+/* app actions (zoomTo, zoomOut, openCard, closeCard, journey, cancelJourney, openMenuFor), wired in main.js once the page exists */
 export const act = {};
