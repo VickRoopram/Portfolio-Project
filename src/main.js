@@ -69,7 +69,7 @@ function cardHTML(ch,i){
   return h;
 }
 function openCard(ch,i){
-  const c=CH[ch],n=c.items.length; i=((i%n)+n)%n; S.card={ch,i}; updateUI(); found(ch,`${c.items[i].t}`); if(ch==='life')S.persona=i;
+  const c=CH[ch],n=c.items.length; i=((i%n)+n)%n; S.card={ch,i}; updateUI(); if(ch==='life')S.persona=i;
   $('card').style.setProperty('--accent',c.col);
   $('eb').innerHTML='';
   $('ct').innerHTML=cardHTML(ch,i); $('ct').scrollTop=0;
@@ -79,12 +79,6 @@ function openCard(ch,i){
   const cp=$('cp'); if(cp) cp.onclick=()=>{const done=()=>{cp.classList.add('done');cp.innerHTML=ICON.check+'<span>Copied</span>';toast('Email copied to your clipboard');drum('blip')};
     navigator.clipboard?.writeText('vickhal10@gmail.com').then(done,()=>toast('Copy blocked: the address is vickhal10@gmail.com'))};
 }
-/* INTERACTIONS: 12 things to discover; the counter and "last interaction" line sit top left */
-const FIND={gd:'Opened Design',ux:'Opened UI/UX',mo:'Opened Motion & 3D',tl:'Opened Tools',xp:'Opened Experimental',roles:'Turned a role knob',theme:'Switched day and night',cv:'Picked up the remote',about:'Read the About pages',beats:'Played the beats',drums:'Hit the drum pads',lamp:'Switched the lamp'};
-const FKEY=ch=>['ds','st','ar','te'].includes(ch)?'roles':PADM.includes(ch)?'life':['ab','sk','aw','wk','sd','info'].includes(ch)?'about':ch;
-const FOUND=new Set();try{JSON.parse(localStorage.getItem('vdc-found')||'[]').forEach(k=>FIND[k]&&FOUND.add(k))}catch{}
-function found(id,text){const k=FKEY(id);if(!FIND[k])return;const fresh=!FOUND.has(k);FOUND.add(k);try{localStorage.setItem('vdc-found',JSON.stringify([...FOUND]))}catch{}
-  $('ixn').textContent=`${FOUND.size}/${Object.keys(FIND).length}`;$('ixl').textContent=text||FIND[k];$('ixl').classList.remove('flash');void $('ixl').offsetWidth;$('ixl').classList.add('flash');if(fresh){const b=$('ix');b.classList.remove('new');void b.offsetWidth;b.classList.add('new')}}
 function toast(msg){const t=$('toast');t.textContent=msg;t.hidden=false;t.classList.remove('show');void t.offsetWidth;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>{t.hidden=true},2600)}
 function closeCard(){S.card=null;$('card').hidden=true;updateUI()}
 $('prev').onclick=()=>{ensureAudio();openCard(S.card.ch,S.card.i-1);noteFor(S.card.i)};
@@ -357,7 +351,7 @@ function wideBtn(x,w,label,lc,ldc){const t=rbox(w-.07,.3,.93,.07,M(C.tile,.6));t
   k.material.emissive=new THREE.Color(MODES[f].glow);ROWBTN.push([k,f]);fxOf(k).managed=true;}}
 // drum pads: graphite caps with light print (KO II style)
 const PADS=['kick','snare','hat','clap','tom','rim','shaker','crash','blip'];
-PADS.forEach((p,i)=>capBtn(14+i%3,3+Math.floor(i/3),p.toUpperCase(),()=>{drum(p);found('drums','Hit the '+p)},`Drum pad · ${p}`,'#efe4cf','#2c2d31','#cdbfa6'));
+PADS.forEach((p,i)=>capBtn(14+i%3,3+Math.floor(i/3),p.toUpperCase(),()=>drum(p),`Drum pad · ${p}`,'#efe4cf','#2c2d31','#cdbfa6'));
 // GRAPHIC: the keyboard
 const WHITE=[0,2,4,5,7,9,11], sharpAfter={0:1,1:3,3:6,4:8,5:10};
 const wMidi=i=>60+12*Math.floor(i/7)+WHITE[i%7];
@@ -448,7 +442,7 @@ const lampPool=(()=>{const {t}=canvasTex(256,256,(x)=>{const g=x.createRadialGra
   const m=new THREE.Mesh(new THREE.PlaneGeometry(13,13),new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,opacity:0,toneMapped:false}));
   m.rotation.x=-Math.PI/2; m.position.set(12.4,.003,-1.6); m.renderOrder=1; scene.add(m); FXMATS.push(m.material); return m})();
 const LAMPST={on:true,k:1};
-lampDome.userData={tip:'Lamp · click to switch it on or off',down(){LAMPST.on=!LAMPST.on;LAMPST.dip=1;drum(LAMPST.on?'blip':'rim');found('lamp',LAMPST.on?'Lamp on':'Lamp off')}}; hits.push(lampDome);
+lampDome.userData={tip:'Lamp · click to switch it on or off',down(){LAMPST.on=!LAMPST.on;LAMPST.dip=1;drum(LAMPST.on?'blip':'rim')}}; hits.push(lampDome);
 function updateOffice(dt,t){
   LAMPST.k+=((LAMPST.on?1:0)-LAMPST.k)*(reduceMotion?1:1-Math.exp(-dt*8));
   const dk=Math.max(0,themeK), k=LAMPST.k;
@@ -539,7 +533,7 @@ function flyTo(key,dur=2100){const f=frameFor(key);sA.setFromVector3(flyOff.copy
   let dT=sB.theta-sA.theta;if(dT>Math.PI)dT-=2*Math.PI;if(dT<-Math.PI)dT+=2*Math.PI;
   fly={t0:controls.target.clone(),t1:f.t,r0:sA.radius,r1:sB.radius,p0:sA.phi,p1:sB.phi,th0:sA.theta,dT,lift:Math.min(.35,Math.abs(sB.phi-sA.phi)*.3),s:performance.now(),dur:reduceMotion?1:dur};controls.enabled=false;
   controls.minDistance=f.d*.35;controls.maxDistance=Math.max(f.d*1.8,frameFor('all').d*1.5)}
-function zoomTo(ch){found(ch);if(S.mode===ch)return;if(KBM.includes(ch))S.kb=ch;if(PADM.includes(ch))S.pad=ch;const same=S.mode&&MODES[S.mode].box===MODES[ch].box;S.mode=ch;closeCard();drum(same?'blip':'whoosh');if(!same)flyTo(MODES[ch].box);updateUI();modeWave(ch)}
+function zoomTo(ch){if(S.mode===ch)return;if(KBM.includes(ch))S.kb=ch;if(PADM.includes(ch))S.pad=ch;const same=S.mode&&MODES[S.mode].box===MODES[ch].box;S.mode=ch;closeCard();drum(same?'blip':'whoosh');if(!same)flyTo(MODES[ch].box);updateUI();modeWave(ch)}
 /* mode switch: the filter/knob that owns the mode strokes, then a wave of gap-glow + strokes ripples across the controls that now hold its projects */
 function modeWave(ch){
   ROWBTN.concat(BIGCAPS).forEach(([m,k])=>{if(k===ch)pulse(m)});
@@ -605,7 +599,7 @@ const TRACKS=[
 const SCALE=[0,2,3,5,7,8,10,12,14,15];
 let demo=null,step=0,track=-1;
 function stopDemo(){if(demo){clearInterval(demo);demo=null}}
-function toggleDemo(){ensureAudio();found('beats','Playing '+TRACKS[(track+1)%TRACKS.length].n.toLowerCase());stopDemo();track=(track+1)%TRACKS.length;step=0;const T=TRACKS[track];P.wave=T.wave;
+function toggleDemo(){ensureAudio();stopDemo();track=(track+1)%TRACKS.length;step=0;const T=TRACKS[track];P.wave=T.wave;
   demo=setInterval(()=>{const i=step%16,root=T.base+T.prog[Math.floor(step/16)%4];
     if(T.k[i]==='x')drum('kick'); if(T.s[i]==='x')drum('snare'); if(T.h[i]==='x')drum('hat'); if(T.c?.[i]==='x')drum('clap');
     if(T.bass[i]==='x')playNote(root-12,.22); const d=T.lead[i]; if(d!=='.')playNote(root+12+SCALE[+d],.3);
@@ -665,7 +659,6 @@ function setTheme(dark,{save=true,sweep=true}={}){
   if(save)try{localStorage.setItem('vdc-theme',dark?'dark':'light')}catch{}
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content',dark?'#16140f':'#ece5d8');
   themeBtn.setAttribute('aria-pressed',String(dark)); themeBtn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode'); if(sweep)flip(themeBtn);
-  if(sweep)found('theme',dark?'Night mode':'Day mode');
   if(sweep){ // a light sweep runs across every control, left to right, as the synth "re-lights"
     const v=new THREE.Vector3(); FXL.forEach(f=>{f.m.getWorldPosition(v);pulse(f.m,(v.x+13)*32,.6)}); drum(dark?'blip':'rim');}
 }
@@ -697,7 +690,7 @@ function loop(){const t=clock.getElapsedTime(),now=performance.now(),dt=Math.min
   if(Math.abs(themeK-themeT)>.002){themeK=themeK<0?themeT:themeK+(themeT-themeK)*(reduceMotion?1:.075);if(Math.abs(themeK-themeT)<=.002)themeK=themeT;applyTheme(themeK)}
   grille.scale.setScalar(1+level*.04); updateCables(); refreshGlow(t); updateFx(now); drawScreens(t); controls.update(); renderer.render(scene,camera); requestAnimationFrame(loop)}
 updateUI();
-{const it=$('intro');$('ixn').textContent=`${FOUND.size}/${Object.keys(FIND).length}`;
+{const it=$('intro');
  const go=(sound)=>{if(it.classList.contains('out'))return;try{sessionStorage.setItem('vdc-in','1')}catch{}
    if(!sound&&!muted)toggleMute();ensureAudio();if(sound)drum('whoosh');it.classList.add('out');setTimeout(()=>it.remove(),900);
    const f=frameFor('all');camera.position.copy(f.t).add(new THREE.Vector3(0,f.d*1.9,f.d*.12));controls.update();flyTo('all',2600)};

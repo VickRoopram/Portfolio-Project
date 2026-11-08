@@ -225,6 +225,8 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 
 18. **Nov 2026: polish pass** (Vick's checklist). Design-system tokens (`--s1..7` spacing, `--r1..3` radius, `--t-xs..2xl` type, `--accent-ui`); plain surfaces with no vignette, script accent, card frame or outline traces; AA-contrast `--mute`; tabular numbers. Cards lead with the project image (`.pic.lead`) under a tight title/kicker group; links are `.cta` buttons (first primary, rest ghost); Copy email confirms with a drawn tick and a `toast()`. Images shimmer until loaded. Intro is one headline + primary "Enter the portfolio" (spinner until the scene is ready) over the blurred live synth. Menu without numbers or footer; counter without its label; hover tips show only the name. Keys are plain again (no artisan images). Headlines in content.js name what's inside (e.g. "5 years designing at Floodlight Studios"). Overview frames the synths tighter.
 
+19. **Nov 2026: interactions counter removed** (Vick asked). `#ix`, `FIND`/`found()` and `localStorage['vdc-found']` are gone.
+
 **Commenting tip:** artifact comments anchored to the 3D canvas **don't carry the click position or selection rectangle**. Ask Vick to name the control instead of guessing (this happened twice).
 
 ---
