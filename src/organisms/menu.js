@@ -27,13 +27,13 @@ function render() {
       row(`data-go="${go}"${go === 'home' ? ' id="home"' : ''}`, `<span class="tx"><b>${t}</b></span>${sub ? chev : ''}`, n)).join('')}
       <a class="m-row cv" href="assets/cv/vickhal-roopram-cv.pdf" target="_blank" rel="noopener" style="--n:4"><span class="tx"><b>Download CV</b></span><span class="go">${icon('download', 20)}</span></a></div>`;
   } else if (k === 'projects') {
-    h = `<p class="m-title">Projects</p><p class="m-sub">Pick a mode: the camera flies to the keys that hold it.</p><div class="m-list">${PROJECT_MODES.map(([m, t], n) => {
+    h = `<p class="m-title">Projects</p><div class="m-list">${PROJECT_MODES.map(([m, t], n) => {
       const c = CH[m]; return c ? row(`data-mode="${m}" style="--c:${c.col}"`, `<i class="dot"></i><span class="tx"><b>${t}</b></span>${chev}`, n) : '';
     }).join('')}</div>`;
   } else {
     const c = CH[ch]; let n = 0;
-    h = `<p class="m-title" style="--c:${c.col}">${LABEL[ch] || c.name}</p><p class="m-sub">Pick a project to play its key.</p><div class="m-list" style="--c:${c.col}">${c.items.map((it, j) => isSlot(it) ? '' :
-      row(`data-item="${j}"${j === i ? ' aria-current="true"' : ''}`, `<span class="no">${pad(j + 1)}</span><span class="tx"><b>${it.t}</b>${it.k ? `<small>${it.k}</small>` : ''}</span>${chev}`, n++)).join('')}</div>`;
+    h = `<p class="m-title" style="--c:${c.col}">${LABEL[ch] || c.name}</p><div class="m-list" style="--c:${c.col}">${c.items.map((it, j) => isSlot(it) ? '' :
+      row(`data-item="${j}"${j === i ? ' aria-current="true"' : ''}`, `<span class="no">${pad(j + 1)}</span><span class="tx"><b>${it.t}</b></span>${chev}`, n++)).join('')}</div>`;
   }
   head.hidden = k === 'root'; back.querySelector('span').textContent = k === 'mode' ? 'Projects' : 'Menu';
   body.innerHTML = h; body.scrollTop = 0; menu.dataset.level = k; syncHome(); hidePeek();
