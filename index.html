@@ -12,7 +12,7 @@
 (function(){var t,d=document.documentElement;try{t=localStorage.getItem('vdc-theme');if(sessionStorage.getItem('vdc-in'))d.classList.add('entered')}catch(e){}if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.dataset.theme=t})();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Montserrat:wght@400..900&family=Courier+Prime:wght@400;700&family=Pinyon+Script&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Montserrat:wght@400..900&family=Courier+Prime:wght@400;700&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="src/styles.css">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
@@ -30,29 +30,29 @@
 </header>
 <nav id="menu" hidden aria-label="Sections">
   <div class="m-list">
-    <button id="home" data-go="home"><small>00</small><b>Home</b></button>
-    <button data-go="about" style="--gc:#4fa66a"><small>01</small><b>About</b></button>
-    <button data-go="projects" style="--gc:#4f8fc0"><small>02</small><b>Projects</b></button>
-    <button data-go="contact" style="--gc:#e2614b"><small>03</small><b>Contact</b></button>
-    <a href="assets/cv/vickhal-roopram-cv.pdf" target="_blank" rel="noopener"><small>04</small><b>CV ↗</b></a>
+    <button id="home" data-go="home"><b>Home</b></button>
+    <button data-go="about"><b>About</b></button>
+    <button data-go="projects"><b>Projects</b></button>
+    <button data-go="contact"><b>Contact</b></button>
+    <a href="assets/cv/vickhal-roopram-cv.pdf" target="_blank" rel="noopener"><b>Download CV</b></a>
   </div>
-  <p class="m-foot">Vickhal Roopram · UX &amp; Motion Designer · South Africa</p>
 </nav>
-<div id="ix" aria-live="polite"><span>Interactions</span><b id="ixn">0/12</b><small>Last interaction</small><i id="ixl">Nothing yet. Click a key.</i></div>
+<div id="ix" aria-live="polite"><span>Interactions</span><b id="ixn">0/12</b><i id="ixl">Click a key to start</i></div>
+<div id="toast" role="status" hidden></div>
 <div id="frame" aria-hidden="true"></div>
-<p id="legend"><span class="d-only">Left drag rotate · Right drag pan · Scroll zoom</span><span class="m-only">Drag rotate · Pinch zoom · Two fingers pan</span><em>Click a key to explore</em></p>
+<p id="legend"><span class="d-only">Drag to rotate · Right-drag to pan · Scroll to zoom</span><span class="m-only">Drag to rotate · Pinch to zoom</span></p>
 <div id="lbl" hidden></div>
 <div id="card" hidden role="dialog" aria-label="Details">
-  <div class="ch"><div class="eyebrow" id="eb"></div><button id="prev" aria-label="Previous">‹</button><button id="next" aria-label="Next">›</button><button id="cls" aria-label="Close">✕</button></div>
+  <div class="ch"><div class="eyebrow" id="eb"></div><button id="prev" aria-label="Previous project"></button><button id="next" aria-label="Next project"></button><button id="cls" aria-label="Close"></button></div>
   <div class="content" id="ct"></div>
 </div>
 <div id="lb" hidden><img alt=""></div>
-<div id="intro" role="dialog" aria-label="Welcome">
-  <div class="in-frame">
-    <span class="in-yr">2026</span><span class="in-name">Vickhal Roopram</span>
-    <button class="in-go" id="enter"><span>Enter</span></button><i class="in-bar" aria-hidden="true"></i><button class="in-go" id="enter2"><span>Portfolio</span></button>
-    <button class="in-quiet" id="quiet">enter without sound</button>
-    <p class="in-help">Use left / right click and the mouse wheel to navigate</p>
+<div id="intro" role="dialog" aria-labelledby="in-h">
+  <div class="in-card">
+    <h1 id="in-h">Vickhal Roopram</h1>
+    <p class="in-sub">UX &amp; motion designer. Explore my work by playing a 3D synth.</p>
+    <button class="cta in-go" id="enter" disabled><i class="spin" aria-hidden="true"></i><span>Loading the synth…</span></button>
+    <button class="in-quiet" id="quiet">Enter without sound</button>
   </div>
 </div>
 <script type="module" src="src/main.js"></script>

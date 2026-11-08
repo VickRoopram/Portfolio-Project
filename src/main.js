@@ -45,17 +45,27 @@ function SOCIAL_ICON(label){const k=label.toLowerCase().split(/[ (]/)[0];
    x:'<path d="M5 4.5h3.6l10.4 15h-3.6z" fill="currentColor"/><path d="M18.6 4.5 5.4 19.5" stroke="currentColor" stroke-width="1.8"/>'}[k]||'<circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/>';
   return `<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">${g}</svg>`}
 
+const ICON={
+  prev:'<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  next:'<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  close:'<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  out:'<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 16L16 8M9 8h7v7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  copy:'<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15V6a1 1 0 0 1 1-1h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  check:'<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path class="tick" d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'};
+$('prev').innerHTML=ICON.prev; $('next').innerHTML=ICON.next; $('cls').innerHTML=ICON.close;
+/* images get a placeholder until they arrive, then fade in */
+const pic=(g,cls='')=>`<button class="pic ${cls}" data-src="${g.s}" aria-label="Enlarge: ${g.a}"><img src="${g.s}" alt="${g.a}" loading="lazy" onload="this.parentNode.classList.add('ok')" onerror="this.parentNode.classList.add('ok')"></button>`;
 function cardHTML(ch,i){
   const c=CH[ch],it=c.items[i];
-  let h=`<h2>${it.t}</h2><p class="k">${it.k}</p>`;
+  let h=it.img?.length?pic(it.img[0],'lead'):'';            // show the actual work first
+  h+=`<header class="hd"><h2>${it.t}</h2><p class="k">${it.k}</p></header>`;
   if(it.hero) h+=`<div class="hero"><img src="assets/img/vick.jpg" alt="Portrait of Vickhal Roopram"><div class="d"><p><b>Vickhal Roopram</b><br>UX & Motion Designer<br>27 · South Africa</p></div></div>`;
   if(it.bars) h+=`<div class="bars">${it.bars.map(b=>`<div class="bar"><span>${b[0]}</span><small>${b[1]}</small><div><i style="--w:${b[2]*100}%"></i></div></div>`).join('')}</div>`;
   if(it.life) h+=``+CH.life.items.map(x=>`<div class="d"><h3>${x.t}</h3>${x.d}</div>`).join('');
-  if(it.contact) h+=`<div class="d"><p>For work, collaborations or a chat about design and faith:</p></div><div class="copy"><span id="em">vickhal10@gmail.com</span><button class="btn" id="cp">Copy email</button></div><div class="copy">Cell: +27 73 482 7221</div><div class="socials">${LINKS.map(l=>`<a class="soc" href="${l[1]}" target="_blank" rel="noopener">${SOCIAL_ICON(l[0])}<span>${l[0]}<small>${l[1].replace(/^https:\/\/(www\.)?/,'').replace(/\/$/,'')}</small></span><b aria-hidden="true">↗</b></a>`).join('')}</div>`;
+  if(it.contact) h+=`<div class="d"><p>For work, collaborations or a chat about design and faith:</p></div><div class="cta-row"><a class="cta" href="mailto:vickhal10@gmail.com">Email vickhal10@gmail.com</a><button class="cta ghost" id="cp">${ICON.copy}<span>Copy</span></button></div><p class="copy">Cell <span class="num">+27 73 482 7221</span></p><div class="socials">${LINKS.map(l=>`<a class="soc" href="${l[1]}" target="_blank" rel="noopener">${SOCIAL_ICON(l[0])}<span>${l[0]}<small>${l[1].replace(/^https:\/\/(www\.)?/,'').replace(/\/$/,'')}</small></span>${ICON.out}</a>`).join('')}</div>`;
   if(it.d) h+=`<div class="d">${it.d}</div>`;
-  if(it.tags) h+=`<div class="tags">${it.tags.map(t=>`<span>${t}</span>`).join('')}</div>`;
-  if(it.links) h+=`<div class="links">${it.links.map(l=>`<a href="${l[1]}" target="_blank" rel="noopener">${l[0]} ↗</a>`).join('')}</div>`;
-  if(it.img) h+=`<div class="gal">${it.img.map(g=>`<button data-src="${g.s}" aria-label="Enlarge: ${g.a}"><img src="${g.s}" alt="${g.a}" loading="lazy"></button>`).join('')}</div>`;
+  if(it.links) h+=`<div class="cta-row">${it.links.map((l,k)=>`<a class="cta${k?' ghost':''}" href="${l[1]}" target="_blank" rel="noopener">${l[0]} ${ICON.out}</a>`).join('')}</div>`;
+  if(it.img?.length>1) h+=`<div class="gal">${it.img.slice(1).map(g=>pic(g)).join('')}</div>`;
   return h;
 }
 function openCard(ch,i){
@@ -66,19 +76,21 @@ function openCard(ch,i){
   const card=$('card'); card.hidden=true; void card.offsetWidth; card.hidden=false;
   const rb=ROWBTN.find(a=>a[1]===ch);if(rb)press(rb[0]);
   const m=(KBM.includes(ch)?CTRL.kb:PADM.includes(ch)?CTRL.pad:CTRL[ch])?.[i]; if(m) press(m);
-  const cp=$('cp'); if(cp) cp.onclick=()=>{navigator.clipboard?.writeText('vickhal10@gmail.com').then(()=>cp.textContent='Copied',()=>{const r=document.createRange();r.selectNodeContents($('em'));getSelection().removeAllRanges();getSelection().addRange(r);cp.textContent='Selected'})};
+  const cp=$('cp'); if(cp) cp.onclick=()=>{const done=()=>{cp.classList.add('done');cp.innerHTML=ICON.check+'<span>Copied</span>';toast('Email copied to your clipboard');drum('blip')};
+    navigator.clipboard?.writeText('vickhal10@gmail.com').then(done,()=>toast('Copy blocked: the address is vickhal10@gmail.com'))};
 }
 /* INTERACTIONS: 12 things to discover; the counter and "last interaction" line sit top left */
 const FIND={gd:'Opened Design',ux:'Opened UI/UX',mo:'Opened Motion & 3D',tl:'Opened Tools',xp:'Opened Experimental',roles:'Turned a role knob',theme:'Switched day and night',cv:'Picked up the remote',about:'Read the About pages',beats:'Played the beats',drums:'Hit the drum pads',lamp:'Switched the lamp'};
 const FKEY=ch=>['ds','st','ar','te'].includes(ch)?'roles':PADM.includes(ch)?'life':['ab','sk','aw','wk','sd','info'].includes(ch)?'about':ch;
 const FOUND=new Set();try{JSON.parse(localStorage.getItem('vdc-found')||'[]').forEach(k=>FIND[k]&&FOUND.add(k))}catch{}
 function found(id,text){const k=FKEY(id);if(!FIND[k])return;const fresh=!FOUND.has(k);FOUND.add(k);try{localStorage.setItem('vdc-found',JSON.stringify([...FOUND]))}catch{}
-  $('ixn').textContent=`${FOUND.size}/${Object.keys(FIND).length}`;$('ixl').textContent=text||FIND[k];if(fresh){const b=$('ix');b.classList.remove('new');void b.offsetWidth;b.classList.add('new')}}
+  $('ixn').textContent=`${FOUND.size}/${Object.keys(FIND).length}`;$('ixl').textContent=text||FIND[k];$('ixl').classList.remove('flash');void $('ixl').offsetWidth;$('ixl').classList.add('flash');if(fresh){const b=$('ix');b.classList.remove('new');void b.offsetWidth;b.classList.add('new')}}
+function toast(msg){const t=$('toast');t.textContent=msg;t.hidden=false;t.classList.remove('show');void t.offsetWidth;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>{t.hidden=true},2600)}
 function closeCard(){S.card=null;$('card').hidden=true;updateUI()}
 $('prev').onclick=()=>{ensureAudio();openCard(S.card.ch,S.card.i-1);noteFor(S.card.i)};
 $('next').onclick=()=>{ensureAudio();openCard(S.card.ch,S.card.i+1);noteFor(S.card.i)};
 $('cls').onclick=closeCard;
-$('ct').onclick=e=>{const b=e.target.closest('.gal button');if(b){$('lb').querySelector('img').src=b.dataset.src;$('lb').hidden=false}};
+$('ct').onclick=e=>{const b=e.target.closest('.pic');if(b){$('lb').querySelector('img').src=b.dataset.src;$('lb').hidden=false}};
 $('lb').onclick=()=>$('lb').hidden=true;
 function noteFor(i){playNote(60+[0,4,7,12,7,4,2,5,9,11,14,16][i%12])}
 
@@ -356,21 +368,6 @@ for(let i=0;i<14;i++){ const c=i; tile(c,3); const kt=tile(c,4,1,2);
   if(i<13 && sharpAfter[i%7]!==undefined){ const s=cyl(.3,.3,.18,M('#111214',.35)); s.position.set(GX(c)+.5,TOP+.4,GZ(3)); synth.add(s);
     const m=60+12*Math.floor(i/7)+sharpAfter[i%7]; pressable(s,()=>playNote(m),'Sharp key'); sharpMeshes.push(s); }
 }
-/* artisan keycaps: like the reference's miniature-scene caps, each key prints the picture of the project it holds */
-const IMG={}; let imgTick=0;
-function imgOf(src){let e=IMG[src];if(!e){e=IMG[src]=new Image();e.onload=()=>imgTick++;e.src=src}return e.complete&&e.naturalWidth?e:null}
-const ART=keyMeshes.map(k=>{const t=canvasTex(160,340);const m=themed(new THREE.MeshBasicMaterial({map:t.t,transparent:true,depthWrite:false}),'#ffffff','#c9bda8');
-  const p=new THREE.Mesh(new THREE.PlaneGeometry(.6,1.44),m);p.rotation.x=-Math.PI/2;p.position.y=.081;k.add(p);return t});
-let artKey='';
-function paintKeys(){const ch=S.kb,c=CH[ch],key=ch+imgTick;if(key===artKey)return;artKey=key;
-  ART.forEach(({x,t},i)=>{const W=160,H=340,it=c.items[i];x.clearRect(0,0,W,H);if(!it){t.needsUpdate=true;return}
-    x.save();x.beginPath();rrPath(x,6,6,W-12,H-12,22);x.clip();
-    const im=it.img?.[0]&&imgOf(it.img[0].s);
-    if(im){const sc=Math.max((W-12)/im.naturalWidth,(H-12)/im.naturalHeight),iw=im.naturalWidth*sc,ih=im.naturalHeight*sc;x.drawImage(im,(W-iw)/2,(H-ih)/2,iw,ih);
-      const g=x.createLinearGradient(0,H*.55,0,H);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.55)');x.fillStyle=g;x.fillRect(0,0,W,H)}
-    else{const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,c.col);g.addColorStop(1,'#2a2621');x.fillStyle=g;x.fillRect(0,0,W,H)}
-    x.restore();x.fillStyle='rgba(255,248,235,.95)';x.font='600 30px "Courier Prime", "Courier New", monospace';x.textAlign='left';x.textBaseline='alphabetic';x.fillText(pad(i+1),18,H-22);
-    t.needsUpdate=true})}
 for(let i=0;i<10;i++){const d=cyl(.035,.035,.02,M('#6a6c72'));d.position.set(9.18,.91,-1.2+i*.22);synth.add(d)}
 
 /* MOTION: the remote */
@@ -465,7 +462,7 @@ function updateOffice(dt,t){
 scene.updateMatrixWorld(true);
 const boxOf=objs=>{const b=new THREE.Box3();objs.forEach(o=>b.expandByObject(o));return b};
 const BOX={
-  all:new THREE.Box3(new THREE.Vector3(-13.4,0,-8.2),new THREE.Vector3(15.0,2.4,6.4)), // the whole desk: synths, lamp and plant
+  all:new THREE.Box3(new THREE.Vector3(-12.6,0,-4.6),new THREE.Vector3(13.6,1.6,4.6)), // the synths fill the view; lamp and plant sit at the edge
   kb:boxOf([...keyMeshes,...sharpMeshes,...ROWBTN.map(a=>a[0])]), cv:boxOf([RM]),
   th:new THREE.Box3(new THREE.Vector3(GX(4)-.5,TOP,GZ(0)-.6),new THREE.Vector3(GX(15)+.5,TOP+.8,GZ(1)+.9)),
   info:new THREE.Box3(new THREE.Vector3(-8.6,TOP,GZ(1)),new THREE.Vector3(8.6,TOP+.5,GZ(3)+.3)),
@@ -531,7 +528,7 @@ function frameFor(key){
   const w=stage.clientWidth,h=stage.clientHeight, T=Math.tan(THREE.MathUtils.degToRad(camera.fov)/2);
   let tanV=T, tanH=T*w/h;
   if(key!=='all'&&!desktop()) tanV=T*.62;
-  const m=key==='all'?1.22:desktop()?.82:1.0;
+  const m=key==='all'?1.04:desktop()?.82:1.0;
   const d=Math.max((s.x/2*m)/tanH,((s.z*Math.cos(pol)+s.y*Math.sin(pol))/2*m+.3)/tanV)+s.y*.5;
   return {t:c,p:new THREE.Vector3(c.x,c.y+d*Math.cos(pol),c.z+d*Math.sin(pol)),d};
 }
@@ -563,10 +560,10 @@ function screenText(){
     return S.mode===o.ch?{h:c.name,r:`${pad(o.i+1)}/${pad(c.items.length)}`,t:it.t.toUpperCase(),col:scrCol(o.ch)}
       :{h:c.name,r:MODES[o.ch].n.toUpperCase(),t:`${MODES[o.ch].part.toUpperCase()} · CLICK TO ZOOM IN`,col:scrCol(o.ch)}}
   if(demo&&!o) return {h:'NOW PLAYING',r:`TRACK ${track+1}/5`,t:TRACKS[track].n,col:'#ff5d1a'};
-  if(o?.tip) return {h:'VICK.SYS',r:'',t:o.tip.toUpperCase(),col:'#9a9ca3'};
+  if(o?.tip) return {h:'VICKHAL ROOPRAM',r:'',t:o.tip.toUpperCase(),col:'#9a9ca3'};
   if(S.card){const c=CH[S.card.ch];return {h:c.name,r:`${pad(S.card.i+1)}/${pad(c.items.length)}`,t:c.items[S.card.i].t.toUpperCase(),col:scrCol(S.card.ch)}}
   if(S.mode) return {h:CH[S.mode].name,r:MODES[S.mode].n.toUpperCase(),t:'HOVER A CONTROL · CLICK TO OPEN',col:scrCol(S.mode)};
-  return {h:'VICK.SYS',r:'v1.0',t:'HELLO USER, WELCOME TO MY PORTFOLIO.',col:'#ff4a50'};
+  return {h:'VICKHAL ROOPRAM',r:'',t:'UX & MOTION DESIGNER. PICK A MODE BELOW.',col:'#ff4a50'};
 }
 let level=0, lastKey='';
 function drawScreens(time){
@@ -619,7 +616,7 @@ const ray=new THREE.Raycaster(), ptr=new THREE.Vector2(), lbl=$('lbl'), cv=rende
 function pick(e){const r=cv.getBoundingClientRect();ptr.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(ptr,camera);
   const h=ray.intersectObjects(hits,true)[0];lastHit=h;let o=h?.object;while(o&&!o.userData.down&&!o.userData.up&&!o.userData.proxy)o=o.parent;return o?.userData.proxy||o}
 function labelHTML(o){const u=o.userData;
-  if(u.item){const c=CH[u.ch];return S.mode===u.ch?`<small>${c.name} · ${pad(u.i+1)}</small>${c.items[u.i].t}`:`<small>${MODES[u.ch].part} · click to zoom in</small>${c.name} · ${MODES[u.ch].n}`}
+  if(u.item){const c=CH[u.ch];return S.mode===u.ch?c.items[u.i].t:`${MODES[u.ch].n}<small>Click to open</small>`}
   return u.tip}
 let drag=null, bodyTap=null;
 cv.addEventListener('pointerdown',e=>{ensureAudio();if(e.button>0)return; // right drag pans, middle zooms
@@ -696,7 +693,7 @@ function loop(){const t=clock.getElapsedTime(),now=performance.now(),dt=Math.min
   if(ho&&!ho.userData.noLbl?.()){ho.getWorldPosition(v3);v3.y+=.45;v3.project(camera);
     const x=(v3.x+1)/2*w, y=(1-v3.y)/2*h; lbl.hidden=false; lbl.style.left=x+'px'; lbl.style.top=y+'px';
     const html=lastLive||labelHTML(ho); if(lbl._h!==html){lbl.innerHTML=html;lbl._h=html}} else lbl.hidden=true;
-  updateGroups(dt); updateOffice(dt,t); paintKeys(); PANBOX.clampPoint(controls.target,controls.target);
+  updateGroups(dt); updateOffice(dt,t); PANBOX.clampPoint(controls.target,controls.target);
   if(Math.abs(themeK-themeT)>.002){themeK=themeK<0?themeT:themeK+(themeT-themeK)*(reduceMotion?1:.075);if(Math.abs(themeK-themeT)<=.002)themeK=themeT;applyTheme(themeK)}
   grille.scale.setScalar(1+level*.04); updateCables(); refreshGlow(t); updateFx(now); drawScreens(t); controls.update(); renderer.render(scene,camera); requestAnimationFrame(loop)}
 updateUI();
@@ -704,5 +701,5 @@ updateUI();
  const go=(sound)=>{if(it.classList.contains('out'))return;try{sessionStorage.setItem('vdc-in','1')}catch{}
    if(!sound&&!muted)toggleMute();ensureAudio();if(sound)drum('whoosh');it.classList.add('out');setTimeout(()=>it.remove(),900);
    const f=frameFor('all');camera.position.copy(f.t).add(new THREE.Vector3(0,f.d*1.9,f.d*.12));controls.update();flyTo('all',2600)};
- if(it){if(document.documentElement.classList.contains('entered'))it.remove();else{it.classList.add('ready');$('enter').onclick=()=>go(true);$('enter2').onclick=()=>go(true);$('quiet').onclick=()=>go(false)}}}
+ if(it){if(document.documentElement.classList.contains('entered'))it.remove();else{it.classList.add('ready');$('enter').disabled=false;$('enter').querySelector('span').textContent='Enter the portfolio';$('enter').onclick=()=>go(true);$('quiet').onclick=()=>go(false)}}}
 loop();
