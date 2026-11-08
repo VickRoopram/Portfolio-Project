@@ -32,9 +32,9 @@ export function drawScreens(time) {
   for (let i = 0; i <= 200; i++) { const px = 30 + i * (W - 60) / 200, v = wave ? (wave[Math.floor(i * wave.length / 201)] - 128) / 128 * 55 : Math.sin(i * .12 + time * 2) * 5; i ? x.lineTo(px, 320 + v) : x.moveTo(px, 320 + v) }
   x.stroke(); scr.t.needsUpdate = true;
   const key = [muted, P.vol, demo ? track + 1 : 0].join();
-  if (key !== lastRemote) { lastRemote = key; const r = rs.x; r.fillStyle = '#0c0c0e'; r.fillRect(0, 0, 300, 200); r.textBaseline = 'alphabetic';
-    r.fillStyle = '#ff5d1a'; r.font = '34px Bungee, Impact, sans-serif'; r.fillText('CV', 22, 26);
-    r.font = '600 20px "IBM Plex Mono", monospace'; r.fillStyle = '#8a8c92'; r.fillText(muted ? 'MUTED' : `VOL ${Math.round(P.vol * 100)}%`, 22, 100);
-    r.fillStyle = demo ? '#ff5d1a' : '#6b6d73'; r.fillText(demo ? `● TRACK ${track + 1}/5` : 'CONTACT · SOCIALS', 22, 140); rs.t.needsUpdate = true }
+  if (key !== lastRemote) { lastRemote = key; const r = rs.x; r.fillStyle = '#0c0c0e'; r.fillRect(0, 0, 300, 200); r.textBaseline = 'top';
+    r.fillStyle = '#ff5d1a'; r.font = '34px Bungee, Impact, sans-serif'; r.fillText('CV', 22, 22);
+    r.font = '600 20px "IBM Plex Mono", monospace'; r.fillStyle = '#8a8c92'; r.fillText(muted ? 'MUTED' : `VOL ${Math.round(P.vol * 100)}%`, 22, 84);
+    r.fillStyle = demo ? '#ff5d1a' : '#6b6d73'; r.fillText(demo ? `● TRACK ${track + 1}/5` : 'CONTACT · SOCIALS', 22, 124); rs.t.needsUpdate = true }
   return level;
 }
