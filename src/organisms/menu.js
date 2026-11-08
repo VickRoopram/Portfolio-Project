@@ -28,18 +28,29 @@ function render() {
       <a class="m-row cv" href="assets/cv/vickhal-roopram-cv.pdf" target="_blank" rel="noopener" style="--n:4"><span class="tx"><b>Download CV</b></span><span class="go">${icon('download', 20)}</span></a></div>`;
   } else if (k === 'projects') {
     h = `<p class="m-title">Projects</p><p class="m-sub">Pick a mode: the camera flies to the keys that hold it.</p><div class="m-list">${PROJECT_MODES.map(([m, t], n) => {
-      const c = CH[m]; if (!c) return ''; const count = c.items.filter(x => !isSlot(x)).length;
-      return row(`data-mode="${m}" style="--c:${c.col}"`, `<i class="dot"></i><span class="tx"><b>${t}</b><small>${count} ${count === 1 ? 'project' : 'projects'}</small></span>${chev}`, n);
+      const c = CH[m]; return c ? row(`data-mode="${m}" style="--c:${c.col}"`, `<i class="dot"></i><span class="tx"><b>${t}</b></span>${chev}`, n) : '';
     }).join('')}</div>`;
   } else {
     const c = CH[ch]; let n = 0;
     h = `<p class="m-title" style="--c:${c.col}">${LABEL[ch] || c.name}</p><p class="m-sub">Pick a project to play its key.</p><div class="m-list" style="--c:${c.col}">${c.items.map((it, j) => isSlot(it) ? '' :
-      row(`data-item="${j}"${j === i ? ' aria-current="true"' : ''}`, `<span class="no">${pad(j + 1)}</span>${it.img?.[0] ? `<img class="th" src="${it.img[0].s}" alt="" loading="lazy">` : ''}<span class="tx"><b>${it.t}</b>${it.k ? `<small>${it.k}</small>` : ''}</span>${chev}`, n++)).join('')}</div>`;
+      row(`data-item="${j}"${j === i ? ' aria-current="true"' : ''}`, `<span class="no">${pad(j + 1)}</span><span class="tx"><b>${it.t}</b>${it.k ? `<small>${it.k}</small>` : ''}</span>${chev}`, n++)).join('')}</div>`;
   }
   head.hidden = k === 'root'; back.querySelector('span').textContent = k === 'mode' ? 'Projects' : 'Menu';
-  body.innerHTML = h; body.scrollTop = 0; menu.dataset.level = k; syncHome();
+  body.innerHTML = h; body.scrollTop = 0; menu.dataset.level = k; syncHome(); hidePeek();
   (body.querySelector('[aria-current="true"]') || body.querySelector('.m-row'))?.focus({ preventScroll: true });
 }
+/* hover preview: a project's lead image floats just under the row you point at (over the names below it), following the pointer
+   sideways; keyboard focus shows it too. Fixed to the page so the panel never clips it. No preview on touch, or for items without images */
+const peek = document.createElement('div'); peek.id = 'm-peek'; peek.hidden = true; peek.setAttribute('aria-hidden', 'true'); peek.innerHTML = '<img alt="">'; document.body.append(peek);
+const pimg = peek.firstChild, PW = 260, PH = 163; let peekRow = null;
+function showPeek(b, x) {
+  const it = CH[level.ch]?.items[+b.dataset.item], src = it?.img?.[0]?.s; if (!src) { hidePeek(); return }
+  if (peekRow !== b) { peekRow = b; peek.classList.remove('ok'); pimg.onload = () => peek.classList.add('ok'); pimg.src = src; if (pimg.complete) peek.classList.add('ok') }
+  const r = b.getBoundingClientRect(), below = r.bottom + 6 + PH < innerHeight - 8; // hang below the row, or above it near the bottom of the screen
+  const left = Math.min(innerWidth - PW - 8, Math.max(8, (x ?? r.left + r.width * .45) - PW * .35));
+  peek.style.transform = `translate(${left}px,${below ? r.bottom + 6 : r.top - 6 - PH}px)`; peek.style.setProperty('--c', CH[level.ch].col); peek.hidden = false;
+}
+function hidePeek() { peekRow = null; peek.hidden = true; peek.classList.remove('ok') }
 const syncHome = () => $('home')?.setAttribute('data-at-home', String(!S.mode && !S.card));
 function show(k, ch, i) { level = { k, ch, i }; render() }
 
@@ -53,7 +64,7 @@ export function openMenuFor(ch, i) { PROJECT_MODES.some(([m]) => m === ch) ? ope
 /* close: never wait on animationend (the old bug: it didn't fire, so an invisible menu kept covering the synth).
    The panel stops taking pointer input at once and is hidden after its exit animation. */
 export function closeMenu() {
-  if (!menuOpen()) return; label(false); S.menu = false; const id = ++hideId;
+  if (!menuOpen()) return; label(false); S.menu = false; hidePeek(); const id = ++hideId;
   if (reduceMotion) { menu.hidden = true; return }
   menu.classList.add('out'); setTimeout(() => { if (id === hideId) { menu.hidden = true; menu.classList.remove('out') } }, 240);
 }
@@ -72,5 +83,9 @@ body.addEventListener('click', e => {
   else if (mode) { show('mode', mode); act.zoomTo(mode) } // the camera flies to the keys while the list opens
   else if (item !== undefined) { const ch = level.ch; closeMenu(); act.journey(ch, +item) }
 });
+body.addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') return; const b = e.target.closest('[data-item]'); b ? showPeek(b, e.clientX) : hidePeek() });
+body.addEventListener('pointerleave', hidePeek); body.addEventListener('scroll', hidePeek, { passive: true });
+body.addEventListener('focusin', e => { const b = e.target.closest('[data-item]'); b && b.matches(':focus-visible') ? showPeek(b) : hidePeek() });
+body.addEventListener('focusout', hidePeek);
 document.addEventListener('pointerdown', e => { if (menuOpen() && !menu.contains(e.target) && !mnu.contains(e.target)) closeMenu() });
 $('brand').onclick = e => { e.preventDefault(); ensureAudio(); closeMenu(); if (S.mode || S.card) act.zoomOut() };

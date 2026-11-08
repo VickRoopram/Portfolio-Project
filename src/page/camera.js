@@ -11,13 +11,19 @@ import { GROUPS, boxOf } from '../organisms/underlights.js';
 import { openCard, closeCard, updateUI } from '../organisms/card.js';
 
 const BOX = { all: new THREE.Box3(new THREE.Vector3(-13.6, 0, -4.6), new THREE.Vector3(13.6, 1.6, 4.6)), // the synths fill the view; lamp and plant sit at the edge
-  kb: boxOf([...keyMeshes, ...sharpMeshes, ...ROWBTN.map(a => a[0])]), cv: GROUPS.contact.box };
-const POLAR = { all: .3, kb: 1.08, cv: 1 }; // angle from straight down
+  kb: boxOf([...keyMeshes, ...sharpMeshes, ...ROWBTN.map(a => a[0])]), cv: GROUPS.contact.box,
+  desk: new THREE.Box3(new THREE.Vector3(-15.7, -.9, -9.4), new THREE.Vector3(16.9, 0, 9.2)) }; // the whole table top: the furthest you can zoom out
+const POLAR = { all: .3, kb: 1.08, cv: 1, desk: .3 }; // angle from straight down
+/* zoom is locked between one synth filling the view (the closest device framing) and the whole table */
+export function lockZoom() {
+  V.zoom.min = Math.min(frameFor('kb').d, frameFor('cv').d) * .97; V.zoom.max = frameFor('desk').d * 1.02;
+  if (!V.fly) { controls.minDistance = V.zoom.min; controls.maxDistance = V.zoom.max }
+}
 /* the side panel (card or menu) on desktop: how much width it takes, and whether one is open (or about to open, mid-journey) */
 const sideW = w => Math.min(462, w * .45);
 const sideOn = () => desktop() && !!(S.card || S.menu || V.side);
 export function frameFor(key) {
-  const b = BOX[key], c = b.getCenter(new THREE.Vector3()), s = b.getSize(new THREE.Vector3()), all = key === 'all', wide = desktop();
+  const b = BOX[key], c = b.getCenter(new THREE.Vector3()), s = b.getSize(new THREE.Vector3()), all = key === 'all' || key === 'desk', wide = desktop();
   const vw = stage.clientWidth - (wide && !all && sideOn() ? sideW(stage.clientWidth) : 0); // fit the part into the space beside the panel
   const pol = wide ? POLAR[key] : all ? .12 : .78, T = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
   const tanV = !all && !wide ? T * .62 : T, tanH = T * vw / stage.clientHeight, m = all || !wide ? 1.04 : .96;
@@ -29,10 +35,10 @@ const sA = new THREE.Spherical(), sB = new THREE.Spherical(), off = new THREE.Ve
 let framedSide = false, moved = false; // the panel state the current framing was made for · the visitor has orbited/zoomed since
 controls.addEventListener('start', () => { moved = true });
 export function flyTo(key, dur = 2100) {
-  const f = frameFor(key); framedSide = key !== 'all' && sideOn(); moved = false; sA.setFromVector3(off.copy(camera.position).sub(controls.target)); sB.setFromVector3(off.copy(f.p).sub(f.t));
+  const f = frameFor(key); framedSide = key !== 'all' && key !== 'desk' && sideOn(); moved = false; sA.setFromVector3(off.copy(camera.position).sub(controls.target)); sB.setFromVector3(off.copy(f.p).sub(f.t));
   let dT = sB.theta - sA.theta; if (dT > Math.PI) dT -= 2 * Math.PI; if (dT < -Math.PI) dT += 2 * Math.PI;
   V.fly = { t0: controls.target.clone(), t1: f.t, r0: sA.radius, r1: sB.radius, p0: sA.phi, p1: sB.phi, th0: sA.theta, dT, lift: Math.min(.35, Math.abs(sB.phi - sA.phi) * .3), s: performance.now(), dur: reduceMotion ? 1 : dur };
-  controls.enabled = false; controls.minDistance = f.d * .35; controls.maxDistance = Math.max(f.d * 1.8, frameFor('all').d * 1.5);
+  controls.enabled = false; controls.minDistance = 0; controls.maxDistance = Infinity; // the flight may start outside the zoom range (the intro); locked again on landing
 }
 /* mode switch: its button strokes, then a wave of gap glow ripples across the keys that now hold its work */
 function modeWave(ch) {
@@ -66,7 +72,7 @@ let offX = 0, offY = 0;
 export function updateCamera(now) {
   const F = V.fly; if (F) { const k = Math.min(1, (now - F.s) / F.dur), e = ease(k); controls.target.lerpVectors(F.t0, F.t1, e);
     sA.set(lerp(F.r0, F.r1, e) * (1 + F.lift * Math.sin(Math.PI * e)), lerp(F.p0, F.p1, e), F.th0 + F.dT * e); camera.position.copy(controls.target).add(off.setFromSpherical(sA));
-    if (k >= 1) { V.fly = null; if (!V.drag) controls.enabled = true } }
+    if (k >= 1) { V.fly = null; lockZoom(); if (!V.drag) controls.enabled = true } }
   /* a panel opened or closed while zoomed in (and the visitor hasn't moved the camera): glide to the framing that fits beside it */
   if (!F && !V.drag && !moved && S.mode && sideOn() !== framedSide) flyTo(MODES[S.mode].box, 800);
   const w = stage.clientWidth, h = stage.clientHeight, wide = desktop(); // keep the zoomed part clear of the card or the menu panel
@@ -74,7 +80,7 @@ export function updateCamera(now) {
 }
 function resize() {
   const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
-  if (!V.fly) { const f = frameFor(S.mode ? MODES[S.mode].box : 'all'); camera.position.copy(f.p); controls.target.copy(f.t); controls.minDistance = f.d * .35; controls.maxDistance = frameFor('all').d * 1.5; controls.update() }
+  lockZoom(); if (!V.fly) { const f = frameFor(S.mode ? MODES[S.mode].box : 'all'); camera.position.copy(f.p); controls.target.copy(f.t); controls.update() }
 }
 new ResizeObserver(resize).observe(stage); resize();
 /* the entrance: start high above the synth and swoop down to the overview */
