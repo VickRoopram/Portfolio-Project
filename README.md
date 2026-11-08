@@ -38,11 +38,17 @@ Mouse, trackpad and touch work too: drag to orbit, scroll or pinch to zoom. On p
 ├── admin/                  # Content admin (/admin): index.html, admin.css, admin.js
 ├── netlify/functions/      # Admin API: login, content (draft/live), publish, media
 ├── netlify/lib/cms.mts     # Shared: Blobs stores, login tokens, HTML cleaning
-├── src/
+├── src/                    # Built atomically: each layer only imports the layers below it
+│   ├── main.js             # Page: wires the layers together and runs the render loop
 │   ├── content.js          # Built-in default content (used until something is published in /admin)
 │   ├── cms.js              # Loads draft/live content from the admin over the defaults
-│   ├── main.js             # 3D scene, audio engine, modes, camera, input
-│   └── styles.css          # Design tokens and UI styles
+│   ├── core/               # Engine: state, data (content + modes), audio (synth, drums, beats), scene (renderer, lights)
+│   ├── atoms/              # geometry, textures, materials, labels
+│   ├── molecules/          # fx (press glow + stroke), controls (keys, buttons, knobs), cable
+│   ├── organisms/          # synth, remote, desk, underlights, screens, card, menu, intro
+│   ├── page/               # camera (framing, swoops), theme (light/dark), input (pointer, keyboard, hover tip)
+│   ├── styles.css          # Imports the layers below (keep this path: /admin's preview loads it)
+│   └── styles/             # tokens.css, atoms.css, molecules.css, organisms.css
 ├── docs/HANDOFF.md        # Full project context for the next iteration
 ├── assets/
 │   ├── img/                # Project images (g* = portfolio PDF page no., cv* = CV pages)

@@ -1,0 +1,43 @@
+/* ── TOKENS: colour, type, spacing, radius, motion. Light by default, dark on [data-theme="dark"]. ── */
+:root{
+  --floor:#ece5d8; --card:#f8f4ec; --card2:#fbf7ef; --ink:#1f1c17; --mute:#5a5043; --line:rgba(31,28,23,.2);
+  --chip:#e9e0cf; --chip-ink:#4a4236; --track:#e2d8c6; --shadow:rgba(40,30,15,.2);
+  --red:#e2614b; --blue:#4f8fc0; --glow:#e2614b; --accent-ui:#c94a35; --on-accent:#fff;
+  --display:"Montserrat","Arial Black",sans-serif;
+  --body:"Montserrat","Noto Sans",system-ui,sans-serif;
+  --mono:"Courier Prime","Courier New",ui-monospace,monospace;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px;
+  --r1:6px; --r2:10px; --r3:16px;
+  --t-xs:11px; --t-sm:13px; --t-md:15px; --t-lg:20px; --t-xl:30px; --t-2xl:clamp(34px,5vw,60px);
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --px:clamp(.36px,calc(100vw / 3840),.62px);   /* 1 px of the 4K Figma frame */
+  --hdr-h:max(58px,calc(var(--px) * 170));
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --floor:#16140f; --card:#1f1c17; --card2:#27231d; --ink:#f4ecdc; --mute:#c2b59d; --line:rgba(244,236,220,.18);
+  --chip:#2c2720; --chip-ink:#d9ccb3; --track:#2c2720; --shadow:rgba(0,0,0,.6);
+  --accent-ui:#ec7a5f; --on-accent:#16140f;
+  color-scheme:dark;
+}
+
+/* ── base ── */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{background:var(--floor);color:var(--ink);font-family:var(--body);font-variant-numeric:tabular-nums;overflow:hidden}
+img{max-width:100%}
+[hidden]{display:none!important}
+button:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+/* the 2D chrome cross-fades with the theme (the 3D scene eases itself in JS) */
+body,#card,.ch button,.tags span,.steps div,#lbl{transition:background-color .6s ease,color .6s ease,border-color .6s ease,box-shadow .25s ease,transform .12s ease}
+.on-l{display:none}
+:root:not([data-theme="dark"]) .on-d{display:none}
+:root:not([data-theme="dark"]) .on-l{display:block}
+.m-only{display:none}
+@media (hover:none),(max-width:760px){.d-only{display:none}.m-only{display:inline}}
+
+@keyframes pop{from{opacity:0;transform:translateY(12px) scale(.97)}}
+@keyframes fade{from{opacity:0}}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+@keyframes spin{to{transform:rotate(360deg)}}

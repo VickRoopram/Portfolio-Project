@@ -1,0 +1,31 @@
+/* ── ATOMS: the smallest pieces. Icon button, primary/ghost button, kicker, chip, picture, spinner. ── */
+.ico{position:relative;display:grid;place-items:center;padding:6px;border:0;background:none;border-radius:10px;cursor:pointer;color:inherit;transition:transform .14s ease,background-color .2s}
+.ico img{width:max(22px,calc(var(--px) * 50));height:auto;transition:transform .35s cubic-bezier(.2,.9,.3,1.4)}
+.ico:active{transform:scale(.9)}
+
+.cta{display:inline-flex;align-items:center;justify-content:center;gap:var(--s2);min-height:44px;padding:0 var(--s4);border:1px solid var(--accent-ui);border-radius:var(--r2);background:var(--accent-ui);color:var(--on-accent);font:700 var(--t-md)/1 var(--body);text-decoration:none;cursor:pointer;transition:transform .12s ease,background-color .2s,color .2s,box-shadow .2s}
+.cta:hover{box-shadow:0 6px 18px color-mix(in srgb,var(--accent-ui) 35%,transparent)}
+.cta:active{transform:scale(.97)}
+.cta.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.cta.ghost:hover{border-color:var(--ink);box-shadow:none}
+.cta.done{border-color:#3f9a5b;color:#3f9a5b}
+.cta .tick{stroke-dasharray:24;stroke-dashoffset:24;animation:tick .4s .05s var(--ease) forwards}
+@keyframes tick{to{stroke-dashoffset:0}}
+
+.k{font:600 var(--t-sm)/1.4 var(--body);color:var(--accent,var(--mute));margin:0}
+.num{font-variant-numeric:tabular-nums}
+.quote{font:800 var(--t-lg)/1.2 var(--display);color:var(--accent-ui);margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tags span{font:600 var(--t-xs)/1 var(--body);padding:6px var(--s2);border-radius:var(--r1);background:var(--chip);color:var(--chip-ink)}
+
+/* picture: the work leads the card; shimmer until loaded, then fade in */
+.pic{flex:none;position:relative;display:block;width:100%;padding:0;border:0;border-radius:var(--r2);overflow:hidden;cursor:zoom-in;background:var(--chip);min-height:120px}
+.pic img{display:block;width:100%;height:auto;opacity:0;transition:opacity .4s ease}
+.pic.ok{min-height:0}
+.pic.ok img{opacity:1}
+.pic:not(.ok)::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,color-mix(in srgb,var(--ink) 8%,transparent) 50%,transparent 70%);background-size:200% 100%;animation:shimmer 1.2s linear infinite}
+.pic.lead{margin:calc(var(--s3) * -1) 0 0;aspect-ratio:16/10;min-height:0}
+.pic.lead img{height:100%;object-fit:cover}
+@keyframes shimmer{from{background-position:120% 0}to{background-position:-80% 0}}
+
+.spin{display:none;width:16px;height:16px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:spin .8s linear infinite}

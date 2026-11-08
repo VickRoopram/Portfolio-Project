@@ -107,9 +107,15 @@ The idea behind it, in Vick's own framing: he is "a creative software clients us
 index.html            Page shell: header (logo, theme, sound, menu #menu), section titles (#groups), hover label (#lbl),
                       detail card (#card), lightbox (#lb), import map, <script type=module src=src/main.js>
 src/content.js        All portfolio data (exports CH, LINKS, im). ~96 lines.
-src/main.js           Everything else. ~434 lines, sectioned with /* ─── NAME ─── */ banners:
-                      MODES · CARD · AUDIO · 3D SCENE · CAMERA · SCREENS · BEATS · INPUT · LOOP
-src/styles.css        Base reset ([hidden]{display:none!important} is REQUIRED), tokens, HUD, card, mobile sheet
+src/main.js           Page: imports the layers, wires `act` (zoomTo, zoomOut, openCard, closeCard), runs the loop
+src/core/             state.js (S, V, hits, anim, CTRL, ROWBTN, act) · data.js (awaits /admin content, MODES, ORDER)
+                      audio.js (P, synth voice, drums, 5 beat tracks, scope) · scene.js (renderer, camera, lights, controls)
+src/atoms/            geometry (rbox, cyl, flat, rrPath) · textures (canvasTex, radialTex, TEX, SPUN, halo, underlight)
+                      materials (palette C, M, themed, decal, STEEL, KNURL, RUBBER) · labels (printed, engraved)
+src/molecules/        fx (gap halo + comet stroke) · controls (pressable, itemCtrl, knob, cap, screw) · cable
+src/organisms/        synth · remote · desk (plant, lamp) · underlights · screens · card · menu · intro
+src/page/             camera (frameFor, flyTo, zoomTo) · theme (LOOK, setTheme) · input (pick, drags, hover tip, keys)
+src/styles.css        @imports styles/tokens → atoms → molecules → organisms ([hidden]{display:none!important} is REQUIRED)
 assets/img/           g<page>.jpg portfolio pages, cv1/cv2.jpg, vick.jpg (~3.1 MB)
 assets/cv/            vickhal-roopram-cv.pdf
 netlify.toml          publish=".", cache headers for /assets/*
@@ -162,19 +168,18 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 
 **Layout rule from Vick:** content and CV controls on the **left**, music-only controls on the **right**.
 
-### Key runtime concepts in `main.js`
-- **`MODES[key]`**: `{part, n, glow, box}`. `box` names the camera framing: `all | kb | life | cv`.
-- **Mode groups:** `KBM` lists keyboard channels (they set `S.kb`). `PADM` lists life-strip personas (they set `S.pad`). `ORDER` is used by the number keys and shuffle.
-- **State `S`:** `{mode, card, kb, pad, hover, hoverUntil}`
-- **`itemCtrl(mesh, ch, i, sound, {knob, pressy})`**: a control that holds content. `ch` can be `'kb'` or `'pad'`, resolved at runtime by `realCh()`. **The item opens on `pointerdown`**: the up/click path was unreliable in the Claude browser pane.
-- **`pressable(mesh, act, tip)`**: a plain button with a press animation.
+### Key runtime concepts
+- **`MODES[key]`** (core/data.js): `{part, n, glow, box}`. `box` names the camera framing: `all | kb | cv`. Modes: gd, ux, mo, tl, xp, ab (keyboard) and cv (remote). `onKeys(ch)` says whether a mode lives on the keys.
+- **State** (core/state.js): `S = {mode, card, kb, hover, hoverUntil, grp}`; `V = {themeK, themeT, fly, drag}`. Lower layers call app actions through `act` instead of importing upward.
+- **`itemCtrl(mesh, ch, i, sound)`**: a control that holds content. `ch` is `'kb'` (follows `S.kb`) or `'cv'`. **The item opens on `pointerdown`**: the up/click path was unreliable in the Claude browser pane.
+- **`pressable(mesh, onPress, tip)`**: a plain button with a press animation.
 - **`userData.proxy`**: an invisible-to-logic hit target that forwards to another mesh (key tiles, knob rings and indicators).
 - **Camera:** `frameFor(boxKey)` fits a `Box3` to the view. `flyTo()` tweens over 1.5 s with an ease-in-out. `camera.setViewOffset()` shifts the view **only while a card is open** (left on desktop, up on mobile), so the synth stays centred otherwise.
 - **Mobile (≤760 px):** a top-down camera (`pol = 0.001`), rotation and zoom disabled, and the card becomes a bottom sheet.
 - **Glow:** `refreshGlow(t)` runs every frame and sets `emissiveIntensity` on keys, pads, filter buttons, role knobs, STOP and BEATS.
 - **Cables:** `cable(loose, plug, colour, radius, isOn)` interpolates 6 control points with a lift arc and rebuilds `TubeGeometry` while moving. The jack LED lights at t > 0.97.
 - **Audio:** two detuned oscillators plus a sine sub → low-pass → master. An echo send (delay with feedback) runs alongside. Drums are synthesised (noise buffer and oscillators). `TRACKS[]` holds 5 entries: `{n, bpm, wave, base, prog, lead, bass, k, s, h, c?}` as 16-step strings.
-- **Keyboard shortcuts:** `A–;` notes, `W E T Y U O P` sharps, `Z–.` drums, `1–6` modes, `←/→` card paging, `0`/`Esc` home.
+- **Keyboard shortcuts:** `A–;` notes, `W E T Y U O P` sharps, `Z–.` drums, `1–7` modes, `←/→` card paging, `0`/`Esc` home.
 
 ---
 
@@ -231,6 +236,8 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 
 21. **Nov 2026: mode buttons.** DESIGN · UI/UX · MOTION · TOOLS · EXPERIMENTAL are matte rubber caps (`RUBBER`) with white Montserrat 700 labels at one size. Their colour leaks only from the gap: `userData.edge` drives the gap halo independently of the cap face: 0 idle, ~.9 while its mode is active, 1 on hover or with one of its cards open; the face only gets .035 emissive when lit, plus a soft elliptical core light (`coreTex`, tinted per mode, opacity .32 dark / .22 light × edge, eased) just under the label to read as a thin translucent top layer. Labels are engraved (`engravedLabel()`: dark top wall, faint lower catch-light, off-white inlay). Press strokes and the theme transitions are unchanged.
 
+22. **Nov 2026: atomic restructure + clipping pass.** `main.js` split into `core/ → atoms/ → molecules/ → organisms/ → page/` (each layer imports only the layers below; upward calls go through `act`), and `styles.css` into tokens/atoms/molecules/organisms. Removed dead code: the life strip (`PADM`, `S.pad`, `S.persona`), role modes (ds/st/ar/te, sk/aw/wk/sd), `DOCK`, `BIGCAPS`, `FIG/FCOL/FN`, `A()`, `BOX.th/info`, the HUD zap pulse, `#frame`, `#eb`, `.btn/#dock/#hint/.logo/.eyebrow/.links/.gal button` CSS and all override-on-override rules. Fixes: WAVE threw on `setSwitch()` (undefined), so it never played its note; long words (EXPERIMENTAL) ran off their label canvas (engraved labels now size the canvas to the plane); decals (labels, screens, halos, core glows, underlights, lamp pool) use polygon offset (`decal()`) so they no longer z-fight at a distance; the big-knob legends were half under the mode row (knobs set back .08); the hover tip wraps and stays inside the window instead of cutting text off; number keys 1–7 now include the remote. The /admin preview renders the same card markup as the site.
+
 **Commenting tip:** artifact comments anchored to the 3D canvas **don't carry the click position or selection rectangle**. Ask Vick to name the control instead of guessing (this happened twice).
 
 ---
@@ -239,7 +246,7 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 
 | # | Issue | Suggested fix |
 |---|---|---|
-| 1 | `main.js` is one large file with legacy leftovers (`MODES.*.dock`, `S.persona`, `CH.info.items.length=6`, `life` channel, `setSwitch()` no-op, `sk/aw/wk/sd` unreachable) | Split it into `scene/`, `audio/`, `ui/`, `modes/` modules and delete the dead code |
+| 1 | ~~`main.js` is one large file with legacy leftovers~~ Done in entry 22 (atomic modules, dead code removed). `CH.sk/aw/wk/sd/info` still exist in content.js but no control shows them | Split it into `scene/`, `audio/`, `ui/`, `modes/` modules and delete the dead code |
 | 2 | Content is in JS. Not editable by non-developers. | Move it to `content/*.json`, or a CMS (Netlify Blobs/DB, or the Framer CMS) |
 | 3 | Geometry is procedural boxes and cylinders, not a real modelled synth | Model it in Blender or Spline and load it as GLB (§8) |
 | 4 | Images are JPEG page renders at 68 dpi, ~3.1 MB total, no `srcset` | Re-export the real project images as WebP/AVIF in two sizes; use the Netlify Image CDN |
