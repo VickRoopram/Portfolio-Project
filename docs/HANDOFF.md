@@ -221,6 +221,8 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 
 16. **Nov 2026: life strip removed.** Vick asked to remove the About Me synth with its hover glow and title. `TU` (strip, life screen, 8 pads, 4 knobs, shuffle dock), its cable and socket, `BOX.life`, the `about` group and the fm/fi/ex modes are gone; `PADM` is kept as an empty array so shared code paths stay simple. The Life content still lives in the About pages and CV. Menu "About" now opens the About pages on the keys. The desk is shallower and the plant moved in beside the lamp. The 12th interaction is now switching day/night.
 
+17. **Nov 2026: section titles removed.** Vick asked to remove the Contact and My Projects text as well. `#groups` and the `.grp` titles are gone; `GROUPS` now only drives the hover underlights and the click-the-body-to-zoom behaviour.
+
 **Commenting tip:** artifact comments anchored to the 3D canvas **don't carry the click position or selection rectangle**. Ask Vick to name the control instead of guessing (this happened twice).
 
 ---

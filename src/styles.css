@@ -153,19 +153,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offse
   background:conic-gradient(from 180deg,transparent 0deg,var(--glow) var(--sw),transparent var(--sw));
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 .ico.zap{animation:none}
-/* ───────────── Figma: section titles over the synth (small → big on hover) ───────────── */
-#groups{position:fixed;inset:0;pointer-events:none;z-index:3;transition:opacity .35s ease}
-#groups.off{opacity:0}
-#groups.off .grp{pointer-events:none}
-.grp{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;border:0;background:none;padding:0;margin:0;color:var(--title);white-space:nowrap;
-  font-family:var(--ui);font-weight:500;font-size:max(13px, calc(var(--px) * 28.7));line-height:1;letter-spacing:.02em;
-  --tx:0%;transform:translate(var(--tx),calc(-100% + .08em));will-change:transform,font-size;
-  transition:font-size .48s cubic-bezier(.2,.9,.25,1.12),font-weight .48s cubic-bezier(.2,.9,.25,1.12),transform .48s cubic-bezier(.2,.9,.25,1.12),color .6s ease,text-shadow .4s ease;visibility:hidden}
-.grp[data-a="c"]{--tx:-50%}
-.grp[data-a="r"]{--tx:-100%}
-.grp.on{font-size:max(30px, calc(var(--px) * 90));font-weight:900;transform:translate(var(--tx),calc(-100% + .2em));text-shadow:0 0 .6em color-mix(in srgb,var(--gc) 18%,transparent)}
-.grp:focus-visible{outline:2px solid var(--gc);outline-offset:4px;border-radius:4px}
-@media (prefers-reduced-motion:reduce){.grp,#menu,#menu>*,.burger i,.ico img,#thm.flip img{transition:none;animation:none}}
+@media (prefers-reduced-motion:reduce){#menu,#menu>*,.burger i,.ico img,#thm.flip img{transition:none;animation:none}}
 
 /* ───────────── Stylised layer (ref: portfolio-zxc.com) ───────────── */
 body{font-family:var(--body)}
@@ -197,8 +185,6 @@ body[data-card="true"] #ix{opacity:.35;transition:opacity .3s}
 /* hover label: cream tag, typewriter */
 #lbl{background:var(--ink);color:var(--floor);font:700 12px/1.25 var(--mono);border-radius:3px;letter-spacing:.04em}
 #lbl small{font-family:var(--mono)}
-/* section titles */
-.grp{font-family:var(--body)}
 /* full-screen menu: grid paper, right-aligned typewriter list */
 #menu{position:fixed;inset:0;z-index:6;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;padding:calc(var(--hdr-h) + 20px) max(calc(var(--px) * 120),28px) 60px;
   background-color:color-mix(in srgb,var(--floor) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);

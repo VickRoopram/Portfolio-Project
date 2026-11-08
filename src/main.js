@@ -87,7 +87,6 @@ $('home').onclick=()=>{ensureAudio();closeMenu();zoomOut()};
 $('brand').onclick=e=>{e.preventDefault();ensureAudio();closeMenu();if(S.mode||S.card)zoomOut()};
 function updateUI(){
   $('home').dataset.atHome=String(!S.mode&&!S.card);
-  $('groups').classList.toggle('off',!!(S.mode||S.card)); // section titles belong to the overview
   document.body.dataset.card=String(!!S.card); // phones hide the camera controls under the card sheet
   const g=S.card?MODES[S.card.ch]?.glow:S.mode?MODES[S.mode].glow:null;  // HUD buttons glow in the active mode's colour
   document.documentElement.style.setProperty('--glow',!g||g==='#ffffff'?'#ff5d1a':g);
@@ -496,15 +495,7 @@ for(const [key,g] of Object.entries(GROUPS)){
   const mat=new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false,opacity:0,toneMapped:false,color:new THREE.Color(g.col())});
   const mesh=new THREE.Mesh(new THREE.PlaneGeometry(s.x+2*m,s.z+2*m),mat); mesh.rotation.x=-Math.PI/2; mesh.position.set(c.x,.004,c.z); mesh.renderOrder=1; mesh.visible=false; scene.add(mesh);
   FXMATS.push(mat); // additive on the dark stage, normal on the light deck (theme code switches it)
-  const el=document.querySelector(`.grp[data-g="${key}"]`);
-  const b=g.foot, a=el.dataset.a, inset=.35;
-  g.anchor=new THREE.Vector3(a==='l'?b.min.x+inset:a==='r'?b.max.x-inset:c.x,key==='contact'?1.02:b.max.y,b.min.z); // top-back edge of the casing (the remote's raised CV screen sits right at its back edge)
-  Object.assign(g,{key,mesh,mat,el,k:0,tint:new THREE.Color(g.col())});
-  el.style.setProperty('--gc',g.col());
-  el.addEventListener('pointerenter',()=>{S.grpLbl=key});
-  el.addEventListener('pointerleave',()=>{if(S.grpLbl===key)S.grpLbl=null});
-  el.addEventListener('focus',()=>{S.grpLbl=key}); el.addEventListener('blur',()=>{if(S.grpLbl===key)S.grpLbl=null});
-  el.addEventListener('click',()=>{ensureAudio();S.grpLbl=null;drum('blip');g.go()});
+  Object.assign(g,{key,mesh,mat,k:0,tint:new THREE.Color(g.col())}); // titles were removed (Nov 2026); only the underlight remains
 }
 const GSET=new Map([[RM,'contact'],[synth,'projects']]);
 function groupAt(o){ // which device the pointer is over: the control's parent chain first, then the devices' bounding boxes
@@ -513,9 +504,8 @@ function groupAt(o){ // which device the pointer is over: the control's parent c
   let best=null,bd=Infinity;const hit=new THREE.Vector3();
   for(const g of Object.values(GROUPS))if(ray.ray.intersectBox(g.box,hit)){const d=hit.distanceTo(ray.ray.origin);if(d<bd){bd=d;best=g.key}}
   return best}
-const gv=new THREE.Vector3();
 function updateGroups(dt){
-  const w=stage.clientWidth,h=stage.clientHeight, overview=!S.mode&&!S.card&&!fly, act=overview?(S.grpLbl||S.grp||(S.hover&&groupAt(S.hover))):null;
+  const overview=!S.mode&&!S.card&&!fly, act=overview?(S.grpLbl||S.grp||(S.hover&&groupAt(S.hover))):null;
   const ease=reduceMotion?1:1-Math.exp(-dt*6), cEase=reduceMotion?1:1-Math.exp(-dt*4), dark=themeK>.5, t=performance.now()/1000;
   const kbOn=S.mode&&MODES[S.mode]?.box==='kb'||S.card&&KBM.includes(S.card.ch); // the keyboard is in a mode: keep its underlight on
   for(const g of Object.values(GROUPS)){
@@ -523,12 +513,7 @@ function updateGroups(dt){
     g.tint.lerp(tmpCol.set(g.col()),cEase); g.mat.color.copy(g.tint);
     const breathe=reduceMotion?1:1+.035*Math.sin(t*1.6);
     g.mat.opacity=g.k*(dark?.48:.3)*breathe; g.mesh.visible=g.k>.004;
-    g.el.classList.toggle('on',on);
-    if(overview||!$('groups').classList.contains('off')){gv.copy(g.anchor).project(camera);
-      const vis=gv.z<1&&gv.x>-1.2&&gv.x<1.2&&gv.y>-1.2&&gv.y<1.2; g.el.style.visibility=vis?'visible':'hidden';
-      if(vis){g.el.style.left=((gv.x+1)/2*w).toFixed(1)+'px';g.el.style.top=((1-gv.y)/2*h).toFixed(1)+'px'}}
   }
-  GROUPS.projects.el.style.setProperty('--gc','#'+GROUPS.projects.tint.getHexString());
 }
 const tmpCol=new THREE.Color();
 
