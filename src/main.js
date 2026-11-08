@@ -195,8 +195,23 @@ const mats={}; const M=(c,r=.62,m=0)=>{const k=c+r+m;if(mats[k])return mats[k];c
   return mats[k]=new THREE.MeshPhysicalMaterial({color:c,roughness:Math.min(r,.5),metalness:Math.max(m,.15),clearcoat:.25,clearcoatRoughness:.35,bumpMap:TEX.grain,bumpScale:.08,envMapIntensity:.9})};
 /* anodised coloured knob cap + knurled metal band */
 const A=c=>mats['A'+c]||(mats['A'+c]=new THREE.MeshPhysicalMaterial({color:c,metalness:.65,roughness:.28,clearcoat:.6,clearcoatRoughness:.2,bumpMap:TEX.grain,bumpScale:.05}));
-/* brushed steel: the one finish for every knob cap */
-const STEEL=mats.STEEL=themed(new THREE.MeshPhysicalMaterial({color:'#b3b6bc',metalness:.92,roughness:.3,clearcoat:.4,clearcoatRoughness:.3,bumpMap:TEX.brush,bumpScale:.12}),'#b3b6bc','#8a8e95',.9,.85);
+/* forged & spun steel for every knob cap: lathe-turned concentric rings, a faint radial forging grain,
+   a centre spindle mark and random wear scratches. One canvas drives colour, roughness and bump.
+   (A cylinder's top face maps the texture's centre to the cap's centre, so the rings sit true.) */
+const SPUN=(()=>{const N=1024,c=document.createElement('canvas');c.width=c.height=N;const x=c.getContext('2d'),C0=N/2;
+  x.fillStyle='#8c8c8c';x.fillRect(0,0,N,N);
+  for(let r=2;r<C0*1.42;r+=1.15){const g=118+Math.random()*44|0;x.strokeStyle=`rgba(${g},${g},${g},${.25+Math.random()*.45})`;x.lineWidth=.6+Math.random()*1.1;x.beginPath();x.arc(C0,C0,r,0,7);x.stroke()} // turning rings
+  for(let k=0;k<14;k++){const r=40+Math.random()*C0*1.3,g=Math.random()<.5?90:170;x.strokeStyle=`rgba(${g},${g},${g},.35)`;x.lineWidth=2+Math.random()*3;x.beginPath();x.arc(C0,C0,r,0,7);x.stroke()} // tool-pass bands
+  x.save();x.translate(C0,C0);for(let i=0;i<720;i++){const a=Math.random()*Math.PI*2,r0=Math.random()*C0*.3,r1=r0+C0*(.3+Math.random()*1.1),g=Math.random()<.5?100:160;
+    x.strokeStyle=`rgba(${g},${g},${g},${.04+Math.random()*.06})`;x.lineWidth=.6+Math.random()*1.4;x.beginPath();x.moveTo(Math.cos(a)*r0,Math.sin(a)*r0);x.lineTo(Math.cos(a)*r1,Math.sin(a)*r1);x.stroke()}x.restore(); // radial forging grain
+  for(let i=0;i<70;i++){const x0=Math.random()*N,y0=Math.random()*N,a=Math.random()*Math.PI*2,L=20+Math.random()*(Math.random()<.15?420:140),bend=(Math.random()-.5)*.6,dark=Math.random()<.6;
+    x.strokeStyle=dark?`rgba(40,40,40,${.35+Math.random()*.4})`:`rgba(235,235,235,${.3+Math.random()*.4})`;x.lineWidth=.5+Math.random()*1.3;x.beginPath();x.moveTo(x0,y0);
+    x.quadraticCurveTo(x0+Math.cos(a+bend)*L*.5,y0+Math.sin(a+bend)*L*.5,x0+Math.cos(a)*L,y0+Math.sin(a)*L);x.stroke()} // wear scratches
+  for(let i=0;i<260;i++){const g=Math.random()<.5?60:200;x.fillStyle=`rgba(${g},${g},${g},${.15+Math.random()*.3})`;x.fillRect(Math.random()*N,Math.random()*N,1+Math.random()*2,1+Math.random()*2)} // pits
+  const sp=x.createRadialGradient(C0,C0,0,C0,C0,26);sp.addColorStop(0,'#5a5a5a');sp.addColorStop(.6,'#7a7a7a');sp.addColorStop(1,'rgba(140,140,140,0)');x.fillStyle=sp;x.beginPath();x.arc(C0,C0,26,0,7);x.fill(); // spindle mark
+  const mk=cs=>{const t=new THREE.CanvasTexture(c);t.colorSpace=cs;t.anisotropy=8;return t};
+  return {map:mk(THREE.SRGBColorSpace),data:mk(THREE.NoColorSpace)}})();
+const STEEL=mats.STEEL=themed(new THREE.MeshPhysicalMaterial({color:'#d7dade',map:SPUN.map,metalness:.95,roughness:.42,roughnessMap:SPUN.data,bumpMap:SPUN.data,bumpScale:.35,clearcoat:.25,clearcoatRoughness:.35}),'#d7dade','#9a9ea5',.95,.9);
 const KN=mats.KN=themed(new THREE.MeshPhysicalMaterial({color:'#b9bcc2',metalness:1,roughness:.32,bumpMap:TEX.knurl,bumpScale:1.2,side:THREE.DoubleSide}),'#b9bcc2','#868990',1,.8);
 function knurl(parent,r,h,y,proxy){const k=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,64,1,true),KN);k.position.y=y;k.castShadow=true;parent.add(k);k.userData.proxy=proxy;hits.push(k);return k}
 function screw(parent,x,y,z){const s=new THREE.Mesh(new THREE.CylinderGeometry(.075,.075,.025,20),M('#c4c6cc'));s.position.set(x,y,z);parent.add(s);const sl=new THREE.Mesh(new THREE.BoxGeometry(.11,.012,.022),new THREE.MeshStandardMaterial({color:'#55575c'}));sl.position.set(x,y+.014,z);sl.rotation.y=Math.random()*Math.PI;parent.add(sl)}
