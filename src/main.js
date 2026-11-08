@@ -219,7 +219,7 @@ const geos={}; function rbox(w,h,d,r,mat){const k=[w,h,d,r].join();let g=geos[k]
 function cyl(rt,rb,h,mat,seg=40){const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg),mat);m.castShadow=m.receiveShadow=true;return m}
 function canvasTex(w,h,draw){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');draw?.(x,w,h);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;return {c,x,t}}
 /* printed labels: white text tinted by the material colour, so the theme engine can recolour them */
-function labelPlane(text,w=.62,h=.3,color='#6b6e76',size=50,dark){const {t}=canvasTex(256,124,(x,W,H)=>{x.fillStyle='#fff';x.font=`600 ${size}px "IBM Plex Mono", monospace`;x.textAlign='center';x.textBaseline='middle';x.fillText(text,W/2,H/2+2)});
+function labelPlane(text,w=.62,h=.3,color='#6b6e76',size=50,dark,font='600 SIZEpx "IBM Plex Mono", monospace'){const {t}=canvasTex(256,124,(x,W,H)=>{x.fillStyle='#fff';x.font=font.replace('SIZE',size);if(x.letterSpacing!==undefined&&!font.includes('Mono'))x.letterSpacing='2px';x.textAlign='center';x.textBaseline='middle';x.fillText(text,W/2,H/2+2)});
   const mt=themed(new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,color}),color,dark||LABEL_DARK[color]||color);
   const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mt);p.rotation.x=-Math.PI/2;return p}
 const LABEL_DARK={'#6b6e76':'#b9ab92','#7b7e86':'#a99c86'};
@@ -275,7 +275,7 @@ function updateFx(now){const dark=themeK>.5, face=1-.72*Math.max(0,themeK); // d
     else if(mm.emissive){mm.emissive.copy(f.col);mm.emissiveIntensity=flash*.5*face}
     // white glow disappears on the light deck: use graphite instead
     lightCol.copy(col);if(!dark&&col.r+col.g+col.b>2.4)lightCol.set('#55575e');
-    const op=Math.min(1,base*1.55+flash)*(dark?1:.85);
+    const op=Math.min(1,Math.max(f.m.userData.edge||0,base*1.55)+flash)*(dark?1:.85);
     f.halo.visible=op>.004;if(f.halo.visible){f.halo.material.opacity=op;f.halo.material.color.copy(lightCol).multiplyScalar(dark?1.35:1)}
     if(age>=0&&age<1.15&&f.amp>0){const st=strokeFor(f),u=st.material.uniforms;st.visible=true;
       u.uHead.value=reduceMotion?1.3:Math.min(1.3,age/.42);u.uFade.value=age<.38?0:Math.max(0,1-(age-.38)/.7)*.85;u.uOp.value=Math.min(1,f.amp*1.2);u.uCol.value.copy(lightCol)}
@@ -361,12 +361,14 @@ BIGK.forEach(([key,label],i)=>{const c0=4+i*2;tile(c0,0,2,2);
 // ABOUT: red button row (cols 0-7, row 2); lead notes cols 8-16
 // About row: only content about Vick — 9 wide buttons across the full row
 CH.info.items.length=6;
-function wideBtn(x,w,label,lc,ldc){const t=rbox(w-.07,.3,.93,.07,M(C.tile,.6));t.position.set(x,TOP+.15,GZ(2));synth.add(t);
-  const k=rbox(w-.3,.16,.72,.16,M(C.cap,.5));k.position.set(x,TOP+.36,GZ(2));synth.add(k);
-  const l=labelPlane(label,1.6,.5,lc,Math.min(40,Math.floor(400/label.length)),ldc);l.position.y=.081;k.add(l);t.userData.proxy=k;hits.push(t);return k}
-{const F=['gd','ux','mo','tl','xp'],L=['DESIGN','UI/UX','MOTION','TOOLS','EXPERIMENTAL'],LC=['#1a9e4f','#2f86c2','#e5541a','#7c4ddb','#d14fa8'],W=17/5;
+/* mode buttons: solid, matte rubber caps (light only leaks from the gap around them), white labels in one face and size */
+const RUBBER=()=>themed(new THREE.MeshPhysicalMaterial({color:'#3b3833',roughness:.88,metalness:0,sheen:.6,sheenColor:'#6d675d',sheenRoughness:.7,bumpMap:TEX.grain,bumpScale:.08,emissive:'#000000'}),'#3b3833','#24221f',.5,.35);
+function wideBtn(x,w,label){const t=rbox(w-.07,.3,.93,.07,M(C.tile,.6));t.position.set(x,TOP+.15,GZ(2));synth.add(t);
+  const k=rbox(w-.3,.16,.72,.16,RUBBER());k.position.set(x,TOP+.36,GZ(2));synth.add(k);
+  const l=labelPlane(label,1.6,.5,'#f4f1ea',30,'#f4f1ea','700 SIZEpx Montserrat, "Noto Sans", sans-serif');l.position.y=.081;k.add(l);t.userData.proxy=k;hits.push(t);return k}
+{const F=['gd','ux','mo','tl','xp'],L=['DESIGN','UI/UX','MOTION','TOOLS','EXPERIMENTAL'],W=17/5;
  for(let j=0;j<5;j++){const x=-8.5+W*(j+.5),f=F[j];
-  const k=wideBtn(x,W,L[j],LC[j],MODES[f].glow);
+  const k=wideBtn(x,W,L[j]);
   pressable(k,()=>{playNote(72+[0,4,7,11,14][j],.5);zoomTo(f)},`Filter · ${CH[f].name} · ${MODES[f].n||CH[f].items.length+' keys'} on the keys`);k.userData.filter=f;
   k.material.emissive=new THREE.Color(MODES[f].glow);ROWBTN.push([k,f]);fxOf(k).managed=true;}}
 // drum pads: graphite caps with light print (KO II style)
@@ -598,7 +600,10 @@ function drawScreens(time){
 function refreshGlow(t){
   [stopBtn,beatsBtn].forEach(m=>m.material.emissiveIntensity=demo?.4+.25*Math.max(0,Math.sin(t*Math.PI*2*(TRACKS[track]?.bpm||120)/60)):0);
   const inKb=S.mode&&MODES[S.mode].box==='kb';
-  ROWBTN.forEach(([m,k])=>{let e=0;if(S.kb===k){e=inKb?.35+.12*Math.sin(t*3):.12;if(S.hover?.userData?.item&&S.hover.userData.ch===k)e=.75;if(S.card?.ch===k)e=Math.max(e,.55)}if(S.hover===m)e=Math.max(e,.4);m.material.emissiveIntensity=e});
+  ROWBTN.forEach(([m,k])=>{let edge=.5,face=.03;
+    if(S.kb===k){edge=inKb?.9+.08*Math.sin(t*3):.75;face=inKb?.09:.06;if(S.hover?.userData?.item&&S.hover.userData.ch===k)edge=1;if(S.card?.ch===k)edge=1}
+    if(S.hover===m){edge=1;face=Math.max(face,.08)}
+    m.userData.edge=edge;m.material.emissiveIntensity=face});
   BIGCAPS.forEach(([m,k])=>m.material.emissiveIntensity=S.mode===k?.3+.1*Math.sin(t*3):(S.hover===m?.2:0));
   for(const g in CTRL){const ch=realCh(g);CTRL[g].forEach((m,j)=>{if(!m)return;let e=0;
     const pv=g==='kb'&&S.hover?.userData?.filter;

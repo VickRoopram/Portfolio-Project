@@ -229,6 +229,8 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 
 20. **Nov 2026: knobs are sound controls.** The four big knobs no longer open the role channels (Designer, Strategist, Artist, Teacher); they set FILTER (`cutoff`), RESONANCE (`q`), DECAY and ECHO (`wet`). The small knob is DETUNE and the remote knob is master VOLUME. Every knob cap is one forged/spun steel material (`STEEL`, texture `SPUN`: lathe rings, radial forging grain, spindle mark, wear scratches and pits driving colour, roughness and bump) with a dark indicator. Hovering a knob shows its value on the synth screen. The role channels stay in the content but no longer have a control; the full CV is reached from the menu's Download CV.
 
+21. **Nov 2026: mode buttons.** DESIGN · UI/UX · MOTION · TOOLS · EXPERIMENTAL are matte rubber caps (`RUBBER`) with white Montserrat 700 labels at one size. Their colour leaks only from the gap: `userData.edge` gives the halo a steady level (.5 idle, .75 selected, ~.9 while in that mode, 1 on hover or with a card open) independent of the cap face, which only gets a dim emissive (.03–.09).
+
 **Commenting tip:** artifact comments anchored to the 3D canvas **don't carry the click position or selection rectangle**. Ask Vick to name the control instead of guessing (this happened twice).
 
 ---
