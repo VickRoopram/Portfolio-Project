@@ -222,6 +222,11 @@ function canvasTex(w,h,draw){const c=document.createElement('canvas');c.width=w;
 function labelPlane(text,w=.62,h=.3,color='#6b6e76',size=50,dark,font='600 SIZEpx "IBM Plex Mono", monospace'){const {t}=canvasTex(256,124,(x,W,H)=>{x.fillStyle='#fff';x.font=font.replace('SIZE',size);if(x.letterSpacing!==undefined&&!font.includes('Mono'))x.letterSpacing='2px';x.textAlign='center';x.textBaseline='middle';x.fillText(text,W/2,H/2+2)});
   const mt=themed(new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,color}),color,dark||LABEL_DARK[color]||color);
   const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mt);p.rotation.x=-Math.PI/2;return p}
+function engravedLabel(text,w,h,size){const {t}=canvasTex(256,124,(x,W,H)=>{x.font=`700 ${size}px Montserrat, "Noto Sans", sans-serif`;if(x.letterSpacing!==undefined)x.letterSpacing='2px';x.textAlign='center';x.textBaseline='middle';
+    x.fillStyle='rgba(0,0,0,.85)';x.fillText(text,W/2,H/2+.5);         // shadowed wall at the top of each letter
+    x.fillStyle='rgba(255,255,255,.22)';x.fillText(text,W/2,H/2+3.5);   // catch-light on the lower lip
+    x.fillStyle='rgba(226,222,214,.88)';x.fillText(text,W/2,H/2+2)});   // the inlaid white, a touch below the surface
+  const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,color:'#ffffff'}));p.rotation.x=-Math.PI/2;return p}
 const LABEL_DARK={'#6b6e76':'#b9ab92','#7b7e86':'#a99c86'};
 
 /* ───────────── PRESS FX: gap glow (light leaking around a cap) + comet stroke tracing the cap edge ───────────── */
@@ -365,7 +370,7 @@ CH.info.items.length=6;
 const RUBBER=()=>themed(new THREE.MeshPhysicalMaterial({color:'#3b3833',roughness:.88,metalness:0,sheen:.6,sheenColor:'#6d675d',sheenRoughness:.7,bumpMap:TEX.grain,bumpScale:.08,emissive:'#000000'}),'#3b3833','#24221f',.5,.35);
 function wideBtn(x,w,label){const t=rbox(w-.07,.3,.93,.07,M(C.tile,.6));t.position.set(x,TOP+.15,GZ(2));synth.add(t);
   const k=rbox(w-.3,.16,.72,.16,RUBBER());k.position.set(x,TOP+.36,GZ(2));synth.add(k);
-  const l=labelPlane(label,1.6,.5,'#f4f1ea',30,'#f4f1ea','700 SIZEpx Montserrat, "Noto Sans", sans-serif');l.position.y=.081;k.add(l);t.userData.proxy=k;hits.push(t);return k}
+  const l=engravedLabel(label,1.6,.5,30);l.position.y=.0805;k.add(l);t.userData.proxy=k;hits.push(t);return k}
 {const F=['gd','ux','mo','tl','xp'],L=['DESIGN','UI/UX','MOTION','TOOLS','EXPERIMENTAL'],W=17/5;
  for(let j=0;j<5;j++){const x=-8.5+W*(j+.5),f=F[j];
   const k=wideBtn(x,W,L[j]);
@@ -600,10 +605,11 @@ function drawScreens(time){
 function refreshGlow(t){
   [stopBtn,beatsBtn].forEach(m=>m.material.emissiveIntensity=demo?.4+.25*Math.max(0,Math.sin(t*Math.PI*2*(TRACKS[track]?.bpm||120)/60)):0);
   const inKb=S.mode&&MODES[S.mode].box==='kb';
-  ROWBTN.forEach(([m,k])=>{let edge=.5,face=.03;
-    if(S.kb===k){edge=inKb?.9+.08*Math.sin(t*3):.75;face=inKb?.09:.06;if(S.hover?.userData?.item&&S.hover.userData.ch===k)edge=1;if(S.card?.ch===k)edge=1}
-    if(S.hover===m){edge=1;face=Math.max(face,.08)}
-    m.userData.edge=edge;m.material.emissiveIntensity=face});
+  ROWBTN.forEach(([m,k])=>{let edge=0;
+    if(S.mode===k)edge=.85+.08*Math.sin(t*3);                       // its mode is active
+    if(S.card?.ch===k||S.mode===k&&S.hover?.userData?.item&&S.hover.userData.ch===k)edge=1;
+    if(S.hover===m)edge=1;                                           // hovered
+    m.userData.edge=edge;m.material.emissiveIntensity=edge?.035:0}); // the solid cap only shows a faint glow when lit
   BIGCAPS.forEach(([m,k])=>m.material.emissiveIntensity=S.mode===k?.3+.1*Math.sin(t*3):(S.hover===m?.2:0));
   for(const g in CTRL){const ch=realCh(g);CTRL[g].forEach((m,j)=>{if(!m)return;let e=0;
     const pv=g==='kb'&&S.hover?.userData?.filter;
