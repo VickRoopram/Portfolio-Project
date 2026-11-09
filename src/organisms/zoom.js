@@ -1,12 +1,12 @@
 /* Zoom guide: a scroll-wheel icon that sits bottom right. As soon as the visitor zooms (wheel or pinch), it slides to the bottom
-   middle and opens up: a short instruction plus a bar that fills as you zoom in (empty = the whole table, full = one synth).
+   middle and opens up: a short instruction plus a bar that fills as you zoom in, with its percentage (0% = the whole table, 100% = one synth).
    It drops back to the icon a little after the zooming stops.
    At the limits the icon reacts: fully zoomed in it shakes (and shakes again if you keep scrolling in); fully zoomed out it relaxes
    (wheel stops, icon settles). Zoom limits live in V.zoom (set by the camera, page/camera.js lockZoom). */
 import { $, S, V, desktop, reduceMotion } from '../core/state.js';
 import { camera, controls } from '../core/scene.js';
 
-const el = $('zoom'), bar = $('zr'), ico = $('zico');
+const el = $('zoom'), bar = $('zr'), ico = $('zico'), pctEl = $('zpct');
 const IDLE_AFTER = 2200, EDGE = .005;
 let lastD = 0, openUntil = 0, quietUntil = 0, wasFlying = false, edge = '';
 const dist = () => camera.position.distanceTo(controls.target);
@@ -33,7 +33,8 @@ export function updateZoom(now) {
   el.dataset.state = on ? 'on' : 'idle'; document.body.dataset.zoom = on ? 'on' : 'off';
   el.classList.toggle('away', !desktop() && !!(S.card || S.menu)); // phones: the bottom sheet needs the space
   const k = level(d), pct = Math.round(k * 100);
-  bar.style.setProperty('--k', (k * 100).toFixed(1) + '%'); if (bar.getAttribute('aria-valuenow') !== String(pct)) bar.setAttribute('aria-valuenow', String(pct));
+  bar.style.setProperty('--k', (k * 100).toFixed(1) + '%');
+  if (bar.getAttribute('aria-valuenow') !== String(pct)) { bar.setAttribute('aria-valuenow', String(pct)); bar.setAttribute('aria-valuetext', pct + '%'); pctEl.textContent = pct + '%' }
   const e = flying ? edge : k >= 1 - EDGE ? 'max' : k <= EDGE ? 'min' : ''; // hold the edge state during flights
   if (e !== edge) { edge = e; el.dataset.edge = e; if (e === 'max') kick('shake'); else if (e === 'min') kick('settle') }
 }

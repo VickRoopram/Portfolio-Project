@@ -95,7 +95,9 @@
 #zoom[data-state="on"] .z-body{max-width:440px;opacity:1;margin-left:var(--s1)}
 .z-tip{margin:0;font:500 var(--t-sm)/1 var(--body);color:var(--ink)}
 .z-tip b{font-weight:700}
-.z-bar{display:flex;align-items:center;gap:var(--s2);font:600 var(--t-xs)/1 var(--body);letter-spacing:.04em;text-transform:uppercase;color:var(--mute)}
+.z-bar{display:flex;align-items:center;gap:var(--s2)}
+.z-pct{min-width:4ch;font:700 var(--t-xs)/1 var(--mono);font-variant-numeric:tabular-nums;text-align:right;color:var(--mute);transition:color .3s}
+#zoom[data-edge="max"] .z-pct{color:var(--accent-ui)}
 /* the bar is a plain meter: an empty track that fills as you zoom in */
 .z-track{position:relative;display:block;width:150px;height:6px;border-radius:3px;overflow:hidden;background:var(--track);box-shadow:inset 0 1px 2px var(--shadow)}
 .z-fill{position:absolute;inset:0 auto 0 0;width:var(--k,0%);border-radius:inherit;background:var(--accent-ui);transition:width .12s linear}
