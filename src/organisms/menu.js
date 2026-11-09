@@ -3,7 +3,7 @@
    Projects drills down to the five keyboard modes; a mode drills down to the projects on its keys.
    Picking a mode flies the camera to the keys and lights them; picking a project hands over to act.journey
    (pan out, fly into the synth, push the key, open the card where the menu was). */
-import { $, S, pad, act, reduceMotion } from '../core/state.js';
+import { $, S, act, reduceMotion } from '../core/state.js';
 import { CH, MODES } from '../core/data.js';
 import { ensureAudio, drum } from '../core/audio.js';
 import { icon } from '../atoms/icons.js';
@@ -33,7 +33,7 @@ function render() {
   } else {
     const c = CH[ch]; let n = 0;
     h = `<p class="m-title" style="--c:${c.col}">${LABEL[ch] || c.name}</p><div class="m-list" style="--c:${c.col}">${c.items.map((it, j) => isSlot(it) ? '' :
-      row(`data-item="${j}"${j === i ? ' aria-current="true"' : ''}`, `<span class="no">${pad(j + 1)}</span><span class="tx"><b>${it.t}</b></span>${chev}`, n++)).join('')}</div>`;
+      row(`data-item="${j}"${j === i ? ' aria-current="true"' : ''}`, `<span class="tx"><b>${it.t}</b></span>${chev}`, n++)).join('')}</div>`;
   }
   head.hidden = k === 'root'; back.querySelector('span').textContent = k === 'mode' ? 'Projects' : 'Menu';
   body.innerHTML = h; body.scrollTop = 0; menu.dataset.level = k; syncHome(); hidePeek();

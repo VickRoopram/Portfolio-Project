@@ -36,7 +36,7 @@
 .root .m-row.cv:hover .go{transform:translateY(2px)}
 #home[data-at-home="true"] b{color:var(--mute)}
 .dot{flex:none;width:12px;height:12px;border-radius:50%;background:var(--c);box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 18%,transparent)}
-.no{flex:none;min-width:22px;font:700 var(--t-xs)/1 var(--mono);color:var(--c,var(--mute))}
+.m-row[data-item] b{font-weight:500} /* project titles: lighter than the section names, easier on the cream */
 
 .m-row[aria-current="true"]{background:color-mix(in srgb,var(--c,var(--accent-ui)) 14%,transparent)}
 
