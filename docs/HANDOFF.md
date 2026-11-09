@@ -266,6 +266,13 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - A capture-phase `wheel` listener on `#stage` opens the guide and replays the reactions, because scrolling against a limit doesn't change the camera distance. The edge state is held during flights. Reduced motion: no shake, settle, glow or transitions.
     - Files: `index.html`, `organisms/zoom.js`, `styles/organisms.css`, README.
 
+27. **9 Nov 2026: 0% = the whole table; the camera always centres on the table and its synths** (Vick). Also a journey bug fix.
+    - **0% zoom = the whole table:** `V.zoom.max` is now `tableFit()`: the exact distance at which all eight corners of `BOX.desk` are in view, looking straight on at the table's middle (`TABLE`), taken as the larger of the tilts .3 and `TILT_OUT` (.55). It's fixed per viewport (re-locked on resize and after flights), so the percentage doesn't drift while orbiting. 1440×900: 42.4.
+    - **Rotation and tilt follow zoom:** each frame `centre()` sets `maxPolarAngle = tiltCap(k)` (.55 at 0% → 1.2 by 80%) and the azimuth range `±turnCap(k)` (0 at 0% → ±1.1 by 45%). Zoomed out you look down on the table straight on (so 0% always fits); the low, cinematic side angles open up as you zoom in. Flights lift the caps and lock again on landing.
+    - **Always centred:** `zoomToCursor` is off (zoom goes to the middle of the view). The orbit centre is `home` (where the last flight looked: a device, or the synths in the overview), sliding towards the table's middle as you zoom out from there and reaching it at 0%. Panning can nudge the view up to `PAN_MAX` (2.5) while you drag; let go and it springs back (12% per frame). Orbiting turns around that centre.
+    - **Bug fix (from entry 24):** a comment had swallowed `await wait(IN + 120); if (!live()) return;` in `journey()`, so the key push and card came ~0.5 s into the fly-in instead of after landing. Restored on its own line; re-tested (card opens after the camera lands).
+    - Files: `page/camera.js`, `core/scene.js` (`zoomToCursor:false`, `maxPolarAngle` 1.2), README.
+
 **Commenting tip:** artifact comments anchored to the 3D canvas **don't carry the click position or selection rectangle**. Ask Vick to name the control instead of guessing (this happened twice).
 
 ---

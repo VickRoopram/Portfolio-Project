@@ -30,7 +30,7 @@ The synth is the interface. Each part of the instrument holds a different side o
 
 **Keyboard shortcuts:** `A`–`;` play notes, `W E T Y U O P` play sharps, `Z`–`.` play drums, `1`–`6` jump to modes, `←`/`→` page through open cards, `0` or `Esc` go home (`Esc` first closes the menu one level at a time, the lightbox or the card).
 
-Mouse, trackpad and touch work too: drag to orbit, scroll or pinch to zoom. On phones the synth starts top-down, cards and the menu open as a bottom sheet, and the zoom guide hides while one is open.
+Mouse, trackpad and touch work too: drag to orbit, scroll or pinch to zoom. The view always centres on the table and its synths: zoom heads for the middle of the view, a pan springs back when you let go, and zooming all the way out (0%) shows the whole table from above. The low side angles open up as you zoom in. On phones the synth starts top-down, cards and the menu open as a bottom sheet, and the zoom guide hides while one is open.
 
 ## Project structure
 

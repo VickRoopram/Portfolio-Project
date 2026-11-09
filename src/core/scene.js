@@ -27,6 +27,6 @@ export const pool = new THREE.Mesh(new THREE.PlaneGeometry(64, 36), new THREE.Me
 pool.rotation.x = -Math.PI / 2; pool.position.set(-1.5, -30.87, -1.5); pool.renderOrder = -1; scene.add(pool);
 
 export const controls = new OrbitControls(camera, cv);
-Object.assign(controls, { enableDamping: true, dampingFactor: .06, enablePan: true, screenSpacePanning: false, zoomToCursor: true, rotateSpeed: .7, zoomSpeed: .9,
-  minPolarAngle: .02, maxPolarAngle: 1.32, minAzimuthAngle: -1.1, maxAzimuthAngle: 1.1 });
+Object.assign(controls, { enableDamping: true, dampingFactor: .06, enablePan: true, screenSpacePanning: false, zoomToCursor: false, rotateSpeed: .7, zoomSpeed: .9,
+  minPolarAngle: .02, maxPolarAngle: 1.2, minAzimuthAngle: -1.1, maxAzimuthAngle: 1.1 });
 export const PANBOX = new THREE.Box3(new THREE.Vector3(-14, 0, -8), new THREE.Vector3(16, 3, 8)); // panning stays over the desk
