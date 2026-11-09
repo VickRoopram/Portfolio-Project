@@ -100,17 +100,19 @@ export async function journey(ch, i) {
 const ease = k => k < .5 ? 8 * k ** 4 : 1 - Math.pow(-2 * k + 2, 4) / 2; // quartic in-out: slow start, slow landing
 let offX = 0, offY = 0;
 export function updateCamera(now) {
+  if (!stage.clientWidth || !stage.clientHeight) return; // hidden: nothing to frame until it has a size again
   const F = V.fly; if (F) { const k = Math.min(1, (now - F.s) / F.dur), e = ease(k); controls.target.lerpVectors(F.t0, F.t1, e);
     sA.set(lerp(F.r0, F.r1, e) * (1 + F.lift * Math.sin(Math.PI * e)), lerp(F.p0, F.p1, e), F.th0 + F.dT * e); camera.position.copy(controls.target).add(off.setFromSpherical(sA));
     if (k >= 1) { V.fly = null; lockZoom(); setHome(F.t1); if (!V.drag) controls.enabled = true } }
   else centre();
   /* a panel opened or closed while zoomed in (and the visitor hasn't moved the camera): glide to the framing that fits beside it */
   if (!F && !V.drag && !moved && S.mode && sideOn() !== framedSide) flyTo(MODES[S.mode].box, 800);
-  const w = stage.clientWidth, h = stage.clientHeight, wide = desktop(); // keep the zoomed part clear of the card or the menu panel
+  const w = stage.clientWidth, h = stage.clientHeight, wide = desktop(); if (!w || !h) return; // keep the zoomed part clear of the card or the menu panel
   const side = S.card || S.menu || V.side; offX += ((side && wide ? sideW(w) / 2 : 0) - offX) * .08; offY += ((side && !wide ? h * .28 : 0) - offY) * .08; camera.setViewOffset(w, h, offX, offY, w, h);
 }
 function resize() {
-  const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+  const w = stage.clientWidth, h = stage.clientHeight; if (!w || !h) return; // a hidden page (zero size) would turn every framing into NaN and stick the camera
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
   lockZoom(); if (!V.fly) { const f = frameFor(S.mode ? MODES[S.mode].box : 'all'); camera.position.copy(f.p); controls.target.copy(f.t); controls.update(); setHome(f.t) }
 }
 new ResizeObserver(resize).observe(stage); resize();
