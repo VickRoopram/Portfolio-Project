@@ -4,6 +4,10 @@
 export const PATHS = {
   'chevron-left': 'M14 8L10 12L14 16',
   'chevron-right': 'M10 16L14 12L10 8',
+  'chevron-up': 'M16 14L12 10L8 14',
+  'chevron-down': 'M8 10L12 14L16 10',
+  'rotate-left': 'M7 13L3 9M3 9L7 5M3 9H16C18.7614 9 21 11.2386 21 14C21 16.7614 18.7614 19 16 19H11',  // drawn in the coolicons style (undo arrow)
+  'rotate-right': 'M17 13L21 9M21 9L17 5M21 9H8C5.23858 9 3 11.2386 3 14C3 16.7614 5.23858 19 8 19H13', // drawn in the coolicons style (redo arrow)
   'arrow-right': 'M14 7L19 12L14 17M19 12H5',
   'external-link': 'M10 5H9C6.79086 5 5 6.79086 5 9V15C5 17.2091 6.79086 19 9 19H15C17.2091 19 19 17.2091 19 15V14M20 9V4H15M20 4L13 11',
   download: 'M16 12L12 16L8 12M12 16V4M6 20H18',

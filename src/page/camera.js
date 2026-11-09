@@ -18,17 +18,19 @@ const TABLE = BOX.desk.getCenter(new THREE.Vector3()).setY(0); // the middle of 
 const CORNERS = [0, 1, 2, 3, 4, 5, 6, 7].map(i => new THREE.Vector3(i & 1 ? BOX.desk.max.x : BOX.desk.min.x, i & 2 ? BOX.desk.max.y : BOX.desk.min.y, i & 4 ? BOX.desk.max.z : BOX.desk.min.z));
 const vR = new THREE.Vector3(), vU = new THREE.Vector3(), vD = new THREE.Vector3(), vC = new THREE.Vector3(), eye = new THREE.Vector3(), m4 = new THREE.Matrix4(), q = new THREE.Quaternion();
 /* how far back the camera must sit, looking straight on at the table's middle from tilt phi, for every corner of the table to be in view */
-function tableFit(phi) {
+function tableFit(phi, theta = 0) {
   const T = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2), tanH = T * stage.clientWidth / stage.clientHeight;
-  eye.setFromSphericalCoords(1, phi, 0).add(TABLE); q.setFromRotationMatrix(m4.lookAt(eye, TABLE, camera.up));
+  eye.setFromSphericalCoords(1, phi, theta).add(TABLE); q.setFromRotationMatrix(m4.lookAt(eye, TABLE, camera.up));
   vR.set(1, 0, 0).applyQuaternion(q); vU.set(0, 1, 0).applyQuaternion(q); vD.set(0, 0, 1).applyQuaternion(q); let d = 0;
   for (const c of CORNERS) { vC.copy(c).sub(TABLE); const z = vC.dot(vD); d = Math.max(d, Math.abs(vC.dot(vR)) / tanH + z, Math.abs(vC.dot(vU)) / T + z) }
   return d * 1.05;
 }
-/* zoom is locked: in = one synth filling the view (the closest device framing), out (0%) = the whole table seen from above.
-   Rotation and tilt are reined in as you zoom out (tiltCap/turnCap below), so at 0% the camera is straight on and the table fits */
+/* zoom is locked: in = one synth filling the view (the closest device framing), out (0%) = the whole table, from the angle you're
+   looking from (you can turn all the way round). Tilt is reined in as you zoom out (tiltCap below), so 0% looks down on the table */
+const theta = () => Math.atan2(camera.position.x - controls.target.x, camera.position.z - controls.target.z);
+const fitNow = () => Math.max(V.zoom.min * 1.5, tableFit(.3, theta()), tableFit(TILT_OUT, theta()));
 export function lockZoom() {
-  V.zoom.min = Math.min(frameFor('kb').d, frameFor('cv').d) * .97; V.zoom.max = Math.max(V.zoom.min * 1.5, tableFit(.3), tableFit(TILT_OUT));
+  V.zoom.min = Math.min(frameFor('kb').d, frameFor('cv').d) * .97; V.zoom.max = fitNow();
   if (!V.fly) { controls.minDistance = V.zoom.min; controls.maxDistance = V.zoom.max }
 }
 const level = d => Math.min(1, Math.max(0, Math.log(V.zoom.max / d) / Math.log(V.zoom.max / V.zoom.min))); // 0 = the whole table, 1 = one synth
@@ -47,27 +49,48 @@ const sA = new THREE.Spherical(), sB = new THREE.Spherical(), off = new THREE.Ve
 /* swoop: interpolate in spherical coordinates around a moving target, lifting a little mid-flight, so the camera arcs down like a crane shot */
 let framedSide = false, moved = false, grabbing = false; // the panel state the current framing was made for · the visitor has orbited/zoomed since · a drag is in progress
 controls.addEventListener('start', () => { moved = true; grabbing = true }); controls.addEventListener('end', () => { grabbing = false });
-/* the view always centres on the table and its synths. home = where the last flight looked (a device, or the synths in the overview)
-   and how far in it was. Zooming out from there slides the centre towards the middle of the table, reaching it at 0%.
-   Panning can nudge the view (up to PAN_MAX) while you drag; let go and it springs back to centre. Orbiting turns around that centre */
-const home = { t: new THREE.Vector3(), k: 1 }, want = new THREE.Vector3(), nudge = new THREE.Vector3(), PAN_MAX = 2.5;
-const setHome = t => { home.t.copy(t); home.k = level(camera.position.distanceTo(controls.target)) || 1 };
+/* the view always centres on the table top. focus (home.t) = where the last flight looked (a device, or the synths in the overview);
+   panning (drag, or the pan pad) moves it and it stays there, kept over the table top (FOCUS). Zooming out slides the centre towards
+   the middle of the table, reaching it at 0%. Orbiting (drag, or the rotate buttons) turns all the way round that centre */
+const home = { t: new THREE.Vector3(), k: 1 }, want = new THREE.Vector3(), nudge = new THREE.Vector3(), before = new THREE.Vector3();
+const FOCUS = new THREE.Box3(new THREE.Vector3(-14.5, 0, -8), new THREE.Vector3(15.7, 1.6, 7.8)); // the table top, a little in from the edge
+const dist = () => camera.position.distanceTo(controls.target);
+const setHome = t => { home.t.copy(t); home.k = level(dist()) || 1 };
+const blend = () => Math.min(1, Math.max(0, 1 - level(dist()) / home.k)); // 0 at the focus's own zoom, 1 at 0%
+/* move the orbit centre (and the camera with it, so the view slides rather than turns), kept over the table top */
+function shiftView(v) { before.copy(controls.target); controls.target.add(v); FOCUS.clampPoint(controls.target, controls.target); camera.position.add(before.subVectors(controls.target, before)) }
+/* after a drag-pan: keep the new centre as the focus (undoing the zoom-out blend so it doesn't drift back) */
+const grabT = new THREE.Vector3(); controls.addEventListener('start', () => grabT.copy(controls.target));
+controls.addEventListener('end', () => { if (grabT.distanceTo(controls.target) < 1e-3) return; const w = blend(); /* only a real pan: a wheel zoom fires start/end too */ if (w < .98) home.t.copy(controls.target).addScaledVector(want.copy(TABLE), -w).multiplyScalar(1 / (1 - w)); FOCUS.clampPoint(home.t, home.t) });
+const pR = new THREE.Vector3(), vF = new THREE.Vector3(), vT = new THREE.Vector3(), AXIS_Y = new THREE.Vector3(0, 1, 0);
+/* the pan pad: x = screen right, y = screen up (away from you on the table), in fractions of the view distance */
+export function panBy(x, y) {
+  if (V.fly) return; const d = dist();
+  pR.set(1, 0, 0).applyQuaternion(camera.quaternion).setY(0).normalize();
+  vF.set(0, 1, 0).applyQuaternion(camera.quaternion).add(vT.set(0, 0, -1).applyQuaternion(camera.quaternion)).setY(0).normalize(); // screen-up on the table, at any tilt
+  nudge.copy(pR).multiplyScalar(x * d).addScaledVector(vF, y * d); home.t.add(nudge); FOCUS.clampPoint(home.t, home.t); shiftView(nudge);
+}
+/* the rotate buttons: turn round the centre by a radians */
+export function spinBy(a) { if (V.fly) return; nudge.subVectors(camera.position, controls.target).applyAxisAngle(AXIS_Y, a); camera.position.copy(controls.target).add(nudge) }
+/* the pad's centre button: back to the framing for where you are (a device, or the overview) */
+export function recentre() { if (!V.fly) flyTo(S.mode ? MODES[S.mode].box : 'all', 900) }
 /* tilt follows zoom: zoomed out the view looks down on the table (so 0% always shows all of it from above), and the low,
    cinematic angles open up as you zoom in towards a synth */
-const TILT_OUT = .55, tiltCap = k => Math.min(1.2, TILT_OUT + .65 * k / .8), turnCap = k => 1.1 * Math.min(1, k / .45);
+const TILT_OUT = .55, tiltCap = k => Math.min(1.2, TILT_OUT + .65 * k / .8);
 function centre() {
-  const k = level(camera.position.distanceTo(controls.target)), w = Math.min(1, Math.max(0, 1 - k / home.k));
-  controls.maxPolarAngle = tiltCap(k); controls.minAzimuthAngle = -turnCap(k); controls.maxAzimuthAngle = turnCap(k);
-  want.lerpVectors(home.t, TABLE, w); nudge.subVectors(want, controls.target);
-  if (grabbing) { const over = nudge.length() - PAN_MAX; if (over <= 0) return; nudge.setLength(over) } // dragging: only stop it straying too far
-  else nudge.multiplyScalar(.12);                                                                       // let go: spring back
-  if (nudge.lengthSq() < 1e-8) return; controls.target.add(nudge); camera.position.add(nudge);
+  /* 0% follows the angle you look from: when you're all the way out, stay all the way out as you turn, so the whole table stays in view */
+  const d = dist(), out = d >= V.zoom.max * .995; V.zoom.max = fitNow(); controls.maxDistance = V.zoom.max;
+  if (out && !grabbing) camera.position.sub(controls.target).setLength(V.zoom.max).add(controls.target);
+  controls.maxPolarAngle = tiltCap(level(dist()));
+  if (grabbing) { nudge.copy(controls.target); FOCUS.clampPoint(nudge, nudge); if (!nudge.equals(controls.target)) shiftView(vT.subVectors(nudge, controls.target)); return } // a drag-pan stays over the table
+  want.lerpVectors(home.t, TABLE, blend()); nudge.subVectors(want, controls.target).multiplyScalar(.12); // glide to the focus
+  if (nudge.lengthSq() > 1e-8) { controls.target.add(nudge); camera.position.add(nudge) }
 }
 export function flyTo(key, dur = 2100) {
   const f = frameFor(key); framedSide = key !== 'all' && key !== 'desk' && sideOn(); moved = false; sA.setFromVector3(off.copy(camera.position).sub(controls.target)); sB.setFromVector3(off.copy(f.p).sub(f.t));
   let dT = sB.theta - sA.theta; if (dT > Math.PI) dT -= 2 * Math.PI; if (dT < -Math.PI) dT += 2 * Math.PI;
   V.fly = { t0: controls.target.clone(), t1: f.t, r0: sA.radius, r1: sB.radius, p0: sA.phi, p1: sB.phi, th0: sA.theta, dT, lift: Math.min(.35, Math.abs(sB.phi - sA.phi) * .3), s: performance.now(), dur: reduceMotion ? 1 : dur };
-  controls.enabled = false; controls.minDistance = 0; controls.maxDistance = Infinity; controls.maxPolarAngle = Math.PI / 2; controls.minAzimuthAngle = -Math.PI; controls.maxAzimuthAngle = Math.PI; // the flight may start outside the zoom range (the intro) or below the tilt cap; locked again on landing
+  controls.enabled = false; controls.minDistance = 0; controls.maxDistance = Infinity; controls.maxPolarAngle = Math.PI / 2; // the flight may start outside the zoom range (the intro) or below the tilt cap; locked again on landing
 }
 /* mode switch: its button strokes, then a wave of gap glow ripples across the keys that now hold its work */
 function modeWave(ch) {

@@ -124,3 +124,20 @@ body[data-zoom="on"] #legend{opacity:0}
 #m-peek.ok img{opacity:1}
 @keyframes peekIn{from{opacity:0;scale:.94}}
 @media (prefers-reduced-motion:reduce){#m-peek{transition:none;animation:none}}
+
+/* move-the-view controls, bottom right beside the zoom icon: rotate left / right, and a pan pad (centre dot recentres).
+   Same glassy pill as the zoom guide; buttons light in the accent while held */
+#nav{position:fixed;z-index:4;bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4));right:calc(max(16px,env(safe-area-inset-right,0px)) + 58px);display:flex;align-items:center;gap:2px;padding:4px;border:1px solid var(--line);border-radius:28px;background:color-mix(in srgb,var(--card) 90%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 8px 24px var(--shadow);transition:opacity .3s,visibility .3s;touch-action:none;user-select:none;-webkit-user-select:none}
+#nav.away{opacity:0;visibility:hidden}
+#nav button{display:grid;place-items:center;padding:0;border:0;background:none;color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background-color .15s,color .15s}
+#nav button:hover{background:var(--chip)}
+#nav button.on,#nav button:active{color:var(--accent-ui);background:color-mix(in srgb,var(--accent-ui) 14%,transparent)}
+.nv-spin{width:36px;height:36px;border-radius:50%}
+.nv-pad{display:grid;grid-template-columns:repeat(3,22px);grid-template-rows:repeat(3,22px)}
+.nv-pad button{width:22px;height:22px;border-radius:6px}
+.nv-pad .up{grid-area:1/2}.nv-pad .lf{grid-area:2/1}.nv-pad .mid{grid-area:2/2}.nv-pad .rt{grid-area:2/3}.nv-pad .dn{grid-area:3/2}
+.nv-pad .dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.55}
+.nv-pad .mid:hover .dot{opacity:1}
+body[data-zoom="on"] #nav{opacity:.35}
+@media (max-width:760px){#nav{right:calc(max(12px,env(safe-area-inset-right,0px)) + 56px)}}
+@media (max-width:760px){#legend{display:none}} /* phones: the nav pad and zoom icon take the bottom edge */

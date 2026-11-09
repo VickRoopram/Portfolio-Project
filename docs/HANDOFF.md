@@ -114,7 +114,7 @@ src/atoms/            geometry (rbox, cyl, flat, rrPath) · textures (canvasTex,
                       materials (palette C, M, themed, decal, STEEL, KNURL, RUBBER) · labels (printed, printedIcon, engraved)
                       icons (coolicons paths, icon(), socialIcon(), drawIcon(); hydrates <i data-icon> in index.html)
 src/molecules/        fx (gap halo + comet stroke) · controls (pressable, itemCtrl, knob, cap, screw) · cable
-src/organisms/        synth · remote · desk (plant, lamp) · underlights · screens · card · menu · zoom (guide) · intro
+src/organisms/        synth · remote · desk (plant, lamp) · underlights · screens · card · menu · zoom (guide) · navpad · intro
 src/page/             camera (frameFor, flyTo, zoomTo) · theme (LOOK, setTheme) · input (pick, drags, hover tip, keys)
 src/styles.css        @imports styles/tokens → atoms → molecules → organisms ([hidden]{display:none!important} is REQUIRED)
 assets/img/           g<page>.jpg portfolio pages, cv1/cv2.jpg, vick.jpg (~3.1 MB)
@@ -273,6 +273,14 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - **Bug fix (from entry 24):** a comment had swallowed `await wait(IN + 120); if (!live()) return;` in `journey()`, so the key push and card came ~0.5 s into the fly-in instead of after landing. Restored on its own line; re-tested (card opens after the camera lands).
     - **Guard:** a page with no size (e.g. the Claude app's browser pane while hidden) made every framing NaN, which could stick the camera. `resize()` and `updateCamera()` now skip while the stage is 0×0 and frame normally once it has a size again (tested by collapsing the stage and restoring it).
     - Files: `page/camera.js`, `core/scene.js` (`zoomToCursor:false`, `maxPolarAngle` 1.2), README.
+
+28. **9 Nov 2026: rotate all the way round the table; pan where you need to (nav pad)** (Vick: keep the centred view, but let visitors explore, and reach the CV synth).
+    - **Rotation is free:** no azimuth limits (`turnCap` removed, scene.js drops `min/maxAzimuthAngle`). Tilt is still capped by zoom (`tiltCap`). **0% follows the angle:** `V.zoom.max = fitNow()` (the whole table from the current turn, `tableFit(phi, theta)`) is updated every frame; if you're all the way out you stay all the way out as you turn, so 0% always shows the whole table.
+    - **Panning stays:** the orbit centre is `home.t` (the focus). A drag-pan now keeps its new centre on release (no spring back); the pan pad moves it too. Both are kept over the table top (`FOCUS` box, x −14.5…15.7, z −8…7.8). Zooming out still slides the centre to the table's middle at 0%; flights reset the focus. A wheel zoom fires OrbitControls start/end too, so the focus is only re-saved when the target actually moved. The old `PANBOX` clamp in `main.js` (target only, different bounds) is removed.
+    - **Nav pad** `#nav` (`organisms/navpad.js`, `updateNav(now, dt)` in the loop), bottom right beside the zoom icon: rotate left / right (`act.spinBy`, 1.25 rad/s), a 4-way pan pad (`act.panBy`, 0.55 view-distances/s, in screen directions at any tilt or turn), and a centre dot that recentres (`act.recentre()`: flies back to the framing for where you are). Hold to keep moving, tap for a short nudge (220 ms), eased in and out; Enter/Space work as taps. Buttons light in the accent while held. Fades while the zoom guide is centred; hidden under an open sheet on phones, where the legend is hidden too (the pad and zoom icon take the bottom edge).
+    - **Icons:** `chevron-up`, `chevron-down`, `rotate-left`, `rotate-right` added to `atoms/icons.js`, drawn in the coolicons style (the rotate pair are the undo/redo arrows). Swap in the Figma paths if the library's differ.
+    - Also caught: a second comment that swallowed code (in the new pan-commit listener) before it shipped; all `src` was grepped for `// … code` on one line, none left.
+    - Files: `index.html`, `organisms/navpad.js` (new), `page/camera.js`, `core/scene.js`, `main.js`, `atoms/icons.js`, `styles/organisms.css`, README.
 
 **Commenting tip:** artifact comments anchored to the 3D canvas **don't carry the click position or selection rectangle**. Ask Vick to name the control instead of guessing (this happened twice).
 
