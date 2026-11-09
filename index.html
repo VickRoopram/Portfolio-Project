@@ -35,10 +35,10 @@
 <div id="toast" role="status" hidden></div>
 <p id="legend"><span class="d-only">Drag to rotate · Right-drag to pan</span><span class="m-only">Drag to rotate</span></p>
 <div id="zoom" data-state="idle">
-  <button class="z-ico" id="zico" aria-label="How to zoom" aria-controls="zr"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21C8.68629 21 6 18.3137 6 15V9C6 5.68629 8.68629 3 12 3C15.3137 3 18 5.68629 18 9V15C18 18.3137 15.3137 21 12 21Z"/><path class="wheel" d="M12 7V10"/></svg></button>
+  <button class="z-ico" id="zico" aria-label="How to zoom"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21C8.68629 21 6 18.3137 6 15V9C6 5.68629 8.68629 3 12 3C15.3137 3 18 5.68629 18 9V15C18 18.3137 15.3137 21 12 21Z"/><path class="wheel" d="M12 7V10"/></svg></button>
   <div class="z-body">
     <p class="z-tip"><span class="d-only"><b>Scroll</b> to zoom</span><span class="m-only"><b>Pinch</b> to zoom</span></p>
-    <label class="z-bar"><small>Table</small><input type="range" id="zr" min="0" max="1000" value="0" aria-label="Zoom, from the whole table to one synth"><small>Synth</small></label>
+    <div class="z-bar"><small>Table</small><span class="z-track" id="zr" role="meter" aria-label="Zoom, from the whole table to one synth" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i class="z-fill"></i></span><small>Synth</small></div>
   </div>
 </div>
 <div id="lbl" hidden></div>

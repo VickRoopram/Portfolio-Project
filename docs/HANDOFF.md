@@ -258,6 +258,13 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - **9 Nov 2026:** project rows lose their key numbers too, and project titles drop to weight 500 (mode and root rows stay bold) for better contrast.
     - Files: `index.html`, `organisms/menu.js`, `organisms/zoom.js` (new), `page/camera.js`, `core/state.js`, `main.js`, `styles/organisms.css`, README.
 
+26. **9 Nov 2026: zoom bar becomes a plain meter; the icon reacts at the limits** (Vick).
+    - The bar is no longer a slider (no thumb, no dragging): `#zr` is an empty track (`.z-track`, `role="meter"`, `aria-valuenow` 0–100) whose `.z-fill` grows as you zoom in: empty = the whole table, full = one synth. Table / Synth end labels and *Scroll to zoom* stay.
+    - **Full (fully zoomed in):** `#zoom[data-edge="max"]`: the icon turns accent red and shakes (`.z-ico.shake`, 0.5 s), its wheel line spins fast, and the full bar glows softly. Scrolling in again at the limit replays the shake.
+    - **Empty (fully zoomed out):** `data-edge="min"`: the icon settles (`.z-ico.settle`, a small lift and drop) then relaxes: wheel line still, icon scaled to .9 and softened. Scrolling out again at the limit replays the settle.
+    - A capture-phase `wheel` listener on `#stage` opens the guide and replays the reactions, because scrolling against a limit doesn't change the camera distance. The edge state is held during flights. Reduced motion: no shake, settle, glow or transitions.
+    - Files: `index.html`, `organisms/zoom.js`, `styles/organisms.css`, README.
+
 **Commenting tip:** artifact comments anchored to the 3D canvas **don't carry the click position or selection rectangle**. Ask Vick to name the control instead of guessing (this happened twice).
 
 ---
