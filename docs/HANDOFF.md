@@ -260,7 +260,7 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 
 26. **9 Nov 2026: zoom bar becomes a plain meter; the icon reacts at the limits** (Vick).
     - The bar is no longer a slider (no thumb, no dragging): `#zr` is an empty track (`.z-track`, `role="meter"`, `aria-valuenow` 0–100) whose `.z-fill` grows as you zoom in: empty = the whole table, full = one synth. *Scroll to zoom* stays.
-    - Same day, Vick: no labels on the bar, just a live **0–100%** readout after it (`#zpct`, tabular mono, red at 100%). The Table / Synth end labels are gone.
+    - Same day, Vick: no labels on the bar, just a live **0–100%** readout after it (`#zpct`, tabular mono, red at 100%). The Table / Synth end labels are gone. The bar is now small (64×4 px, 56 px on phones) so it reads as a short, limited range; the zoom limits from entry 25 are unchanged and were re-checked on the preview (in stops at one synth, out stops at the table).
     - **Full (fully zoomed in):** `#zoom[data-edge="max"]`: the icon turns accent red and shakes (`.z-ico.shake`, 0.5 s), its wheel line spins fast, and the full bar glows softly. Scrolling in again at the limit replays the shake.
     - **Empty (fully zoomed out):** `data-edge="min"`: the icon settles (`.z-ico.settle`, a small lift and drop) then relaxes: wheel line still, icon scaled to .9 and softened. Scrolling out again at the limit replays the settle.
     - A capture-phase `wheel` listener on `#stage` opens the guide and replays the reactions, because scrolling against a limit doesn't change the camera distance. The edge state is held during flights. Reduced motion: no shake, settle, glow or transitions.

@@ -92,14 +92,14 @@
 .z-ico .wheel{animation:wheel 1.8s var(--ease) infinite}
 @keyframes wheel{0%,15%{transform:translateY(0);opacity:1}65%{transform:translateY(3.5px);opacity:0}66%{transform:translateY(-1.5px);opacity:0}100%{transform:translateY(0);opacity:1}}
 .z-body{display:flex;align-items:center;gap:var(--s4);max-width:0;overflow:hidden;opacity:0;white-space:nowrap;transition:max-width .5s var(--ease),opacity .25s,margin .35s}
-#zoom[data-state="on"] .z-body{max-width:440px;opacity:1;margin-left:var(--s1)}
+#zoom[data-state="on"] .z-body{max-width:320px;opacity:1;margin-left:var(--s1)}
 .z-tip{margin:0;font:500 var(--t-sm)/1 var(--body);color:var(--ink)}
 .z-tip b{font-weight:700}
 .z-bar{display:flex;align-items:center;gap:var(--s2)}
 .z-pct{min-width:4ch;font:700 var(--t-xs)/1 var(--mono);font-variant-numeric:tabular-nums;text-align:right;color:var(--mute);transition:color .3s}
 #zoom[data-edge="max"] .z-pct{color:var(--accent-ui)}
 /* the bar is a plain meter: an empty track that fills as you zoom in */
-.z-track{position:relative;display:block;width:150px;height:6px;border-radius:3px;overflow:hidden;background:var(--track);box-shadow:inset 0 1px 2px var(--shadow)}
+.z-track{position:relative;display:block;width:64px;height:4px;border-radius:2px;overflow:hidden;background:var(--track);box-shadow:inset 0 1px 2px var(--shadow)}
 .z-fill{position:absolute;inset:0 auto 0 0;width:var(--k,0%);border-radius:inherit;background:var(--accent-ui);transition:width .12s linear}
 #zoom[data-edge="max"] .z-fill{animation:full 1.4s ease-in-out infinite}
 @keyframes full{50%{filter:brightness(1.25);box-shadow:0 0 8px var(--accent-ui)}}
@@ -115,7 +115,7 @@
 @keyframes settle{0%{transform:translateY(0)}35%{transform:translateY(-3px) scale(1.06)}100%{transform:translateY(0)}}
 #legend{transition:opacity .3s}
 body[data-zoom="on"] #legend{opacity:0}
-@media (max-width:760px){#zoom[data-state="on"] .z-body{max-width:calc(100vw - 84px)}.z-track{width:110px}}
+@media (max-width:760px){#zoom[data-state="on"] .z-body{max-width:calc(100vw - 84px)}.z-track{width:56px}}
 @media (prefers-reduced-motion:reduce){#zoom,.z-body,.z-fill,.z-ico svg{transition:none}.z-ico .wheel,.z-ico.shake,.z-ico.settle,#zoom[data-edge] .z-fill{animation:none}}
 
 /* menu hover preview: the project's lead image hangs under the row you point at, over the names below it */
