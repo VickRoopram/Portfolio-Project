@@ -15,8 +15,14 @@ const wood = canvasTex(2048, 1024, (x, W, H) => { x.fillStyle = '#d9c6a6'; x.fil
   for (let i = 0; i < 900; i++) { const y = Math.random() * H, a = .03 + Math.random() * .08; x.strokeStyle = Math.random() < .5 ? `rgba(120,86,48,${a})` : `rgba(255,240,215,${a})`; x.lineWidth = .6 + Math.random() * 2.2;
     x.beginPath(); x.moveTo(0, y); for (let s = 0; s <= W; s += 64) x.lineTo(s, y + Math.sin(s * .004 + i) * 6 + (Math.random() - .5) * 2); x.stroke() }
   x.strokeStyle = 'rgba(120,86,48,.06)'; for (let k = 0; k < 9; k++) { const cx = Math.random() * W, cy = Math.random() * H; for (let r = 4; r < 38; r += 5) { x.beginPath(); x.ellipse(cx, cy, r * 3.2, r * .7, 0, 0, 7); x.stroke() } } }).t;
-put(scene, rbox(32.5, .9, 18.5, .3, themed(new THREE.MeshPhysicalMaterial({ map: wood, roughness: .58, clearcoat: .25, clearcoatRoughness: .5, bumpMap: TEX.grain, bumpScale: .05 }), '#ffffff', '#5d4f41', 1, .6)), .6, -.45, -.1).castShadow = false;
-const steel = themed(new THREE.MeshPhysicalMaterial({ color: '#c3c6cc', metalness: .85, roughness: .38 }), '#c3c6cc', '#4a4d54', 1, .7);
+/* the desk keeps the same light-oak look in light and dark mode (Vick): its materials aren't themed, and since the dark look
+   dims the room's lights, updateDesk lifts the desk's colour per channel (DESK.lift, measured from renders of both modes: matches
+   the light-mode desk within 1/255 away from the lamp) to make up for it, so it reads the same either way */
+export const DESK = { wood: new THREE.MeshPhysicalMaterial({ map: wood, roughness: .58, clearcoat: .25, clearcoatRoughness: .5, bumpMap: TEX.grain, bumpScale: .05 }),
+  steel: new THREE.MeshPhysicalMaterial({ color: '#c3c6cc', metalness: .85, roughness: .38 }), lift: [1.3, 1.36, 1.39] };
+const STEEL = new THREE.Color('#c3c6cc');
+put(scene, rbox(32.5, .9, 18.5, .3, DESK.wood), .6, -.45, -.1).castShadow = false;
+const steel = DESK.steel;
 [[-15.2, -8.8], [16.4, -8.8], [-15.2, 8.6], [16.4, 8.6]].forEach(([x, z]) => { put(scene, rbox(.85, 30, .85, .2, steel), x, -15.9, z).castShadow = false });
 put(scene, rbox(30.5, .7, .2, .05, steel), .6, -1.25, -9.1);
 
@@ -51,6 +57,8 @@ const L = { on: true, k: 1, dip: 0 };
 dome.userData = { tip: 'Lamp', tipHTML: () => `<span class="lamp-tip${L.on ? ' on' : ''}">${icon('bulb', 18)}${L.on ? 'On' : 'Off'}</span>`, down() { L.on = !L.on; L.dip = 1; drum(L.on ? 'blip' : 'rim') } }; hits.push(dome);
 
 export function updateDesk(dt, t) {
+  const dk0 = Math.max(0, V.themeK), [lr, lg, lb] = DESK.lift; // eases with the theme
+  DESK.wood.color.setRGB(lerp(1, lr, dk0), lerp(1, lg, dk0), lerp(1, lb, dk0)); DESK.steel.color.copy(STEEL).multiply(DESK.wood.color);
   L.k += ((L.on ? 1 : 0) - L.k) * (reduceMotion ? 1 : 1 - Math.exp(-dt * 8));
   const dk = Math.max(0, V.themeK), k = L.k;
   light.intensity = k * lerp(9, 26, dk); dome.material.emissiveIntensity = k * lerp(.25, .85, dk);
