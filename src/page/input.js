@@ -16,7 +16,7 @@ function pick(e) {
   const r = cv.getBoundingClientRect(); ptr.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1); ray.setFromCamera(ptr, camera);
   let o = ray.intersectObjects(hits, true)[0]?.object; while (o && !o.userData.down && !o.userData.proxy) o = o.parent; return o?.userData.proxy || o;
 }
-const tipHTML = ({ userData: u }) => u.item ? (S.mode === u.ch ? CH[u.ch].items[u.i].t : `${MODES[u.ch].n}<small>Click to open</small>`) : u.tip;
+const tipHTML = ({ userData: u }) => u.item ? (S.mode === u.ch ? CH[u.ch].items[u.i].t : `${MODES[u.ch].n}<small>Click to open</small>`) : u.tipHTML ? u.tipHTML() : u.tip; // tipHTML: a tip that changes (the lamp's on/off)
 let tap = null, live = '';
 /* capture phase: runs before OrbitControls, so grabbing a control never also orbits the camera */
 cv.addEventListener('pointerdown', e => {

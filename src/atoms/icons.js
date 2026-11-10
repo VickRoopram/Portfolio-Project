@@ -5,6 +5,7 @@ export const PATHS = {
   'chevron-left': 'M14 8L10 12L14 16',
   'chevron-right': 'M10 16L14 12L10 8',
   'chevron-up': 'M16 14L12 10L8 14',
+  bulb: 'M9 21H15M12 3C8.68629 3 6 5.68629 6 9C6 11.2208 7.20659 13.1599 9 14.1973V17H15V14.1973C16.7934 13.1599 18 11.2208 18 9C18 5.68629 15.3137 3 12 3Z', // drawn in the coolicons style
   'chevron-down': 'M8 10L12 14L16 10',
   'rotate-left': 'M7 13L3 9M3 9L7 5M3 9H16C18.7614 9 21 11.2386 21 14C21 16.7614 18.7614 19 16 19H11',  // drawn in the coolicons style (undo arrow)
   'rotate-right': 'M17 13L21 9M21 9L17 5M21 9H8C5.23858 9 3 11.2386 3 14C3 16.7614 5.23858 19 8 19H13', // drawn in the coolicons style (redo arrow)

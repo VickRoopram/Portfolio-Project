@@ -110,11 +110,11 @@ src/content.js        All portfolio data (exports CH, LINKS, im). ~96 lines.
 src/main.js           Page: imports the layers, wires `act` (zoomTo, zoomOut, openCard, closeCard), runs the loop
 src/core/             state.js (S, V, hits, anim, CTRL, ROWBTN, act) · data.js (awaits /admin content, MODES, ORDER)
                       audio.js (P, synth voice, drums, 5 beat tracks, scope) · scene.js (renderer, camera, lights, controls)
-src/atoms/            geometry (rbox, cyl, flat, rrPath) · textures (canvasTex, radialTex, TEX, SPUN, halo, underlight)
+src/atoms/            geometry (rbox, cyl, flat, rrPath) · textures (canvasTex, radialTex, TEX, SPUN, halo, underlight) · pixelfont (pixelScreen)
                       materials (palette C, M, themed, decal, STEEL, KNURL, RUBBER) · labels (printed, printedIcon, engraved)
                       icons (coolicons paths, icon(), socialIcon(), drawIcon(); hydrates <i data-icon> in index.html)
 src/molecules/        fx (gap halo + comet stroke) · controls (pressable, itemCtrl, knob, cap, screw) · cable
-src/organisms/        synth · remote · desk (plant, lamp) · underlights · screens · card · menu · zoom (guide) · navpad · intro
+src/organisms/        synth · remote · desk (plant, lamp) · underlights · screens · card · menu · zoom (guide) · joystick · intro
 src/page/             camera (frameFor, flyTo, zoomTo) · theme (LOOK, setTheme) · input (pick, drags, hover tip, keys)
 src/styles.css        @imports styles/tokens → atoms → molecules → organisms ([hidden]{display:none!important} is REQUIRED)
 assets/img/           g<page>.jpg portfolio pages, cv1/cv2.jpg, vick.jpg (~3.1 MB)
@@ -281,6 +281,15 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - **Icons:** `chevron-up`, `chevron-down`, `rotate-left`, `rotate-right` added to `atoms/icons.js`, drawn in the coolicons style (the rotate pair are the undo/redo arrows). Swap in the Figma paths if the library's differ.
     - Also caught: a second comment that swallowed code (in the new pan-commit listener) before it shipped; all `src` was grepped for `// … code` on one line, none left.
     - Files: `index.html`, `organisms/navpad.js` (new), `page/camera.js`, `core/scene.js`, `main.js`, `atoms/icons.js`, `styles/organisms.css`, README.
+
+29. **10 Nov 2026: joystick, pixel screens, bigger synth with knob rings, lamp tip, plant soil** (Vick).
+    - **Joystick** `#joy` (`organisms/joystick.js`, replaces the nav pad from 28; `updateJoystick(now, dt)` in the loop), locked bottom right (112 px, 96 on phones), with the zoom guide's resting spot beside it (centred on it). **Stick** = pan as a rate control (`act.panBy`, 0.25 view-distances/s at full push, screen directions); released, it springs back (k 260, c 20, as the old entry-12 joystick). A tap (< 6 px, < 350 ms) recentres (`act.recentre()`). Arrow keys pan, Enter recentres when it's focused. **Ring** `.j-dial` = rotate: drag round it and the view turns one for one (`act.spinBy`); it turns with the view every frame, so it's a compass (red north tick = the starting direction). Its two arrows (`rotate-left` / `rotate-right`) turn a step on tap, keep turning while held (1.25 rad/s, eased). Hidden under an open sheet on phones; dims while the zoom guide is centred.
+    - **Screens:** just **MY PROJECTS** (synth) and **CONTACT** (remote), in a 5×7 dot-matrix pixel font drawn as LED dots with a faint unlit matrix behind (`atoms/pixelfont.js`, `pixelScreen()`; A–Z built in, no web font). `#ff5d1a`. Drawn once; `drawScreens()` now only returns the music level for the speaker. The hover/now-playing/volume text and the oscilloscope are gone from the screens (the hover tips still say what a control does).
+    - **Synth deeper (7.3 → 7.8):** an extra half row under the top section, so the big knobs' names sit clear of the mode row. `GZ(r)` = −2.75 + r, +0.5 for rows ≥ 2; the screen, knob and speaker tiles are 2.5 rows deep (`UPPER`); the right-hand column gets a blank half tile. Recess 6.75, screws at ±3.65. Knob names (FILTER, RESONANCE, DECAY, ECHO) are printed 1.3 in front of each knob.
+    - **Knob rings** (`KNOB_RINGS` in `synth.js`, updated in `updateSynth`): always on, on the top of each big knob's brass bezel round the cap (radius .73, where the press stroke runs). A dim track over the knob's travel (±2.2 rad), a bright arc from the minimum up to the value, and a white dot with a breathing glow that follows the knob's eased turn. The arc geometry is rebuilt only when the turn changes. Additive on the dark stage (`FXMATS`).
+    - **Lamp tip:** `tipHTML()` on the lamp: a coolicons-style `bulb` icon, lit warm with a glow when on, dim when off, and the word **On** / **Off** (`input.js` `tipHTML` now accepts a `tipHTML()` function on userData for tips that change).
+    - **Plant soil:** the old soil disc sat inside the pot's solid top, so it never showed. Now a low dark mound (`SphereGeometry` cap, y-scale .13) on top of the pot inside the white rim, with a gritty canvas texture; the leaves start from it.
+    - Files: `index.html`, `atoms/pixelfont.js` (new), `atoms/icons.js` (`bulb`), `organisms/joystick.js` (new), `organisms/navpad.js` (removed), `organisms/synth.js`, `organisms/screens.js`, `organisms/desk.js`, `page/input.js`, `main.js`, `styles/organisms.css`, `styles/molecules.css`, README.
 
 **Commenting tip:** artifact comments anchored to the 3D canvas **don't carry the click position or selection rectangle**. Ask Vick to name the control instead of guessing (this happened twice).
 

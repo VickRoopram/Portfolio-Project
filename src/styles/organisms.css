@@ -90,7 +90,7 @@
 .z-ico{display:grid;place-items:center;width:40px;height:40px;padding:0;border:0;border-radius:50%;background:none;color:var(--ink);cursor:pointer}
 .z-ico:hover{background:var(--chip)}
 .z-ico .wheel{animation:wheel 1.8s var(--ease) infinite}
-@keyframes wheel{0%,15%{transform:translateY(0);opacity:1}65%{transform:translateY(3.5px);opacity:0}66%{transform:translateY(-1.5px);opacity:0}100%{transform:translateY(0);opacity:1}}
+@keyframes wheel{0%,15%{transform:translateY(0);opacity:1}65%{transform:translateY(3px);opacity:.35}66%{transform:translateY(-1px);opacity:.35}100%{transform:translateY(0);opacity:1}}
 .z-body{display:flex;align-items:center;gap:var(--s4);max-width:0;overflow:hidden;opacity:0;white-space:nowrap;transition:max-width .5s var(--ease),opacity .25s,margin .35s}
 #zoom[data-state="on"] .z-body{max-width:320px;opacity:1;margin-left:var(--s1)}
 .z-tip{margin:0;font:500 var(--t-sm)/1 var(--body);color:var(--ink)}
@@ -125,19 +125,21 @@ body[data-zoom="on"] #legend{opacity:0}
 @keyframes peekIn{from{opacity:0;scale:.94}}
 @media (prefers-reduced-motion:reduce){#m-peek{transition:none;animation:none}}
 
-/* move-the-view controls, bottom right beside the zoom icon: rotate left / right, and a pan pad (centre dot recentres).
-   Same glassy pill as the zoom guide; buttons light in the accent while held */
-#nav{position:fixed;z-index:4;bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4));right:calc(max(16px,env(safe-area-inset-right,0px)) + 58px);display:flex;align-items:center;gap:2px;padding:4px;border:1px solid var(--line);border-radius:28px;background:color-mix(in srgb,var(--card) 90%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 8px 24px var(--shadow);transition:opacity .3s,visibility .3s;touch-action:none;user-select:none;-webkit-user-select:none}
-#nav.away{opacity:0;visibility:hidden}
-#nav button{display:grid;place-items:center;padding:0;border:0;background:none;color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background-color .15s,color .15s}
-#nav button:hover{background:var(--chip)}
-#nav button.on,#nav button:active{color:var(--accent-ui);background:color-mix(in srgb,var(--accent-ui) 14%,transparent)}
-.nv-spin{width:36px;height:36px;border-radius:50%}
-.nv-pad{display:grid;grid-template-columns:repeat(3,22px);grid-template-rows:repeat(3,22px)}
-.nv-pad button{width:22px;height:22px;border-radius:6px}
-.nv-pad .up{grid-area:1/2}.nv-pad .lf{grid-area:2/1}.nv-pad .mid{grid-area:2/2}.nv-pad .rt{grid-area:2/3}.nv-pad .dn{grid-area:3/2}
-.nv-pad .dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.55}
-.nv-pad .mid:hover .dot{opacity:1}
-body[data-zoom="on"] #nav{opacity:.35}
-@media (max-width:760px){#nav{right:calc(max(12px,env(safe-area-inset-right,0px)) + 56px)}}
+/* joystick, locked bottom right: a ring you drag round to rotate (it turns with the view, a compass, north tick in the accent),
+   two arrow buttons on the ring, and a stick in the middle that pans (springs back) or recentres on a tap */
+#joy{--j:112px;position:fixed;z-index:4;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4));width:var(--j);height:var(--j);border-radius:50%;background:color-mix(in srgb,var(--card) 90%,transparent);border:1px solid var(--line);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 8px 24px var(--shadow);touch-action:none;user-select:none;-webkit-user-select:none;transition:opacity .3s,visibility .3s}
+#joy.away{opacity:0;visibility:hidden}
+.j-dial{position:absolute;inset:5px;border-radius:50%;cursor:grab;background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--ink) 22%,transparent) 0 1.2deg,transparent 1.2deg 15deg);-webkit-mask:radial-gradient(circle,transparent 58%,#000 59%,#000 82%,transparent 83%);mask:radial-gradient(circle,transparent 58%,#000 59%,#000 82%,transparent 83%)}
+.j-dial.on{cursor:grabbing;background:repeating-conic-gradient(from 0deg,var(--accent-ui) 0 1.2deg,transparent 1.2deg 15deg)}
+.j-north{position:absolute;left:50%;top:3%;width:4px;height:14%;margin-left:-2px;border-radius:2px;background:var(--accent-ui)}
+.j-rot{position:absolute;top:50%;width:24px;height:24px;margin-top:-12px;display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:var(--card);color:var(--ink);cursor:pointer;box-shadow:0 1px 3px var(--shadow);-webkit-tap-highlight-color:transparent}
+.j-rot.l{left:2px}.j-rot.r{right:2px}
+.j-rot:hover,.j-rot.on{color:var(--accent-ui)}
+.j-stick{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;display:grid;place-items:center;padding:0;border:1px solid var(--line);border-radius:50%;background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--card) 70%,#fff),var(--card) 60%,color-mix(in srgb,var(--card) 85%,var(--ink)));box-shadow:0 4px 10px var(--shadow),inset 0 -2px 4px color-mix(in srgb,var(--ink) 12%,transparent);cursor:grab;will-change:transform;-webkit-tap-highlight-color:transparent}
+.j-stick:active{cursor:grabbing}
+.j-dot{width:8px;height:8px;border-radius:50%;background:var(--accent-ui);box-shadow:0 0 6px var(--accent-ui)}
+body[data-zoom="on"] #joy{opacity:.45}
+/* the zoom guide's resting spot is beside the joystick */
+#zoom{left:calc(100% - max(16px,env(safe-area-inset-right,0px)) - 112px - 10px);bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4) + 31px)} /* centred on the joystick */
+@media (max-width:760px){#joy{--j:96px}#zoom{left:calc(100% - max(16px,env(safe-area-inset-right,0px)) - 96px - 8px);bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4) + 23px)}}
 @media (max-width:760px){#legend{display:none}} /* phones: the nav pad and zoom icon take the bottom edge */

@@ -16,7 +16,7 @@ The synth is the interface. Each part of the instrument holds a different side o
 | **CV remote** (left) | Full CV (PDF), contact details and social links. Also plugs in when selected. |
 | **Music side** (right): drum pads, Tone, Wave, BEATS, STOP, MUTE | Pure play. BEATS cycles five original tracks; STOP and BEATS glow while music runs. |
 
-**The desk:** the synths sit on a desk next to a lamp (click it to switch it on or off) and a plant. The look is warm and plain: cream and warm-grey hardware, with one design system for the overlays. The camera starts almost top-down; click a part and it swoops down to a low, close view. Left drag rotates, right drag pans, scroll zooms. Project cards open with the work itself, then the story and a clear link to the full project.
+**The desk:** the synths sit on a desk next to a lamp (click it to switch it on or off; its hover tip is a bulb with On / Off) and a plant in a white pot with dark soil. The look is warm and plain: cream and warm-grey hardware, with one design system for the overlays. The camera starts almost top-down; click a part and it swoops down to a low, close view. Left drag rotates, right drag pans, scroll zooms. Project cards open with the work itself, then the story and a clear link to the full project.
 
 **Header & section titles (from the Figma hover states):** the top bar carries the Vickhal Roopram logo (click to go home), the sun/moon theme icon, the sound icon and a hamburger menu that morphs into a cross. Hover a device and a subtle underlight fades in beneath it, like an LED strip under the hardware: red for Contact. The My Projects underlight takes the colour of the keyboard's current mode (green Design, blue UI/UX, orange Motion, purple Tools, pink Experimental, and the role knob colours) and stays on while you're in a keyboard mode. Click the device body to zoom in.
 
@@ -32,7 +32,7 @@ The synth is the interface. Each part of the instrument holds a different side o
 
 Mouse, trackpad and touch work too: drag to orbit, scroll or pinch to zoom. The view always centres on the table and its synths: zoom heads for the middle of the view, and zooming all the way out (0%) shows the whole table from above. You can turn all the way round the table; the low side angles open up as you zoom in.
 
-**Nav pad (bottom right, beside the zoom icon):** rotate left and right round the table, and a pan pad to slide the view across the table top (to the CV synth, say). Hold to keep moving, tap for a nudge. The dot in the middle recentres. Panning (pad or right-drag) stays where you leave it, always over the table. On phones the synth starts top-down, cards and the menu open as a bottom sheet, and the zoom guide hides while one is open.
+**Joystick (bottom right, always there; the zoom guide sits beside it):** push the stick to slide the view across the table (to the CV synth, say); it springs back when you let go, and a tap recentres. Drag the ring round the stick to rotate: it turns with the view like a compass (the red tick points the way the view started), and its two arrows turn a step, or keep turning while held. Panning stays where you leave it, always over the table.
 
 ## Project structure
 
@@ -49,7 +49,7 @@ Mouse, trackpad and touch work too: drag to orbit, scroll or pinch to zoom. The 
 │   ├── core/               # Engine: state, data (content + modes), audio (synth, drums, beats), scene (renderer, lights)
 │   ├── atoms/              # geometry, textures, materials, labels, icons (coolicons)
 │   ├── molecules/          # fx (press glow + stroke), controls (keys, buttons, knobs), cable
-│   ├── organisms/          # synth, remote, desk, underlights, screens, card, menu, intro
+│   ├── organisms/          # synth, remote, desk, underlights, screens, card, menu, zoom guide, joystick, intro
 │   ├── page/               # camera (framing, swoops), theme (light/dark), input (pointer, keyboard, hover tip)
 │   ├── styles.css          # Imports the layers below (keep this path: /admin's preview loads it)
 │   └── styles/             # tokens.css, atoms.css, molecules.css, organisms.css
@@ -102,7 +102,7 @@ gd: { name: 'DESIGN', col: '#1fa957', items: [
 
 - **Three.js r160** for the scene, with `RoundedBoxGeometry` and `OrbitControls` (desktop only)
 - **Web Audio API** for a two-oscillator synth with sub-oscillator, low-pass filter, echo, synthesized drums and a 16-step sequencer for BEATS
-- **Canvas textures** for the live screens: oscilloscope, persona pixel art and the remote display
+- **Canvas textures** for the screens: a dot-matrix pixel font (`atoms/pixelfont.js`) reading MY PROJECTS on the synth and CONTACT on the remote
 - Fonts: Bungee, IBM Plex Mono and Noto Sans (Google Fonts)
 
 ## Deploy

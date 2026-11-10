@@ -34,16 +34,11 @@
 </nav>
 <div id="toast" role="status" hidden></div>
 <p id="legend"><span class="d-only">Drag to rotate · Right-drag to pan</span><span class="m-only">Drag to rotate</span></p>
-<div id="nav" role="group" aria-label="Move the view">
-  <button class="nv-spin" data-spin="1" aria-label="Rotate left (hold to keep turning)"><i data-icon="rotate-left" data-size="20"></i></button>
-  <div class="nv-pad">
-    <button data-pan="0,1" class="up" aria-label="Pan up"><i data-icon="chevron-up" data-size="18"></i></button>
-    <button data-pan="-1,0" class="lf" aria-label="Pan left"><i data-icon="chevron-left" data-size="18"></i></button>
-    <button data-recentre class="mid" aria-label="Recentre the view"><i class="dot"></i></button>
-    <button data-pan="1,0" class="rt" aria-label="Pan right"><i data-icon="chevron-right" data-size="18"></i></button>
-    <button data-pan="0,-1" class="dn" aria-label="Pan down"><i data-icon="chevron-down" data-size="18"></i></button>
-  </div>
-  <button class="nv-spin" data-spin="-1" aria-label="Rotate right (hold to keep turning)"><i data-icon="rotate-right" data-size="20"></i></button>
+<div id="joy" role="group" aria-label="Move the view">
+  <div class="j-dial" id="jdial" aria-hidden="true"><i class="j-north"></i></div>
+  <button class="j-rot l" data-spin="-1" aria-label="Rotate left (hold to keep turning)"><i data-icon="rotate-left" data-size="16"></i></button>
+  <button class="j-rot r" data-spin="1" aria-label="Rotate right (hold to keep turning)"><i data-icon="rotate-right" data-size="16"></i></button>
+  <button class="j-stick" id="jstick" aria-label="Joystick: drag to pan, tap to recentre. Arrow keys pan, Enter recentres"><i class="j-dot"></i></button>
 </div>
 <div id="zoom" data-state="idle">
   <button class="z-ico" id="zico" aria-label="How to zoom"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21C8.68629 21 6 18.3137 6 15V9C6 5.68629 8.68629 3 12 3C15.3137 3 18 5.68629 18 9V15C18 18.3137 15.3137 21 12 21Z"/><path class="wheel" d="M12 7V10"/></svg></button>
