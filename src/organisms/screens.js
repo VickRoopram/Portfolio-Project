@@ -2,8 +2,8 @@
    (keys, pads, beats) the words ease smaller up to the top to make room for a big live waveform underneath; when it goes quiet
    they ease back. The waveform keeps changing style, cross-fading every few seconds: a wavy line → pixel blocks on the dot grid →
    broken, glitchy dashes → dots. drawScreens also hands the music level to the speaker. */
-import { scope, track } from '../core/audio.js';
-import { PAL, party } from './party.js';
+import { scope } from '../core/audio.js';
+import { party, partyColours } from './party.js';
 import { pixelScreen, drawMatrix, drawPixelText, dotsWide } from '../atoms/pixelfont.js';
 import { scr } from './synth.js';
 import { rs } from './remote.js';
@@ -46,7 +46,7 @@ export function drawScreens(time) {
   const key = act < .002 && party() < .01 ? 'idle' : null; if (key && cache === key) return level; cache = key || ''; // idle: nothing to redraw
   const x = scr.x, k = ease(act), cell = mix(BIG, SMALL, k), ty = mix(H / 2, 26 + 3.5 * SMALL, k);
   x.fillStyle = '#0c0c0e'; x.fillRect(0, 0, W, H); drawMatrix(x, W, H, k < .5 ? BIG : GRID);
-  const pp = party(); if (pp > .01) { const cols = PAL[Math.max(0, track) % PAL.length]; // beats: the unlit matrix twinkles in the track's colours
+  const pp = party(); if (pp > .01) { const cols = partyColours(); // beats: the unlit matrix twinkles in colours sampled from the party video
     for (let gy = 0; gy < H; gy += GRID) for (let gx = 0; gx < W; gx += GRID) { const n = Math.sin(gx * 12.99 + gy * 78.23 + Math.floor(time * 8) * 4.1) * 43758.5 % 1;
       if (n > .82) { x.globalAlpha = pp * (n - .82) * 2.2; x.fillStyle = cols[Math.floor(n * 97) % cols.length]; x.beginPath(); x.arc(gx + GRID / 2, gy + GRID / 2, GRID * .34, 0, 7); x.fill() } }
     x.globalAlpha = 1 }

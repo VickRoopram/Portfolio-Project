@@ -34,7 +34,7 @@ Mouse, trackpad and touch work too: drag to orbit, scroll or pinch to zoom. The 
 
 **Contact (header):** the Contact button flies you to the Contact synth, presses its CONTACT key and opens the contact card.
 
-**Beats:** press BEATS on the synth and the room turns into a party: coloured stage lights drift over the table, confetti and colour fill the background, and the screen twinkles. Each of the 5 tracks has its own colours.
+**Beats:** press BEATS on the synth to play Vick's tracks (each press plays the next of 6; STOP stops). Each track comes with one of his motion backgrounds: it fills the background behind the desk and projects onto the table top under the synths, and the screen twinkles in its colours. The files live in `assets/beats/` (web-sized copies; the originals are kept in Google Drive, *Synth Elementa – Beats assets*).
 
 **Big knobs:** while you turn one, a lit ring shows its range and a light dot follows the knob; it fades away when you let go.
 
@@ -60,7 +60,7 @@ Mouse, trackpad and touch work too: drag to orbit, scroll or pinch to zoom. The 
 │   ├── styles.css          # Imports the layers below (keep this path: /admin's preview loads it)
 │   └── styles/             # tokens.css, atoms.css, molecules.css, organisms.css
 ├── docs/HANDOFF.md        # Full project context for the next iteration
-├── assets/
+├── assets/            # images, CV, beats/ (audio + background videos for BEATS)
 │   ├── img/                # Project images (g* = portfolio PDF page no., cv* = CV pages)
 │   └── cv/                 # Downloadable CV
 └── .github/workflows/

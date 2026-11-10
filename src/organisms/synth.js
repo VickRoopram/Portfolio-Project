@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import { S, V, ROWBTN, hits, act } from '../core/state.js';
 import { CH, MODES } from '../core/data.js';
-import { P, playNote, drum, toggleMute, toggleDemo, stopDemo, demo, track, TRACKS } from '../core/audio.js';
+import { P, playNote, drum, toggleMute, toggleDemo, stopDemo, demo, track, BEATS } from '../core/audio.js';
 import { scene } from '../core/scene.js';
 import { rbox, cyl, flat } from '../atoms/geometry.js';
 import { canvasTex, radialTex } from '../atoms/textures.js';
@@ -64,7 +64,7 @@ export const grille = at(flat(1.7, 1.7, decal(themed(new THREE.MeshBasicMaterial
 tile(14, 0, 2, 1); knob(synth, new THREE.Vector3(GX(14), TOP + .3, GZ(0)), .3, 'detune', 'sm', [60, .6]);
 onTile(printed('DETUNE', .6, .29), 15, 0, .31);
 capBtn(14, 1, 'WAVE', () => { P.wave = (P.wave + 1) % 3; playNote(67, .4) }, 'Waveform: triangle / square / saw');
-const beatsBtn = capBtn(15, 1, 'BEATS', toggleDemo, 'Beats · each click plays the next of 5 tracks');
+const beatsBtn = capBtn(15, 1, 'BEATS', toggleDemo, `Beats · each click plays the next of ${BEATS.length} tracks`);
 const stopBtn = capBtn(16, 0, 'STOP', () => { stopDemo(); drum('rim') }, 'Stop the music');
 { const sq = flat(.11, .11, decal(new THREE.MeshBasicMaterial({ color: '#d71920' }))); sq.position.set(0, .082, -.27); stopBtn.add(sq) }
 [stopBtn, beatsBtn].forEach(m => { m.material.emissive = new THREE.Color('#ff5d1a'); fxOf(m).managed = true });
@@ -115,7 +115,7 @@ export function updateSynth(t) {
     R.glow.material.opacity = (.75 + .2 * Math.sin(t * 2.4)) * R.k; // a slow breathe so it reads as lit
     if (R.a === null || Math.abs(R.a - a) > .004) { R.a = a; R.value.geometry.dispose(); R.value.geometry = new THREE.RingGeometry(RING_R - .028, RING_R + .028, 64, 1, a + Math.PI / 2, Math.max(.001, TRAVEL - a)) }
   }
-  const beat = demo ? .4 + .25 * Math.max(0, Math.sin(t * Math.PI * 2 * (TRACKS[track]?.bpm || 120) / 60)) : 0;
+  const beat = demo ? .4 + .25 * Math.max(0, Math.sin(t * Math.PI * 2 * (BEATS[track]?.bpm || 120) / 60)) : 0;
   stopBtn.material.emissiveIntensity = beatsBtn.material.emissiveIntensity = beat;
   for (const [m, k] of ROWBTN) {
     let edge = S.mode === k ? .85 + .08 * Math.sin(t * 3) : 0;

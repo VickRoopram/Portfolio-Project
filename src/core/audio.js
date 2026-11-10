@@ -1,4 +1,5 @@
-/* Web Audio synth: two detuned oscillators + sub through a filter and an echo, synthesised drums, and 5 beat tracks. */
+/* Web Audio synth: two detuned oscillators + sub through a filter and an echo, synthesised drums, and the BEATS tracks
+   (Vick's own audio files, with the synthesised patterns as a fallback). */
 import { $, flip } from './state.js';
 
 export const P = { cutoff: .62, q: .22, dtime: .35, fb: .3, wet: .22, detune: .15, decay: .45, attack: .03, sub: .3, drums: .8, vol: .7, wave: 1 };
@@ -56,7 +57,18 @@ export function toggleMute() {
   b.setAttribute('aria-label', muted ? 'Sound off: unmute' : 'Sound on: mute'); b.setAttribute('aria-pressed', !muted); flip(b); ensureAudio(); applyP();
 }
 
-/* ── BEATS: each click plays the next of 5 tracks ── */
+/* ── BEATS: each click plays the next of Vick's tracks (assets/beats/audio, 128k-ish VBR MP3s made from his WAVs; originals in
+   Google Drive). They play through the master gain (volume, mute) into the analyser (screen waveform, speaker, lights) and loop
+   until the next click or STOP. bg = the party video that goes with each (assets/beats/bg, see organisms/party.js).
+   bpm = estimated from the audio, used for the light pulse. If a file can't play, that slot's synthesised pattern runs. ── */
+export const BEATS = [
+  { n: 'Chill', src: 'assets/beats/audio/chill.mp3', bpm: 81, bg: 'retro-galaxy' },
+  { n: 'Cute little microhouse', src: 'assets/beats/audio/cute-little-microhouse.mp3', bpm: 129, bg: 'party-strips' },
+  { n: 'Interlaken', src: 'assets/beats/audio/interlaken.mp3', bpm: 152, bg: 'square-tunnel' },
+  { n: 'Little music studio', src: 'assets/beats/audio/little-music-studio.mp3', bpm: 76, bg: 'mosaic' },
+  { n: 'Matterhorn', src: 'assets/beats/audio/matterhorn.mp3', bpm: 118, bg: 'retrograde' },
+  { n: 'One more month', src: 'assets/beats/audio/one-more-month.mp3', bpm: 152, bg: 'party-strips' }];
+/* the synthesised fallback patterns */
 export const TRACKS = [
   { n: 'NEON DRIVE', bpm: 118, wave: 2, base: 45, prog: [0, 8, 3, 10], lead: '0.2.4.2.0.4.7.4.', bass: 'x..x..x.x..x..x.', k: 'x...x...x...x...', s: '....x.......x...', h: '..x...x...x...x.' },
   { n: 'SUNDAY LO-FI', bpm: 82, wave: 0, base: 48, prog: [0, 9, 5, 7], lead: '4..2..0...2.4...', bass: 'x.....x...x.....', k: 'x......x..x.....', s: '....x.......x...', h: 'x.x.x.x.x.x.x.x.' },
@@ -64,12 +76,18 @@ export const TRACKS = [
   { n: 'DEEP HOUSE', bpm: 124, wave: 2, base: 41, prog: [0, 0, 3, 5], lead: '....4...4.....6.', bass: '..x...x...x..x..', k: 'x...x...x...x...', s: '....x.......x...', c: '....x.......x...', h: '..x...x...x...x.' },
   { n: 'JIU-JITSU BREAKS', bpm: 100, wave: 1, base: 43, prog: [0, 3, 5, 3], lead: '0..0..3.5..3.0..', bass: 'x..x...x..x.x...', k: 'x.....x...x.....', s: '....x.......x..x', h: 'x.xxx.x.x.xxx.x.' }];
 const SCALE = [0, 2, 3, 5, 7, 8, 10, 12, 14, 15];
-export let demo = null, track = -1;
-let step = 0;
-export function stopDemo() { if (demo) { clearInterval(demo); demo = null } }
+export let demo = null, track = -1; // demo: { el } while a file plays, { iv } while a fallback pattern plays, null when quiet
+let step = 0, el = null;
+export function stopDemo() { if (!demo) return; demo.el?.pause(); if (demo.iv) clearInterval(demo.iv); demo = null }
 export function toggleDemo() {
-  ensureAudio(); stopDemo(); track = (track + 1) % TRACKS.length; step = 0; const T = TRACKS[track]; P.wave = T.wave;
-  demo = setInterval(() => {
+  ensureAudio(); stopDemo(); track = (track + 1) % BEATS.length; const B = BEATS[track];
+  if (!el) { el = new Audio(); el.loop = true; el.preload = 'auto'; ac.createMediaElementSource(el).connect(master) } // wired into the master once
+  const d = demo = { el }, fallback = () => { if (demo === d) { el.pause(); demo = { iv: synthLoop(TRACKS[track % TRACKS.length]) } } };
+  el.onerror = fallback; el.src = B.src; el.currentTime = 0; el.play().catch(fallback);
+}
+function synthLoop(T) {
+  step = 0; P.wave = T.wave;
+  return setInterval(() => {
     const i = step % 16, root = T.base + T.prog[Math.floor(step / 16) % 4];
     if (T.k[i] === 'x') drum('kick'); if (T.s[i] === 'x') drum('snare'); if (T.h[i] === 'x') drum('hat'); if (T.c?.[i] === 'x') drum('clap');
     if (T.bass[i] === 'x') playNote(root - 12, .22); const d = T.lead[i]; if (d !== '.') playNote(root + 12 + SCALE[+d], .3);
