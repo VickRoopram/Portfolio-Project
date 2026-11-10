@@ -143,3 +143,10 @@ body[data-zoom="on"] #joy{opacity:.45}
 #zoom{left:calc(100% - max(16px,env(safe-area-inset-right,0px)) - 112px - 10px);bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4) + 31px)} /* centred on the joystick */
 @media (max-width:760px){#joy{--j:96px}#zoom{left:calc(100% - max(16px,env(safe-area-inset-right,0px)) - 96px - 8px);bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4) + 23px)}}
 @media (max-width:760px){#legend{display:none}} /* phones: the nav pad and zoom icon take the bottom edge */
+
+/* header Contact CTA (primary), left of the theme and sound icons */
+.hdr-cta{min-height:38px;padding:0 var(--s3);border-radius:999px}
+@media (max-width:420px){.hdr-cta{padding:0 10px}.hdr-cta span{display:none}} /* very narrow: icon only */
+/* while the joystick mirrors a mouse/trackpad move, the ring ticks and the stick's dot light up */
+#joy.mirror .j-dial{background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--accent-ui) 70%,transparent) 0 1.2deg,transparent 1.2deg 15deg)}
+#joy.mirror .j-stick{border-color:var(--accent-ui)}

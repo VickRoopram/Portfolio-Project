@@ -109,16 +109,16 @@ export function zoomOut() { cancelJourney(); S.mode = null; closeCard(); drum('w
 const OUT = 950, IN = 1500, wait = ms => new Promise(r => setTimeout(r, ms));
 let run = 0;
 export const cancelJourney = () => { run++; V.side = false };
-export async function journey(ch, i) {
+export async function journey(ch, i, from = 'menu') { // from: 'menu' shows Back to menu / Cancel on the card; 'cta' (the header Contact button) doesn't
   closeCard(); const id = ++run, live = () => id === run, box = MODES[ch].box, m = (onKeys(ch) ? CTRL.kb : CTRL[ch])?.[i];
   const arrive = () => { if (onKeys(ch)) S.kb = ch; S.mode = ch; updateUI(); modeWave(ch) };
-  if (reduceMotion) { arrive(); V.side = true; flyTo(box); V.side = false; push(m, 200); m?.sound?.(); openCard(ch, i, { from: 'menu', quiet: true }); return }
+  if (reduceMotion) { arrive(); V.side = true; flyTo(box); V.side = false; push(m, 200); m?.sound?.(); openCard(ch, i, { from, quiet: true }); return }
   if (S.mode || V.fly) { S.mode = null; updateUI(); drum('whoosh'); flyTo('all', OUT); await wait(OUT); if (!live()) return } // pan out first when zoomed in
   arrive(); V.side = true; drum('whoosh'); flyTo(box, IN); // framed for the card that will open beside it
   await wait(IN + 120); if (!live()) return;
   if (m) { push(m); m.sound?.(); S.hover = m; S.hoverUntil = performance.now() + 1600 } // the hover tip names the project as its key goes down
   await wait(480); if (!live()) return;
-  openCard(ch, i, { from: 'menu', quiet: true }); V.side = false;
+  openCard(ch, i, { from, quiet: true }); V.side = false;
 }
 const ease = k => k < .5 ? 8 * k ** 4 : 1 - Math.pow(-2 * k + 2, 4) / 2; // quartic in-out: slow start, slow landing
 let offX = 0, offY = 0;

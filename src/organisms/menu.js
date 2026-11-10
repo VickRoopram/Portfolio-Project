@@ -88,4 +88,6 @@ body.addEventListener('pointerleave', hidePeek); body.addEventListener('scroll',
 body.addEventListener('focusin', e => { const b = e.target.closest('[data-item]'); b && b.matches(':focus-visible') ? showPeek(b) : hidePeek() });
 body.addEventListener('focusout', hidePeek);
 document.addEventListener('pointerdown', e => { if (menuOpen() && !menu.contains(e.target) && !mnu.contains(e.target)) closeMenu() });
+/* header Contact CTA: fly to the Contact synth, push its CONTACT key and open the Contact card */
+$('ctaContact').onclick = () => { ensureAudio(); closeMenu(); act.journey('cv', 1, 'cta') };
 $('brand').onclick = e => { e.preventDefault(); ensureAudio(); closeMenu(); if (S.mode || S.card) act.zoomOut() };

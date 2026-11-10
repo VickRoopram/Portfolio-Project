@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { $, V, flip, lerp, reduceMotion } from '../core/state.js';
 import { ensureAudio, drum } from '../core/audio.js';
-import { scene, renderer, hemi, sun, rim, floor, pool } from '../core/scene.js';
+import { scene, renderer, hemi, sun, rim, floor, pool, BG } from '../core/scene.js';
 import { FXL, FXMATS, pulse } from '../molecules/fx.js';
 
 const LOOK = { // [light, dark]
@@ -13,7 +13,7 @@ const mix = (c, [a, b], k) => c.lerpColors(a, b, k), num = ([a, b], k) => lerp(a
 let themed = null, blendDark = null;
 function applyTheme(k) {
   themed ||= [...new Set((() => { const a = []; scene.traverse(o => [o.material].flat().forEach(m => m?.userData?.tc && a.push(m))); return a })())];
-  mix(scene.background, LOOK.bg, k); mix(hemi.color, LOOK.sky, k); mix(hemi.groundColor, LOOK.gnd, k); mix(sun.color, LOOK.sunCol, k); mix(rim.color, LOOK.rimCol, k); mix(pool.material.color, LOOK.pool, k);
+  mix(BG, LOOK.bg, k); mix(hemi.color, LOOK.sky, k); mix(hemi.groundColor, LOOK.gnd, k); mix(sun.color, LOOK.sunCol, k); mix(rim.color, LOOK.rimCol, k); mix(pool.material.color, LOOK.pool, k);
   hemi.intensity = num(LOOK.hemi, k); sun.intensity = num(LOOK.sun, k); rim.intensity = num(LOOK.rim, k); floor.material.opacity = num(LOOK.shadow, k);
   renderer.toneMappingExposure = num(LOOK.exp, k); pool.material.opacity = num(LOOK.poolOp, k);
   for (const m of themed) { const u = m.userData.tc; m._tc ||= [new THREE.Color(u.l), new THREE.Color(u.d)]; m.color.lerpColors(m._tc[0], m._tc[1], k); if (u.le !== undefined && 'envMapIntensity' in m) m.envMapIntensity = lerp(u.le, u.de, k) }

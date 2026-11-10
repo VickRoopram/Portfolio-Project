@@ -32,7 +32,13 @@ The synth is the interface. Each part of the instrument holds a different side o
 
 Mouse, trackpad and touch work too: drag to orbit, scroll or pinch to zoom. The view always centres on the table and its synths: zoom heads for the middle of the view, and zooming all the way out (0%) shows the whole table from above. You can turn all the way round the table; the low side angles open up as you zoom in.
 
-**Joystick (bottom right, always there; the zoom guide sits beside it):** push the stick to slide the view across the table (to the CV synth, say); it springs back when you let go, and a tap recentres. Drag the ring round the stick to rotate: it turns with the view like a compass (the red tick points the way the view started), and its two arrows turn a step, or keep turning while held. Panning stays where you leave it, always over the table.
+**Contact (header):** the Contact button flies you to the Contact synth, presses its CONTACT key and opens the contact card.
+
+**Beats:** press BEATS on the synth and the room turns into a party: coloured stage lights drift over the table, confetti and colour fill the background, and the screen twinkles. Each of the 5 tracks has its own colours.
+
+**Big knobs:** while you turn one, a lit ring shows its range and a light dot follows the knob; it fades away when you let go.
+
+**Joystick (bottom right, always there; the zoom guide sits beside it):** push the stick to slide the view across the table (to the CV synth, say); it springs back when you let go, and a tap recentres. Drag the ring round the stick to rotate: it turns with the view like a compass (the red tick points the way the view started), and its two arrows turn a step, or keep turning while held. Panning stays where you leave it, always over the table. When you pan or rotate with the mouse or trackpad, the joystick mirrors it: the stick leans the way the view moves and the ring turns.
 
 ## Project structure
 
@@ -102,7 +108,7 @@ gd: { name: 'DESIGN', col: '#1fa957', items: [
 
 - **Three.js r160** for the scene, with `RoundedBoxGeometry` and `OrbitControls` (desktop only)
 - **Web Audio API** for a two-oscillator synth with sub-oscillator, low-pass filter, echo, synthesized drums and a 16-step sequencer for BEATS
-- **Canvas textures** for the screens: a dot-matrix pixel font (`atoms/pixelfont.js`) reading MY PROJECTS on the synth and CONTACT on the remote
+- **Canvas textures** for the screens: a dot-matrix pixel font (`atoms/pixelfont.js`) reading MY PROJECTS on the synth and CONTACT on the remote. When sound plays, MY PROJECTS shrinks to the top and a live waveform fills the screen, changing style every few seconds (line, pixel bars, broken dashes, dots)
 - Fonts: Bungee, IBM Plex Mono and Noto Sans (Google Fonts)
 
 ## Deploy

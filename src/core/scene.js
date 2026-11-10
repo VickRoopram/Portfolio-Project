@@ -13,7 +13,7 @@ renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.A
 stage.prepend(renderer.domElement); $('loading').remove();
 export const cv = renderer.domElement;
 
-export const scene = new THREE.Scene(); scene.background = new THREE.Color('#ece5d8');
+export const scene = new THREE.Scene(); export const BG = new THREE.Color('#ece5d8'); scene.background = BG; // BG: the themed colour (the beats backdrop swaps scene.background while it plays)
 export const camera = new THREE.PerspectiveCamera(32, 1, .1, 300);
 scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), .04).texture; // studio reflections for the metal
 export const hemi = new THREE.HemisphereLight('#ffffff', '#b9bab6', .45); scene.add(hemi);

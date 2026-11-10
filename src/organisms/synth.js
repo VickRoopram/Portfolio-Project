@@ -33,15 +33,15 @@ const scrP = at(flat(3.78, 1.8, decal(new THREE.MeshBasicMaterial({ map: scr.t, 
 scrP.userData = { tip: 'Screen · click for the About page', down() { act.zoomTo('ab'); act.openCard('ab', 0) } };
 
 /* the four big sound knobs (drag up/down; click for a note), each in a 2 × 2.5 tile with its name underneath.
-   A lit ring sits on each knob's bezel, round the cap (where the press stroke runs): a dim track over the knob's travel, a brighter arc up to its value, and a light dot that
-   follows the knob as it turns (updateSynth). Always on */
+   While you adjust a knob, a lit ring fades in on its bezel, round the cap (where the press stroke runs): a dim track over the knob's travel, a brighter arc up to its value, and a light dot that
+   follows the knob as it turns (updateSynth). It fades out about a second after you let go */
 const RING_R = .73, RING_Y = .127, TRAVEL = 2.2, LED = '#ff5d1a'; // on the top of the knob's brass bezel, round the cap
 const dotTex = radialTex([[0, 1], [.3, .55], [1, 0]], 128, 128);
 const ringMat = o => decal(themed(new THREE.MeshBasicMaterial({ color: LED, transparent: true, depthWrite: false, toneMapped: false, ...o }), LED, LED));
 export const KNOB_RINGS = [];
 [['cutoff', 'FILTER'], ['q', 'RESONANCE'], ['decay', 'DECAY'], ['wet', 'ECHO']].forEach(([key, label], i) => {
   const c = 4 + i * 2; tile(c, 0, 2, UPPER);
-  const { g, rot } = knob(synth, new THREE.Vector3(GX(c + .5), TOP + .3, GZ(0) + .48), .58, key, 'lg', [[48, 52, 55, 60][i], 1.2]);
+  const { g, rot, cp } = knob(synth, new THREE.Vector3(GX(c + .5), TOP + .3, GZ(0) + .48), .58, key, 'lg', [[48, 52, 55, 60][i], 1.2]);
   const L = printed(label, 1.6, .32, '#7b7e86', 40); L.position.set(0, .01, 1.3); g.add(L);
   // arcs lie flat on the tile; angle t on the ring = knob turn a + π/2 (a = 0 points straight back, like the knob's indicator)
   const track = new THREE.Mesh(new THREE.RingGeometry(RING_R - .022, RING_R + .022, 72, 1, Math.PI / 2 - TRAVEL, TRAVEL * 2), ringMat({ opacity: .35 }));
@@ -51,7 +51,8 @@ export const KNOB_RINGS = [];
   [track, value].forEach(m => { m.rotation.x = -Math.PI / 2; m.position.y = RING_Y; m.renderOrder = 2; g.add(m) });
   dot.rotation.x = -Math.PI / 2; dot.position.y = RING_Y + .004; dot.renderOrder = 3; glow.position.y = RING_Y + .002; glow.renderOrder = 2; g.add(dot, glow);
   FXMATS.push(track.material, value.material, glow.material);
-  KNOB_RINGS.push({ rot, value, dot, glow, a: null });
+  [track, value, dot, glow].forEach(m => { m.material.userData.op = m.material.opacity; m.visible = false });
+  KNOB_RINGS.push({ rot, cp, value, dot, glow, parts: [track, value, dot, glow], a: null, last: -1e9, k: 0 });
 });
 
 /* speaker grille, pulsing with the music */
@@ -102,10 +103,16 @@ hits.push(scrP);
 export function updateSynth(t) {
   const dark = V.themeK > .5;
   /* knob rings: the dot rides the knob's (eased) turn; the value arc is rebuilt only when the turn changes */
+  const now = performance.now(), dt = Math.min(.05, (now - (updateSynth.last ?? now)) / 1000); updateSynth.last = now;
   for (const R of KNOB_RINGS) {
     const a = R.rot.rotation.y, x = -Math.sin(a) * RING_R, z = -Math.cos(a) * RING_R;
+    /* shown while it's being dragged or still turning, then a fade out */
+    if (V.drag?.o === R.cp || (R.a !== null && Math.abs(R.a - a) > .004)) R.last = now;
+    const want = now - R.last < 900 ? 1 : 0; R.k += (want - R.k) * Math.min(1, dt * (want ? 9 : 2.5));
+    const on = R.k > .01; R.parts.forEach(m => { m.visible = on; m.material.opacity = m.material.userData.op * R.k });
+    if (!on) { R.a = a; continue }
     R.dot.position.x = R.glow.position.x = x; R.dot.position.z = R.glow.position.z = z;
-    R.glow.material.opacity = .75 + .2 * Math.sin(t * 2.4); // a slow breathe so it reads as lit
+    R.glow.material.opacity = (.75 + .2 * Math.sin(t * 2.4)) * R.k; // a slow breathe so it reads as lit
     if (R.a === null || Math.abs(R.a - a) > .004) { R.a = a; R.value.geometry.dispose(); R.value.geometry = new THREE.RingGeometry(RING_R - .028, RING_R + .028, 64, 1, a + Math.PI / 2, Math.max(.001, TRAVEL - a)) }
   }
   const beat = demo ? .4 + .25 * Math.max(0, Math.sin(t * Math.PI * 2 * (TRACKS[track]?.bpm || 120) / 60)) : 0;

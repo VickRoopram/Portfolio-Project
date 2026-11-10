@@ -3,8 +3,11 @@
      let go and it springs back to centre with a little overshoot. A tap (no drag) recentres the view.
    - the ring round it rotates: drag it round and the view turns with it, one for one. It doubles as a compass (it turns
      with the view however you rotate, with a north tick), and its two arrows turn the view a step (hold to keep turning).
+   - it mirrors the mouse and trackpad: pan or rotate the view by dragging and the stick leans the way the view is moving
+     (and the ring turns), the way the zoom guide shows scrolling. Flights and zooming don't count.
    The camera does the moving (page/camera.js panBy, spinBy, recentre via act). */
-import { $, S, act, desktop, reduceMotion } from '../core/state.js';
+import * as THREE from 'three';
+import { $, S, V, act, desktop, reduceMotion } from '../core/state.js';
 import { camera, controls } from '../core/scene.js';
 
 const el = $('joy'), stick = $('jstick'), dial = $('jdial');
@@ -46,9 +49,27 @@ el.querySelectorAll('[data-spin]').forEach(b => {
 });
 el.addEventListener('contextmenu', e => e.preventDefault());
 
+/* mirror: how the view moved since last frame, in the stick's terms */
+const lastT = new THREE.Vector3(), dT = new THREE.Vector3(), mR = new THREE.Vector3(), mF = new THREE.Vector3(), mU = new THREE.Vector3();
+let lastTh = null, lastPh = 0, lastD = 0, mirror = { x: 0, y: 0 };
+function sense(dt, th) {
+  const off = camera.position.clone().sub(controls.target), d = off.length(), ph = Math.acos(Math.min(1, Math.max(-1, off.y / d)));
+  dT.subVectors(controls.target, lastT); lastT.copy(controls.target);
+  let dth = th - (lastTh ?? th); dth = Math.atan2(Math.sin(dth), Math.cos(dth)); const dph = ph - lastPh, zooming = lastD && Math.abs(d - lastD) / d > .002;
+  lastTh = th; lastPh = ph; lastD = d;
+  if (V.fly || zooming || st.held || ring || spin.btn || dt <= 0) { mirror.x = mirror.y = 0; return }
+  mR.set(1, 0, 0).applyQuaternion(camera.quaternion).setY(0).normalize();
+  mF.set(0, 1, 0).applyQuaternion(camera.quaternion).add(mU.set(0, 0, -1).applyQuaternion(camera.quaternion)).setY(0).normalize();
+  const px = dT.dot(mR) / d / dt / PAN, py = dT.dot(mF) / d / dt / PAN; // pan, as a fraction of a full push
+  const rx = -dth / dt / (SPIN * 2), ry = dph / dt / 1.5;               // orbit: sideways turn and tilt
+  mirror.x = Math.max(-1, Math.min(1, px + rx)); mirror.y = Math.max(-1, Math.min(1, py + ry));
+}
+
 export function updateJoystick(now, dt) {
-  /* stick: held = follow the finger; released = damped spring back to centre (a small overshoot) */
-  if (!st.held) { if (reduceMotion) { st.x = st.y = st.vx = st.vy = 0 } else { st.vx += (-K * st.x - C * st.vx) * dt; st.vy += (-K * st.y - C * st.vy) * dt; st.x += st.vx * dt; st.y += st.vy * dt } }
+  const th = Math.atan2(camera.position.x - controls.target.x, camera.position.z - controls.target.z); sense(dt, th);
+  /* stick: held = follow the finger; released = damped spring towards the mirrored movement (centre when still), a small overshoot */
+  const mx = mirror.x * travel, my = -mirror.y * travel; el.classList.toggle('mirror', Math.hypot(mirror.x, mirror.y) > .08);
+  if (!st.held) { if (reduceMotion) { st.x = mx; st.y = my; st.vx = st.vy = 0 } else { st.vx += (-K * (st.x - mx) - C * st.vx) * dt; st.vy += (-K * (st.y - my) - C * st.vy) * dt; st.x += st.vx * dt; st.y += st.vy * dt } }
   stick.style.transform = `translate(${st.x.toFixed(1)}px,${st.y.toFixed(1)}px)`;
   let px = st.held ? st.x / travel : 0, py = st.held ? -st.y / travel : 0;
   if (now < keyPan.until) { px = keyPan.x; py = keyPan.y }
@@ -57,7 +78,6 @@ export function updateJoystick(now, dt) {
   const want = spin.btn || now < spin.until ? spin.want : 0; spin.v += (want - spin.v) * (reduceMotion ? 1 : Math.min(1, dt * 10));
   if (Math.abs(spin.v) > 1e-3) act.spinBy(spin.v * SPIN * dt);
   /* the ring turns with the view: a compass */
-  const th = Math.atan2(camera.position.x - controls.target.x, camera.position.z - controls.target.z);
   dial.style.transform = `rotate(${(th * 180 / Math.PI).toFixed(2)}deg)`;
   el.classList.toggle('away', !desktop() && !!(S.card || S.menu)); // phones: the bottom sheet needs the space
 }
