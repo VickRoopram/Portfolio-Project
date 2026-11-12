@@ -108,7 +108,7 @@ gd: { name: 'DESIGN', col: '#1fa957', items: [
 
 - **Three.js r160** for the scene, with `RoundedBoxGeometry` and `OrbitControls` (desktop only)
 - **Web Audio API** for a two-oscillator synth with sub-oscillator, low-pass filter, echo, synthesized drums and a 16-step sequencer for BEATS
-- **Canvas textures** for the screens: a dot-matrix pixel font (`atoms/pixelfont.js`) reading MY PROJECTS on the synth and CONTACT on the remote. When sound plays, MY PROJECTS shrinks to the top and a live waveform fills the screen, changing style every few seconds (line, pixel bars, broken dashes, dots)
+- **Canvas textures** for the screens: a dot-matrix pixel font (`atoms/pixelfont.js`) reading MY PROJECTS on the synth and CONTACT on the remote. When sound plays, MY PROJECTS shrinks to the top and a live waveform fills the screen, changing style every few seconds (line, pixel bars, broken dashes, dots). Every 25–60 seconds the Vickhal Roopram logo appears on it for a few seconds; click it to open the About summary
 - Fonts: Bungee, IBM Plex Mono and Noto Sans (Google Fonts)
 
 ## Deploy

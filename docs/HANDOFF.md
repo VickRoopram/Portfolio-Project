@@ -308,6 +308,11 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - **Backgrounds** (`organisms/party.js`, replaces the blobs/confetti/light pools of entry 30): one muted, looping `<video>` (loaded only when a track starts) playing the track's `bg`. Behind the desk it's drawn into a 640×360 canvas over `BG`, cover-cropped to the window's shape and faded with `p`, and set as `scene.background`. On the table top a `VideoTexture` plane (32.5×18.5, soft-edged alpha map) projects it under the synths like a projector: its alpha follows the video's brightness (shader patch), so dark footage doesn't smudge the oak; additive in dark mode via `FXMATS`. The screen twinkle now uses colours sampled from the video twice a second (`partyColours()`, lifted so dark footage still shows).
     - Files: `assets/beats/**` (new), `core/audio.js`, `organisms/party.js`, `organisms/screens.js`, `organisms/synth.js`, README.
 
+33. **12 Nov 2026: the Vickhal Roopram logo appears on the synth screen every 25–60 s; clicking it opens the About summary** (Vick).
+    - `organisms/screens.js`: the header logo (`assets/ui/logo-on-dark.svg`) is rasterised once into a dot mask on a 5 px pitch (finer than the title's dots so the wordmark reads), each dot with a random reveal order. On a random gap of 25–60 s (new each time) it dissolves in dot by dot (0.9 s), holds 8 s and dissolves out (0.9 s); the title and waveform fade under it, so it shows over the music too. Warm white dots with an orange glow and a light shimmer. `V.logo` (0..1) says how much it's showing. Reduced motion: no dissolve.
+    - `organisms/synth.js`: while the logo is up, the screen's hover tip reads *Vickhal Roopram · Click to meet me*, and a click runs `act.journey('ab', 0, 'logo')`: fly to the About key, press it, open the first About card ("Vickhal Roopram, UX & motion designer"). The rest of the time the screen still opens that page directly, as before.
+    - Tested with the gap forced to 3 s (throwaway copy): logo renders, tip changes, click lands on the About summary.
+
 **Commenting tip:** artifact comments anchored to the 3D canvas **don't carry the click position or selection rectangle**. Ask Vick to name the control instead of guessing (this happened twice).
 
 ---

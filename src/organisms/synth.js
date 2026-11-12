@@ -30,7 +30,10 @@ at(rbox(3 - .07, .3, .5 - .07, .07, M(C.tile, .6)), GX(15), TOP + .15, GZ(1) + .
 tile(0, 0, 4, UPPER, M(C.recess, .4));
 export const scr = canvasTex(800, 380);
 const scrP = at(flat(3.78, 1.8, decal(new THREE.MeshBasicMaterial({ map: scr.t, toneMapped: false }))), GX(1.5), TOP + .305, upperZ);
-scrP.userData = { tip: 'Screen · click for the About page', down() { act.zoomTo('ab'); act.openCard('ab', 0) } };
+/* the screen opens the About page; while the Vickhal Roopram logo is up on it (screens.js, every 25–60 s) its tip invites the click
+   and the click flies to the About key, presses it and opens the "about me" summary (the first About card) */
+scrP.userData = { tip: 'Screen · click for the About page', tipHTML: () => V.logo > .5 ? 'Vickhal Roopram<small>Click to meet me</small>' : 'Screen · click for the About page',
+  down() { if (V.logo > .3) act.journey('ab', 0, 'logo'); else { act.zoomTo('ab'); act.openCard('ab', 0) } } };
 
 /* the four big sound knobs (drag up/down; click for a note), each in a 2 × 2.5 tile with its name underneath.
    While you adjust a knob, a lit ring fades in on its bezel, round the cap (where the press stroke runs): a dim track over the knob's travel, a brighter arc up to its value, and a light dot that
