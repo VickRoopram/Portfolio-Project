@@ -183,11 +183,13 @@ const FIELDS = ['t', 'k', 'd', 'img', 'tags', 'links', 'bars', 'hero', 'contact'
 function canon() {
   const ch = {};
   for (const k of ORDER) { const g = S.groups[k]; if (!g) continue;
-    ch[k] = { name: g.name || '', col: g.col || '#d71920', ...(g.glow ? { glow: g.glow } : {}), items: (g.items || []).map(it => { const o = {}; for (const f of FIELDS) if (it[f] !== undefined && it[f] !== '' && !(Array.isArray(it[f]) && !it[f].length)) o[f] = it[f]; return o }) } }
+    ch[k] = { name: g.name || '', col: g.col || '#d71920', ...(g.glow ? { glow: g.glow } : {}), items: (g.items || []).map(it => { const o = {}; for (const f of FIELDS) if (it[f] !== undefined && it[f] !== '' && !(Array.isArray(it[f]) && !it[f].length)) o[f] = f === 'img' ? it.img.map(m => ({ s: m.s, a: m.a ?? '' })) : it[f]; return o }) } }
   return { ch, links: (S.socials || []).filter(l => l[0] && l[1]) };
 }
 function hash(str) { let h = 0x811c9dc5; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) } return (h >>> 0).toString(16).padStart(8, '0') }
 const contentHash = () => hash(JSON.stringify(canon()));
+/* one fingerprint per section, so a sync can say exactly which sections changed */
+const groupHashes = () => { const c = canon(), o = { links: hash(JSON.stringify(c.links)) }; for (const k in c.ch) o[k] = hash(JSON.stringify(c.ch[k])); return o };
 
 /* keep only harmless formatting in descriptions before they touch the page */
 const OK_TAGS = new Set(['P', 'BR', 'B', 'STRONG', 'I', 'EM', 'U', 'A', 'UL', 'OL', 'LI', 'H3', 'H4', 'DIV', 'SPAN', 'SMALL', 'BLOCKQUOTE', 'HR']);
@@ -249,7 +251,7 @@ async function flush(key) {
 /* the content was loaded from the live site: record its fingerprint as what the preview and live site already have */
 function baseline() {
   const y = S.sync; if (y.preview?.hash !== 'seed' || !S.canWrite) return; const h = contentHash(), b = clone(y);
-  b.preview.hash = h; if (b.live?.hash === 'seed') b.live.hash = h; db.doc('site/sync').set(b).catch(() => {});
+  b.preview.hash = h; b.preview.groups = groupHashes(); if (b.live?.hash === 'seed') { b.live.hash = h; b.live.groups = b.preview.groups } db.doc('site/sync').set(b).catch(() => {});
 }
 function fail(e) { const b = document.querySelector('.banner') || document.createElement('div'); b.className = 'banner'; b.textContent = e?.code === 'revoked' ? 'This page lost access to your content. Reopen it to keep editing.' : 'Live updates stopped. Reopen this page to reconnect; your saved changes are safe.'; document.querySelector('.app')?.prepend(b) }
 
@@ -291,11 +293,11 @@ function renderSync() {
       : `<button class="btn primary" id="reqPrev" ${S.canWrite ? '' : 'disabled'}>${icon('arrow-right', 16)}Send to preview</button>
          <button class="btn" id="reqLive" ${S.canWrite && y.preview ? '' : 'disabled'} title="${y.preview ? '' : 'Send it to the preview first'}">${icon('globe', 16)}Publish live</button>`}
     <p class="note">Edits save here as you type. The site only changes when Claude sends them: first to the preview, then live once you approve.${y.last ? ` Last: ${esc(y.last)}` : ''}</p>`;
-  const req = async kind => { const body = { ...(S.sync || {}), request: kind, requestedAt: new Date().toISOString(), requestHash: contentHash() };
+  const req = async kind => { const body = { ...(S.sync || {}), request: kind, requestedAt: new Date().toISOString(), requestHash: contentHash(), requestGroups: groupHashes() };
     try { await db.doc('site/sync').set(body); toast(kind === 'live' ? 'Ready: tell Claude “publish my portfolio”' : 'Ready: tell Claude “sync my portfolio”') } catch { toast('Couldn’t save the request. Try again.') } };
   $('reqPrev') && ($('reqPrev').onclick = () => req('preview'));
   $('reqLive') && ($('reqLive').onclick = async () => { if (await ask('Publish to the live site?', 'Claude copies what’s on the preview to the live site once you tell it to. Check the preview first.', 'Mark ready to publish')) req('live') });
-  $('cancelReq') && ($('cancelReq').onclick = async () => { const b = { ...S.sync }; delete b.request; delete b.requestedAt; delete b.requestHash; try { await db.doc('site/sync').set(b) } catch {} });
+  $('cancelReq') && ($('cancelReq').onclick = async () => { const b = { ...S.sync }; delete b.request; delete b.requestedAt; delete b.requestHash; delete b.requestGroups; try { await db.doc('site/sync').set(b) } catch {} });
 }
 
 function renderGroup() {
