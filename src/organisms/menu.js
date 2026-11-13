@@ -1,5 +1,5 @@
 /* Menu behind the burger: a side panel in the same spot as the detail card, so the synth stays visible and reachable.
-   Root: Home · About · Projects › · Contact · Download CV.
+   Root: Home · About · Projects › · Contact.
    Projects drills down to the five keyboard modes; a mode drills down to the projects on its keys.
    Picking a mode flies the camera to the keys and lights them; picking a project hands over to act.journey
    (pan out, fly into the synth, push the key, open the card where the menu was). */
@@ -24,8 +24,7 @@ function render() {
   const { k, ch, i } = level; let h = '';
   if (k === 'root') {
     h = `<div class="m-list root">${[['home', 'Home'], ['about', 'About'], ['projects', 'Projects', 1], ['contact', 'Contact']].map(([go, t, sub], n) =>
-      row(`data-go="${go}"${go === 'home' ? ' id="home"' : ''}`, `<span class="tx"><b>${t}</b></span>${sub ? chev : ''}`, n)).join('')}
-      <a class="m-row cv" href="assets/cv/vickhal-roopram-cv.pdf" target="_blank" rel="noopener" style="--n:4"><span class="tx"><b>Download CV</b></span><span class="go">${icon('download', 20)}</span></a></div>`;
+      row(`data-go="${go}"${go === 'home' ? ' id="home"' : ''}`, `<span class="tx"><b>${t}</b></span>${sub ? chev : ''}`, n)).join('')}</div>`;
   } else if (k === 'projects') {
     h = `<p class="m-title">Projects</p><div class="m-list">${PROJECT_MODES.map(([m, t], n) => {
       const c = CH[m]; return c ? row(`data-mode="${m}" style="--c:${c.col}"`, `<i class="dot"></i><span class="tx"><b>${t}</b></span>${chev}`, n) : '';

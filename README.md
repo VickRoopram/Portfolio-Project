@@ -13,14 +13,14 @@ The synth is the interface. Each part of the instrument holds a different side o
 | **Filter buttons**: Design · UI/UX · Motion · Tools · Experimental | Choose what the keyboard shows. The active button glows and the keys light up in its colour. |
 | **Keyboard** (14 keys) | One project, tool or experiment per key. Click a key to open its card. |
 | **Four big knobs** | Sound: Filter, Resonance, Decay, Echo. Drag up or down; click to hear a note. |
-| **CV remote** (left) | Full CV (PDF), contact details and social links. Also plugs in when selected. |
+| **CV remote** (left) | Full CV (page images, no download), contact details and social links. Also plugs in when selected. |
 | **Music side** (right): drum pads, Tone, Wave, BEATS, STOP, MUTE | Pure play. BEATS cycles five original tracks; STOP and BEATS glow while music runs. |
 
 **The desk:** the synths sit on a desk next to a lamp (click it to switch it on or off; its hover tip is a bulb with On / Off) and a plant in a white pot with dark soil. The look is warm and plain: cream and warm-grey hardware, with one design system for the overlays. The camera starts almost top-down; click a part and it swoops down to a low, close view. Left drag rotates, right drag pans, scroll zooms. Project cards open with the work itself, then the story and a clear link to the full project.
 
 **Header & section titles (from the Figma hover states):** the top bar carries the Vickhal Roopram logo (click to go home), the sun/moon theme icon, the sound icon and a hamburger menu that morphs into a cross. Hover a device and a subtle underlight fades in beneath it, like an LED strip under the hardware: red for Contact. The My Projects underlight takes the colour of the keyboard's current mode (green Design, blue UI/UX, orange Motion, purple Tools, pink Experimental, and the role knob colours) and stays on while you're in a keyboard mode. Click the device body to zoom in.
 
-**Menu:** the burger opens a side panel in the same spot as the project card (a bottom sheet on phones), so the synth stays visible and you can still use it. **Home** flies back to the full desk; **About** and **Contact** fly to their part of the synth, push its key and open the card; **Download CV** opens the PDF. **Projects** opens the five modes (Graphic design, UI/UX design, Motion & 3D, Tools, Experimental). Choosing a mode flies the camera to the keyboard and lights that mode's keys while the panel lists its projects by title. Point at a project and its lead image appears just under it, over the names below. Choosing a project starts a short sequence: the camera pans out to the desk, swoops into the synth, the project's key goes down (you see it sink and hear the note, and its name appears), then the card opens where the menu was. Cards opened from the menu end with two secondary buttons: **Back to menu** returns to that mode's list with the project marked, and **Cancel** closes the card and leaves you on the synth. `Esc` steps back a level, then closes the menu.
+**Menu:** the burger opens a side panel in the same spot as the project card (a bottom sheet on phones), so the synth stays visible and you can still use it. **Home** flies back to the full desk; **About** and **Contact** fly to their part of the synth, push its key and open the card. **Projects** opens the five modes (Graphic design, UI/UX design, Motion & 3D, Tools, Experimental). Choosing a mode flies the camera to the keyboard and lights that mode's keys while the panel lists its projects by title. Point at a project and its lead image appears just under it, over the names below. Choosing a project starts a short sequence: the camera pans out to the desk, swoops into the synth, the project's key goes down (you see it sink and hear the note, and its name appears), then the card opens where the menu was. Cards opened from the menu end with two secondary buttons: **Back to menu** returns to that mode's list with the project marked, and **Cancel** closes the card and leaves you on the synth. `Esc` steps back a level, then closes the menu.
 
 **Zoom guide (bottom right):** a scroll-wheel icon sits in the corner. As soon as you zoom (scroll or pinch), it slides to the bottom middle and opens up with a short instruction (*Scroll to zoom*, *Pinch to zoom* on phones) and a bar that fills as you zoom in, with its percentage (0% is the whole table, 100% is as close as you can go). It drops back to the icon a couple of seconds after you stop. When the bar is full (as close as you can go) the icon turns red and shakes; when it's empty (the whole table) the icon relaxes. Zoom is locked: in as far as one synth filling the view, out as far as the whole table. Click the icon to see the instructions on their own.
 
@@ -60,9 +60,8 @@ Mouse, trackpad and touch work too: drag to orbit, scroll or pinch to zoom. The 
 │   ├── styles.css          # Imports the layers below (keep this path: /admin's preview loads it)
 │   └── styles/             # tokens.css, atoms.css, molecules.css, organisms.css
 ├── docs/HANDOFF.md        # Full project context for the next iteration
-├── assets/            # images, CV, beats/ (audio + background videos for BEATS)
+├── assets/            # images, beats/ (audio + background videos for BEATS)
 │   ├── img/                # Project images (g* = portfolio PDF page no., cv* = CV pages)
-│   └── cv/                 # Downloadable CV
 └── .github/workflows/
     └── pages.yml           # Deploys to GitHub Pages on push to main
 ```

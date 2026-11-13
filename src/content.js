@@ -57,7 +57,7 @@ export const LINKS=[['Behance','https://www.behance.net/vickhalroopram'],['Insta
 
 /* Extra channels: CV & contact, role filters, life strip, about/skills/tools/awards/work/study, experimental */
 CH.cv={name:'CV & CONTACT',col:'#ff5d1a',items:[
-  {t:'Full CV',k:'Vickhal Roopram · UX & Motion Designer',d:`<p>Both pages of my CV: experience, awards, education, skills and references. Open the PDF for a copy you can save or print.</p>`,links:[['Open CV (PDF)','assets/cv/vickhal-roopram-cv.pdf']],img:[im('cv1','CV page 1'),im('cv2','CV page 2')]},
+  {t:'Full CV',k:'Vickhal Roopram · UX & Motion Designer',d:`<p>Both pages of my CV: experience, awards, education, skills and references.</p>`,img:[im('cv1','CV page 1'),im('cv2','CV page 2')]},
   {t:'Hire me or say hello',k:'Email, phone and socials',contact:1},
   {t:'Behance',k:'Vickhal Roopram',d:`<p>Full case studies plus illustration and motion projects.</p>`,links:[['behance.net/vickhalroopram','https://www.behance.net/vickhalroopram']]},
   {t:'Instagram',k:'@vicsdoesmotion · @vickroopram',d:`<p>The creative account for animation and illustration, and a personal account for everything else.</p>`,links:[['@vicsdoesmotion','https://www.instagram.com/vicsdoesmotion/'],['@vickroopram','https://www.instagram.com/vickroopram/']]},

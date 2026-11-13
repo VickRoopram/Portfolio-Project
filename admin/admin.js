@@ -4,6 +4,7 @@
  * the CV remote has 6 buttons, and the screen holds the About pages.
  * "Update preview" saves the draft (shown on the version-01 preview); "Publish to live" copies it to the live site.
  */
+import { noCVDownload } from '/src/cms.js';
 import { icon, socialIcon } from '/src/atoms/icons.js'; // the site's coolicons, so the preview matches
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -65,7 +66,7 @@ async function loadDoc() {
 async function start() {
   $('login').hidden = true; $('app').hidden = false;
   if (!doc) {
-    const r = await loadDoc(); doc = r.doc;
+    const r = await loadDoc(); doc = r.doc; noCVDownload(doc.ch, doc.links ||= []); // no CV download on the site: strip it here so the next Publish stores it without
     for (const k of Object.keys(PART_OF)) doc.ch[k] ||= { name: k.toUpperCase(), col: '#d71920', items: [] };
     doc.links ||= [];
     const b = backup.read();

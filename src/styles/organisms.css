@@ -32,8 +32,6 @@
 .m-row:hover .go{color:var(--accent-ui);transform:translateX(2px)}
 .root .m-row b{font-size:var(--t-xl);font-weight:800;letter-spacing:-.015em}
 .root .m-row:hover b,.root .m-row:focus-visible b{color:var(--accent-ui)}
-.root .m-row.cv b{font-size:var(--t-md);font-weight:600;color:var(--mute)}
-.root .m-row.cv:hover .go{transform:translateY(2px)}
 #home[data-at-home="true"] b{color:var(--mute)}
 .dot{flex:none;width:12px;height:12px;border-radius:50%;background:var(--c);box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 18%,transparent)}
 .m-row[data-item] b{font-weight:500} /* project titles: lighter than the section names, easier on the cream */

@@ -313,6 +313,11 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - `organisms/synth.js`: while the logo is up, the screen's hover tip reads *Vickhal Roopram · Click to meet me*, and a click runs `act.journey('ab', 0, 'logo')`: fly to the About key, press it, open the first About card ("Vickhal Roopram, UX & motion designer"). The rest of the time the screen still opens that page directly, as before.
     - Tested with the gap forced to 3 s (throwaway copy): logo renders, tip changes, click lands on the About summary.
 
+34. **13 Nov 2026: no CV download on the site** (Vick: *"Remove the download CV from my website"*).
+    - Removed: the menu's **Download CV** row, the **Open CV (PDF)** button on the remote's *Full CV* card (and its "Open the PDF for a copy you can save or print" line), and the file itself (`assets/cv/vickhal-roopram-cv.pdf`, deleted from the repo, so its old address stops working once deployed). The *Full CV* card still shows the two CV page images; say if those should go too.
+    - The published /admin content also carried that link, and published content replaces each group's items wholesale, so `src/cms.js` now has `noCVDownload(CH, LINKS)`: it drops any link to `assets/cv/…`/`vickhal-roopram-cv.pdf` and that sentence, and runs after the published content is applied. The admin runs the same rule when it loads, so the next **Publish** stores the content without it.
+    - Tested with a mock of published content that still had the link: no CV link left anywhere, the card shows no button, the menu shows Home · About · Projects · Contact.
+
 **Commenting tip:** artifact comments anchored to the 3D canvas **don't carry the click position or selection rectangle**. Ask Vick to name the control instead of guessing (this happened twice).
 
 ---
