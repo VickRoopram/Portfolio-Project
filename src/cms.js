@@ -21,7 +21,14 @@ export function noCVDownload(CH, LINKS = []) {
   for (let i = LINKS.length - 1; i >= 0; i--) if (CV_FILE.test(LINKS[i]?.[1] || '')) LINKS.splice(i, 1);
 }
 
-export async function applyCMS(CH, LINKS) {
+/* a menu from /admin replaces the default, if it is well formed */
+export function applyMenu(MENU, m) {
+  const ok = x => x && typeof x.label === 'string' && /^(home|about|projects|contact|link|mode:[a-z]{2,8})$/.test(x.go);
+  if (Array.isArray(m?.items) && m.items.filter(ok).length) MENU.items = m.items.filter(ok);
+  if (Array.isArray(m?.projects)) MENU.projects = m.projects.filter(p => p && /^[a-z]{2,8}$/.test(p.key));
+}
+
+export async function applyCMS(CH, LINKS, MENU) {
   try {
     const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 3500);
     const r = await fetch(`/api/content?stage=${STAGE}`, { signal: ctl.signal, cache: 'no-store' });
@@ -35,6 +42,7 @@ export async function applyCMS(CH, LINKS) {
       CH[k].items = g.items;
     }
     if (Array.isArray(doc.links) && doc.links.length) LINKS.splice(0, LINKS.length, ...doc.links);
+    if (MENU && doc.menu) applyMenu(MENU, doc.menu);
     noCVDownload(CH, LINKS);
     return true;
   } catch { return false; }

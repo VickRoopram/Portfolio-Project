@@ -4,131 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#100f0d">
 <title>Content admin · Vick Does Creative</title>
-<script>(function(){var t;try{t=localStorage.getItem('vdc-theme')}catch(e){}if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t})();</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans:wght@400;600;700&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400..900&display=swap">
 <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-
-<!-- Sign in -->
-<section id="login" class="login" hidden>
-  <form id="loginForm" class="login-card">
-    <div class="brand"><span class="logo" aria-hidden="true">[:]</span><span>CONTENT ADMIN</span></div>
-    <p class="muted">Manage the projects, images and copy on the synth.</p>
-    <label class="field"><span>Password</span><input id="pw" type="password" autocomplete="current-password" required autofocus></label>
-    <p id="loginErr" class="err" role="alert"></p>
-    <button class="btn primary" type="submit">Sign in</button>
-  </form>
-</section>
-
-<!-- App -->
-<div id="app" hidden>
-  <header class="bar">
-    <div class="brand"><span class="logo" aria-hidden="true">[:]</span><span class="wordmark">CONTENT ADMIN</span></div>
-    <div id="status" class="status" aria-live="polite"></div>
-    <div class="actions">
-      <button class="btn" id="themeBtn" aria-label="Toggle light or dark mode" title="Light / dark">◐</button>
-      <a class="btn" id="openPreview" target="_blank" rel="noopener">Open preview ↗</a>
-      <button class="btn primary" id="saveBtn" title="Save to the version-01 preview (Ctrl/⌘ S)">Update preview</button>
-      <button class="btn accent" id="publishBtn">Publish to live</button>
-      <details class="menu">
-        <summary class="btn" aria-label="More">⋯</summary>
-        <div class="menu-list">
-          <button id="versionsBtn">Live versions…</button>
-          <button id="discardBtn">Discard draft changes</button>
-          <a href="/" target="_blank" rel="noopener">Open live site ↗</a>
-          <button id="pwBtn">Change password…</button>
-          <button id="logoutBtn">Sign out</button>
-        </div>
-      </details>
-    </div>
-  </header>
-
-  <div class="layout">
-    <nav id="groups" class="groups" aria-label="Synth parts"></nav>
-
-    <main class="group" id="groupPane">
-      <div class="group-head">
-        <div>
-          <p class="eyebrow" id="gPart"></p>
-          <input id="gName" class="title-input" aria-label="Group name">
-          <p class="muted" id="gHow"></p>
-        </div>
-        <div class="swatches">
-          <label title="Card accent colour (titles, kicker, links)"><span>Card</span><input type="color" id="gCol"></label>
-          <label title="Glow colour on the synth (gaps, strokes, keys)"><span>Glow</span><input type="color" id="gGlow"></label>
-        </div>
-      </div>
-
-      <section class="slots-wrap" aria-label="How it shows on the synth">
-        <div class="slots-cap"><span id="slotsLabel"></span><span id="slotsCount"></span></div>
-        <div id="slots" class="slots"></div>
-      </section>
-
-      <div class="list-head">
-        <h2>Items <small class="muted" id="orderHint"></small></h2>
-        <button class="btn" id="addItem">+ Add</button>
-      </div>
-      <ol id="items" class="items"></ol>
-
-      <section id="linksBox" class="links-box" hidden>
-        <h2>Social links <small class="muted">shown on the Contact card</small></h2>
-        <div id="socials"></div>
-        <button class="btn" id="addSocial">+ Add link</button>
-      </section>
-    </main>
-
-    <aside class="editor" id="editor">
-      <div class="tabs" role="tablist">
-        <button role="tab" aria-selected="true" data-tab="edit">Edit</button>
-        <button role="tab" aria-selected="false" data-tab="preview">Card preview</button>
-      </div>
-      <div id="empty" class="empty muted">Pick a project to edit it.</div>
-      <form id="form" class="form" hidden onsubmit="return false">
-        <p class="eyebrow" id="iSlot"></p>
-        <label class="field"><span>Title</span><input id="fT" maxlength="160"></label>
-        <label class="field"><span>Kicker <small>the coloured line under the title</small></span><input id="fK" maxlength="240"></label>
-        <div class="field">
-          <span>Description</span>
-          <div class="rte-bar" role="toolbar" aria-label="Formatting">
-            <button type="button" data-cmd="bold" title="Bold"><b>B</b></button>
-            <button type="button" data-cmd="italic" title="Italic"><i>I</i></button>
-            <button type="button" data-cmd="h3" title="Small heading">H</button>
-            <button type="button" data-cmd="p" title="Paragraph">¶</button>
-            <button type="button" data-cmd="insertUnorderedList" title="Bullet list">•</button>
-            <button type="button" data-cmd="link" title="Link">↗</button>
-            <button type="button" data-cmd="removeFormat" title="Clear formatting">⌫</button>
-            <button type="button" data-cmd="html" title="Edit HTML" class="right">&lt;/&gt;</button>
-          </div>
-          <div id="fD" class="rte" contenteditable="true" aria-label="Description"></div>
-          <textarea id="fDhtml" class="rte-html" hidden spellcheck="false" aria-label="Description HTML"></textarea>
-        </div>
-        <div class="field">
-          <span>Images <small>first image shows first · drop files here</small></span>
-          <div id="imgs" class="imgs"></div>
-          <label class="drop" id="drop"><input type="file" id="fileIn" accept="image/*" multiple hidden>+ Upload images</label>
-          <p id="upMsg" class="muted small"></p>
-        </div>
-        <label class="field"><span>Tags <small>comma separated</small></span><input id="fTags"></label>
-        <div class="field"><span>Links</span><div id="links"></div><button type="button" class="btn small" id="addLink">+ Add link</button></div>
-        <div class="field" id="barsField" hidden><span>Skill bars</span><div id="bars"></div><button type="button" class="btn small" id="addBar">+ Add bar</button></div>
-        <p class="muted small" id="flags"></p>
-        <div class="item-actions">
-          <button type="button" class="btn small" id="dupItem">Duplicate</button>
-          <label class="copyto">Copy to <select id="copyTo"></select></label>
-          <button type="button" class="btn small danger" id="delItem">Delete</button>
-        </div>
-      </form>
-      <iframe id="cardFrame" class="card-frame" title="Card preview" hidden></iframe>
-    </aside>
-  </div>
-</div>
-
-<dialog id="dlg"><form method="dialog"><h3 id="dlgT"></h3><div id="dlgB"></div><menu><button class="btn" value="cancel">Cancel</button><button class="btn primary" value="ok" id="dlgOk">OK</button></menu></form></dialog>
-<div id="toast" class="toast" role="status" hidden></div>
-
+<div id="root"><div class="center"><span class="spin"></span>Loading…</div></div>
 <script type="module" src="admin.js"></script>
 </body>
 </html>

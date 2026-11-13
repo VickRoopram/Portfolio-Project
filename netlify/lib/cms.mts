@@ -89,6 +89,18 @@ const url = (v: unknown) => (typeof v === "string" && /^(https?:|mailto:|tel:|\/
 const img = (v: unknown) => (typeof v === "string" && /^(assets\/|\/assets\/|\/media\/|https:\/\/)/.test(v) && !/[<>"']/.test(v) ? v.slice(0, 500) : "")
 const colour = (v: unknown) => (typeof v === "string" && /^#[0-9a-f]{6}$/i.test(v) ? v : undefined)
 
+/* the burger menu: top-level entries and the sections under Projects */
+function cleanMenu(m: any) {
+  if (!m || typeof m !== "object") return null
+  const items = (Array.isArray(m.items) ? m.items : []).slice(0, 12).map((x: any) => {
+    const go = typeof x?.go === "string" && /^(home|about|projects|contact|link|mode:[a-z]{2,8})$/.test(x.go) ? x.go : ""
+    return go ? { label: text(x.label, 40) || "Untitled", go, ...(go === "link" ? { href: url(x.href) } : {}) } : null
+  }).filter((x: any) => x && (x.go !== "link" || x.href))
+  const projects = (Array.isArray(m.projects) ? m.projects : []).slice(0, 12)
+    .filter((p: any) => typeof p?.key === "string" && /^[a-z]{2,8}$/.test(p.key)).map((p: any) => ({ key: p.key, label: text(p.label, 40) }))
+  return items.length ? { items, projects } : null
+}
+
 /* validate + clean a whole content document before it is stored */
 export function cleanContent(doc: any) {
   if (!doc || typeof doc !== "object" || !doc.ch || typeof doc.ch !== "object") throw new Error("Content is missing its groups")
@@ -112,8 +124,9 @@ export function cleanContent(doc: any) {
       }),
     }
   }
+  const menu = cleanMenu(doc.menu)
   const links = Array.isArray(doc.links) ? doc.links.map((l: any) => [text(l?.[0], 80), url(l?.[1])]).filter((l: string[]) => l[0] && l[1]).slice(0, 12) : []
-  return { v: 1, updated: new Date().toISOString(), ch, links }
+  return { v: 1, updated: new Date().toISOString(), ch, links, ...(menu ? { menu } : {}) }
 }
 
 export const newId = () => randomBytes(9).toString("base64url")

@@ -94,3 +94,9 @@ CH.cv={name:'CV & CONTACT',col:'#ff5d1a',items:[
  CH.sd={name:'STUDY',col:'#d14fa8',items:[I('Theology degree','Doxa Deo & SATS · 2023–2026','In progress, alongside full-time design work.'),I('UX/UI short course','University of Cape Town · 2021–2022','User research, flows, wireframes and prototyping.'),I('Frontend developer bootcamp','Codecamp.org · 2021','HTML5, CSS, JavaScript and React.'),I('Adobe software course','Adobe MAX · 2020','Advanced Adobe workflows.'),I('National Diploma in Visual Communication','Durban University of Technology · 2018–2020','Graphic design diploma; Loeries and Gold Pack recognition in the final year.')]};
  CH.xp={name:'EXPERIMENTAL',col:'#d14fa8',items:[I('VR-17 Portfolio Synth','3D · WebGL · Web Audio','This portfolio: a playable 3D synthesizer built with Three.js and the Web Audio API, designed from a Figma synth.'),I('Retro Grade pixel art','Pixel illustration','Pixel-art characters and scenes from the Retro Grade project.',{img:[im('g53','Pixel art'),im('g52','Magazine mock-up')]}),I('Open slot','Experimental · coming soon','Reserved for the next experiment.'),I('Open slot','Experimental · coming soon','Reserved for the next experiment.')]};
 }
+
+/* The menu behind the burger (editable in /admin).
+   items: the top level, in order. go = home | about | projects (opens the Projects list) | contact | mode:<key> (one section's projects) | link (href).
+   projects: the sections listed under Projects, with the name the menu shows for each. */
+export const MENU={items:[{label:'Home',go:'home'},{label:'About',go:'about'},{label:'Projects',go:'projects'},{label:'Contact',go:'contact'}],
+  projects:[{key:'gd',label:'Graphic design'},{key:'ux',label:'UI/UX design'},{key:'mo',label:'Motion & 3D'},{key:'tl',label:'Tools'},{key:'xp',label:'Experimental'}]};

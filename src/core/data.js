@@ -1,8 +1,8 @@
 /* Content + modes. Waits for /admin overrides first, so every module that imports this sees the final content. */
-import { CH, LINKS } from '../content.js';
+import { CH, LINKS, MENU } from '../content.js';
 import { applyCMS } from '../cms.js';
-await applyCMS(CH, LINKS); // draft on previews, live on the live site
-export { CH, LINKS };
+await applyCMS(CH, LINKS, MENU); // draft on previews, live on the live site
+export { CH, LINKS, MENU };
 
 const keys = k => CH[k].items.length;
 const kb = (glow, n) => ({ part: 'The keyboard', box: 'kb', glow, n });

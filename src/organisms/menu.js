@@ -1,15 +1,15 @@
 /* Menu behind the burger: a side panel in the same spot as the detail card, so the synth stays visible and reachable.
-   Root: Home · About · Projects › · Contact.
+   Root: MENU.items (default Home · About · Projects › · Contact; editable in /admin).
    Projects drills down to the five keyboard modes; a mode drills down to the projects on its keys.
    Picking a mode flies the camera to the keys and lights them; picking a project hands over to act.journey
    (pan out, fly into the synth, push the key, open the card where the menu was). */
 import { $, S, act, reduceMotion } from '../core/state.js';
-import { CH, MODES } from '../core/data.js';
+import { CH, MENU } from '../core/data.js';
 import { ensureAudio, drum } from '../core/audio.js';
 import { icon } from '../atoms/icons.js';
 
-/* the project modes, in the order of the synth's mode buttons; labels read as sections, not button legends */
-export const PROJECT_MODES = [['gd', 'Graphic design'], ['ux', 'UI/UX design'], ['mo', 'Motion & 3D'], ['tl', 'Tools'], ['xp', 'Experimental']];
+/* the sections under Projects, in menu order; labels read as sections, not button legends */
+export const PROJECT_MODES = MENU.projects.filter(p => CH[p.key]).map(p => [p.key, p.label || CH[p.key].name]);
 const LABEL = Object.fromEntries(PROJECT_MODES);
 const isSlot = it => /^open slot$/i.test(String(it.t).trim()); // placeholders stay on the keys but not in the menu
 
@@ -18,13 +18,15 @@ let level = { k: 'root' }, hideId = 0;
 const label = open => { mnu.setAttribute('aria-expanded', String(open)); mnu.setAttribute('aria-label', open ? 'Close menu' : 'Menu') };
 export const menuOpen = () => !menu.hidden && !menu.classList.contains('out');
 
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const chev = `<span class="go">${icon('chevron-right', 20)}</span>`;
 const row = (attrs, inner, n) => `<button class="m-row" ${attrs} style="--n:${n}">${inner}</button>`;
 function render() {
   const { k, ch, i } = level; let h = '';
   if (k === 'root') {
-    h = `<div class="m-list root">${[['home', 'Home'], ['about', 'About'], ['projects', 'Projects', 1], ['contact', 'Contact']].map(([go, t, sub], n) =>
-      row(`data-go="${go}"${go === 'home' ? ' id="home"' : ''}`, `<span class="tx"><b>${t}</b></span>${sub ? chev : ''}`, n)).join('')}</div>`;
+    h = `<div class="m-list root">${MENU.items.map(({ label: t, go, href }, n) => go === 'link'
+      ? `<a class="m-row" href="${esc(href || '#')}" target="_blank" rel="noopener" style="--n:${n}"><span class="tx"><b>${esc(t)}</b></span><span class="go">${icon('external-link', 18)}</span></a>`
+      : row(`data-go="${go}"${go === 'home' ? ' id="home"' : ''}`, `<span class="tx"><b>${esc(t)}</b></span>${go === 'projects' || go.startsWith('mode:') ? chev : ''}`, n)).join('')}</div>`;
   } else if (k === 'projects') {
     h = `<p class="m-title">Projects</p><div class="m-list">${PROJECT_MODES.map(([m, t], n) => {
       const c = CH[m]; return c ? row(`data-mode="${m}" style="--c:${c.col}"`, `<i class="dot"></i><span class="tx"><b>${t}</b></span>${chev}`, n) : '';
@@ -34,7 +36,7 @@ function render() {
     h = `<p class="m-title" style="--c:${c.col}">${LABEL[ch] || c.name}</p><div class="m-list" style="--c:${c.col}">${c.items.map((it, j) => isSlot(it) ? '' :
       row(`data-item="${j}"${j === i ? ' aria-current="true"' : ''}`, `<span class="tx"><b>${it.t}</b></span>${chev}`, n++)).join('')}</div>`;
   }
-  head.hidden = k === 'root'; back.querySelector('span').textContent = k === 'mode' ? 'Projects' : 'Menu';
+  head.hidden = k === 'root'; back.querySelector('span').textContent = k === 'mode' && !level.direct ? 'Projects' : 'Menu';
   body.innerHTML = h; body.scrollTop = 0; menu.dataset.level = k; syncHome(); hidePeek();
   (body.querySelector('[aria-current="true"]') || body.querySelector('.m-row'))?.focus({ preventScroll: true });
 }
@@ -51,7 +53,7 @@ function showPeek(b, x) {
 }
 function hidePeek() { peekRow = null; peek.hidden = true; peek.classList.remove('ok') }
 const syncHome = () => $('home')?.setAttribute('data-at-home', String(!S.mode && !S.card));
-function show(k, ch, i) { level = { k, ch, i }; render() }
+function show(k, ch, i, direct) { level = { k, ch, i, direct }; render() }
 
 /* open at a level (the burger opens the root). The card and the menu share one side, so the card closes first */
 export function openMenu(k = 'root', ch, i) {
@@ -68,10 +70,10 @@ export function closeMenu() {
   menu.classList.add('out'); setTimeout(() => { if (id === hideId) { menu.hidden = true; menu.classList.remove('out') } }, 240);
 }
 /* Esc: up one level, then closed */
-export function menuEsc() { if (level.k === 'mode') show('projects'); else if (level.k === 'projects') show('root'); else { closeMenu(); mnu.focus() } }
+export function menuEsc() { if (level.k === 'mode') show(level.direct ? 'root' : 'projects'); else if (level.k === 'projects') show('root'); else { closeMenu(); mnu.focus() } }
 
 mnu.onclick = () => { ensureAudio(); menuOpen() ? closeMenu() : openMenu() };
-back.onclick = () => { drum('blip'); show(level.k === 'mode' ? 'projects' : 'root') };
+back.onclick = () => { drum('blip'); show(level.k === 'mode' && !level.direct ? 'projects' : 'root') };
 body.addEventListener('click', e => {
   const b = e.target.closest('button.m-row'); if (!b) { if (e.target.closest('a.m-row')) closeMenu(); return }
   ensureAudio(); const { go, mode, item } = b.dataset;
@@ -79,6 +81,7 @@ body.addEventListener('click', e => {
   else if (go === 'about') { closeMenu(); act.journey('ab', 0) }
   else if (go === 'contact') { closeMenu(); act.journey('cv', 1) }
   else if (go === 'projects') { drum('blip'); show('projects') }
+  else if (go?.startsWith('mode:')) { const m = go.slice(5); if (CH[m]) { show('mode', m, undefined, true); act.zoomTo(m) } } // a section straight from the top level
   else if (mode) { show('mode', mode); act.zoomTo(mode) } // the camera flies to the keys while the list opens
   else if (item !== undefined) { const ch = level.ch; closeMenu(); act.journey(ch, +item) }
 });
