@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vick Does Creative · Content admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400..900&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* the site's design tokens, so the admin speaks the same visual language */
+{{TOKENS}}
+/* ── admin layout ── */
+body{overflow:auto;font-size:14px}
+button,input,select,textarea{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:232px minmax(300px,380px) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);height:100vh}
+header.bar{grid-column:1/-1;display:flex;align-items:center;gap:var(--s4);padding:var(--s3) var(--s5);border-bottom:1px solid var(--line);background:var(--floor)}
+.brand{display:flex;flex-direction:column;gap:2px;margin-right:auto}
+.brand b{font:800 var(--t-md)/1.1 var(--display);letter-spacing:-.01em}
+.brand small{font-size:var(--t-xs);color:var(--mute)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:var(--chip);color:var(--chip-ink);font:600 var(--t-xs)/1 var(--body);white-space:nowrap}
+.pill i{width:7px;height:7px;border-radius:50%;background:#3f9a5b}
+.pill.saving i{background:#d9a12b}.pill.err i{background:var(--red)}
+.btn{display:inline-flex;align-items:center;gap:var(--s2);text-decoration:none;min-height:36px;padding:0 var(--s3);border:1px solid var(--line);border-radius:var(--r2);background:var(--card);cursor:pointer;font-weight:600;white-space:nowrap;transition:border-color .15s,background-color .15s,transform .1s}
+.btn:hover{border-color:var(--ink)}.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--accent-ui);border-color:var(--accent-ui);color:var(--on-accent)}
+.btn.primary:hover{box-shadow:0 6px 18px color-mix(in srgb,var(--accent-ui) 35%,transparent)}
+.btn.ghost{border-color:transparent;background:none}.btn.ghost:hover{border-color:var(--line)}
+.btn.danger{color:var(--red)}.btn.danger:hover{border-color:var(--red)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.icon-btn{display:grid;place-items:center;width:32px;height:32px;padding:0;border:1px solid transparent;border-radius:var(--r1);background:none;cursor:pointer}
+.icon-btn:hover{border-color:var(--line)}
+.ic{display:block;flex:none}
+aside,.list,.edit{min-height:0;overflow:auto}
+aside{border-right:1px solid var(--line);padding:var(--s4) var(--s3)}
+aside h3{margin:var(--s4) var(--s2) var(--s2);font:700 var(--t-xs)/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+aside h3:first-child{margin-top:0}
+.nav{display:flex;align-items:center;gap:var(--s2);width:100%;padding:var(--s2);border:0;border-radius:var(--r2);background:none;cursor:pointer;text-align:left}
+.nav:hover{background:var(--chip)}
+.nav[aria-current="true"]{background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+.nav .dot{width:10px;height:10px;border-radius:3px;background:var(--c);box-shadow:0 0 8px color-mix(in srgb,var(--c) 70%,transparent);flex:none}
+.nav span{flex:1;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav small{font:600 var(--t-xs)/1 var(--body);color:var(--mute);font-variant-numeric:tabular-nums}
+.nav small.over{color:var(--red)}
+.sync{margin-top:var(--s5);padding:var(--s3);border:1px solid var(--line);border-radius:var(--r2);background:var(--card);display:grid;gap:var(--s3)}
+.sync h4{margin:0;font:700 var(--t-sm)/1.2 var(--body)}
+.sync .row{display:grid;gap:2px}
+.sync .row b{font-size:var(--t-xs);text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+.sync .row span{font-size:var(--t-sm)}
+.sync .note{font-size:var(--t-xs);color:var(--mute);line-height:1.4;margin:0}
+.req{padding:var(--s3);border-radius:var(--r1);background:color-mix(in srgb,var(--accent-ui) 12%,transparent);font-size:var(--t-sm);line-height:1.4}
+.req code{font:600 12px var(--body);background:var(--card);padding:2px 6px;border-radius:4px}
+.list{border-right:1px solid var(--line);padding:var(--s4)}
+.ghead{display:grid;gap:var(--s2);margin-bottom:var(--s4)}
+.ghead .part{font:700 var(--t-xs)/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.ghead input.name{width:100%;padding:var(--s1) 0;border:0;border-bottom:1px solid transparent;background:none;font:800 var(--t-xl)/1.1 var(--display);letter-spacing:-.015em}
+.ghead input.name:focus{outline:none;border-color:var(--line)}
+.ghead p{margin:0;color:var(--mute);font-size:var(--t-sm);line-height:1.45}
+.colours{display:flex;gap:var(--s4);flex-wrap:wrap}
+.colours label{display:flex;align-items:center;gap:var(--s2);font-size:var(--t-xs);color:var(--mute);font-weight:600}
+.colours input{width:28px;height:28px;padding:0;border:1px solid var(--line);border-radius:6px;background:none;cursor:pointer}
+.slots{display:grid;gap:4px;margin:var(--s3) 0 var(--s4)}
+.slots.kb{grid-template-columns:repeat(7,1fr)}
+.slots.cv{grid-template-columns:repeat(2,1fr)}
+.slot{min-height:44px;padding:5px 6px;border:1px solid var(--line);border-radius:6px;background:var(--card2);font-size:10px;line-height:1.2;overflow:hidden;text-align:left;cursor:pointer;color:var(--mute)}
+.slot b{display:block;font-weight:700;letter-spacing:.04em;margin-bottom:2px}
+.slot span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--ink)}
+.slot.on{border-color:color-mix(in srgb,var(--c) 70%,var(--line));box-shadow:inset 0 -3px 0 var(--c)}
+.slot.sel{background:color-mix(in srgb,var(--c) 18%,var(--card2))}
+.slot.off{cursor:default;opacity:.55}.slot.off span{color:var(--mute)}
+.slabel{display:flex;justify-content:space-between;font-size:var(--t-xs);color:var(--mute);font-weight:600}
+ol.items{list-style:none;margin:0 0 var(--s3);padding:0;display:grid;gap:4px}
+ol.items li{display:grid;grid-template-columns:auto 26px 44px minmax(0,1fr) auto;align-items:center;gap:var(--s2);padding:6px;border:1px solid transparent;border-radius:var(--r2);cursor:pointer}
+ol.items li:hover{background:var(--chip)}
+ol.items li[aria-current="true"]{background:var(--card);border-color:var(--line)}
+ol.items li.over{opacity:.55}
+ol.items li.drop{border-color:var(--accent-ui)}
+.grip{cursor:grab;color:var(--mute);font-size:16px;line-height:1;user-select:none}
+.num{font:600 var(--t-xs)/1 var(--body);color:var(--mute);font-variant-numeric:tabular-nums;text-align:center}
+.th{width:44px;height:32px;border-radius:5px;background:var(--chip) center/cover no-repeat}
+.tx{min-width:0}.tx b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tx small{display:block;color:var(--mute);font-size:var(--t-xs);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mv{display:flex;flex-direction:column;opacity:0;transition:opacity .15s}
+li:hover .mv,li:focus-within .mv,li[aria-current="true"] .mv{opacity:1}
+.mv button{border:0;background:none;padding:0 4px;cursor:pointer;color:var(--mute);line-height:1}
+.mv button:hover{color:var(--ink)}
+.edit{padding:var(--s4) var(--s5) var(--s7)}
+.etop{display:flex;align-items:center;gap:var(--s2);flex-wrap:wrap;margin-bottom:var(--s4)}
+.etop .where{margin-right:auto;font:600 var(--t-xs)/1.3 var(--body);color:var(--mute);letter-spacing:.04em;text-transform:uppercase}
+.tabs{display:inline-flex;padding:3px;border-radius:var(--r2);background:var(--chip)}
+.tabs button{padding:6px 12px;border:0;border-radius:7px;background:none;cursor:pointer;font-weight:600;color:var(--mute)}
+.tabs button[aria-selected="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px var(--shadow)}
+.form{display:grid;gap:var(--s5);max-width:720px}
+.field{display:grid;gap:6px}
+.field>span,.flabel{font:700 var(--t-xs)/1 var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--mute);display:flex;justify-content:space-between;align-items:center}
+.field input,.field textarea,.pair input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r1);background:var(--card)}
+.field input:focus,.field textarea:focus,.pair input:focus,.rte:focus{outline:2px solid color-mix(in srgb,var(--accent-ui) 60%,transparent);outline-offset:-1px}
+.field small{color:var(--mute);font-size:var(--t-xs);line-height:1.4}
+.rte-wrap{border:1px solid var(--line);border-radius:var(--r1);background:var(--card);overflow:hidden}
+.rte-bar{display:flex;gap:2px;padding:4px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.rte-bar button{min-width:30px;height:28px;padding:0 8px;border:0;border-radius:5px;background:none;cursor:pointer;font-weight:700;font-size:12px;color:var(--mute)}
+.rte-bar button:hover,.rte-bar button[aria-pressed="true"]{background:var(--chip);color:var(--ink)}
+.rte-bar .sep{width:1px;background:var(--line);margin:4px}
+.rte{min-height:160px;max-height:420px;overflow:auto;padding:12px 14px;line-height:1.6}
+.rte:empty::before{content:"Write the story of this project…";color:var(--mute)}
+.rte p{margin:0 0 .7em}.rte h3{margin:.8em 0 .4em;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.rte .steps,.rte .tags{display:flex;flex-wrap:wrap;gap:6px}.rte .steps div,.rte .tags span{padding:6px 8px;border:1px solid var(--line);border-radius:6px;font-size:12px}
+textarea.html{min-height:220px;border:0;border-radius:0;font:500 12px/1.5 "IBM Plex Mono",monospace;resize:vertical}
+.imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:var(--s3)}
+.imgc{border:1px solid var(--line);border-radius:var(--r2);overflow:hidden;background:var(--card)}
+.imgc .pv{position:relative;aspect-ratio:16/10;background:var(--chip) center/cover no-repeat;display:grid;place-items:center;color:var(--mute);font-size:var(--t-xs);text-align:center;padding:6px}
+.imgc .pv b{position:absolute;top:6px;left:6px;padding:3px 6px;border-radius:4px;background:var(--ink);color:var(--floor);font-size:10px}
+.imgc .ctl{display:flex;gap:2px;padding:6px}
+.imgc input{flex:1;min-width:0;padding:6px 8px;border:1px solid var(--line);border-radius:5px;background:var(--card2);font-size:12px}
+.drop{display:grid;place-items:center;gap:6px;min-height:96px;padding:var(--s4);border:1.5px dashed var(--line);border-radius:var(--r2);color:var(--mute);text-align:center;font-size:var(--t-sm);cursor:pointer}
+.drop.over{border-color:var(--accent-ui);color:var(--ink);background:color-mix(in srgb,var(--accent-ui) 8%,transparent)}
+.pairs{display:grid;gap:6px}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:6px;align-items:center}
+.pair.bar3{grid-template-columns:minmax(0,1.6fr) minmax(0,.8fr) 120px auto}
+.pair.soc{grid-template-columns:auto minmax(0,1fr) minmax(0,1.4fr) auto auto}
+.pair .ic{color:var(--accent-ui)}
+.flags{padding:var(--s3);border-radius:var(--r1);background:var(--chip);color:var(--chip-ink);font-size:var(--t-sm);line-height:1.45}
+.actions{display:flex;gap:var(--s2);flex-wrap:wrap;padding-top:var(--s4);border-top:1px solid var(--line)}
+.actions .sp{flex:1}
+.preview{display:grid;justify-items:center;gap:var(--s3)}
+.preview iframe{width:min(430px,100%);height:min(78vh,820px);border:1px solid var(--line);border-radius:var(--r3);background:var(--card);box-shadow:0 24px 60px var(--shadow)}
+.preview small{color:var(--mute);font-size:var(--t-xs)}
+.empty{display:grid;place-items:center;gap:var(--s3);min-height:50vh;text-align:center;color:var(--mute)}
+.banner{grid-column:1/-1;padding:var(--s3) var(--s5);background:color-mix(in srgb,var(--red) 14%,var(--floor));font-size:var(--t-sm)}
+.loading{display:grid;place-items:center;gap:var(--s3);height:100vh;color:var(--mute)}
+.spin{width:22px;height:22px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:spin .8s linear infinite}
+dialog{border:1px solid var(--line);border-radius:var(--r3);background:var(--card);color:var(--ink);padding:var(--s5);max-width:420px;box-shadow:0 24px 60px var(--shadow)}
+dialog::backdrop{background:rgba(20,16,12,.45)}
+dialog h3{margin:0 0 var(--s2);font:800 var(--t-lg)/1.2 var(--display)}
+dialog p{margin:0 0 var(--s4);color:var(--mute);line-height:1.5}
+dialog .act{display:flex;justify-content:flex-end;gap:var(--s2)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:50;padding:10px 16px;border-radius:var(--r2);background:var(--ink);color:var(--floor);font-weight:600;box-shadow:0 12px 30px var(--shadow)}
+#toast.show{animation:toastIn .3s var(--ease)}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,8px)}}
+@media (max-width:1100px){.app{grid-template-columns:200px minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr)}.list{grid-column:2;border-right:0;border-bottom:1px solid var(--line);max-height:46vh}.edit{grid-column:2}}
+@media (max-width:720px){.app{display:block;height:auto}aside,.list{border:0;border-bottom:1px solid var(--line);max-height:none}.slots.kb{grid-template-columns:repeat(4,1fr)}.pair,.pair.bar3,.pair.soc{grid-template-columns:1fr 1fr auto}header.bar{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<div id="root"><div class="loading"><div class="spin"></div><span id="loadMsg">Loading your content…</span></div></div>
+<div id="toast" hidden></div>
+<dialog id="dlg"><h3 id="dlgT"></h3><p id="dlgP"></p><div class="act"><button class="btn" value="no" id="dlgNo">Cancel</button><button class="btn primary" id="dlgYes">OK</button></div></dialog>
+<script>
+/* ═══════════ Vick Does Creative · content admin (Claude artifact) ═══════════
+   Content lives in this artifact's database:
+     groups/<key>   one synth section {name, col, glow?, items[]}   (gd ux mo tl xp ab cv)
+     site/socials   {links: [[label, url], …]}                     (contact card + remote)
+     site/sync      sync requests and history, written by this page and by Claude
+   Claude sends it to the site: "sync" → the version-01 preview, "publish" → the live site. */
+const PATHS = {{PATHS}};
+const SITE_CSS = {{SITECSS}};
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+const icon = (n, s = 18) => `<svg class="ic" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" aria-hidden="true"><path d="${PATHS[n] || PATHS.globe}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const socialIcon = (label, s) => icon(String(label).toLowerCase().split(/[ (·]/)[0], s);
+
+/* how each group sits on the synth */
+const ORDER = ['gd', 'ux', 'mo', 'tl', 'xp', 'ab', 'cv'];
+const META = {
+  gd: { part: 'Mode button · DESIGN', glow: '#22ff7a', slots: 'kb', how: 'Pressing DESIGN loads these onto the 14 keys, left to right.' },
+  ux: { part: 'Mode button · UI/UX', glow: '#3fb2ff', slots: 'kb', how: 'Pressing UI/UX loads these onto the 14 keys, left to right.' },
+  mo: { part: 'Mode button · MOTION', glow: '#ff6a20', slots: 'kb', how: 'Pressing MOTION loads these onto the 14 keys, left to right.' },
+  tl: { part: 'Mode button · TOOLS', glow: '#a46bff', slots: 'kb', how: 'Pressing TOOLS loads these onto the 14 keys, left to right.' },
+  xp: { part: 'Mode button · EXPERIMENTAL', glow: '#ff5ec8', slots: 'kb', how: 'Pressing EXPERIMENTAL loads these onto the 14 keys, left to right.' },
+  ab: { part: 'About · screen, menu and key 6', glow: '#ff2a30', slots: 'kb', how: 'Clicking the synth screen or About in the menu opens the first of these; they also load onto the keys.' },
+  cv: { part: 'The remote', glow: '#ff6a20', slots: 'cv', how: 'The remote on the left. Its buttons open these; the first is reached with the card arrows.' },
+};
+const LIMIT = { kb: 14, cv: 6 };
+const CV_SLOTS = ['Card arrows', 'CONTACT', 'Behance key', 'Instagram key', 'LinkedIn key', '··· key'];
+const PREVIEW = 'https://version-01--vick-does-creative.netlify.app/', LIVE = 'https://vick-does-creative.netlify.app/';
+
+/* image sources: site images ship with this artifact; uploads live in its assets until a sync moves them to the site */
+const imgURL = s => !s ? '' : /^\/?assets\/img\//.test(s) ? 'img/' + s.split('/').pop() : s.startsWith('asset:') ? '/_blob/' + s.slice(6) : '';
+const imgNote = s => s.startsWith('/media/') ? 'Uploaded on the site' : /^https?:/.test(s) ? 'Web image' : s;
+
+/* the canonical form of the content: Claude sends exactly this, and its hash tells you what's unsent */
+const FIELDS = ['t', 'k', 'd', 'img', 'tags', 'links', 'bars', 'hero', 'contact', 'life'];
+function canon() {
+  const ch = {};
+  for (const k of ORDER) { const g = S.groups[k]; if (!g) continue;
+    ch[k] = { name: g.name || '', col: g.col || '#d71920', ...(g.glow ? { glow: g.glow } : {}), items: (g.items || []).map(it => { const o = {}; for (const f of FIELDS) if (it[f] !== undefined && it[f] !== '' && !(Array.isArray(it[f]) && !it[f].length)) o[f] = it[f]; return o }) } }
+  return { ch, links: (S.socials || []).filter(l => l[0] && l[1]) };
+}
+function hash(str) { let h = 0x811c9dc5; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) } return (h >>> 0).toString(16).padStart(8, '0') }
+const contentHash = () => hash(JSON.stringify(canon()));
+
+/* keep only harmless formatting in descriptions before they touch the page */
+const OK_TAGS = new Set(['P', 'BR', 'B', 'STRONG', 'I', 'EM', 'U', 'A', 'UL', 'OL', 'LI', 'H3', 'H4', 'DIV', 'SPAN', 'SMALL', 'BLOCKQUOTE', 'HR']);
+function clean(html) {
+  const t = document.createElement('template'); t.innerHTML = String(html || '');
+  const walk = n => [...n.childNodes].forEach(c => {
+    if (c.nodeType === 8) return c.remove(); if (c.nodeType !== 1) return;
+    if (!OK_TAGS.has(c.tagName)) { if (/^(SCRIPT|STYLE|IFRAME|OBJECT|EMBED|SVG|MATH|TEMPLATE|FORM|INPUT|BUTTON|TEXTAREA|SELECT|LINK|META|BASE|IMG|VIDEO|AUDIO)$/.test(c.tagName)) return c.remove(); walk(c); c.replaceWith(...c.childNodes); return }
+    [...c.attributes].forEach(a => { const n = a.name.toLowerCase(), v = a.value;
+      const keep = (n === 'class' && /^[\w\s-]*$/.test(v)) || (n === 'style' && !/url\s*\(|expression|javascript:|@import|behavior/i.test(v)) || (c.tagName === 'A' && n === 'href' && /^(https?:|mailto:|tel:|\/|#|assets\/)/i.test(v.trim()));
+      if (!keep) c.removeAttribute(a.name) });
+    if (c.tagName === 'A') { c.setAttribute('target', '_blank'); c.setAttribute('rel', 'noopener') }
+    walk(c) });
+  walk(t.content); return t.innerHTML.trim();
+}
+
+/* ── state ── */
+const S = { groups: {}, socials: null, sync: {}, cur: 'gd', sel: 0, tab: 'edit', html: false, ready: false, canWrite: true };
+let db = null, assets = null;
+const pending = {}, timers = {}, writing = {};
+let saveState = 'saved';
+
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; t.classList.remove('show'); void t.offsetWidth; t.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => t.hidden = true, 2800) }
+function ask(title, body, yes = 'OK', danger = false) {
+  return new Promise(res => { const d = $('dlg'); $('dlgT').textContent = title; $('dlgP').innerHTML = body; $('dlgYes').textContent = yes; $('dlgYes').className = 'btn ' + (danger ? 'danger' : 'primary');
+    $('dlgYes').onclick = () => { d.close(); res(true) }; $('dlgNo').onclick = () => { d.close(); res(false) }; d.oncancel = () => res(false); d.showModal() });
+}
+const ago = iso => { if (!iso) return 'never'; const s = (Date.now() - Date.parse(iso)) / 1000; if (s < 60) return 'just now'; if (s < 3600) return Math.round(s / 60) + ' min ago'; if (s < 86400) return Math.round(s / 3600) + ' h ago'; return new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) };
+
+/* ── saving: one write at a time per document, coalesced into a write per pause ── */
+function setSave(st) { saveState = st; const p = $('savePill'); if (!p) return; p.className = 'pill ' + (st === 'saved' ? '' : st === 'error' ? 'err' : 'saving'); p.lastChild.textContent = st === 'saved' ? 'All changes saved' : st === 'error' ? 'Couldn’t save · retrying' : 'Saving…'; renderSync() }
+function touch(key = S.cur) { pending[key] = true; setSave('saving'); clearTimeout(timers[key]); timers[key] = setTimeout(() => flush(key), 650); renderNav() }
+async function flush(key) {
+  if (writing[key]) { timers[key] = setTimeout(() => flush(key), 300); return }
+  writing[key] = true; pending[key] = false;
+  const path = key === 'socials' ? 'site/socials' : 'groups/' + key, body = key === 'socials' ? { links: S.socials } : clone(S.groups[key]);
+  try { await db.doc(path).set(body); writing[key] = false; if (!Object.values(pending).some(Boolean) && !Object.values(writing).some(Boolean)) setSave('saved') }
+  catch (e) { writing[key] = false; pending[key] = true;
+    if (e?.code === 'invalid_argument' && !S.canWrite) return; setSave('error'); timers[key] = setTimeout(() => flush(key), 2500 + Math.random() * 1500) }
+}
+
+/* ── start: connect, subscribe once, render ── */
+(async () => {
+  const slow = setTimeout(() => { $('loadMsg') && ($('loadMsg').textContent = 'Still connecting to your content… it may be offline right now.') }, 10000);
+  db = await claude.use('db');
+  if (!db) { clearTimeout(slow); $('root').innerHTML = '<div class="loading"><b>Sign in to claude.ai to edit your content.</b><span>This admin keeps your portfolio content in its own database.</span></div>'; return }
+  claude.use('assets').then(a => { assets = a; if (S.ready) renderEditor() });
+  claude.use('user').then(async u => { try { const w = await u?.can?.('data.write'); if (w === false) { S.canWrite = false; render() } } catch {} });
+  let got = { g: false, s: false, y: false };
+  const go = () => {
+    if (got.g && got.s && got.y && !S.ready) { clearTimeout(slow); S.ready = true; render(); baseline() } else if (S.ready) softRender() };
+  db.collection('groups').onSnapshot(snap => {
+    for (const d of snap.docs) { if (pending[d.id] || writing[d.id]) continue; const next = d.data(); if (JSON.stringify(next) !== JSON.stringify(S.groups[d.id])) S.groups[d.id] = clone(next) }
+    got.g = true; go();
+  }, e => { clearTimeout(slow); fail(e) });
+  db.doc('site/socials').onSnapshot(s => { if (!pending.socials && !writing.socials) S.socials = s.exists ? clone(s.data().links || []) : (S.socials || []); got.s = true; go() }, fail);
+  db.doc('site/sync').onSnapshot(s => { S.sync = s.exists ? clone(s.data()) : {}; got.y = true; go() }, fail);
+})();
+/* the content was loaded from the live site: record its fingerprint as what the preview and live site already have */
+function baseline() {
+  const y = S.sync; if (y.preview?.hash !== 'seed' || !S.canWrite) return; const h = contentHash(), b = clone(y);
+  b.preview.hash = h; if (b.live?.hash === 'seed') b.live.hash = h; db.doc('site/sync').set(b).catch(() => {});
+}
+function fail(e) { const b = document.querySelector('.banner') || document.createElement('div'); b.className = 'banner'; b.textContent = e?.code === 'revoked' ? 'This page lost access to your content. Reopen it to keep editing.' : 'Live updates stopped. Reopen this page to reconnect; your saved changes are safe.'; document.querySelector('.app')?.prepend(b) }
+
+/* ═══════════ render ═══════════ */
+const G = () => S.groups[S.cur], I = () => G()?.items?.[S.sel], glow = k => S.groups[k]?.glow || META[k].glow;
+function render() {
+  if (!S.ready) return;
+  if (!$('app')) $('root').innerHTML = `<div class="app" id="app">
+    <header class="bar"><div class="brand"><b>Vick Does Creative</b><small>Portfolio content · the synth's projects, copy and links</small></div>
+      <span class="pill" id="savePill"><i></i><span>All changes saved</span></span>
+      <a class="btn ghost" href="${PREVIEW}" target="_blank" rel="noopener">${icon('external-link', 16)}Preview site</a>
+      <a class="btn ghost" href="${LIVE}" target="_blank" rel="noopener">${icon('globe', 16)}Live site</a>
+      <button class="icon-btn" id="themeBtn" aria-label="Switch theme">${icon(document.documentElement.dataset.theme === 'dark' ? 'sun' : 'moon', 18)}</button></header>
+    <aside id="aside"></aside><section class="list" id="list"></section><section class="edit" id="edit"></section></div>`;
+  renderNav(); renderGroup(); renderEditor(); setSave(saveState);
+  $('themeBtn').onclick = () => { const r = document.documentElement, d = r.dataset.theme !== 'dark'; r.dataset.theme = d ? 'dark' : 'light'; $('themeBtn').innerHTML = icon(d ? 'sun' : 'moon', 18); try { localStorage.setItem('vdc-admin-theme', r.dataset.theme) } catch {} if (S.tab === 'preview') renderPreview() };
+}
+/* a snapshot from elsewhere (another tab, or Claude): refresh what isn't being typed in */
+function softRender() { renderNav(); renderSync(); const a = document.activeElement; if (!a || !$('edit')?.contains(a) && !$('list')?.contains(a)) { renderGroup(); renderEditor() } }
+
+function renderNav() {
+  const el = $('aside'); if (!el) return;
+  const row = k => { const g = S.groups[k]; if (!g) return ''; const n = g.items?.length || 0, lim = LIMIT[META[k].slots];
+    return `<button class="nav" data-k="${k}" aria-current="${k === S.cur}" style="--c:${glow(k)}"><i class="dot"></i><span>${esc(g.name)}</span><small class="${n > lim ? 'over' : ''}">${n}/${lim}</small></button>` };
+  el.innerHTML = `<h3>Mode buttons</h3>${['gd', 'ux', 'mo', 'tl', 'xp'].map(row).join('')}<h3>Screen & menu</h3>${row('ab')}<h3>Remote</h3>${row('cv')}
+    <button class="nav" data-k="socials" aria-current="${S.cur === 'socials'}" style="--c:var(--accent-ui)"><i class="dot"></i><span>Social links</span><small>${(S.socials || []).length}</small></button>
+    <div class="sync" id="sync"></div>`;
+  el.onclick = e => { const k = e.target.closest('[data-k]')?.dataset.k; if (k && k !== S.cur) { S.cur = k; S.sel = 0; S.html = false; renderNav(); renderGroup(); renderEditor() } };
+  renderSync();
+}
+
+function renderSync() {
+  const el = $('sync'); if (!el) return; const y = S.sync || {}, h = S.ready ? contentHash() : '', r = y.request;
+  const sentHash = y.preview?.hash, unsent = sentHash ? sentHash !== h : true, liveBehind = y.live?.hash ? y.live.hash !== y.preview?.hash : !!y.preview;
+  el.innerHTML = `<h4>Send to the site</h4>
+    <div class="row"><b>Preview (version-01)</b><span>${y.preview ? 'Sent ' + ago(y.preview.at) : 'Not sent yet'}${y.preview ? (unsent ? ' · <em>changes since</em>' : ' · up to date') : ''}</span></div>
+    <div class="row"><b>Live site</b><span>${y.live ? 'Published ' + ago(y.live.at) : 'Not published from here yet'}${y.live && liveBehind ? ' · preview is newer' : ''}</span></div>
+    ${r ? `<div class="req">${r === 'live' ? 'Ready to publish live.' : 'Ready for the preview.'} Tell Claude <code>${r === 'live' ? 'publish my portfolio' : 'sync my portfolio'}</code> and it sends it.<br><button class="btn ghost" id="cancelReq" style="margin-top:6px;min-height:28px">Cancel request</button></div>`
+      : `<button class="btn primary" id="reqPrev" ${S.canWrite ? '' : 'disabled'}>${icon('arrow-right', 16)}Send to preview</button>
+         <button class="btn" id="reqLive" ${S.canWrite && y.preview ? '' : 'disabled'} title="${y.preview ? '' : 'Send it to the preview first'}">${icon('globe', 16)}Publish live</button>`}
+    <p class="note">Edits save here as you type. The site only changes when Claude sends them: first to the preview, then live once you approve.${y.last ? ` Last: ${esc(y.last)}` : ''}</p>`;
+  const req = async kind => { const body = { ...(S.sync || {}), request: kind, requestedAt: new Date().toISOString(), requestHash: contentHash() };
+    try { await db.doc('site/sync').set(body); toast(kind === 'live' ? 'Ready: tell Claude “publish my portfolio”' : 'Ready: tell Claude “sync my portfolio”') } catch { toast('Couldn’t save the request. Try again.') } };
+  $('reqPrev') && ($('reqPrev').onclick = () => req('preview'));
+  $('reqLive') && ($('reqLive').onclick = async () => { if (await ask('Publish to the live site?', 'Claude copies what’s on the preview to the live site once you tell it to. Check the preview first.', 'Mark ready to publish')) req('live') });
+  $('cancelReq') && ($('cancelReq').onclick = async () => { const b = { ...S.sync }; delete b.request; delete b.requestedAt; delete b.requestHash; try { await db.doc('site/sync').set(b) } catch {} });
+}
+
+function renderGroup() {
+  const el = $('list'); if (!el) return;
+  if (S.cur === 'socials') { el.innerHTML = `<div class="ghead"><span class="part">Contact card · remote</span><div style="font:800 var(--t-xl)/1.1 var(--display)">Social links</div><p>The links on the Contact card, in this order. Brand icons come from the label (Behance, Instagram, LinkedIn, Threads, X).</p></div>`; return }
+  const g = G(), m = META[S.cur], lim = LIMIT[m.slots], c = glow(S.cur), n = g.items.length;
+  el.style.setProperty('--c', c);
+  const slot = i => { const it = g.items[i], tag = m.slots === 'cv' ? CV_SLOTS[i] : 'KEY ' + (i + 1);
+    return it ? `<button class="slot on${i === S.sel ? ' sel' : ''}" data-i="${i}" style="--c:${c}" title="${esc(it.t)}"><b>${tag}</b><span>${esc(it.t || 'Untitled')}</span></button>`
+      : `<div class="slot off"><b>${tag}</b><span>${m.slots === 'kb' ? 'plays a note' : 'empty'}</span></div>` };
+  el.innerHTML = `<div class="ghead"><span class="part">${esc(m.part)}</span>
+      <input class="name" id="gName" value="${esc(g.name)}" aria-label="Group name" ${S.canWrite ? '' : 'readonly'}>
+      <p>${esc(m.how)}</p>
+      <div class="colours"><label><input type="color" id="gCol" value="${esc(g.col || '#d71920')}">Card accent</label><label><input type="color" id="gGlow" value="${esc(c)}">Key glow</label></div></div>
+    <div class="slabel"><span>${m.slots === 'cv' ? 'The remote' : 'The 14 keys'}</span><span>${Math.min(n, lim)} of ${lim} used</span></div>
+    <div class="slots ${m.slots}">${Array.from({ length: lim }, (_, i) => slot(i)).join('')}</div>
+    <div class="slabel" style="margin-bottom:6px"><span>${n} item${n === 1 ? '' : 's'}</span><span>drag to reorder</span></div>
+    <ol class="items" id="items">${g.items.map((it, i) => { const s = imgURL(it.img?.[0]?.s || '');
+      return `<li draggable="true" data-i="${i}" aria-current="${i === S.sel}" class="${i >= lim ? 'over' : ''}" tabindex="0" title="${i >= lim ? 'Past the last slot: not shown on the synth' : ''}">
+        <span class="grip" aria-hidden="true">⠿</span><span class="num">${m.slots === 'cv' ? (i + 1) : String(i + 1).padStart(2, '0')}</span>
+        <span class="th" ${s ? `style="background-image:url('${esc(s)}')"` : ''}></span>
+        <span class="tx"><b>${esc(it.t || 'Untitled')}</b><small>${esc(it.k || '')}</small></span>
+        <span class="mv"><button data-mv="-1" aria-label="Move up">▲</button><button data-mv="1" aria-label="Move down">▼</button></span></li>` }).join('') || '<li style="cursor:default;grid-template-columns:1fr;color:var(--mute)">Nothing here yet.</li>'}</ol>
+    <button class="btn" id="addItem" ${n >= lim || !S.canWrite ? 'disabled' : ''} title="${n >= lim ? 'Every slot is used. Delete or move one first.' : ''}">${icon('arrow-right', 16)}Add ${m.slots === 'cv' ? 'a button' : 'a project'}</button>`;
+  $('gName').oninput = e => { g.name = e.target.value; touch() };
+  $('gCol').oninput = e => { g.col = e.target.value; touch(); if (S.tab === 'preview') renderPreview() };
+  $('gGlow').oninput = e => { g.glow = e.target.value; el.style.setProperty('--c', g.glow); touch() };
+  const pick = i => { S.sel = i; S.html = false; renderGroup(); renderEditor() };
+  el.querySelector('.slots').onclick = e => { const i = e.target.closest('[data-i]')?.dataset.i; if (i != null) pick(+i) };
+  const list = $('items');
+  list.onclick = e => { const li = e.target.closest('[data-i]'); if (!li) return; const i = +li.dataset.i, mv = e.target.closest('[data-mv]');
+    if (mv) { e.stopPropagation(); move(i, i + +mv.dataset.mv) } else pick(i) };
+  list.onkeydown = e => { const li = e.target.closest('[data-i]'); if (!li) return; const i = +li.dataset.i;
+    if (e.key === 'Enter') pick(i); if (e.altKey && /Arrow(Up|Down)/.test(e.key)) { e.preventDefault(); const j = i + (e.key === 'ArrowUp' ? -1 : 1); if (move(i, j)) $('items').querySelector(`[data-i="${j}"]`)?.focus() } };
+  let from = null;
+  list.ondragstart = e => { from = +e.target.closest('[data-i]').dataset.i; e.dataTransfer.effectAllowed = 'move' };
+  list.ondragover = e => { const li = e.target.closest('[data-i]'); if (from == null || !li) return; e.preventDefault(); list.querySelectorAll('.drop').forEach(x => x.classList.remove('drop')); li.classList.add('drop') };
+  list.ondrop = e => { e.preventDefault(); const li = e.target.closest('[data-i]'); if (li && from != null) move(from, +li.dataset.i); from = null };
+  list.ondragend = () => { from = null; list.querySelectorAll('.drop').forEach(x => x.classList.remove('drop')) };
+  $('addItem').onclick = () => { g.items.push({ t: m.slots === 'cv' ? 'New button' : 'New project', k: '', d: '<p></p>' }); S.sel = g.items.length - 1; touch(); renderGroup(); renderEditor(); $('fT')?.select() };
+}
+function move(i, j) { const a = G().items; if (!S.canWrite || j < 0 || j >= a.length || i === j) return false; a.splice(j, 0, a.splice(i, 1)[0]); if (S.sel === i) S.sel = j; else if (S.sel >= Math.min(i, j) && S.sel <= Math.max(i, j)) S.sel += i < j ? -1 : 1; touch(); renderGroup(); renderEditor(); return true }
+
+/* ── editor ── */
+function renderEditor() {
+  const el = $('edit'); if (!el) return;
+  if (S.cur === 'socials') return renderSocials(el);
+  const g = G(); if (S.sel >= g.items.length) S.sel = Math.max(0, g.items.length - 1); const it = I(), m = META[S.cur];
+  if (!it) { el.innerHTML = `<div class="empty">${icon('more-horizontal', 28)}<b>No items in ${esc(g.name)} yet</b><span>Add one from the list.</span></div>`; return }
+  const where = `${esc(g.name)} · ${m.slots === 'cv' ? CV_SLOTS[S.sel] || 'not shown' : 'key ' + (S.sel + 1)}${S.sel >= LIMIT[m.slots] ? ' · not shown (past the last slot)' : ''}`;
+  el.innerHTML = `<div class="etop"><span class="where">${where}</span><div class="tabs" role="tablist"><button role="tab" data-tab="edit" aria-selected="${S.tab === 'edit'}">Edit</button><button role="tab" data-tab="preview" aria-selected="${S.tab === 'preview'}">Card preview</button></div></div>
+    <div id="pane"></div>`;
+  el.querySelector('.tabs').onclick = e => { const t = e.target.closest('[data-tab]')?.dataset.tab; if (t && t !== S.tab) { S.tab = t; renderEditor() } };
+  if (S.tab === 'preview') return renderPreview();
+  const ro = S.canWrite ? '' : 'readonly';
+  $('pane').innerHTML = `<div class="form">
+    <label class="field"><span>Title</span><input id="fT" value="${esc(it.t)}" maxlength="160" ${ro}></label>
+    <label class="field"><span>Kicker <small>the short line under the title</small></span><input id="fK" value="${esc(it.k)}" maxlength="240" ${ro}></label>
+    <div class="field"><span class="flabel">Description</span><div class="rte-wrap">
+      <div class="rte-bar"><button data-cmd="bold" title="Bold"><b>B</b></button><button data-cmd="italic" title="Italic"><i>I</i></button><span class="sep"></span><button data-cmd="h3" title="Small heading">H</button><button data-cmd="p" title="Paragraph">¶</button><button data-cmd="insertUnorderedList" title="Bullets">• List</button><button data-cmd="link" title="Link">Link</button><button data-cmd="removeFormat" title="Clear formatting">Clear</button><span class="sep"></span><button data-cmd="html" aria-pressed="${S.html}" title="Edit the HTML (for timelines, steps and tags blocks)">HTML</button></div>
+      ${S.html ? `<textarea class="html" id="fDhtml" spellcheck="false" ${ro}>${esc(it.d || '')}</textarea>` : `<div class="rte" id="fD" contenteditable="${S.canWrite}">${clean(it.d)}</div>`}</div>
+      <small>Special blocks from the site (timelines, steps, tags) keep their look; edit them in HTML.</small></div>
+    <label class="field"><span>Tags <small>comma separated</small></span><input id="fTags" value="${esc((it.tags || []).join(', '))}" ${ro}></label>
+    <div class="field"><span class="flabel">Images <small>${(it.img || []).length ? 'the first leads the card' : ''}</small></span><div class="imgs" id="imgs"></div>
+      ${assets && S.canWrite ? `<label class="drop" id="drop"><input type="file" id="fileIn" accept="image/*" multiple hidden>${icon('download', 20)}<span><b>Drop images here</b> or click to choose. They’re resized and sent to the site with your next sync.</span></label>` : ''}<small id="upMsg"></small></div>
+    <div class="field"><span class="flabel">Buttons <small>shown under the description; the first is the main one</small></span><div class="pairs" id="links"></div><div><button class="btn ghost" id="addLink" ${S.canWrite ? '' : 'disabled'}>+ Add a button</button></div></div>
+    ${it.bars ? `<div class="field"><span class="flabel">Skill bars</span><div class="pairs" id="bars"></div><div><button class="btn ghost" id="addBar">+ Add a bar</button></div></div>` : ''}
+    ${[it.hero && 'Also shows your portrait block at the top.', it.contact && 'Also shows email, phone and your social links (edit them under Social links).', it.life && 'Also shows the life summaries.'].filter(Boolean).length ? `<div class="flags">${[it.hero && 'Also shows your portrait block at the top.', it.contact && 'Also shows email, phone and your social links (edit them under Social links).', it.life && 'Also shows the life summaries.'].filter(Boolean).join(' ')}</div>` : ''}
+    <div class="actions"><button class="btn" id="dup" ${S.canWrite && g.items.length < LIMIT[m.slots] ? '' : 'disabled'}>Duplicate</button>
+      <select id="copyTo" style="width:auto" ${ro ? 'disabled' : ''}><option value="">Copy to…</option>${ORDER.filter(k => k !== S.cur).map(k => `<option value="${k}">${esc(S.groups[k]?.name || k)}</option>`).join('')}</select>
+      <span class="sp"></span><button class="btn danger" id="del" ${S.canWrite ? '' : 'disabled'}>Delete</button></div></div>`;
+  const up = () => { touch(); renderGroup() };
+  $('fT').oninput = e => { it.t = e.target.value; up() }; $('fK').oninput = e => { it.k = e.target.value; up() };
+  $('fTags').oninput = e => { it.tags = e.target.value.split(',').map(s => s.trim()).filter(Boolean); touch() };
+  if (S.html) $('fDhtml').oninput = e => { it.d = e.target.value; touch() };
+  else { const d = $('fD'); d.oninput = () => { it.d = clean(d.innerHTML); touch() }; d.onpaste = e => { e.preventDefault(); document.execCommand('insertText', false, e.clipboardData.getData('text/plain')) } }
+  el.querySelector('.rte-bar').onclick = e => {
+    const b = e.target.closest('[data-cmd]'); if (!b || !S.canWrite) return; const c = b.dataset.cmd;
+    if (c === 'html') { if (S.html) it.d = clean($('fDhtml').value); S.html = !S.html; touch(); return renderEditor() }
+    if (S.html) return; const d = $('fD'); d.focus();
+    if (c === 'h3' || c === 'p') document.execCommand('formatBlock', false, c);
+    else if (c === 'link') { const sel = getSelection(); if (!sel.rangeCount || sel.isCollapsed) return toast('Select some text first, then add the link.'); linkDialog(sel.getRangeAt(0).cloneRange()) ; return }
+    else document.execCommand(c, false, null);
+    it.d = clean(d.innerHTML); touch();
+  };
+  const linkDialog = async range => { $('dlgP').innerHTML = ''; const ok = await ask('Add a link', '<input id="lnk" value="https://" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--card2)">', 'Add link');
+    const url = document.getElementById('lnk')?.value; if (!ok || !/^(https?:|mailto:|tel:|\/|#)/i.test(url || '')) return; const d = $('fD'); d.focus(); const s = getSelection(); s.removeAllRanges(); s.addRange(range); document.execCommand('createLink', false, url); it.d = clean(d.innerHTML); touch() };
+  renderImgs(); renderLinks(); if (it.bars) renderBars();
+  if ($('drop')) { const dr = $('drop');
+    $('fileIn').onchange = e => { upload([...e.target.files]); e.target.value = '' };
+    ['dragenter', 'dragover'].forEach(t => dr.addEventListener(t, e => { if (e.dataTransfer?.types.includes('Files')) { e.preventDefault(); dr.classList.add('over') } }));
+    ['dragleave', 'drop'].forEach(t => dr.addEventListener(t, () => dr.classList.remove('over')));
+    dr.addEventListener('drop', e => { e.preventDefault(); upload([...e.dataTransfer.files].filter(f => f.type.startsWith('image/'))) }) }
+  $('addLink').onclick = () => { (it.links ||= []).push(['', 'https://']); touch(); renderLinks() };
+  $('addBar') && ($('addBar').onclick = () => { it.bars.push(['', '', .5]); touch(); renderBars() });
+  $('dup').onclick = () => { g.items.splice(S.sel + 1, 0, { ...clone(it), t: it.t + ' (copy)' }); S.sel++; touch(); renderGroup(); renderEditor() };
+  $('copyTo').onchange = e => { const k = e.target.value; if (!k) return; const lim = LIMIT[META[k].slots]; S.groups[k].items.push(clone(it)); touch(k); e.target.value = '';
+    toast(`Copied to ${S.groups[k].name}${S.groups[k].items.length > lim ? ' (past its last slot: reorder to show it)' : ''}`) };
+  $('del').onclick = async () => { if (!await ask('Delete this item?', `<b>${esc(it.t)}</b> is removed from ${esc(g.name)}. The site doesn’t change until you send it.`, 'Delete', true)) return;
+    g.items.splice(S.sel, 1); S.sel = Math.max(0, S.sel - 1); touch(); renderGroup(); renderEditor() };
+}
+function renderImgs() {
+  const it = I(), im = it.img ||= [];
+  $('imgs').innerHTML = im.map((m, i) => { const u = imgURL(m.s);
+    return `<div class="imgc" data-m="${i}"><div class="pv" ${u ? `style="background-image:url('${esc(u)}')"` : ''}>${u ? '' : esc(imgNote(m.s))}${i === 0 ? '<b>LEAD</b>' : ''}${m.s.startsWith('asset:') ? '<b style="left:auto;right:6px">NEW</b>' : ''}</div>
+      <div class="ctl"><input value="${esc(m.a)}" placeholder="Describe the image" aria-label="Alt text" ${S.canWrite ? '' : 'readonly'}>
+      <button class="icon-btn" data-mv="-1" aria-label="Move earlier">${icon('chevron-left', 16)}</button><button class="icon-btn" data-mv="1" aria-label="Move later">${icon('chevron-right', 16)}</button><button class="icon-btn" data-x aria-label="Remove image">${icon('close', 16)}</button></div></div>` }).join('');
+  $('imgs').oninput = e => { const r = e.target.closest('[data-m]'); if (r) { im[+r.dataset.m].a = e.target.value; touch() } };
+  $('imgs').onclick = e => { const r = e.target.closest('[data-m]'), b = e.target.closest('button'); if (!r || !b || !S.canWrite) return; const i = +r.dataset.m;
+    if (b.hasAttribute('data-x')) im.splice(i, 1); else { const j = i + +b.dataset.mv; if (j < 0 || j >= im.length) return; im.splice(j, 0, im.splice(i, 1)[0]) }
+    touch(); renderImgs(); renderGroup() };
+}
+/* uploads: shrink to 1800 px WebP, keep in this artifact's assets; Claude moves them to the site when it syncs */
+async function shrink(file) {
+  if (file.type === 'image/gif') return file;
+  const bmp = await createImageBitmap(file), k = Math.min(1, 1800 / Math.max(bmp.width, bmp.height)), c = document.createElement('canvas');
+  c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k); c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+  const to = (t, q) => new Promise(r => c.toBlob(r, t, q)); let b = await to('image/webp', .86); if (!b || b.type !== 'image/webp') b = await to('image/jpeg', .88);
+  return b.size < file.size ? b : file;
+}
+async function upload(files) {
+  if (!files.length || !assets) return; const it = I(), key = S.cur; let done = 0;
+  for (const f of files) { $('upMsg') && ($('upMsg').textContent = `Uploading ${done + 1} of ${files.length}…`);
+    try { const b = await shrink(f); if (b.size > 3.9 * 1024 * 1024) throw new Error('over 4 MB after resizing');
+      const r = await assets.upload(b); (it.img ||= []).push({ s: 'asset:' + r.id, a: f.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ') }); done++; touch(key); if (I() === it) renderImgs(); renderGroup() }
+    catch (e) { toast(`${f.name}: ${e?.message || 'upload failed'}`) } }
+  $('upMsg') && ($('upMsg').textContent = done ? `${done} image${done > 1 ? 's' : ''} added. Give each a short description.` : '');
+}
+const pairRow = (l, i, kind, ph = ['Label', 'https://…']) => `<div class="pair${kind === 'soc' ? ' soc' : ''}" data-${kind}="${i}">${kind === 'soc' ? socialIcon(l[0], 20) : ''}<input placeholder="${ph[0]}" value="${esc(l[0])}" data-f="0" ${S.canWrite ? '' : 'readonly'}><input placeholder="${ph[1]}" value="${esc(l[1])}" data-f="1" ${S.canWrite ? '' : 'readonly'}>${kind === 'soc' ? `<span class="mv" style="opacity:1;flex-direction:row"><button data-mv="-1" aria-label="Move up">▲</button><button data-mv="1" aria-label="Move down">▼</button></span>` : ''}<button class="icon-btn" data-x aria-label="Remove">${icon('close', 16)}</button></div>`;
+function renderLinks() {
+  const it = I(), L = it.links ||= []; $('links').innerHTML = L.map((l, i) => pairRow(l, i, 'ln', ['Button text', 'https://… or assets/…'])).join('');
+  $('links').oninput = e => { const r = e.target.closest('[data-ln]'); if (r) { L[+r.dataset.ln][+e.target.dataset.f] = e.target.value; touch() } };
+  $('links').onclick = e => { const r = e.target.closest('[data-ln]'); if (r && e.target.closest('[data-x]') && S.canWrite) { L.splice(+r.dataset.ln, 1); touch(); renderLinks() } };
+}
+function renderBars() {
+  const B = I().bars; $('bars').innerHTML = B.map((b, i) => `<div class="pair bar3" data-bar="${i}"><input value="${esc(b[0])}" data-f="0" placeholder="Skill"><input value="${esc(b[1])}" data-f="1" placeholder="Level"><input type="range" min="0" max="100" value="${Math.round((+b[2] || 0) * 100)}" data-f="2" aria-label="Bar length"><button class="icon-btn" data-x aria-label="Remove">${icon('close', 16)}</button></div>`).join('');
+  $('bars').oninput = e => { const r = e.target.closest('[data-bar]'); if (!r) return; const f = +e.target.dataset.f; B[+r.dataset.bar][f] = f === 2 ? +e.target.value / 100 : e.target.value; touch() };
+  $('bars').onclick = e => { const r = e.target.closest('[data-bar]'); if (r && e.target.closest('[data-x]')) { B.splice(+r.dataset.bar, 1); touch(); renderBars() } };
+}
+function renderSocials(el) {
+  const L = S.socials ||= [];
+  el.innerHTML = `<div class="form"><div class="field"><span class="flabel">Links on the Contact card</span><div class="pairs" id="soc">${L.map((l, i) => pairRow(l, i, 'soc', ['Name (e.g. Behance)', 'https://…'])).join('')}</div>
+    <div><button class="btn ghost" id="addSoc" ${S.canWrite && L.length < 12 ? '' : 'disabled'}>+ Add a link</button></div><small>Name a link after the network (Behance, Instagram, LinkedIn, Threads or X) and it gets that brand’s icon; anything else gets a globe.</small></div></div>`;
+  const box = $('soc');
+  box.oninput = e => { const r = e.target.closest('[data-soc]'); if (!r) return; L[+r.dataset.soc][+e.target.dataset.f] = e.target.value; if (e.target.dataset.f === '0') r.querySelector('.ic').outerHTML = socialIcon(e.target.value, 20); touch('socials') };
+  box.onclick = e => { const r = e.target.closest('[data-soc]'); if (!r || !S.canWrite) return; const i = +r.dataset.soc, mv = e.target.closest('[data-mv]');
+    if (e.target.closest('[data-x]')) L.splice(i, 1); else if (mv) { const j = i + +mv.dataset.mv; if (j < 0 || j >= L.length) return; L.splice(j, 0, L.splice(i, 1)[0]) } else return;
+    touch('socials'); renderSocials(el) };
+  $('addSoc').onclick = () => { L.push(['', 'https://']); touch('socials'); renderSocials(el) };
+}
+
+/* ── card preview: the site's own card markup and stylesheet, in a frame that runs no scripts ── */
+const EMAIL = 'vickhal10@gmail.com';
+function cardHTML(it, ch) {
+  const out = u => icon(/\.pdf$/i.test(u) ? 'download' : 'external-link', 16);
+  const pic = (g, cls = '') => { const u = imgURL(g.s); return u ? `<button class="pic ok ${cls}"><img src="${esc(u)}" alt="${esc(g.a)}"></button>` : `<div class="pic ok ${cls}" style="display:grid;place-items:center;min-height:120px;color:var(--mute);font-size:12px">${esc(imgNote(g.s))}</div>` };
+  let h = it.img?.length ? pic(it.img[0], 'lead') : '';
+  h += `<header class="hd"><h2>${esc(it.t)}</h2><p class="k">${esc(it.k)}</p></header>`;
+  if (it.hero) h += `<div class="hero"><img src="img/vick.jpg" alt=""><div class="d"><p><b>Vickhal Roopram</b><br>UX & Motion Designer<br>27 · South Africa</p></div></div>`;
+  if (it.bars) h += `<div class="bars">${it.bars.map(b => `<div class="bar"><span>${esc(b[0])}</span><small>${esc(b[1])}</small><div><i style="--w:${(+b[2] || 0) * 100}%"></i></div></div>`).join('')}</div>`;
+  if (it.contact) h += `<div class="d"><p>For work, collaborations or a chat about design and faith:</p></div><div class="cta-row"><a class="cta">${icon('mail', 18)}<span>Email ${EMAIL}</span></a><button class="cta ghost">${icon('copy', 18)}<span>Copy</span></button></div><p class="copy">${icon('phone', 16)}Cell <span class="num">+27 73 482 7221</span></p><div class="socials">${(S.socials || []).filter(l => l[0]).map(([n, u]) => `<a class="soc">${socialIcon(n, 24)}<span>${esc(n)}<small>${esc(String(u).replace(/^https:\/\/(www\.)?/, '').replace(/\/$/, ''))}</small></span>${out(u)}</a>`).join('')}</div>`;
+  if (it.d) h += `<div class="d">${clean(it.d)}</div>`;
+  if (it.links?.length) h += `<div class="cta-row">${it.links.filter(l => l[0]).map((l, k) => `<a class="cta${k ? ' ghost' : ''}"><span>${esc(l[0])}</span>${out(l[1])}</a>`).join('')}</div>`;
+  if (it.img?.length > 1) h += `<div class="gal">${it.img.slice(1).map(g => pic(g)).join('')}</div>`;
+  return h;
+}
+function renderPreview() {
+  const it = I(), g = G(); if (!it || !$('pane')) return;
+  const doc = `<!DOCTYPE html><html data-theme="${document.documentElement.dataset.theme}"><head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400..900&display=swap"><style>${SITE_CSS}
+    html,body{height:auto;overflow:auto;background:var(--card)}#card{position:static;inset:auto;width:100%;height:auto;border:0;border-radius:0;box-shadow:none;animation:none}.content{overflow:visible}</style></head>
+    <body><div id="card" style="--accent:${esc(g.col || '#d71920')}"><div class="ch">${['chevron-left', 'chevron-right', 'close'].map(n => `<button>${icon(n, 20)}</button>`).join('')}</div><div class="content">${cardHTML(it, S.cur)}</div></div></body></html>`;
+  $('pane').innerHTML = `<div class="preview"><iframe sandbox="allow-same-origin" title="Card preview" id="pf"></iframe><small>How the card looks on the site (${document.documentElement.dataset.theme} mode). Links are inactive here.</small></div>`;
+  $('pf').srcdoc = doc;
+}
+
+try { const t = localStorage.getItem('vdc-admin-theme'); if (t) document.documentElement.dataset.theme = t } catch {}
+</script>
+</body>
+</html>
