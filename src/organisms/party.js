@@ -1,11 +1,11 @@
 /* Beats party: while a BEATS track plays, Vick's motion backgrounds play with it (one per track, BEATS[i].bg, 720p loops in
    assets/beats/bg made from his 4K files; originals in Google Drive):
-   - behind the desk: the video fills the background, cropped to cover the window, eased in and out over the themed colour (BG);
-   - on the table top: the same video projected under the synths with soft edges (additive in dark mode, so it glows);
+   - behind the desk: the video fills the background, cropped to cover the window, eased in and out over the backdrop colour (BG);
+   - on the table top: the same video projected under the synths with soft edges (additive, so it glows);
    - the synth screen's dot matrix twinkles in colours sampled live from the video (partyColours, read by screens.js).
    Videos load only when a track starts. Off under reduced motion. */
 import * as THREE from 'three';
-import { scene, BG } from '../core/scene.js';
+import { scene, BG, BACKDROP } from '../core/scene.js';
 import { V, reduceMotion } from '../core/state.js';
 import { demo, track, BEATS } from '../core/audio.js';
 import { canvasTex } from '../atoms/textures.js';
@@ -42,9 +42,9 @@ export function updateParty(t) {
   const dt = Math.min(.1, Math.max(0, t - last)); last = t; const on = !!demo && !reduceMotion, want = on ? BEATS[track]?.bg : '';
   if (want && want !== playing) { playing = want; vid.preload = 'auto'; vid.src = `assets/beats/bg/${want}.mp4`; vid.play().catch(() => {}) }
   p += ((on ? 1 : 0) - p) * Math.min(1, dt * (on ? 2.2 : 1.2));
-  if (p < .003) { p = 0; if (scene.background !== BG) { scene.background = BG; proj.visible = false; vid.pause(); playing = '' } return }
+  if (p < .003) { p = 0; if (scene.background !== BACKDROP) { scene.background = BACKDROP; proj.visible = false; vid.pause(); playing = '' } return }
   if (vid.paused && on) vid.play().catch(() => {});
-  const dark = V.themeK > .5, ready = vid.readyState >= 2;
+  const ready = vid.readyState >= 2;
   // background: BG, then the video over it (cover crop), at p
   const W = 640, H = 360, A = innerWidth / Math.max(1, innerHeight); bgc.t.repeat.set(1, 1);
   bx.globalAlpha = 1; bx.fillStyle = '#' + BG.getHexString(); bx.fillRect(0, 0, W, H);
@@ -53,5 +53,5 @@ export function updateParty(t) {
     bx.globalAlpha = p; bx.drawImage(vid, ox, oy, sw, sh, 0, 0, W, H); sample(t) }
   bgc.t.needsUpdate = true; if (scene.background !== bgc.t) scene.background = bgc.t;
   // table top
-  proj.visible = ready; proj.material.opacity = p * (dark ? .65 : .55);
+  proj.visible = ready; proj.material.opacity = p * .65;
 }

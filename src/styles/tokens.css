@@ -1,8 +1,9 @@
-/* ── TOKENS: colour, type, spacing, radius, motion. Light by default, dark on [data-theme="dark"]. ── */
+/* ── TOKENS: colour, type, spacing, radius, motion. One dark look (light mode removed 13 Nov 2026), its colours matched to
+   Vick's reference render: a cool charcoal room (#0f1013 at the top to #16191f in the middle), warm coral accents. ── */
 :root{
-  --floor:#ece5d8; --card:#f8f4ec; --card2:#fbf7ef; --ink:#1f1c17; --mute:#5a5043; --line:rgba(31,28,23,.2);
-  --chip:#e9e0cf; --chip-ink:#4a4236; --track:#e2d8c6; --shadow:rgba(40,30,15,.2);
-  --red:#e2614b; --blue:#4f8fc0; --glow:#e2614b; --accent-ui:#c94a35; --on-accent:#fff;
+  --floor:#14171c; --card:#1a1d23; --card2:#20242b; --ink:#eef0f4; --mute:#a3a9b4; --line:rgba(238,240,244,.14);
+  --chip:#252930; --chip-ink:#cfd4dc; --track:#272b33; --shadow:rgba(0,0,0,.55);
+  --red:#e2614b; --blue:#4f8fc0; --glow:#e2614b; --accent-ui:#ec7a5f; --on-accent:#14171c;
   --display:"Montserrat","Arial Black",sans-serif;
   --body:"Montserrat","Noto Sans",system-ui,sans-serif;
   --mono:"Courier Prime","Courier New",ui-monospace,monospace;
@@ -12,12 +13,6 @@
   --ease:cubic-bezier(.2,.8,.2,1);
   --px:clamp(.36px,calc(100vw / 3840),.62px);   /* 1 px of the 4K Figma frame */
   --hdr-h:max(58px,calc(var(--px) * 170));
-  color-scheme:light;
-}
-:root[data-theme="dark"]{
-  --floor:#16140f; --card:#1f1c17; --card2:#27231d; --ink:#f4ecdc; --mute:#c2b59d; --line:rgba(244,236,220,.18);
-  --chip:#2c2720; --chip-ink:#d9ccb3; --track:#2c2720; --shadow:rgba(0,0,0,.6);
-  --accent-ui:#ec7a5f; --on-accent:#16140f;
   color-scheme:dark;
 }
 
@@ -29,11 +24,7 @@ body{background:var(--floor);color:var(--ink);font-family:var(--body);font-varia
 img{max-width:100%}
 [hidden]{display:none!important}
 button:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-/* the 2D chrome cross-fades with the theme (the 3D scene eases itself in JS) */
-body,#card,.ch button,.tags span,.steps div,#lbl{transition:background-color .6s ease,color .6s ease,border-color .6s ease,box-shadow .25s ease,transform .12s ease}
-.on-l{display:none}
-:root:not([data-theme="dark"]) .on-d{display:none}
-:root:not([data-theme="dark"]) .on-l{display:block}
+body,#card,.ch button,.tags span,.steps div,#lbl{transition:background-color .3s ease,color .3s ease,border-color .3s ease,box-shadow .25s ease,transform .12s ease}
 .m-only{display:none}
 @media (hover:none),(max-width:760px){.d-only{display:none}.m-only{display:inline}}
 

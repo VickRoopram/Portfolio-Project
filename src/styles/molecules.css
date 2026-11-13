@@ -1,7 +1,5 @@
 /* ── MOLECULES: atoms grouped into one job. Icon pair, burger, hover tip, toast, card sections. ── */
 .pair{display:flex;align-items:center;gap:max(2px,calc(var(--px) * 20 - 12px))}
-#thm:hover .ic{transform:rotate(28deg)}
-#thm.flip .ic{animation:spinIn .55s cubic-bezier(.2,.9,.3,1.2)}
 @keyframes spinIn{from{transform:rotate(-120deg) scale(.4);opacity:0}}
 #snd .s-off,#snd[aria-pressed="false"] .s-on{display:none}
 #snd[aria-pressed="false"] .s-off{display:block}

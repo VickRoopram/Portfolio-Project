@@ -61,7 +61,6 @@ export async function siteStore({ api, signOut, defaults, noCV }) {
     },
     img: s => !s ? '' : /^(\/media\/|\/assets\/|https:\/\/)/.test(s) ? s : /^assets\//.test(s) ? '/' + s : '',
     previewHead: '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400..900&display=swap"><link rel="stylesheet" href="/src/styles.css">',
-    previewTheme: () => 'dark',
     renderStatus(el, u) { statusEl = el; ui ||= u; paint() },
     links: [{ label: 'Preview', href: PREVIEW, icon: 'external-link' }, { label: 'Live site', href: LIVE, icon: 'globe' }],
     account: [

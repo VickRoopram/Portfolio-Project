@@ -7,7 +7,7 @@ import { P, playNote, drum, toggleMute, toggleDemo, stopDemo, demo, track, BEATS
 import { scene } from '../core/scene.js';
 import { rbox, cyl, flat } from '../atoms/geometry.js';
 import { canvasTex, radialTex } from '../atoms/textures.js';
-import { M, C, RUBBER, themed, decal } from '../atoms/materials.js';
+import { M, C, RUBBER, decal } from '../atoms/materials.js';
 import { printed, engraved } from '../atoms/labels.js';
 import { fxOf, FXMATS } from '../molecules/fx.js';
 import { pressable, itemCtrl, knob, screw, cap } from '../molecules/controls.js';
@@ -40,7 +40,7 @@ scrP.userData = { tip: 'Screen · click for the About page', tipHTML: () => V.lo
    follows the knob as it turns (updateSynth). It fades out about a second after you let go */
 const RING_R = .73, RING_Y = .127, TRAVEL = 2.2, LED = '#ff5d1a'; // on the top of the knob's brass bezel, round the cap
 const dotTex = radialTex([[0, 1], [.3, .55], [1, 0]], 128, 128);
-const ringMat = o => decal(themed(new THREE.MeshBasicMaterial({ color: LED, transparent: true, depthWrite: false, toneMapped: false, ...o }), LED, LED));
+const ringMat = o => decal(new THREE.MeshBasicMaterial({ color: LED, transparent: true, depthWrite: false, toneMapped: false, ...o }));
 export const KNOB_RINGS = [];
 [['cutoff', 'FILTER'], ['q', 'RESONANCE'], ['decay', 'DECAY'], ['wet', 'ECHO']].forEach(([key, label], i) => {
   const c = 4 + i * 2; tile(c, 0, 2, UPPER);
@@ -60,8 +60,8 @@ export const KNOB_RINGS = [];
 
 /* speaker grille, pulsing with the music */
 tile(12, 0, 2, UPPER);
-export const grille = at(flat(1.7, 1.7, decal(themed(new THREE.MeshBasicMaterial({ transparent: true, color: '#3a3b40', map: canvasTex(256, 256, x => { x.fillStyle = '#fff';
-  for (let i = 0; i < 11; i++) for (let j = 0; j < 11; j++) if ((i - 5) ** 2 + (j - 5) ** 2 <= 27) { x.beginPath(); x.arc(28 + i * 20, 28 + j * 20, 5.2, 0, 7); x.fill() } }).t }), '#3a3b40', '#0e0f11'))), GX(12.5), TOP + .305, upperZ);
+export const grille = at(flat(1.7, 1.7, decal(new THREE.MeshBasicMaterial({ transparent: true, color: '#0e0f11', map: canvasTex(256, 256, x => { x.fillStyle = '#fff';
+  for (let i = 0; i < 11; i++) for (let j = 0; j < 11; j++) if ((i - 5) ** 2 + (j - 5) ** 2 <= 27) { x.beginPath(); x.arc(28 + i * 20, 28 + j * 20, 5.2, 0, 7); x.fill() } }).t }))), GX(12.5), TOP + .305, upperZ);
 
 /* detune knob, waveform, beats, stop, mute */
 tile(14, 0, 2, 1); knob(synth, new THREE.Vector3(GX(14), TOP + .3, GZ(0)), .3, 'detune', 'sm', [60, .6]);
@@ -104,7 +104,6 @@ hits.push(scrP);
 
 /* lights: the transport pulses on the beat; a mode button lights its gap when hovered or active, with its soft core easing in */
 export function updateSynth(t) {
-  const dark = V.themeK > .5;
   /* knob rings: the dot rides the knob's (eased) turn; the value arc is rebuilt only when the turn changes */
   const now = performance.now(), dt = Math.min(.05, (now - (updateSynth.last ?? now)) / 1000); updateSynth.last = now;
   for (const R of KNOB_RINGS) {
@@ -124,6 +123,6 @@ export function updateSynth(t) {
     let edge = S.mode === k ? .85 + .08 * Math.sin(t * 3) : 0;
     if (S.card?.ch === k || S.hover === m || S.mode === k && S.hover?.userData?.item && S.hover.userData.ch === k) edge = 1;
     m.userData.edge = edge; m.material.emissiveIntensity = edge ? .035 : 0; // the solid cap itself only shows a faint glow
-    m.coreK += ((edge ? 1 : 0) - m.coreK) * .12; m.core.material.opacity = m.coreK * edge * (dark ? .32 : .22); m.core.visible = m.core.material.opacity > .003;
+    m.coreK += ((edge ? 1 : 0) - m.coreK) * .12; m.core.material.opacity = m.coreK * edge * .32; m.core.visible = m.core.material.opacity > .003;
   }
 }

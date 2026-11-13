@@ -33,12 +33,12 @@ export function groupAt(o, ray) {
   return best;
 }
 export function updateUnderlights(dt, hoverGroup) {
-  const lit = !S.mode && !S.card && !V.fly ? hoverGroup : null, dark = V.themeK > .5;
+  const lit = !S.mode && !S.card && !V.fly ? hoverGroup : null;
   const ease = reduceMotion ? 1 : 1 - Math.exp(-dt * 6), cEase = reduceMotion ? 1 : 1 - Math.exp(-dt * 4), breathe = reduceMotion ? 1 : 1 + .035 * Math.sin(performance.now() / 1000 * 1.6);
   const kbOn = S.mode && onKeys(S.mode) || S.card && onKeys(S.card.ch);
   for (const g of Object.values(GROUPS)) {
     g.k += ((g.key === lit ? 1 : g.key === 'projects' && kbOn ? .75 : 0) - g.k) * ease;
     g.tint.lerp(tmp.set(g.col()), cEase); g.mat.color.copy(g.tint);
-    g.mat.opacity = g.k * (dark ? .48 : .3) * breathe; g.mesh.visible = g.k > .004;
+    g.mat.opacity = g.k * .48 * breathe; g.mesh.visible = g.k > .004;
   }
 }

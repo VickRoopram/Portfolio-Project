@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Vickhal Roopram: UX/UI, graphic and motion designer. A portfolio you play as a 3D synthesizer.">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#ece5d8">
+<meta name="theme-color" content="#14171c">
 <title>Vick Does Creative</title>
 <script>
-/* Pick the theme before the first paint: saved choice, else the system setting */
-(function(){var t,d=document.documentElement;try{t=localStorage.getItem('vdc-theme');if(sessionStorage.getItem('vdc-in'))d.classList.add('entered')}catch(e){}if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.dataset.theme=t})();
+/* skip the intro on a return visit in the same session (set before the first paint) */
+(function(){try{if(sessionStorage.getItem('vdc-in'))document.documentElement.classList.add('entered')}catch(e){}})();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Montserrat:wght@400..900&family=Courier+Prime:wght@400;700&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans:wght@400;600;700&display=swap">
@@ -19,11 +19,10 @@
 <body>
 <div id="stage"><div id="loading">POWERING ON…</div></div>
 <header class="top" id="top">
-  <a class="brand" id="brand" href="./" aria-label="Vickhal Roopram: back to the full synth"><img class="on-d" src="assets/ui/logo-on-dark.svg" width="290" height="101" alt=""><img class="on-l" src="assets/ui/logo-on-light.svg" width="290" height="101" alt=""></a>
+  <a class="brand" id="brand" href="./" aria-label="Vickhal Roopram: back to the full synth"><img src="assets/ui/logo-on-dark.svg" width="290" height="101" alt=""></a>
   <div class="hud">
     <button class="cta sm hdr-cta" id="ctaContact" aria-label="Contact: fly to the Contact synth"><i data-icon="mail" data-size="18"></i><span>Contact</span></button>
     <div class="pair">
-    <button class="ico" id="thm" aria-pressed="false" aria-label="Switch to dark mode"><i class="on-d" data-icon="sun"></i><i class="on-l" data-icon="moon"></i></button>
     <button class="ico" id="snd" aria-pressed="true" aria-label="Sound on: mute"><i class="s-on" data-icon="volume-high"></i><i class="s-off" data-icon="volume-off"></i></button>
     </div>
     <button class="ico burger" id="mnu" aria-expanded="false" aria-controls="menu" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7H19"/><path d="M5 12H19"/><path d="M5 17H19"/></svg></button>

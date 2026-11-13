@@ -1,11 +1,11 @@
 /* Label atoms: printed legends (tinted, so the theme can recolour them) and engraved legends sunk into a cap. */
 import * as THREE from 'three';
 import { canvasTex } from './textures.js';
-import { themed, decal } from './materials.js';
+import { decal } from './materials.js';
 import { flat } from './geometry.js';
 import { drawIcon } from './icons.js';
 
-const PRINT_DARK = { '#6b6e76': '#b9ab92', '#7b7e86': '#a99c86' }; // grey legends warm up at night
+const PRINT_TONE = { '#6b6e76': '#b9ab92', '#7b7e86': '#a99c86' }; // grey legends print warm on the dark deck
 const mono = '600 SIZEpx "IBM Plex Mono", monospace';
 /* white text tinted by the material colour; 256×124 canvas stretched over w × h */
 export function printed(text, w = .62, h = .3, color = '#6b6e76', size = 50, dark) {
@@ -16,7 +16,7 @@ export function printed(text, w = .62, h = .3, color = '#6b6e76', size = 50, dar
 export function printedIcon(name, w = .6, h = .3, color = '#6b6e76', s = 104, dark) {
   return tinted(canvasTex(256, 124, (x, W, H) => drawIcon(x, name, W / 2, H / 2, s, '#fff', 2.4)).t, w, h, color, dark);
 }
-const tinted = (t, w, h, color, dark) => flat(w, h, decal(themed(new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false, color }), color, dark || PRINT_DARK[color] || color)));
+const tinted = (t, w, h, color, dark) => flat(w, h, decal(new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false, color: dark || PRINT_TONE[color] || color })));
 /* inlaid white letters a touch below the surface: a shadowed top wall and a catch-light on the lower lip.
    The canvas grows with the plane (160 px per unit across, 248 down), so long words never run off its edge. */
 export function engraved(text, w, h, size) {

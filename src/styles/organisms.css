@@ -75,7 +75,7 @@
 .in-quiet:hover{color:var(--ink)}
 
 @media (prefers-reduced-motion:reduce){
-  #card,#menu,#menu.out,.m-row,.burger path,.ico .ic,#thm.flip .ic,#toast.show,.spin,.cta .tick,.pic:not(.ok)::after{animation:none;transition:none}
+  #card,#menu,#menu.out,.m-row,.burger path,.ico .ic,#toast.show,.spin,.cta .tick,.pic:not(.ok)::after{animation:none;transition:none}
   .cta .tick{stroke-dashoffset:0}
   .soc{transition:none}.soc:hover{transform:none}
 }

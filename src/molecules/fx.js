@@ -7,7 +7,8 @@ import { haloTexture } from '../atoms/textures.js';
 import { decal } from '../atoms/materials.js';
 
 export const FXL = [];   // every control with an effect record
-export const FXMATS = []; // light materials: additive on the dark stage, normal on the light deck
+/* light materials (glows, halos, rings, projections): additive, so they glow on the dark stage. FXMATS.push(m) sets that up */
+export const FXMATS = { push: (...ms) => ms.forEach(m => { m.blending = THREE.AdditiveBlending; m.needsUpdate = true }) };
 const FX = new Map();
 /* the effect record for a control; creates its gap halo the first time */
 export function fxOf(mesh) {
@@ -38,22 +39,22 @@ function strokeFor(f) {
   }
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('a', new THREE.Float32BufferAttribute(A, 1)); g.setAttribute('e', new THREE.Float32BufferAttribute(E, 1)); g.setIndex(idx);
   const mt = new THREE.ShaderMaterial({ uniforms: { uHead: { value: 0 }, uFade: { value: 0 }, uOp: { value: 0 }, uCol: { value: new THREE.Color() } }, vertexShader: STROKE_VS, fragmentShader: STROKE_FS,
-    transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: V.themeK > .5 ? THREE.AdditiveBlending : THREE.NormalBlending });
+    transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending });
   const st = new THREE.Mesh(g, mt); st.position.y = f.h * .12; st.renderOrder = 3; st.frustumCulled = false; f.m.add(st); FXMATS.push(mt); return f.stroke = st;
 }
 /* fire a press: gap flash + stroke. delay (ms) lets waves ripple across many controls */
 export function pulse(mesh, delay = 0, amp = 1) { const f = fxOf(mesh); f.t0 = performance.now() + delay; f.amp = amp; if (!f.managed) f.col.set(S.mode ? MODES[S.mode].glow : '#ff5d1a') }
 const lightCol = new THREE.Color();
 export function updateFx(now) {
-  const dark = V.themeK > .5, face = 1 - .72 * Math.max(0, V.themeK); // dark caps light up fully, so at night the light comes from the gap instead of the face
+  const face = .28; // dark caps would light up fully, so the light comes mostly from the gap instead of the face
   for (const f of FXL) {
     const mm = f.m.material, age = (now - f.t0) / 1000, flash = age < 0 ? 0 : f.amp * Math.pow(Math.max(0, 1 - age / .6), 1.4);
     let base = 0, col = f.col;
     if (f.managed) { base = mm.emissiveIntensity; col = mm.emissive; mm.emissiveIntensity = Math.max(base * face, flash * .85 * face) }
     else if (mm.emissive) { mm.emissive.copy(f.col); mm.emissiveIntensity = flash * .5 * face }
-    lightCol.copy(col); if (!dark && col.r + col.g + col.b > 2.4) lightCol.set('#55575e'); // white glow vanishes on the light deck: graphite instead
-    const op = Math.min(1, Math.max(f.m.userData.edge || 0, base * 1.55) + flash) * (dark ? 1 : .85);
-    f.halo.visible = op > .004; if (f.halo.visible) { f.halo.material.opacity = op; f.halo.material.color.copy(lightCol).multiplyScalar(dark ? 1.35 : 1) }
+    lightCol.copy(col);
+    const op = Math.min(1, Math.max(f.m.userData.edge || 0, base * 1.55) + flash);
+    f.halo.visible = op > .004; if (f.halo.visible) { f.halo.material.opacity = op; f.halo.material.color.copy(lightCol).multiplyScalar(1.35) }
     if (age >= 0 && age < 1.15 && f.amp > 0) { const st = strokeFor(f), u = st.material.uniforms; st.visible = true;
       u.uHead.value = reduceMotion ? 1.3 : Math.min(1.3, age / .42); u.uFade.value = age < .38 ? 0 : Math.max(0, 1 - (age - .38) / .7) * .85; u.uOp.value = Math.min(1, f.amp * 1.2); u.uCol.value.copy(lightCol) }
     else if (f.stroke) f.stroke.visible = false;

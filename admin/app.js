@@ -334,9 +334,8 @@ export function startAdmin(root, { store, icon }) {
     if (it.d) c += `<div class="d">${clean(it.d)}</div>`;
     if (it.links?.length) c += `<div class="cta-row">${it.links.filter(l => l[0]).map((l, j) => `<a class="cta${j ? ' ghost' : ''}"><span>${esc(l[0])}</span>${out(l[1])}</a>`).join('')}</div>`;
     if (it.img?.length > 1) c += `<div class="gal">${it.img.slice(1).map(g => pic(g)).join('')}</div>`;
-    const theme = store.previewTheme?.() || 'dark';
-    body.innerHTML = `<div class="preview"><iframe sandbox="allow-same-origin" title="Card preview"></iframe><small>The card as visitors see it (${theme} mode on the site). Links don’t open here.</small></div>`;
-    body.querySelector('iframe').srcdoc = `<!DOCTYPE html><html data-theme="${theme}"><head><meta charset="utf-8">${store.previewHead}<style>html,body{height:auto;overflow:auto}#card{position:static;inset:auto;width:100%;height:auto;max-height:none;border:0;border-radius:0;box-shadow:none;animation:none;transform:none}.content{overflow:visible}</style></head>
+    body.innerHTML = `<div class="preview"><iframe sandbox="allow-same-origin" title="Card preview"></iframe><small>The card as visitors see it on the site. Links don’t open here.</small></div>`;
+    body.querySelector('iframe').srcdoc = `<!DOCTYPE html><html><head><meta charset="utf-8">${store.previewHead}<style>html,body{height:auto;overflow:auto}#card{position:static;inset:auto;width:100%;height:auto;max-height:none;border:0;border-radius:0;box-shadow:none;animation:none;transform:none}.content{overflow:visible}</style></head>
       <body><div id="card" style="--accent:${esc(G(k).col || '#d71920')}"><div class="ch">${['chevron-left', 'chevron-right', 'close'].map(n => `<button>${icon(n, 20)}</button>`).join('')}</div><div class="content">${c}</div></div></body></html>`;
   }
 
