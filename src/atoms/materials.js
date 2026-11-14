@@ -1,30 +1,28 @@
-/* Material atoms. The site has one look (dark; light mode was removed on 13 Nov 2026), so materials are set once. */
+/* Material atoms. One look: a cardboard model (14 Nov 2026). Every surface is card or paper from atoms/craft.js. */
 import * as THREE from 'three';
 import { TEX, SPUN } from './textures.js';
+import { card } from './craft.js';
 
 /* a decal lying on a surface: pulled toward the camera in the depth test, so it never z-fights, however far away the camera is */
 export const decal = mt => Object.assign(mt, { polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -4 });
 /* hardware palette, keyed by role (the keys are just role ids): deep, warm and matte */
 export const C = { body: '#d4d6db', tile: '#e3e4e8', cap: '#eeeff2', pad: '#2c2d31', black: '#232427', ring: '#c4c6cc', recess: '#1b1c1f' };
-const PRESET = { // role → colour, env strength, surface
-  [C.body]:   { color: '#3a342c', envMapIntensity: .45, metalness: .25, roughness: .52, roughnessMap: TEX.brush, bumpMap: TEX.brush, bumpScale: .18 },
-  [C.tile]:   { color: '#2b2721', envMapIntensity: .4, metalness: .15, roughness: .62, roughnessMap: TEX.grain, bumpMap: TEX.grain, bumpScale: .2 },
-  [C.cap]:    { color: '#5a544a', envMapIntensity: .7, metalness: 0, roughness: .55, clearcoat: .3, clearcoatRoughness: .45, bumpMap: TEX.grain, bumpScale: .12 },
-  [C.pad]:    { color: '#3d3932', envMapIntensity: .7, metalness: 0, roughness: .5, clearcoat: .35, clearcoatRoughness: .4, bumpMap: TEX.grain, bumpScale: .12 },
-  [C.black]:  { color: '#28241f', envMapIntensity: .55, metalness: .2, roughness: .55, roughnessMap: TEX.grain, bumpMap: TEX.grain, bumpScale: .15 },
-  [C.ring]:   { color: '#8c7b5a', envMapIntensity: .7, metalness: .85, roughness: .28 },   // brass rings + screws
-  [C.recess]: { color: '#14120f', metalness: .1, roughness: .75, bumpMap: TEX.grain, bumpScale: .2 },
+/* the cardboard model: every role is a kind of card or paper from the texture library, tinted */
+const PRESET = {
+  [C.body]:   () => card('corr', '#fff4e6'),                       // corrugated box card
+  [C.tile]:   () => card('kraft', '#f3e7d3'),                      // kraft panels
+  [C.cap]:    () => card('paper', '#fffaf0', { bumpScale: .2 }),   // cream paper keys and caps
+  [C.pad]:    () => card('paper', '#3f9aa3', { bumpScale: .2 }),   // teal paper drum pads
+  [C.black]:  () => card('edge', '#e9d9c2', { bumpScale: .6 }),    // the box's cut edge: you see the corrugation
+  [C.ring]:   () => card('kraft', '#c9995c'),                      // darker card collars
+  [C.recess]: () => card('dark', '#8a7663'),                       // the shadowed inside of the box
 };
 const mats = {};
-/* a palette role or any other colour (plain satin plastic); cached per colour + surface */
-export const M = (c, r = .62, m = 0) => {
-  const k = c + r + m; if (mats[k]) return mats[k]; const p = PRESET[c];
-  if (p) return mats[k] = new THREE.MeshPhysicalMaterial({ envMapIntensity: 1, ...p });
-  return mats[k] = new THREE.MeshPhysicalMaterial({ color: c, roughness: Math.min(r, .5), metalness: Math.max(m, .15), clearcoat: .25, clearcoatRoughness: .35, bumpMap: TEX.grain, bumpScale: .08, envMapIntensity: .9 });
-};
-/* forged, spun steel knob caps: part-metal so they read grey from every angle, not a black mirror of the room */
-export const STEEL = new THREE.MeshPhysicalMaterial({ color: '#aeb2b8', envMapIntensity: 1.3, map: SPUN.map, metalness: .6, roughness: .46, roughnessMap: SPUN.data, bumpMap: SPUN.data, bumpScale: .35,
-  clearcoat: .35, clearcoatRoughness: .25, sheen: .25, sheenColor: '#ffffff', sheenRoughness: .4 });
-export const KNURL = new THREE.MeshPhysicalMaterial({ color: '#868990', envMapIntensity: .8, metalness: 1, roughness: .32, bumpMap: TEX.knurl, bumpScale: 1.2, side: THREE.DoubleSide });
-/* matte rubber mode-button caps: light only leaks from the gap around them */
-export const RUBBER = () => new THREE.MeshPhysicalMaterial({ color: '#24221f', envMapIntensity: .35, roughness: .88, metalness: 0, sheen: .6, sheenColor: '#6d675d', sheenRoughness: .7, bumpMap: TEX.grain, bumpScale: .08, emissive: '#000000' });
+/* a palette role, or any other colour as a sheet of coloured paper; cached per colour */
+export const M = c => mats[c] || (mats[c] = PRESET[c] ? PRESET[c]() : card('paper', c, { bumpScale: .2 }));
+/* knob caps: a card disc with pencil rings drawn round it (was spun steel) */
+export const STEEL = card('paper', '#f1e2c6', { map: SPUN.map, bumpMap: null });
+/* the knob's edge: a strip of card with pencil hatching */
+export const KNURL = card('kraft', '#d9b98a', { bumpMap: TEX.knurl, bumpScale: .5, side: THREE.DoubleSide });
+/* mode-button tabs: cream paper; their mode colour shows as a marker line round them and a wash of colour on the paper */
+export const RUBBER = () => card('paper', '#fbf1dd', { bumpScale: .2, emissive: '#000000' });

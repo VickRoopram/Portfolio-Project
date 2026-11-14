@@ -16,13 +16,13 @@ const rows = ch => (G[ch] || G[' ']).split(' ');
 export const dotsWide = text => text.length * 6 - 1;
 /* the unlit matrix: faint dots on a `cell` pitch across the whole canvas */
 export function drawMatrix(x, W, H, cell, ox = 0, oy = 0) {
-  const r = cell * .36; x.fillStyle = 'rgba(255,255,255,.045)';
+  const r = cell * .36; x.fillStyle = 'rgba(255,236,200,.07)';
   for (let gy = (oy % cell) - cell; gy < H; gy += cell) for (let gx = (ox % cell) - cell; gx < W; gx += cell) { x.beginPath(); x.arc(gx + cell / 2, gy + cell / 2, r, 0, 7); x.fill() }
 }
 /* lit text centred on (cx, cy), `cell` px per dot (any size, so it can ease between sizes), with a soft bloom */
 export function drawPixelText(x, text, cx, cy, cell, color) {
   text = text.toUpperCase(); const ox = cx - dotsWide(text) * cell / 2, oy = cy - 3.5 * cell, r = cell * .41;
-  x.save(); x.fillStyle = color; x.shadowColor = color; x.shadowBlur = cell * .9;
+  x.save(); x.fillStyle = color; /* paint dabs on dark paper: no glow */
   [...text].forEach((ch, i) => rows(ch).forEach((row, ry) => [...row].forEach((b, rx) => {
     if (b !== '1') return; x.beginPath(); x.arc(ox + (i * 6 + rx) * cell + cell / 2, oy + ry * cell + cell / 2, r, 0, 7); x.fill() })));
   x.restore();
@@ -30,5 +30,5 @@ export function drawPixelText(x, text, cx, cy, cell, color) {
 /* fill a W × H canvas: a dark panel with a faint dot grid, and `text` lit in `color`, centred, as large as fits inside `pad` */
 export function pixelScreen(x, W, H, text, color, pad = 40) {
   const cell = Math.floor(Math.min((W - pad * 2) / dotsWide(text), (H - pad * 2) / 7)), ox = Math.round((W - dotsWide(text) * cell) / 2), oy = Math.round((H - 7 * cell) / 2);
-  x.fillStyle = '#0c0c0e'; x.fillRect(0, 0, W, H); drawMatrix(x, W, H, cell, ox, oy); drawPixelText(x, text, W / 2, H / 2, cell, color);
+  x.fillStyle = '#2b1d15'; x.fillRect(0, 0, W, H); drawMatrix(x, W, H, cell, ox, oy); drawPixelText(x, text, W / 2, H / 2, cell, color);
 }

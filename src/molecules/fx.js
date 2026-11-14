@@ -1,14 +1,14 @@
-/* Press FX: gap glow (light leaking around a cap) + a comet stroke racing round the cap edge. */
+/* Press FX, hand-drawn: a marker ring round a cap + a marker stroke racing round the cap edge. */
 import * as THREE from 'three';
 import { S, V, reduceMotion } from '../core/state.js';
 import { MODES } from '../core/data.js';
 import { dims, rrPath, flat } from '../atoms/geometry.js';
-import { haloTexture } from '../atoms/textures.js';
+import { haloTexture, canvasTex } from '../atoms/textures.js';
 import { decal } from '../atoms/materials.js';
 
 export const FXL = [];   // every control with an effect record
-/* light materials (glows, halos, rings, projections): additive, so they glow on the dark stage. FXMATS.push(m) sets that up */
-export const FXMATS = { push: (...ms) => ms.forEach(m => { m.blending = THREE.AdditiveBlending; m.needsUpdate = true }) };
+/* mark materials (marker rings, strokes, washes, projections) */
+export const FXMATS = { push: (...ms) => ms.forEach(m => { m.blending = THREE.NormalBlending; m.needsUpdate = true }) }; // the cardboard model is lit by daylight: marks are drawn in marker, not added as light
 const FX = new Map();
 /* the effect record for a control; creates its gap halo the first time */
 export function fxOf(mesh) {
@@ -22,7 +22,7 @@ const STROKE_VS = `attribute float a;attribute float e;varying float vA;varying 
 const STROKE_FS = `uniform float uHead,uFade,uOp;uniform vec3 uCol;varying float vA;varying float vE;
 void main(){float d=uHead-vA;float trail=d<0.?0.:smoothstep(.6,0.,d);float head=smoothstep(.07,0.,abs(d));
   float a=max(trail*.75+head,uFade);float edge=1.-pow(abs(vE*2.-1.),2.);
-  gl_FragColor=vec4(mix(uCol,vec3(1.),head*.55),clamp(a*edge*uOp,0.,1.));
+  gl_FragColor=vec4(uCol*(1.-head*.25),clamp(a*edge*uOp*1.6,0.,1.));
   #include <colorspace_fragment>
 }`;
 /* a thin ribbon hugging the cap outline; a = distance from the front centre (0) to the back (1), so two heads race round both sides */
@@ -42,11 +42,22 @@ function strokeFor(f) {
     transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending });
   const st = new THREE.Mesh(g, mt); st.position.y = f.h * .12; st.renderOrder = 3; st.frustumCulled = false; f.m.add(st); FXMATS.push(mt); return f.stroke = st;
 }
+/* action lines: a burst of marker ticks that pops out round a control when it's pressed, held for three drawings (each a size up
+   and turned a little), like the "pop" lines in a comic. One texture for every control */
+const burstTex = canvasTex(256, 256, (x, W) => { x.strokeStyle = '#fff'; x.lineCap = 'round'; x.translate(W / 2, W / 2);
+  for (let i = 0; i < 11; i++) { const a = i / 11 * Math.PI * 2 + (Math.random() - .5) * .25, r0 = W * (.34 + Math.random() * .03), r1 = W * (.43 + Math.random() * .055);
+    x.lineWidth = 7 + Math.random() * 5; x.beginPath(); x.moveTo(Math.cos(a) * r0, Math.sin(a) * r0); x.lineTo(Math.cos(a + .04) * r1, Math.sin(a + .04) * r1); x.stroke() } }, { data: 1 }).t;
+const BURST = [.78, 1, 1.2], BURST_HOLD = .085; // three drawings, each held for one picture at 12 a second
+function burstFor(f) {
+  if (f.burst) return f.burst;
+  const b = flat(f.w + 1.1, f.d + 1.1, decal(new THREE.MeshBasicMaterial({ map: burstTex, transparent: true, depthWrite: false, toneMapped: false })));
+  b.position.set(f.m.position.x, f.halo.position.y + .004, f.m.position.z); b.renderOrder = 4; b.visible = false; f.m.parent.add(b); return f.burst = b;
+}
 /* fire a press: gap flash + stroke. delay (ms) lets waves ripple across many controls */
 export function pulse(mesh, delay = 0, amp = 1) { const f = fxOf(mesh); f.t0 = performance.now() + delay; f.amp = amp; if (!f.managed) f.col.set(S.mode ? MODES[S.mode].glow : '#ff5d1a') }
 const lightCol = new THREE.Color();
 export function updateFx(now) {
-  const face = .28; // dark caps would light up fully, so the light comes mostly from the gap instead of the face
+  const face = .5; // the cap's paper takes a wash of the colour; the marker ring round it carries the rest
   for (const f of FXL) {
     const mm = f.m.material, age = (now - f.t0) / 1000, flash = age < 0 ? 0 : f.amp * Math.pow(Math.max(0, 1 - age / .6), 1.4);
     let base = 0, col = f.col;
@@ -54,9 +65,12 @@ export function updateFx(now) {
     else if (mm.emissive) { mm.emissive.copy(f.col); mm.emissiveIntensity = flash * .5 * face }
     lightCol.copy(col);
     const op = Math.min(1, Math.max(f.m.userData.edge || 0, base * 1.55) + flash);
-    f.halo.visible = op > .004; if (f.halo.visible) { f.halo.material.opacity = op; f.halo.material.color.copy(lightCol).multiplyScalar(1.35) }
+    f.halo.visible = op > .004; if (f.halo.visible) { f.halo.material.opacity = op; f.halo.material.color.copy(lightCol) }
     if (age >= 0 && age < 1.15 && f.amp > 0) { const st = strokeFor(f), u = st.material.uniforms; st.visible = true;
       u.uHead.value = reduceMotion ? 1.3 : Math.min(1.3, age / .42); u.uFade.value = age < .38 ? 0 : Math.max(0, 1 - (age - .38) / .7) * .85; u.uOp.value = Math.min(1, f.amp * 1.2); u.uCol.value.copy(lightCol) }
     else if (f.stroke) f.stroke.visible = false;
+    const k = age >= 0 && f.amp > 0 && !reduceMotion ? Math.floor(age / BURST_HOLD) : 9;
+    if (k < BURST.length) { const b = burstFor(f); b.visible = true; b.scale.setScalar(BURST[k]); b.rotation.z = k * .31; b.material.color.copy(lightCol); b.material.opacity = Math.min(1, f.amp) }
+    else if (f.burst) f.burst.visible = false;
   }
 }

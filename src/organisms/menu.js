@@ -1,10 +1,15 @@
-/* Menu behind the burger: a side panel in the same spot as the detail card, so the synth stays visible and reachable.
+/* Menu behind the burger: a tray of cardboard boxes, in the same spot as the detail card, so the synth stays visible and reachable.
+   Point at a box and its flaps lift; click and they fold open. A box with more inside (Projects, a section) opens onto the next tray;
+   a project is an index card standing in its section's box. Picking a project, About or Contact runs a cable from it to its key
+   on the synth (#wire), then the journey starts.
    Root: MENU.items (default Home · About · Projects › · Contact; editable in /admin).
    Projects drills down to the five keyboard modes; a mode drills down to the projects on its keys.
    Picking a mode flies the camera to the keys and lights them; picking a project hands over to act.journey
    (pan out, fly into the synth, push the key, open the card where the menu was). */
-import { $, S, act, reduceMotion } from '../core/state.js';
-import { CH, MENU } from '../core/data.js';
+import * as THREE from 'three';
+import { $, S, CTRL, act, reduceMotion } from '../core/state.js';
+import { CH, MENU, onKeys } from '../core/data.js';
+import { camera, stage } from '../core/scene.js';
 import { ensureAudio, drum } from '../core/audio.js';
 import { icon } from '../atoms/icons.js';
 
@@ -20,25 +25,47 @@ export const menuOpen = () => !menu.hidden && !menu.classList.contains('out');
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const chev = `<span class="go">${icon('chevron-right', 20)}</span>`;
-const row = (attrs, inner, n) => `<button class="m-row" ${attrs} style="--n:${n}">${inner}</button>`;
+/* a closed box seen from above: two flaps with its name lettered across the seam, and whatever's inside underneath */
+const flaps = t => `<i class="fl l"><b>${t}</b></i><i class="fl r"><b>${t}</b></i>`;
+const box = (attrs, t, n, c, inner = '') => `<button class="m-row box" ${attrs} style="--n:${n}${c ? `;--c:${c}` : ''}"><span class="in">${inner}</span>${flaps(t)}</button>`;
+const slip = (attrs, inner, n) => `<button class="m-row slip" ${attrs} style="--n:${n}">${inner}</button>`;
 function render() {
   const { k, ch, i } = level; let h = '';
   if (k === 'root') {
-    h = `<div class="m-list root">${MENU.items.map(({ label: t, go, href }, n) => go === 'link'
-      ? `<a class="m-row" href="${esc(href || '#')}" target="_blank" rel="noopener" style="--n:${n}"><span class="tx"><b>${esc(t)}</b></span><span class="go">${icon('external-link', 18)}</span></a>`
-      : row(`data-go="${go}"${go === 'home' ? ' id="home"' : ''}`, `<span class="tx"><b>${esc(t)}</b></span>${go === 'projects' || go.startsWith('mode:') ? chev : ''}`, n)).join('')}</div>`;
+    h = `<div class="m-list root boxes">${MENU.items.map(({ label: t, go, href }, n) => go === 'link'
+      ? `<a class="m-row box" href="${esc(href || '#')}" target="_blank" rel="noopener" style="--n:${n}"><span class="in">${icon('external-link', 28)}</span>${flaps(esc(t))}</a>`
+      : box(`data-go="${go}"${go === 'home' ? ' id="home"' : ''}`, esc(t), n, go.startsWith('mode:') ? CH[go.slice(5)]?.col : go === 'contact' ? CH.cv?.col : go === 'about' ? CH.ab?.col : '')).join('')}</div>`;
   } else if (k === 'projects') {
-    h = `<p class="m-title">Projects</p><div class="m-list">${PROJECT_MODES.map(([m, t], n) => {
-      const c = CH[m]; return c ? row(`data-mode="${m}" style="--c:${c.col}"`, `<i class="dot"></i><span class="tx"><b>${t}</b></span>${chev}`, n) : '';
-    }).join('')}</div>`;
+    h = `<p class="m-title">Projects</p><div class="m-list boxes">${PROJECT_MODES.map(([m, t], n) => CH[m] ? box(`data-mode="${m}"`, t, n, CH[m].col) : '').join('')}</div>`;
   } else {
     const c = CH[ch]; let n = 0;
-    h = `<p class="m-title" style="--c:${c.col}">${LABEL[ch] || c.name}</p><div class="m-list" style="--c:${c.col}">${c.items.map((it, j) => isSlot(it) ? '' :
-      row(`data-item="${j}"${j === i ? ' aria-current="true"' : ''}`, `<span class="tx"><b>${it.t}</b></span>${chev}`, n++)).join('')}</div>`;
+    h = `<p class="m-title" style="--c:${c.col}">${LABEL[ch] || c.name}</p><div class="m-list slips" style="--c:${c.col}">${c.items.map((it, j) => isSlot(it) ? '' :
+      slip(`data-item="${j}"${j === i ? ' aria-current="true"' : ''}`, `<span class="tx"><b>${it.t}</b></span>${chev}`, n++)).join('')}</div>`;
   }
   head.hidden = k === 'root'; back.querySelector('span').textContent = k === 'mode' && !level.direct ? 'Projects' : 'Menu';
-  body.innerHTML = h; body.scrollTop = 0; menu.dataset.level = k; syncHome(); hidePeek();
+  body.innerHTML = h; body.scrollTop = 0; menu.dataset.level = k; syncHome(); hidePeek(); busy = false;
   (body.querySelector('[aria-current="true"]') || body.querySelector('.m-row'))?.focus({ preventScroll: true });
+}
+/* fold a box's flaps open, then carry on (three drawings later) */
+let busy = false;
+const FOLD = reduceMotion ? 0 : 360;
+function unbox(b, then) { if (busy) return; busy = true; b.classList.add('open'); drum('rim'); setTimeout(() => { busy = false; then() }, FOLD) }
+/* the cable: from the box or card you picked to its key on the synth, drawn out in steps with a plug landing on the key */
+const wire = $('wire'), wInk = wire.querySelector('.w-ink'), wCord = wire.querySelector('.w-cord'), wPlug = wire.querySelector('.w-plug'), v3 = new THREE.Vector3();
+[wInk, wCord].forEach(p => p.setAttribute('pathLength', '1'));
+function plugIn(el, ch, i, then) {
+  const key = (onKeys(ch) ? CTRL.kb : CTRL[ch])?.[i];
+  if (!key || reduceMotion) { then(); return }
+  if (busy) return; busy = true; el.classList.add('plugged');
+  const r = el.getBoundingClientRect(), st = stage.getBoundingClientRect(), side = innerWidth > 760; // the tray is on the right on desktop, at the bottom on phones
+  key.getWorldPosition(v3).project(camera);
+  const tx = Math.min(st.right - 24, Math.max(st.left + 24, st.left + (v3.x + 1) / 2 * st.width)), ty = Math.min(st.bottom - 24, Math.max(st.top + 70, st.top + (1 - v3.y) / 2 * st.height));
+  const sx = side ? r.left + 6 : r.left + r.width / 2, sy = side ? r.top + r.height / 2 : r.top + 4, sag = Math.max(50, Math.hypot(sx - tx, sy - ty) * .22); // a cable lying on the bench: it leaves the box, droops, and comes up to the key
+  const d = `M${sx} ${sy} C${sx - (side ? sag : 0)} ${sy + (side ? sag * .6 : -sag)},${tx + sag * .45} ${ty + sag * .7},${tx} ${ty}`;
+  wInk.setAttribute('d', d); wCord.setAttribute('d', d); wPlug.setAttribute('cx', tx); wPlug.setAttribute('cy', ty); wire.style.setProperty('--c', CH[ch].col);
+  wire.classList.remove('on', 'off'); void wire.getBoundingClientRect(); wire.classList.add('on');
+  setTimeout(() => drum('rim'), 440);
+  setTimeout(() => { busy = false; then(); wire.classList.add('off'); setTimeout(() => wire.classList.remove('on', 'off'), 320) }, 700);
 }
 /* hover preview: a project's lead image floats just under the row you point at (over the names below it), following the pointer
    sideways; keyboard focus shows it too. Fixed to the page so the panel never clips it. No preview on touch, or for items without images */
@@ -77,13 +104,13 @@ back.onclick = () => { drum('blip'); show(level.k === 'mode' && !level.direct ? 
 body.addEventListener('click', e => {
   const b = e.target.closest('button.m-row'); if (!b) { if (e.target.closest('a.m-row')) closeMenu(); return }
   ensureAudio(); const { go, mode, item } = b.dataset;
-  if (go === 'home') { closeMenu(); act.zoomOut() }
-  else if (go === 'about') { closeMenu(); act.journey('ab', 0) }
-  else if (go === 'contact') { closeMenu(); act.journey('cv', 1) }
-  else if (go === 'projects') { drum('blip'); show('projects') }
-  else if (go?.startsWith('mode:')) { const m = go.slice(5); if (CH[m]) { show('mode', m, undefined, true); act.zoomTo(m) } } // a section straight from the top level
-  else if (mode) { show('mode', mode); act.zoomTo(mode) } // the camera flies to the keys while the list opens
-  else if (item !== undefined) { const ch = level.ch; closeMenu(); act.journey(ch, +item) }
+  if (go === 'home') unbox(b, () => { closeMenu(); act.zoomOut() });
+  else if (go === 'about') unbox(b, () => plugIn(b, 'ab', 0, () => { closeMenu(); act.journey('ab', 0) }));
+  else if (go === 'contact') unbox(b, () => plugIn(b, 'cv', 1, () => { closeMenu(); act.journey('cv', 1) }));
+  else if (go === 'projects') unbox(b, () => show('projects'));
+  else if (go?.startsWith('mode:')) { const m = go.slice(5); if (CH[m]) { act.zoomTo(m); unbox(b, () => show('mode', m, undefined, true)) } } // a section straight from the top level
+  else if (mode) { act.zoomTo(mode); unbox(b, () => show('mode', mode)) } // the camera flies to the keys while the box opens
+  else if (item !== undefined) { const ch = level.ch; plugIn(b, ch, +item, () => { closeMenu(); act.journey(ch, +item) }) }
 });
 body.addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') return; const b = e.target.closest('[data-item]'); b ? showPeek(b, e.clientX) : hidePeek() });
 body.addEventListener('pointerleave', hidePeek); body.addEventListener('scroll', hidePeek, { passive: true });

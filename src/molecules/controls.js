@@ -42,7 +42,7 @@ export function updateItemGlow(t) {
 export function knurl(parent, r, h, y, proxy) { const k = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 64, 1, true), KNURL); k.position.y = y; k.castShadow = true; k.userData.proxy = proxy; parent.add(k); hits.push(k); return k }
 export function screw(parent, x, y, z) {
   const s = new THREE.Mesh(new THREE.CylinderGeometry(.075, .075, .025, 20), M(C.ring)); s.position.set(x, y, z); parent.add(s);
-  const sl = new THREE.Mesh(new THREE.BoxGeometry(.11, .012, .022), new THREE.MeshStandardMaterial({ color: '#55575c' })); sl.position.set(x, y + .014, z); sl.rotation.y = Math.random() * Math.PI; parent.add(sl);
+  const sl = new THREE.Mesh(new THREE.BoxGeometry(.11, .012, .022), new THREE.MeshBasicMaterial({ color: '#2a1b12' })); sl.position.set(x, y + .014, z); sl.rotation.y = Math.random() * Math.PI; parent.add(sl);
 }
 /* a keycap with a printed legend: a word, or a coolicons glyph when glyph is set */
 export function cap(w, d, r, label, { col = C.cap, ink, inkDark, size = 50, lw = .66, lh = .32, glyph } = {}) {
@@ -57,7 +57,7 @@ export function knob(parent, pos, r, key, size, note) {
   const z = SIZE[size], g = new THREE.Group(), rot = new THREE.Group(); g.position.copy(pos); parent.add(g); g.add(rot);
   const ring = cyl(r + z.ring[0], r + z.ring[1], z.ring[2], M(C.ring, .5)); ring.position.y = z.ring[2] / 2; g.add(ring);
   const cp = cyl(r, r + .02, z.cap[0], STEEL.clone()); cp.position.y = z.cap[1]; rot.add(cp); knurl(rot, r + z.kn[0], z.kn[1], z.kn[2], cp);
-  const ind = new THREE.Mesh(new THREE.BoxGeometry(z.ind[0], .02, r * z.ind[1]), M('#1d1e21', .5)); ind.position.set(0, z.cap[1] + z.cap[0] / 2 + .01, -r * z.ind[2]); rot.add(ind);
+  const ind = new THREE.Mesh(new THREE.BoxGeometry(z.ind[0], .02, r * z.ind[1]), M('#d2451e')); ind.position.set(0, z.cap[1] + z.cap[0] / 2 + .01, -r * z.ind[2]); rot.add(ind);
   ring.userData.proxy = ind.userData.proxy = cp; hits.push(ring, ind, cp); anim.push(rot); fxOf(cp);
   const set = () => { rot.userData.r = (.5 - P[key]) * 4.4 }; set(); rot.rotation.y = rot.userData.r;
   cp.userData = { tip: `${PNAMES[key]} · drag up or down`, live: () => `${PNAMES[key]} ${Math.round(P[key] * 100)}%`,

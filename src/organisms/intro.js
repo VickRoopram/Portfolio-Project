@@ -1,4 +1,5 @@
-/* Intro: one headline and one primary action over the live, blurred synth. Skipped for the rest of the session once entered. */
+/* Intro and loader: a sheet of paper on the workbench with the site sketched on it (drawn in CSS while the scene loads), one headline
+   and one primary action. Entering whips the sheet away. Skipped for the rest of the session once entered. */
 import { $ } from '../core/state.js';
 import { muted, toggleMute, ensureAudio, drum } from '../core/audio.js';
 

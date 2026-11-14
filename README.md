@@ -24,7 +24,7 @@ The synth is the interface. Each part of the instrument holds a different side o
 
 **Zoom guide (bottom right):** a scroll-wheel icon sits in the corner. As soon as you zoom (scroll or pinch), it slides to the bottom middle and opens up with a short instruction (*Scroll to zoom*, *Pinch to zoom* on phones) and a bar that fills as you zoom in, with its percentage (0% is the whole table, 100% is as close as you can go). It drops back to the icon a couple of seconds after you stop. When the bar is full (as close as you can go) the icon turns red and shakes; when it's empty (the whole table) the icon relaxes. Zoom is locked: in as far as one synth filling the view, out as far as the whole table. Click the icon to see the instructions on their own.
 
-**Look:** one dark look: a cool charcoal room (matched to Vick's reference render), a dark brown wooden desk, warm-lit synths. There is no light mode.
+**Look:** a cardboard model (14 Nov 2026). Every part is card or paper from photo textures (`assets/tex/`), with an ink outline that boils; labels are hand-lettered; the room is dark and warm, the workbench dark wood. The whole site is animated on twos: `FPS = 12` in `src/atoms/craft.js` sets how many pictures a second the 3D scene draws, and `src/styles/skin.css` steps every CSS transition to match. The menu is a tray of boxes that fold open; picking a project runs a cable from it to its key on the synth. The intro is a sheet of paper on which the site is sketched while it loads. There is no light mode.
 
 **Press feedback:** every control glows and traces a stroke of light around its edge when pressed. When you switch modes, the gaps around the keys that hold that mode's projects light up in its colour, in a wave from left to right. The HUD buttons and the project card use the same glow and stroke.
 
@@ -108,7 +108,7 @@ gd: { name: 'DESIGN', col: '#1fa957', items: [
 - **Three.js r160** for the scene, with `RoundedBoxGeometry` and `OrbitControls` (desktop only)
 - **Web Audio API** for a two-oscillator synth with sub-oscillator, low-pass filter, echo, synthesized drums and a 16-step sequencer for BEATS
 - **Canvas textures** for the screens: a dot-matrix pixel font (`atoms/pixelfont.js`) reading MY PROJECTS on the synth and CONTACT on the remote. When sound plays, MY PROJECTS shrinks to the top and a live waveform fills the screen, changing style every few seconds (line, pixel bars, broken dashes, dots). Every 25–60 seconds the Vickhal Roopram logo appears on it for a few seconds; click it to open the About summary
-- Fonts: Bungee, IBM Plex Mono and Noto Sans (Google Fonts)
+- Fonts: Londrina Solid and Patrick Hand, self-hosted in `assets/fonts/` (SIL Open Font Licence)
 
 ## Deploy
 

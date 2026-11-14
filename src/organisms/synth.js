@@ -45,7 +45,7 @@ export const KNOB_RINGS = [];
 [['cutoff', 'FILTER'], ['q', 'RESONANCE'], ['decay', 'DECAY'], ['wet', 'ECHO']].forEach(([key, label], i) => {
   const c = 4 + i * 2; tile(c, 0, 2, UPPER);
   const { g, rot, cp } = knob(synth, new THREE.Vector3(GX(c + .5), TOP + .3, GZ(0) + .48), .58, key, 'lg', [[48, 52, 55, 60][i], 1.2]);
-  const L = printed(label, 1.6, .32, '#7b7e86', 40); L.position.set(0, .01, 1.3); g.add(L);
+  const L = printed(label, 1.6, .32, '#7b7e86', 58); L.position.set(0, .01, 1.3); g.add(L);
   // arcs lie flat on the tile; angle t on the ring = knob turn a + π/2 (a = 0 points straight back, like the knob's indicator)
   const track = new THREE.Mesh(new THREE.RingGeometry(RING_R - .022, RING_R + .022, 72, 1, Math.PI / 2 - TRAVEL, TRAVEL * 2), ringMat({ opacity: .35 }));
   const value = new THREE.Mesh(new THREE.BufferGeometry(), ringMat({ opacity: .85 }));
@@ -60,7 +60,7 @@ export const KNOB_RINGS = [];
 
 /* speaker grille, pulsing with the music */
 tile(12, 0, 2, UPPER);
-export const grille = at(flat(1.7, 1.7, decal(new THREE.MeshBasicMaterial({ transparent: true, color: '#0e0f11', map: canvasTex(256, 256, x => { x.fillStyle = '#fff';
+export const grille = at(flat(1.7, 1.7, decal(new THREE.MeshBasicMaterial({ transparent: true, color: '#2a1b12', map: canvasTex(256, 256, x => { x.fillStyle = '#fff';
   for (let i = 0; i < 11; i++) for (let j = 0; j < 11; j++) if ((i - 5) ** 2 + (j - 5) ** 2 <= 27) { x.beginPath(); x.arc(28 + i * 20, 28 + j * 20, 5.2, 0, 7); x.fill() } }).t }))), GX(12.5), TOP + .305, upperZ);
 
 /* detune knob, waveform, beats, stop, mute */
@@ -96,7 +96,7 @@ export const keyMeshes = [], sharpMeshes = [];
 for (let i = 0; i < 14; i++) {
   tile(i, 3); const kt = tile(i, 4, 1, 2), k = at(rbox(.76, .16, 1.62, .26, M(C.cap, .5)), GX(i), TOP + .36, GZ(4.5));
   kt.userData.proxy = k; hits.push(kt); keyMeshes.push(k); itemCtrl(k, 'kb', i, () => playNote(wMidi(i)));
-  if (i < 13 && SHARP[i % 7] !== undefined) { const m = 60 + 12 * Math.floor(i / 7) + SHARP[i % 7], s = at(cyl(.3, .3, .18, M('#111214', .35)), GX(i) + .5, TOP + .4, GZ(3));
+  if (i < 13 && SHARP[i % 7] !== undefined) { const m = 60 + 12 * Math.floor(i / 7) + SHARP[i % 7], s = at(cyl(.3, .3, .18, M('#5a4033')), GX(i) + .5, TOP + .4, GZ(3));
     pressable(s, () => playNote(m), 'Sharp key'); sharpMeshes.push(s) }
 }
 for (let i = 0; i < 10; i++) at(cyl(.035, .035, .02, M('#6a6c72')), 9.18, .91, -1.2 + i * .22);
