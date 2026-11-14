@@ -13,9 +13,14 @@ import { icon } from '../atoms/icons.js';
 const put = (parent, o, x, y, z) => { o.position.set(x, y, z); parent.add(o); return o };
 /* the workbench: dark wood from the texture library (one photo, mirror-tiled along the top); the legs and rail are rolled card tubes */
 const woodMap = PAPER.wood.map.clone(); woodMap.repeat.set(.5, .5); const woodBump = PAPER.wood.bump.clone(); woodBump.repeat.copy(woodMap.repeat);
-export const DESK = { wood: new THREE.MeshStandardMaterial({ map: woodMap, bumpMap: woodBump, bumpScale: .25, color: '#c9b39c', roughness: .85, metalness: 0, envMapIntensity: .2 }),
+export const DESK = { wood: new THREE.MeshStandardMaterial({ map: woodMap, bumpMap: woodBump, bumpScale: .7, color: '#c9b39c', roughness: .78, metalness: 0, envMapIntensity: .2 }),
   steel: card('dark', '#b39a80') };
 put(scene, rbox(32.5, .9, 18.5, .3, DESK.wood), .6, -.45, -.1).castShadow = false;
+/* the bench falls into shadow towards its edges: a soft dark wash on the wood, clear under the light over the mat and deepest at the
+   edges and corners (the spotlight's own fall-off does the same to everything standing on it) */
+{ const sh = canvasTex(256, 256, (x, W) => { const g = x.createRadialGradient(W * .43, W * .52, W * .2, W * .47, W * .5, W * .74); g.addColorStop(0, 'rgba(14,7,3,0)'); g.addColorStop(.55, 'rgba(14,7,3,.3)'); g.addColorStop(1, 'rgba(14,7,3,.78)'); x.fillStyle = g; x.fillRect(0, 0, W, W);
+    for (const [a, b, c, d] of [[0, 0, 0, 34], [0, W, 0, W - 34], [0, 0, 34, 0], [W, 0, W - 34, 0]]) { const e = x.createLinearGradient(a, b, c, d); e.addColorStop(0, 'rgba(10,5,2,.6)'); e.addColorStop(1, 'rgba(10,5,2,0)'); x.fillStyle = e; x.fillRect(0, 0, W, W) } }).t;
+  const v = flat(32.4, 18.4, decal(new THREE.MeshBasicMaterial({ map: sh, transparent: true, depthWrite: false })), .004); v.position.x = .6; v.position.z = -.1; v.renderOrder = 0; v.raycast = () => {}; scene.add(v) }
 const steel = DESK.steel;
 [[-15.2, -8.8], [16.4, -8.8], [-15.2, 8.6], [16.4, 8.6]].forEach(([x, z]) => { put(scene, rbox(.85, 30, .85, .2, steel), x, -15.9, z).castShadow = false });
 put(scene, rbox(30.5, .7, .2, .05, steel), .6, -1.25, -9.1);

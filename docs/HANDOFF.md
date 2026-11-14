@@ -375,6 +375,8 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - **Overview:** on wide screens `BOX.all` is now the whole bench (−15.9…17.1 × −9.5…9.3), so the starting view and Home show the mat, both synths, the polaroids, lamp, plant and note. Phones keep the synth-only overview so the keys stay big enough to play.
     - Files: `page/camera.js`, `page/input.js`, `core/state.js`, `main.js`, `organisms/keepsakes.js`, `organisms/menu.js`.
 
+44. **14 Nov 2026: one diffused spotlight over the mat; the bench's edges in shadow** (Vick). `core/scene.js`: the directional key light is replaced by a `SpotLight` (still exported as `sun`) hanging front-left over the mat's centre (`MAT_CENTRE`), angle .82, penumbra .78, decay 0, so it's full strength over the synths and falls away to the bench's edges; it casts the shadows (2048 map, `shadow.focus` .72). The fill (`hemi`) dropped to .34 and the back light to .16, so what the spot doesn't reach sits in warm shadow. `organisms/desk.js` adds a dark wash on the wood that deepens to the edges and corners. Card, paper and wood take more of the raking light (`bumpScale` .55 in `card()`, .7 on the desk). The lamp's warm point light now reads much more strongly when switched on.
+
 
 ---
 

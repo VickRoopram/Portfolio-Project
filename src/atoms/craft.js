@@ -14,7 +14,7 @@ const photo = (file, data) => { const t = loader.load('assets/tex/' + file); t.w
 const pair = file => ({ map: photo(file), bump: photo(file, 1) });
 export const PAPER = { kraft: pair('kraft.jpg'), dark: pair('kraft-dark.jpg'), corr: pair('corrugated.jpg'), edge: pair('edge.jpg'), paper: pair('paper.jpg'), wood: pair('wood.jpg') };
 /* a piece of card or paper: matte, a little tooth from the photo, almost no reflection. tint multiplies the photo */
-export const card = (kind, tint = '#ffffff', o = {}) => new THREE.MeshStandardMaterial({ map: PAPER[kind].map, bumpMap: PAPER[kind].bump, bumpScale: .35, color: tint, roughness: .96, metalness: 0, envMapIntensity: .18, ...o });
+export const card = (kind, tint = '#ffffff', o = {}) => new THREE.MeshStandardMaterial({ map: PAPER[kind].map, bumpMap: PAPER[kind].bump, bumpScale: .55, color: tint, roughness: .93, metalness: 0, envMapIntensity: .18, ...o });
 
 /* ink outline: the same shape, a little bigger, drawn inside out in ink, so every piece gets a marker line round its silhouette */
 export const INK = '#2a1b12';
