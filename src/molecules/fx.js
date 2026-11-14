@@ -16,7 +16,7 @@ export function fxOf(mesh) {
   let f = FX.get(mesh); if (f) return f; const { w, h, d, r } = dims(mesh), ht = haloTexture(w, d, r);
   const halo = flat(w + 2 * ht.m, d + 2 * ht.m, decal(new THREE.MeshBasicMaterial({ map: ht.t, transparent: true, opacity: 0, depthWrite: false, toneMapped: false })));
   halo.position.set(mesh.position.x, mesh.position.y - h / 2 + .026, mesh.position.z); halo.renderOrder = 2; halo.visible = false; halo.rotation.z = mesh.rotation.y; mesh.parent.add(halo); FXMATS.push(halo.material);
-  cutout(mesh.parent, halo.position.x, halo.position.y - .012, halo.position.z, w, d, !mesh.geometry.userData.rr); // the hole it sits in, cut by hand (so it doesn't quite line up with the piece)
+  if (!mesh.noCut) cutout(mesh.parent, halo.position.x, halo.position.y - .012, halo.position.z, w, d, !mesh.geometry.userData.rr); // the hole it sits in, cut by hand (so it doesn't quite line up with the piece)
   f = { m: mesh, halo, w, h, d, r, stroke: null, t0: -1e9, amp: 0, col: new THREE.Color('#ff5d1a'), managed: false };
   FX.set(mesh, f); FXL.push(f); return f;
 }

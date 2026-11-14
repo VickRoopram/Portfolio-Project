@@ -352,6 +352,13 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - **Nav above the Netlify badge:** `--badge: 58px` in `skin.css` lifts the joystick and zoom guide; the card and menu end higher to match.
     - Files: `atoms/craft.js`, `atoms/pixelfont.js` (removed), `molecules/controls.js`, `molecules/fx.js`, `organisms/screens.js`, `organisms/synth.js`, `organisms/remote.js`, `organisms/underlights.js`, `organisms/card.js`, `core/scene.js`, `styles/skin.css`, `assets/tex/crumpled-page.jpg`.
 
+39. **14 Nov 2026: third craft pass** (Vick: big knobs drawn on, red when used; beats pads more like board; no nails; the screen as a ring-bound book where the previous page stays visible).
+    - **Drawn knobs** (`drawnKnob()` in `molecules/controls.js`, used for size `lg`): nothing stands up from the card. A fixed pencil ring with tick marks (`dialBase`) and a flat disc that turns with the value (`dialTurn`: circle, pointer, hatching; a `CircleGeometry`, which is also the hit target). Both are white drawings tinted by their material: ink normally, red (`#e0301a`) while dragged or for ~0.5 s after a click (`cp.hot`, set in `down`/`drag`, read in `updateSynth`). The value arc that appears while adjusting sits outside the ticks (`RING_R` .92). The small knobs (detune, volume) are still card discs.
+    - **No nails:** `screw()` now draws a pencil circle-and-cross decal (panel corners, the small knobs' centres); the brass material and the row of metal nubs on the synth's right edge are gone.
+    - **Beats pads:** squares of thick grey board (`BOARD`, the dark kraft photo; .2 high so the cut edge shows), each with a dab of teal paint under a cream name. Read as "the drum pads"; say if Vick meant the BEATS/STOP/WAVE buttons.
+    - **Ring-bound notebook** (`organisms/screens.js`): the synth's screen is two portrait pages (368×432 on the 800×476 canvas) either side of eight rings. Right = the current page; left = the page before it (`prev`), still readable. A change of page swings the right-hand page over the spine onto the left (`book()` / `leafAt()`, `TURN` .6 s), then it becomes `prev`. Before anything has been turned the left page reads "I am creative." Page contents were re-laid for portrait (`fit()` shrinks lettering to the page).
+    - Files: `molecules/controls.js`, `molecules/fx.js`, `organisms/synth.js`, `organisms/screens.js`.
+
 
 ---
 

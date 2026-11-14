@@ -10,7 +10,7 @@ import { canvasTex, radialTex } from '../atoms/textures.js';
 import { M, C, RUBBER, decal } from '../atoms/materials.js';
 import { printed, engraved } from '../atoms/labels.js';
 import { fxOf, FXMATS } from '../molecules/fx.js';
-import { wonk, tape, rnd } from '../atoms/craft.js';
+import { wonk, tape, rnd, INK, card } from '../atoms/craft.js';
 import { pressable, itemCtrl, knob, screw, cap } from '../molecules/controls.js';
 
 export const synth = new THREE.Group(); scene.add(synth);
@@ -41,14 +41,14 @@ scrP.userData = { tip: 'Screen · click for the About page', tipHTML: () => V.lo
 /* the four big sound knobs (drag up/down; click for a note), each in a 2 × 2.5 tile with its name underneath.
    While you adjust a knob, a lit ring fades in on its bezel, round the cap (where the press stroke runs): a dim track over the knob's travel, a brighter arc up to its value, and a light dot that
    follows the knob as it turns (updateSynth). It fades out about a second after you let go */
-const RING_R = .73, RING_Y = .082, TRAVEL = 2.2, LED = '#ff5d1a'; // on the top of the knob's brass bezel, round the cap
+const RING_R = .92, RING_Y = .014, TRAVEL = 2.2, LED = '#ff5d1a'; // on the top of the knob's brass bezel, round the cap
 const dotTex = radialTex([[0, 1], [.3, .55], [1, 0]], 128, 128);
 const ringMat = o => decal(new THREE.MeshBasicMaterial({ color: LED, transparent: true, depthWrite: false, toneMapped: false, ...o }));
 export const KNOB_RINGS = [];
 [['cutoff', 'FILTER'], ['q', 'RESONANCE'], ['decay', 'DECAY'], ['wet', 'ECHO']].forEach(([key, label], i) => {
   const c = 4 + i * 2; tile(c, 0, 2, UPPER);
-  const { g, rot, cp } = knob(synth, new THREE.Vector3(GX(c + .5), TOP + .3, GZ(0) + .48), .58, key, 'lg', [[48, 52, 55, 60][i], 1.2]);
-  const L = printed(label, 1.6, .32, '#7b7e86', 58); L.position.set(0, .01, 1.3); g.add(L);
+  const { g, rot, cp } = knob(synth, new THREE.Vector3(GX(c + .5), TOP + .3, GZ(0) + .42), .5, key, 'lg', [[48, 52, 55, 60][i], 1.2]);
+  const L = printed(label, 1.6, .32, '#7b7e86', 58); L.position.set(0, .01, 1.42); g.add(L);
   // arcs lie flat on the tile; angle t on the ring = knob turn a + π/2 (a = 0 points straight back, like the knob's indicator)
   const track = new THREE.Mesh(new THREE.RingGeometry(RING_R - .022, RING_R + .022, 72, 1, Math.PI / 2 - TRAVEL, TRAVEL * 2), ringMat({ opacity: .35 }));
   const value = new THREE.Mesh(new THREE.BufferGeometry(), ringMat({ opacity: .85 }));
@@ -90,7 +90,12 @@ const coreTex = radialTex([[0, .9], [.45, .4], [1, 0]], 256, 64);
 
 /* drum pads (graphite caps, light print) */
 export const PADS = ['kick', 'snare', 'hat', 'clap', 'tom', 'rim', 'shaker', 'crash', 'blip'];
-PADS.forEach((p, i) => capBtn(14 + i % 3, 3 + Math.floor(i / 3), p.toUpperCase(), () => drum(p), `Drum pad · ${p}`, { col: C.pad, ink: '#efe4cf', inkDark: '#cdbfa6' }));
+/* the beats pads are squares of grey board (thick, so you see the cut edge), each with a dab of teal paint under its name */
+const BOARD = card('dark', '#cdbba4', { bumpScale: .5 }), dab = canvasTex(128, 128, x => { x.fillStyle = '#fff'; x.translate(64, 64); for (let i = 0; i < 5; i++) { x.globalAlpha = .55; x.beginPath(); x.ellipse(rnd(10, -5), -24 + i * 12 + rnd(4), 46 + rnd(8), 9 + rnd(3), rnd(.16, -.08), 0, 7); x.fill() } }).t;
+PADS.forEach((p, i) => { const c = 14 + i % 3, r = 3 + Math.floor(i / 3); tile(c, r);
+  const k = wonk(at(rbox(.74, .2, .74, .02, BOARD), GX(c), TOP + .39, GZ(r)), .09, .035);
+  const paint = flat(.6, .6, decal(new THREE.MeshBasicMaterial({ map: dab, color: '#2f9aa6', transparent: true, depthWrite: false })), .101); paint.rotation.z = rnd(3); paint.raycast = () => {};
+  const l = printed(p.toUpperCase(), .66, .32, '#fff8ea', 50, '#fff8ea'); l.position.y = .103; l.renderOrder = 1; k.add(paint, l); pressable(k, () => drum(p), `Drum pad · ${p}`) });
 
 /* the keyboard: 14 white keys hold the current mode's projects; sharps just play */
 const WHITE = [0, 2, 4, 5, 7, 9, 11], SHARP = { 0: 1, 1: 3, 3: 6, 4: 8, 5: 10 };
@@ -103,7 +108,6 @@ for (let i = 0; i < 14; i++) {
   if (i < 13 && SHARP[i % 7] !== undefined) { const m = 60 + 12 * Math.floor(i / 7) + SHARP[i % 7], s = wonk(at(cyl(.3, .3, .1, M('#5a4033'), 9), GX(i) + .5, TOP + .36, GZ(3)), 1, .03);
     pressable(s, () => playNote(m), 'Sharp key'); sharpMeshes.push(s) }
 }
-for (let i = 0; i < 10; i++) at(cyl(.035, .035, .02, M('#6a6c72')), 9.18, .91, -1.2 + i * .22);
 hits.push(scrP);
 
 /* lights: the transport pulses on the beat; a mode button lights its gap when hovered or active, with its soft core easing in */
@@ -112,6 +116,8 @@ export function updateSynth(t) {
   const now = performance.now(), dt = Math.min(.05, (now - (updateSynth.last ?? now)) / 1000); updateSynth.last = now;
   for (const R of KNOB_RINGS) {
     const a = R.rot.rotation.y, x = -Math.sin(a) * RING_R, z = -Math.cos(a) * RING_R;
+    /* the drawn knob goes red (marker) while you're on it, and back to ink a moment after */
+    const hot = V.drag?.o === R.cp || now - (R.cp.hot || -1e9) < 520; R.cp.material.color.set(hot ? '#e0301a' : INK); R.cp.base.material.color.set(hot ? '#e0301a' : INK);
     /* shown while it's being dragged or still turning, then a fade out */
     if (V.drag?.o === R.cp || (R.a !== null && Math.abs(R.a - a) > .004)) R.last = now;
     const want = now - R.last < 900 ? 1 : 0; R.k += (want - R.k) * Math.min(1, dt * (want ? 9 : 2.5));
