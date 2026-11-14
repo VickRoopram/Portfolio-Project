@@ -367,6 +367,8 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - **Polaroids + sticky note** (same file; content in `DESK` in `src/content.js`, not yet in /admin): eight polaroids round the edge of the bench (`SPOTS`), each `{ img, cap, note }`. Until `img` is set a polaroid shows a pencil placeholder (cross, people, belt, d20, mountains, dog, pencil, face) with placeholder captions (faith, family, on the mats, game night, up a mountain, the dogs, sketchbook, me, mostly); **Vick will supply the images and copy**. With an image, a click opens it in the lightbox; `note` shows in the hover tip. The sticky note (front right) is a to-do list from `DESK.todo` (`done: true` ticks and strikes an item). Both hop when clicked (`updateKeepsakes`).
     - Files: `src/content.js`, `organisms/keepsakes.js` (new), `organisms/synth.js`, `organisms/underlights.js`, `molecules/controls.js`, `main.js`.
 
+42. **14 Nov 2026: polaroids in a row; a rounded, scratched mat** (Vick). The eight polaroids are lined up square and evenly spaced along the back of the bench (`ROW` in `organisms/keepsakes.js`: x −13.9…11.6, z −7.45), except the fourth (`ROW.skew`), knocked .17 rad askew; no tape on them. The sticky note is where it was. The mat is now cut from a rounded plan (`THREE.Shape` → `ExtrudeGeometry`, corner radius .7, small bevel) with the print on a matching `ShapeGeometry`; it carries 260 knife cuts (ruler-straight, 45° and freehand, some deep), scuffs, a mug ring and wear towards the middle, drawn into both the colour and a bump map (`marks()`), so they catch the light.
+
 
 ---
 
