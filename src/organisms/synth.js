@@ -116,8 +116,6 @@ export function updateSynth(t) {
   const now = performance.now(), dt = Math.min(.05, (now - (updateSynth.last ?? now)) / 1000); updateSynth.last = now;
   for (const R of KNOB_RINGS) {
     const a = R.rot.rotation.y, x = -Math.sin(a) * RING_R, z = -Math.cos(a) * RING_R;
-    /* the drawn knob goes red (marker) while you're on it, and back to ink a moment after */
-    const hot = V.drag?.o === R.cp || now - (R.cp.hot || -1e9) < 520; R.cp.material.color.set(hot ? '#e0301a' : INK); R.cp.base.material.color.set(hot ? '#e0301a' : INK);
     /* shown while it's being dragged or still turning, then a fade out */
     if (V.drag?.o === R.cp || (R.a !== null && Math.abs(R.a - a) > .004)) R.last = now;
     const want = now - R.last < 900 ? 1 : 0; R.k += (want - R.k) * Math.min(1, dt * (want ? 9 : 2.5));

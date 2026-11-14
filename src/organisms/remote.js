@@ -6,7 +6,7 @@ import { scene } from '../core/scene.js';
 import { rbox, flat } from '../atoms/geometry.js';
 import { canvasTex } from '../atoms/textures.js';
 import { M, C, decal } from '../atoms/materials.js';
-import { itemCtrl, knob, cap } from '../molecules/controls.js';
+import { itemCtrl, knob, boardCap } from '../molecules/controls.js';
 import { cable, socket } from '../molecules/cable.js';
 import { wonk, tape } from '../atoms/craft.js';
 
@@ -18,10 +18,10 @@ const tile = (w, d, x, z) => wonk(at(rbox(w - .07, .26, d - .07, .03, M(C.tile, 
 
 tile(1.9, 1.3, 0, -2.5); export const rs = canvasTex(300, 200);
 at(flat(1.74, 1.14, decal(new THREE.MeshBasicMaterial({ map: rs.t, toneMapped: false, transparent: true }))), 0, 1.015, -2.5);
-tile(1.9, 1.7, 0, -1); knob(RM, new THREE.Vector3(0, 1.01, -1), .48, 'vol', 'sm'); // master volume
-tile(1.9, .9, 0, .35); itemCtrl(wonk(at(cap(1.5, .5, .24, 'CONTACT', { ink: '#ff5d1a', size: 46, lw: .9, lh: .25 }), 0, 1.065, .35), .04, .02), 'cv', 1, () => drum('clap'));
+tile(1.9, 1.7, 0, -1); knob(RM, new THREE.Vector3(0, 1.01, -1), .44, 'vol', 'sm'); // master volume
+tile(1.9, .9, 0, .35); itemCtrl(wonk(at(boardCap(1.5, .52, 'CONTACT', { paint: '#d2451e', size: 46, lw: .9, lh: .25 }), 0, 1.1, .35), .04, .02), 'cv', 1, () => drum('clap'));
 [['behance', -.47, 1.3], ['instagram', .47, 1.3], ['linkedin', -.47, 2.25], ['more-horizontal', .47, 2.25]].forEach(([glyph, x, z], j) => {
-  tile(.95, .95, x, z); itemCtrl(wonk(at(cap(.68, .68, .16, null, { glyph, ink: '#ff5d1a', lw: .6, lh: .3 }), x, 1.065, z), .075, .03), 'cv', 2 + j, () => playNote(67 + [0, 2, 4, 7][j], .5));
+  tile(.95, .95, x, z); itemCtrl(wonk(at(boardCap(.68, .68, null, { glyph, paint: '#d2451e', lw: .6, lh: .3 }), x, 1.1, z), .09, .035), 'cv', 2 + j, () => playNote(67 + [0, 2, 4, 7][j], .5));
 });
 /* tape: holding the panel in, and the cable down where it leaves the box */
 [[0, 2.98, 0, 1.3], [-.98, -1.6, 1.57, .9], [.98, .6, 1.57, .9]].forEach(([x, z, r, w]) => tape(RM, x, .808, z, w, .34, r));

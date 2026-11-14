@@ -359,6 +359,8 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - **Ring-bound notebook** (`organisms/screens.js`): the synth's screen is two portrait pages (368×432 on the 800×476 canvas) either side of eight rings. Right = the current page; left = the page before it (`prev`), still readable. A change of page swings the right-hand page over the spine onto the left (`book()` / `leafAt()`, `TURN` .6 s), then it becomes `prev`. Before anything has been turned the left page reads "I am creative." Page contents were re-laid for portrait (`fit()` shrinks lettering to the page).
     - Files: `molecules/controls.js`, `molecules/fx.js`, `organisms/synth.js`, `organisms/screens.js`.
 
+40. **14 Nov 2026: the same treatment on the Contact synth** (Vick). Every knob on both synths is now drawn on (`knob()` always returns `drawnKnob()`; the red-while-used colouring moved to `updateItemGlow` in `molecules/controls.js`, over `DIALS`), so the remote's volume and the synth's detune match the four big ones. The remote's CONTACT and four social keys are thick grey board with a dab of red paint under a cream name or icon (`boardCap()` in `molecules/controls.js`). Its note is ring-bound along the top like the synth's notebook (`note()` in `organisms/screens.js`). Files: `molecules/controls.js`, `organisms/remote.js`, `organisms/synth.js`, `organisms/screens.js`.
+
 
 ---
 

@@ -1,6 +1,6 @@
 /* Control molecules: buttons that press down, item keys that hold a piece of the portfolio, knobs that shape the sound. */
 import * as THREE from 'three';
-import { S, hits, anim, CTRL, realCh, act } from '../core/state.js';
+import { S, V, hits, anim, CTRL, realCh, act } from '../core/state.js';
 import { CH, MODES } from '../core/data.js';
 import { P, PNAMES, ensureAudio, applyP, playNote } from '../core/audio.js';
 import { rbox, cyl, flat } from '../atoms/geometry.js';
@@ -31,6 +31,8 @@ export function itemCtrl(mesh, ch, i, sound) {
 }
 /* glow of the item controls: lit while their mode is on, brighter on hover and for the open card */
 export function updateItemGlow(t) {
+  /* drawn knobs go red (marker) while you're on them, and back to ink a moment after */
+  const now = performance.now(); for (const cp of DIALS) { const col = V.drag?.o === cp || now - (cp.hot || -1e9) < 520 ? '#e0301a' : INK; cp.material.color.set(col); cp.base.material.color.set(col) }
   for (const g in CTRL) { const ch = realCh(g), n = CH[ch].items.length, peek = g === 'kb' && S.hover?.userData?.filter;
     CTRL[g].forEach((m, j) => { if (!m) return; const mt = m.material;
       if (peek && peek !== ch) { mt.emissive.set(MODES[peek].glow); mt.emissiveIntensity = j < CH[peek].items.length ? .3 : 0; return } // preview a hovered mode button's keys
@@ -70,22 +72,23 @@ const dialBase = () => dial(x => { x.lineWidth = 5; sketch(x, ringPts(132, 2.5),
 const dialTurn = () => dial(x => { x.lineWidth = 9; sketch(x, ringPts(96, 2), { jit: 1.5 }); x.lineWidth = 5; sketch(x, ringPts(22, 1.5, 12), { jit: 1, passes: 1 });
   x.lineWidth = 12; sketch(x, [[0, -30], [0, -112]], { jit: 2 });                                    // the pointer (straight back = canvas up)
   x.lineWidth = 3.5; x.globalAlpha = .7; for (let i = 0; i < 9; i++) { const a = .6 + i * .52, r0 = 44 + rnd(10), r1 = r0 + 26 + rnd(14); x.beginPath(); x.moveTo(Math.cos(a) * r0, Math.sin(a) * r0); x.lineTo(Math.cos(a + .1) * r1, Math.sin(a + .1) * r1); x.stroke() } });
-function drawnKnob(parent, pos, r, key, note) {
-  const g = new THREE.Group(), rot = new THREE.Group(), R = r * 1.72; g.position.copy(pos); g.position.y += .004; g.rotation.y = rnd(.1, -.05); parent.add(g); g.add(rot);
+const DIALS = [];
+function drawnKnob(parent, pos, r, key, note, big) {
+  const g = new THREE.Group(), rot = new THREE.Group(), R = r * (big ? 1.72 : 1.6); g.position.copy(pos); g.position.y += .004; g.rotation.y = rnd(.1, -.05); parent.add(g); g.add(rot);
   const ink = () => decal(new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, color: INK }));
   const base = flat(R * 2, R * 2, Object.assign(ink(), { map: dialBase() }), .002); base.raycast = () => {}; g.add(base);
   /* the part that turns is also what you grab: a flat disc, so the pointer finds it */
   const geo = new THREE.CircleGeometry(R * .82, 28); geo.rotateX(-Math.PI / 2); geo.userData.rr = { w: R * 1.64, h: .01, d: R * 1.64, r: R * .82 };
   const uv = geo.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, .5 + (uv.getX(i) - .5) * .82, .5 + (uv.getY(i) - .5) * .82); // the disc shows the middle 82% of the drawing
   const cp = new THREE.Mesh(geo, Object.assign(ink(), { map: dialTurn() })); cp.position.y = .006; cp.renderOrder = 2; cp.noCut = true; cp.base = base; rot.add(cp);
-  hits.push(cp); anim.push(rot); fxOf(cp);
+  hits.push(cp); anim.push(rot); fxOf(cp); DIALS.push(cp);
   const set = () => { rot.userData.r = (.5 - P[key]) * 4.4 }; set(); rot.rotation.y = rot.userData.r;
   cp.userData = { tip: `${PNAMES[key]} · drag up or down`, live: () => `${PNAMES[key]} ${Math.round(P[key] * 100)}%`,
     down() { cp.hot = performance.now(); pulse(cp); ensureAudio(); if (note) playNote(...note) }, drag(d) { cp.hot = performance.now(); P[key] = Math.min(1, Math.max(0, P[key] + d / 180)); set(); applyP() } };
   return { g, rot, cp };
 }
 export function knob(parent, pos, r, key, size, note) {
-  if (size === 'lg') return drawnKnob(parent, pos, r, key, note);
+  return drawnKnob(parent, pos, r, key, note, size === 'lg'); // every knob on both synths is drawn on; the built card knob below is no longer used
 
   const z = SIZE[size], g = new THREE.Group(), rot = new THREE.Group(); g.position.copy(pos); parent.add(g); g.add(rot);
   const ring = cyl(r + z.ring[0], r + z.ring[1], z.ring[2], M(C.ring, .5), 13); ring.position.y = z.ring[2] / 2; ring.rotation.y = rnd(1); g.add(ring);
@@ -97,4 +100,12 @@ export function knob(parent, pos, r, key, size, note) {
   cp.userData = { tip: `${PNAMES[key]} · drag up or down`, live: () => `${PNAMES[key]} ${Math.round(P[key] * 100)}%`,
     down() { pulse(cp); ensureAudio(); if (note) playNote(...note) }, drag(d) { P[key] = Math.min(1, Math.max(0, P[key] + d / 180)); set(); applyP() } };
   return { g, rot, cp };
+}
+
+/* a button cut from thick grey board (you see its cut edge), with a dab of paint under its name or icon */
+const BOARD = card('dark', '#cdbba4', { bumpScale: .5 });
+const DAB = canvasTex(128, 128, x => { x.fillStyle = '#fff'; x.translate(64, 64); for (let i = 0; i < 5; i++) { x.globalAlpha = .55; x.beginPath(); x.ellipse(rnd(10, -5), -24 + i * 12 + rnd(4), 46 + rnd(8), 9 + rnd(3), rnd(.16, -.08), 0, 7); x.fill() } }).t;
+export function boardCap(w, d, label, { glyph, paint = '#2f9aa6', size = 50, lw = .66, lh = .32 } = {}) {
+  const k = rbox(w, .2, d, .02, BOARD), dab = flat(w * .82, d * .82, decal(new THREE.MeshBasicMaterial({ map: DAB, color: paint, transparent: true, depthWrite: false })), .101); dab.rotation.z = rnd(3); dab.raycast = () => {};
+  const l = glyph ? printedIcon(glyph, lw, lh, '#fff8ea', undefined, '#fff8ea') : printed(label, lw, lh, '#fff8ea', size, '#fff8ea'); l.position.y = .103; l.renderOrder = 1; k.add(dab, l); return k;
 }

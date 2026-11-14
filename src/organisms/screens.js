@@ -123,9 +123,12 @@ function note() {
   x.save(); x.translate(140, 70); x.rotate(.05); x.fillStyle = INK; x.textAlign = 'center'; x.textBaseline = 'middle'; x.font = cut(66); x.fillText('CONTACT', 0, 0);
   x.strokeStyle = SCREEN_COL; x.lineWidth = 5; x.lineCap = 'round'; wavy(x, -92, 38, 92, 34, 3, 10); x.restore();
   x.fillStyle = 'rgba(42,27,18,.8)'; x.font = hand(26); x.textAlign = 'right'; x.fillText('say hello ↓', 250, 146);
-  const r = rs.x; r.setTransform(1, 0, 0, 1, 0, 0); r.clearRect(0, 0, 300, 200); r.translate(150, 100); r.rotate(.03); r.translate(-132, -82);
+  const r = rs.x; r.setTransform(1, 0, 0, 1, 0, 0); r.clearRect(0, 0, 300, 200); r.translate(150, 106); r.rotate(.03); r.translate(-132, -82);
   r.fillStyle = 'rgba(0,0,0,.4)'; r.fillRect(5, 7, 264, 164); r.drawImage(o.c, 0, 0); r.strokeStyle = INK; r.lineWidth = 3; r.strokeRect(0, 0, 264, 164);
-  r.setTransform(1, 0, 0, 1, 0, 0); tapeStrip(r, 60, 20, -.5); tapeStrip(r, 240, 20, .45); rs.t.needsUpdate = true;
+  for (let i = 0; i < 7; i++) { const cx = 26 + i * 35.5; // ring-bound along the top, like the notebook on the synth
+    r.fillStyle = 'rgba(42,27,18,.85)'; r.beginPath(); r.arc(cx, 13, 4.5, 0, 7); r.fill();
+    for (const [c, lw] of [[INK, 7], ['#d9d2c4', 3.5]]) { r.strokeStyle = c; r.lineWidth = lw; r.lineCap = 'round'; r.beginPath(); r.moveTo(cx, 13); r.quadraticCurveTo(cx + 5, -4, cx + 1, -12); r.stroke() } }
+  r.setTransform(1, 0, 0, 1, 0, 0); rs.t.needsUpdate = true;
 }
 let turned = false;
 document.fonts.ready.then(() => { dirty = true; note(); if (!turned) pageFirst(prev.x) }); note(); pageFirst(prev.x);
