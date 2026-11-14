@@ -11,7 +11,7 @@ import { M, C, RUBBER, decal } from '../atoms/materials.js';
 import { printed, engraved } from '../atoms/labels.js';
 import { fxOf, FXMATS } from '../molecules/fx.js';
 import { wonk, tape, rnd, INK, card } from '../atoms/craft.js';
-import { pressable, itemCtrl, knob, screw, cap } from '../molecules/controls.js';
+import { pressable, itemCtrl, knob, screw, cap, boardCap } from '../molecules/controls.js';
 
 export const synth = new THREE.Group(); scene.add(synth);
 const TOP = .9, GX = c => -8 + c, GZ = r => -2.75 + r + (r >= 2 ? .5 : 0) /* rows 2+ sit half a row further forward */, at = (o, x, y, z) => { o.position.set(x, y, z); synth.add(o); return o };
@@ -90,12 +90,9 @@ const coreTex = radialTex([[0, .9], [.45, .4], [1, 0]], 256, 64);
 
 /* drum pads (graphite caps, light print) */
 export const PADS = ['kick', 'snare', 'hat', 'clap', 'tom', 'rim', 'shaker', 'crash', 'blip'];
-/* the beats pads are squares of grey board (thick, so you see the cut edge), each with a dab of teal paint under its name */
-const BOARD = card('dark', '#cdbba4', { bumpScale: .5 }), dab = canvasTex(128, 128, x => { x.fillStyle = '#fff'; x.translate(64, 64); for (let i = 0; i < 5; i++) { x.globalAlpha = .55; x.beginPath(); x.ellipse(rnd(10, -5), -24 + i * 12 + rnd(4), 46 + rnd(8), 9 + rnd(3), rnd(.16, -.08), 0, 7); x.fill() } }).t;
+/* the beats pads are squares of thick grey board, roughly painted blue */
 PADS.forEach((p, i) => { const c = 14 + i % 3, r = 3 + Math.floor(i / 3); tile(c, r);
-  const k = wonk(at(rbox(.74, .2, .74, .02, BOARD), GX(c), TOP + .39, GZ(r)), .09, .035);
-  const paint = flat(.6, .6, decal(new THREE.MeshBasicMaterial({ map: dab, color: '#2f9aa6', transparent: true, depthWrite: false })), .101); paint.rotation.z = rnd(3); paint.raycast = () => {};
-  const l = printed(p.toUpperCase(), .66, .32, '#fff8ea', 50, '#fff8ea'); l.position.y = .103; l.renderOrder = 1; k.add(paint, l); pressable(k, () => drum(p), `Drum pad · ${p}`) });
+  pressable(wonk(at(boardCap(.74, .74, p.toUpperCase(), { paint: '#2f7fd6' }), GX(c), TOP + .39, GZ(r)), .09, .035), () => drum(p), `Drum pad · ${p}`) });
 
 /* the keyboard: 14 white keys hold the current mode's projects; sharps just play */
 const WHITE = [0, 2, 4, 5, 7, 9, 11], SHARP = { 0: 1, 1: 3, 3: 6, 4: 8, 5: 10 };

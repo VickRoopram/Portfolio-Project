@@ -102,10 +102,14 @@ export function knob(parent, pos, r, key, size, note) {
   return { g, rot, cp };
 }
 
-/* a button cut from thick grey board (you see its cut edge), with a dab of paint under its name or icon */
+/* a button cut from thick grey board (you see its cut edge), roughly painted, with its name or icon lettered on the paint */
 const BOARD = card('dark', '#cdbba4', { bumpScale: .5 });
-const DAB = canvasTex(128, 128, x => { x.fillStyle = '#fff'; x.translate(64, 64); for (let i = 0; i < 5; i++) { x.globalAlpha = .55; x.beginPath(); x.ellipse(rnd(10, -5), -24 + i * 12 + rnd(4), 46 + rnd(8), 9 + rnd(3), rnd(.16, -.08), 0, 7); x.fill() } }).t;
-export function boardCap(w, d, label, { glyph, paint = '#2f9aa6', size = 50, lw = .66, lh = .32 } = {}) {
-  const k = rbox(w, .2, d, .02, BOARD), dab = flat(w * .82, d * .82, decal(new THREE.MeshBasicMaterial({ map: DAB, color: paint, transparent: true, depthWrite: false })), .101); dab.rotation.z = rnd(3); dab.raycast = () => {};
+/* a rough coat of paint: brushed on in a few passes that don't reach the edges, streaky, with bare board showing through */
+const coat = () => canvasTex(160, 160, (x, W) => { x.fillStyle = '#fff'; x.strokeStyle = '#fff'; x.lineCap = 'round';
+  for (let i = 0; i < 9; i++) { const y = 14 + i * 16.5 + rnd(6, -3); x.globalAlpha = .62 + rnd(.3); x.lineWidth = 17 + rnd(8); x.beginPath(); x.moveTo(10 + rnd(16), y + rnd(6, -3)); x.lineTo(W / 2, y + rnd(8, -4)); x.lineTo(W - 10 - rnd(18), y + rnd(6, -3)); x.stroke() }
+  x.globalCompositeOperation = 'destination-out'; x.lineWidth = 1.6; for (let i = 0; i < 42; i++) { const y = rnd(W); x.globalAlpha = .25 + rnd(.45); x.beginPath(); x.moveTo(rnd(60), y); x.lineTo(60 + rnd(100), y + rnd(4, -2)); x.stroke() } }).t; // dry-brush streaks
+const COATS = [coat(), coat(), coat()];
+export function boardCap(w, d, label, { glyph, paint = '#2f7fd6', size = 50, lw = .66, lh = .32 } = {}) {
+  const k = rbox(w, .2, d, .02, BOARD), dab = flat(w * .98, d * .98, decal(new THREE.MeshBasicMaterial({ map: COATS[Math.floor(rnd(3))], color: paint, transparent: true, depthWrite: false })), .101); dab.rotation.z = rnd(.1, -.05) + (rnd() < .5 ? Math.PI : 0); dab.raycast = () => {};
   const l = glyph ? printedIcon(glyph, lw, lh, '#fff8ea', undefined, '#fff8ea') : printed(label, lw, lh, '#fff8ea', size, '#fff8ea'); l.position.y = .103; l.renderOrder = 1; k.add(dab, l); return k;
 }

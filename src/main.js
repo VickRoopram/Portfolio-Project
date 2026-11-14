@@ -13,6 +13,7 @@ import { updateCables } from './molecules/cable.js';
 import { grille, updateSynth } from './organisms/synth.js';
 import './organisms/remote.js';
 import { updateDesk } from './organisms/desk.js';
+import { updateKeepsakes } from './organisms/keepsakes.js';
 import { groupAt, updateUnderlights } from './organisms/underlights.js';
 import { drawScreens } from './organisms/screens.js';
 import { openCard, closeCard, updateUI } from './organisms/card.js';
@@ -33,7 +34,7 @@ function loop() {
   updateCamera(now); updateJoystick(now, dt); updateZoom(now);
   for (const o of anim) { const u = o.userData; if (u.ty !== undefined) o.position.y += (u.ty - o.position.y) * .35; if (u.r !== undefined) o.rotation.y += (u.r - o.rotation.y) * .18 } // keys spring, knobs turn
   updateHover(now);
-  updateUnderlights(dt, S.grp || (S.hover && groupAt(S.hover, ray))); updateDesk(dt, t); // the view is kept over the table top by page/camera.js
+  updateUnderlights(dt, S.grp || (S.hover && groupAt(S.hover, ray))); updateDesk(dt, t); updateKeepsakes(dt); // the view is kept over the table top by page/camera.js
   updateCables(); updateSynth(t); updateItemGlow(t); updateFx(now);
   grille.scale.setScalar(1 + drawScreens(t) * .04); updateParty(t);
   controls.update(); requestAnimationFrame(loop);

@@ -361,6 +361,12 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 
 40. **14 Nov 2026: the same treatment on the Contact synth** (Vick). Every knob on both synths is now drawn on (`knob()` always returns `drawnKnob()`; the red-while-used colouring moved to `updateItemGlow` in `molecules/controls.js`, over `DIALS`), so the remote's volume and the synth's detune match the four big ones. The remote's CONTACT and four social keys are thick grey board with a dab of red paint under a cream name or icon (`boardCap()` in `molecules/controls.js`). Its note is ring-bound along the top like the synth's notebook (`note()` in `organisms/screens.js`). Files: `molecules/controls.js`, `organisms/remote.js`, `organisms/synth.js`, `organisms/screens.js`.
 
+41. **14 Nov 2026: blue painted pads, painted contact keys, craft mat, polaroids and a sticky note** (Vick).
+    - **Rough paint** (`boardCap()` in `molecules/controls.js`): the board buttons get a brushed coat (`COATS`: passes that stop short of the edges, dry-brush streaks, bare board showing) instead of a small dab. Beats pads are blue (`#2f7fd6`); the Contact synth's keys are red (`#d2451e`).
+    - **Craft mat** (`organisms/keepsakes.js`, new): a light green rubber cutting mat (printed half-unit grid, numbered edges, 45° guides) under both synths, .06 thick. `MAT` = x −14.1…10.9, z −5.3…5.5: its right edge is half way between the projects synth (9.45) and the lamp (12.4). The hover marker line now sits on the mat (y .075).
+    - **Polaroids + sticky note** (same file; content in `DESK` in `src/content.js`, not yet in /admin): eight polaroids round the edge of the bench (`SPOTS`), each `{ img, cap, note }`. Until `img` is set a polaroid shows a pencil placeholder (cross, people, belt, d20, mountains, dog, pencil, face) with placeholder captions (faith, family, on the mats, game night, up a mountain, the dogs, sketchbook, me, mostly); **Vick will supply the images and copy**. With an image, a click opens it in the lightbox; `note` shows in the hover tip. The sticky note (front right) is a to-do list from `DESK.todo` (`done: true` ticks and strikes an item). Both hop when clicked (`updateKeepsakes`).
+    - Files: `src/content.js`, `organisms/keepsakes.js` (new), `organisms/synth.js`, `organisms/underlights.js`, `molecules/controls.js`, `main.js`.
+
 
 ---
 

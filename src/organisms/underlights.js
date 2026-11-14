@@ -17,7 +17,7 @@ export const GROUPS = {
 const tmp = new THREE.Color();
 for (const [key, g] of Object.entries(GROUPS)) {
   const s = g.foot.getSize(new THREE.Vector3()), c = g.foot.getCenter(new THREE.Vector3());
-  const mesh = markerLoop(s.x + .8, s.z + .8, .45, .3), mat = mesh.material; mesh.position.set(c.x, .012, c.z); mesh.visible = false; scene.add(mesh);
+  const mesh = markerLoop(s.x + .8, s.z + .8, .45, .3), mat = mesh.material; mesh.position.set(c.x, .075, c.z) /* on the craft mat */; mesh.visible = false; scene.add(mesh);
   Object.assign(g, { key, mesh, mat, k: 0, tint: new THREE.Color(g.col()) });
 }
 /* which device the pointer is over: the control's parent chain first, then (over bare casing) the devices' bounding boxes */

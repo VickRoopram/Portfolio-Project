@@ -100,3 +100,18 @@ CH.cv={name:'CV & CONTACT',col:'#ff5d1a',items:[
    projects: the sections listed under Projects, with the name the menu shows for each. */
 export const MENU={items:[{label:'Home',go:'home'},{label:'About',go:'about'},{label:'Projects',go:'projects'},{label:'Contact',go:'contact'}],
   projects:[{key:'gd',label:'Graphic design'},{key:'ux',label:'UI/UX design'},{key:'mo',label:'Motion & 3D'},{key:'tl',label:'Tools'},{key:'xp',label:'Experimental'}]};
+
+/* Things left lying on the workbench (organisms/keepsakes.js).
+   polaroids: eight snapshots of Vick's life, personality and faith. Give one an image (img: 'assets/img/<file>.jpg') and a caption (cap);
+   until it has an image it shows a pencil placeholder. note: longer copy for the hover tip (optional).
+   todo: the sticky note's list; done: true ticks the box. */
+export const DESK = {
+  polaroids: [
+    { img: '', cap: 'faith', note: '' }, { img: '', cap: 'family', note: '' }, { img: '', cap: 'on the mats', note: '' }, { img: '', cap: 'game night', note: '' },
+    { img: '', cap: 'up a mountain', note: '' }, { img: '', cap: 'the dogs', note: '' }, { img: '', cap: 'sketchbook', note: '' }, { img: '', cap: 'me, mostly', note: '' },
+  ],
+  todo: [
+    { t: 'make the logo bigger', done: true }, { t: 'win an Awwward' }, { t: 'name my layers properly' }, { t: 'dark mode (obviously)', done: true },
+    { t: 'delete final_FINAL_v7' }, { t: 'kern everything. twice.' }, { t: 'hear “love it, no changes”' }, { t: 'touch grass' },
+  ],
+};
