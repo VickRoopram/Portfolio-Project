@@ -22,11 +22,11 @@ import { initIntro } from './organisms/intro.js';
 import { updateZoom } from './organisms/zoom.js';
 import { updateJoystick } from './organisms/joystick.js';
 import { updateParty } from './organisms/party.js';
-import { zoomTo, zoomOut, journey, cancelJourney, panBy, spinBy, recentre, updateCamera, swoopIn } from './page/camera.js';
+import { zoomTo, zoomOut, journey, cancelJourney, panBy, spinBy, recentre, lookAt, updateCamera, swoopIn } from './page/camera.js';
 import { ray, updateHover } from './page/input.js';
 import { FPS, BOIL_EVERY, boil } from './atoms/craft.js';
 
-Object.assign(act, { zoomTo, zoomOut, openCard, closeCard, journey, cancelJourney, openMenuFor, panBy, spinBy, recentre });
+Object.assign(act, { zoomTo, zoomOut, openCard, closeCard, journey, cancelJourney, openMenuFor, panBy, spinBy, recentre, lookAt });
 
 const clock = new THREE.Clock(); let last = performance.now(), drawn = -1e9, pictures = 0;
 function loop() {

@@ -369,6 +369,12 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 
 42. **14 Nov 2026: polaroids in a row; a rounded, scratched mat** (Vick). The eight polaroids are lined up square and evenly spaced along the back of the bench (`ROW` in `organisms/keepsakes.js`: x −13.9…11.6, z −7.45), except the fourth (`ROW.skew`), knocked .17 rad askew; no tape on them. The sticky note is where it was. The mat is now cut from a rounded plan (`THREE.Shape` → `ExtrudeGeometry`, corner radius .7, small bevel) with the print on a matching `ShapeGeometry`; it carries 260 knife cuts (ruler-straight, 45° and freehand, some deep), scuffs, a mug ring and wear towards the middle, drawn into both the colour and a bump map (`marks()`), so they catch the light.
 
+43. **14 Nov 2026: tighter polaroid row, look-closer camera, overview fits the whole bench** (Vick).
+    - Polaroids are 2.3 apart (cards are 1.9 wide), centred along the back of the bench (`ROW` x −7.45…8.65).
+    - **Look closer:** clicking a polaroid or the to-do note flies the camera in over it (`act.lookAt(key, box, pol)` → `lookAt()` in `page/camera.js`, which registers a `BOX`/`POLAR` entry and flies there; `V.look` holds the key). While there the zoom-in limit is that close-up (`lockZoom`). A second click hops it and, once a polaroid has an image, opens it in the lightbox. Esc, Home, the logo or the joystick's centre take you back to the overview. Their canvases are drawn at twice the size so they read close up.
+    - **Overview:** on wide screens `BOX.all` is now the whole bench (−15.9…17.1 × −9.5…9.3), so the starting view and Home show the mat, both synths, the polaroids, lamp, plant and note. Phones keep the synth-only overview so the keys stay big enough to play.
+    - Files: `page/camera.js`, `page/input.js`, `core/state.js`, `main.js`, `organisms/keepsakes.js`, `organisms/menu.js`.
+
 
 ---
 

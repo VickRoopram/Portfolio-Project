@@ -7,7 +7,7 @@
    Picking a mode flies the camera to the keys and lights them; picking a project hands over to act.journey
    (pan out, fly into the synth, push the key, open the card where the menu was). */
 import * as THREE from 'three';
-import { $, S, CTRL, act, reduceMotion } from '../core/state.js';
+import { $, S, V, CTRL, act, reduceMotion } from '../core/state.js';
 import { CH, MENU, onKeys } from '../core/data.js';
 import { camera, stage } from '../core/scene.js';
 import { ensureAudio, drum } from '../core/audio.js';
@@ -119,4 +119,4 @@ body.addEventListener('focusout', hidePeek);
 document.addEventListener('pointerdown', e => { if (menuOpen() && !menu.contains(e.target) && !mnu.contains(e.target)) closeMenu() });
 /* header Contact CTA: fly to the Contact synth, push its CONTACT key and open the Contact card */
 $('ctaContact').onclick = () => { ensureAudio(); closeMenu(); act.journey('cv', 1, 'cta') };
-$('brand').onclick = e => { e.preventDefault(); ensureAudio(); closeMenu(); if (S.mode || S.card) act.zoomOut() };
+$('brand').onclick = e => { e.preventDefault(); ensureAudio(); closeMenu(); if (S.mode || S.card || V.look) act.zoomOut() };

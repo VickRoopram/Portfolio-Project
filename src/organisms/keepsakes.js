@@ -1,8 +1,8 @@
 /* On the workbench around the synths: a light green rubber cutting mat under them, eight polaroids in a row along the back of the bench and a sticky-note to-do list.
    The polaroids are views into Vick's life, personality and faith: their images and captions come from DESK in content.js
-   (a pencil placeholder until an image is set). Click one and it hops (and opens its picture, once it has one). */
+   (a pencil placeholder until an image is set). Click one and the camera flies in over it; click again and it hops (and opens its picture, once it has one). Esc, Home or the logo take you back out. */
 import * as THREE from 'three';
-import { $, hits, reduceMotion } from '../core/state.js';
+import { $, V, hits, act, reduceMotion } from '../core/state.js';
 import { DESK } from '../content.js';
 import { drum } from '../core/audio.js';
 import { scene } from '../core/scene.js';
@@ -59,7 +59,13 @@ matTop.position.y = MAT.h / 2 + .017; matTop.receiveShadow = true; matTop.raycas
 
 /* ── things you can pick at: they hop when clicked ── */
 const HOPS = [];
-function keepsake(mesh, tip, onClick) { mesh.userData = { tip, tipHTML: typeof tip === 'function' ? tip : undefined, down() { mesh.hop = 1; drum('rim'); onClick?.() } }; mesh.y0 = mesh.position.y; hits.push(mesh); HOPS.push(mesh) }
+/* the first click flies the camera in over it (pad = how much bench to leave round it); once you're there a click makes it hop and runs onClick */
+function keepsake(mesh, key, tip, pad, onClick) {
+  const box = new THREE.Box3().setFromCenterAndSize(mesh.position, new THREE.Vector3(pad, .2, pad));
+  mesh.userData = { tip: '', tipHTML: () => tip() + (V.look === key ? '' : '<small>Click to look closer</small>'),
+    down() { mesh.hop = 1; drum('rim'); if (V.look === key) onClick?.(); else act.lookAt(key, box) } };
+  mesh.y0 = mesh.position.y; hits.push(mesh); HOPS.push(mesh);
+}
 
 /* ── polaroids ── */
 const PW = .95 * 2, PD = 1.15 * 2, WHITE = card('paper', '#fffdf6', { bumpScale: .1 });
@@ -74,8 +80,8 @@ const DOODLES = [ // placeholder sketches, one per snapshot, in a 100 × 100 box
   x => { sketch(x, Array.from({ length: 13 }, (_, i) => [50 + Math.cos(i / 12 * 6.3) * 30, 48 + Math.sin(i / 12 * 6.3) * 34])); sketch(x, [[38, 58], [50, 66], [62, 58]]); sketch(x, [[38, 40], [42, 40]]); sketch(x, [[58, 40], [62, 40]]) }, // a face
 ];
 function snap(p, i) { // the face of a polaroid: the picture (or its placeholder) and a handwritten caption
-  const T = canvasTex(380, 460, (x, W, H) => draw(x, null));
-  function draw(x, img) { x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, 380, 460); const S = 336, o = 22;
+  const T = canvasTex(760, 920, (x, W, H) => draw(x, null)); // drawn at twice the size, to be read close up
+  function draw(x, img) { x.setTransform(2, 0, 0, 2, 0, 0); x.clearRect(0, 0, 380, 460); const S = 336, o = 22;
     if (img) { const s = Math.max(S / img.width, S / img.height), w = img.width * s, h = img.height * s; x.save(); x.beginPath(); x.rect(o, o, S, S); x.clip(); x.drawImage(img, o + (S - w) / 2, o + (S - h) / 2, w, h); x.restore() }
     else { x.fillStyle = ['#d9cbb0', '#cfd8c4', '#d8c7c0', '#c9d3d8'][i % 4]; x.fillRect(o, o, S, S); x.strokeStyle = 'rgba(42,27,18,.13)'; x.lineWidth = 2; for (let k = -S; k < S; k += 16) { x.beginPath(); x.moveTo(o + Math.max(0, k), o + Math.max(0, -k)); x.lineTo(o + Math.min(S, k + S), o + Math.min(S, S - k)); x.stroke() }
       x.save(); x.translate(o + S / 2 - 105, o + S / 2 - 105); x.scale(2.1, 2.1); x.strokeStyle = INK; x.lineWidth = 2.6; x.lineCap = x.lineJoin = 'round'; DOODLES[i % DOODLES.length](x); x.restore() }
@@ -86,17 +92,17 @@ function snap(p, i) { // the face of a polaroid: the picture (or its placeholder
   return T.t;
 }
 /* lined up along the back of the bench, evenly spaced and square, except one in the middle that's been knocked a little askew */
-const ROW = { x0: -13.9, x1: 11.6, z: -7.45, skew: 3, by: .17 }, STEP = (ROW.x1 - ROW.x0) / 7;
-const SPOTS = Array.from({ length: 8 }, (_, i) => [ROW.x0 + i * STEP + (i === ROW.skew ? .12 : 0), ROW.z + (i === ROW.skew ? .1 : 0), i === ROW.skew ? ROW.by : 0]);
+const ROW = { x0: -7.45, x1: 8.65, z: -7.45, skew: 3, by: .17 }, STEP = (ROW.x1 - ROW.x0) / 7; // 2.3 apart: a finger's width between them
+const SPOTS = Array.from({ length: 8 }, (_, i) => [ROW.x0 + i * STEP + (i === ROW.skew ? .05 : 0), ROW.z + (i === ROW.skew ? .1 : 0), i === ROW.skew ? ROW.by : 0]);
 const lb = $('lb');
 DESK.polaroids.slice(0, 8).forEach((p, i) => { const [x, z, r] = SPOTS[i];
   const m = rbox(PW, .03, PD, .02, WHITE); m.position.set(x, .016 + i * .0004, z); m.rotation.y = r; scene.add(m);
   const f = flat(PW, PD, decal(new THREE.MeshStandardMaterial({ map: snap(p, i), transparent: true, roughness: .7, metalness: 0, envMapIntensity: .2 })), .017); f.receiveShadow = true; f.raycast = () => {}; m.add(f);
-  keepsake(m, () => (p.cap || 'A snapshot') + (p.note ? `<small>${p.note}</small>` : p.img ? '' : '<small>Photo coming soon</small>'), () => { if (p.img) { lb.querySelector('img').src = p.img; lb.hidden = false } }) });
+  keepsake(m, 'snap' + i, () => (p.cap || 'A snapshot') + (p.note ? `<small>${p.note}</small>` : p.img ? '' : '<small>Photo coming soon</small>'), 4.4, () => { if (p.img) { lb.querySelector('img').src = p.img; lb.hidden = false } }) });
 
 /* ── the sticky note: a to-do list of things every designer means to get round to ── */
-const noteTex = canvasTex(512, 512, x => drawNote(x));
-function drawNote(x) { x.setTransform(1, 0, 0, 1, 0, 0); const g = x.createLinearGradient(0, 0, 0, 512); g.addColorStop(0, '#f2d95c'); g.addColorStop(.12, '#f8e676'); g.addColorStop(1, '#f6e06a'); x.fillStyle = g; x.fillRect(0, 0, 512, 512);
+const noteTex = canvasTex(1024, 1024, x => drawNote(x));
+function drawNote(x) { x.setTransform(2, 0, 0, 2, 0, 0); const g = x.createLinearGradient(0, 0, 0, 512); g.addColorStop(0, '#f2d95c'); g.addColorStop(.12, '#f8e676'); g.addColorStop(1, '#f6e06a'); x.fillStyle = g; x.fillRect(0, 0, 512, 512);
   x.fillStyle = INK; x.textBaseline = 'middle'; x.textAlign = 'left'; x.font = cut(64); x.save(); x.translate(34, 62); x.rotate(-.03); x.fillText('TO DO', 0, 0); x.restore();
   x.strokeStyle = '#d2451e'; x.lineWidth = 6; x.lineCap = 'round'; sketch(x, [[32, 100], [120, 96], [200, 101]], { jit: 2 });
   DESK.todo.slice(0, 8).forEach((it, n) => { const y = 142 + n * 45; x.strokeStyle = INK; x.lineWidth = 3.5; sketch(x, [[34, y - 13], [60, y - 14], [61, y + 12], [35, y + 13]], { close: true, jit: 1.2 });
@@ -105,7 +111,7 @@ function drawNote(x) { x.setTransform(1, 0, 0, 1, 0, 0); const g = x.createLinea
 document.fonts.ready.then(() => { drawNote(noteTex.x); noteTex.t.needsUpdate = true });
 { const m = rbox(2.5, .02, 2.5, .02, card('paper', '#f6e06a', { bumpScale: .1 })); m.position.set(13.9, .012, 6.3); m.rotation.y = -.16; scene.add(m);
   const f = flat(2.5, 2.5, decal(new THREE.MeshStandardMaterial({ map: noteTex.t, roughness: .8, metalness: 0, envMapIntensity: .2 })), .012); f.receiveShadow = true; f.raycast = () => {}; m.add(f);
-  keepsake(m, () => 'To do<small>One day. Probably.</small>') }
+  keepsake(m, 'todo', () => 'To do<small>One day. Probably.</small>', 3.6) }
 
 /* a hop: up and back down in three drawings' time, with a little twist */
 export function updateKeepsakes(dt) { for (const m of HOPS) { if (!m.hop) continue; m.hop = Math.max(0, m.hop - dt * (reduceMotion ? 99 : 3.4)); const k = Math.sin(m.hop * Math.PI); m.position.y = m.y0 + k * .5; m.rotation.z = k * .12 } }

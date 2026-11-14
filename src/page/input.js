@@ -50,7 +50,7 @@ export function updateHover(now) {
 const KW = 'asdfghjkl;', KS = { w: 0, e: 1, t: 2, y: 3, u: 4, o: 5, p: 6 }, KD = 'zxcvbnm,.', held = new Set();
 addEventListener('keydown', e => {
   if (e.metaKey || e.ctrlKey || e.altKey) return; const k = e.key.toLowerCase();
-  if (k === 'escape') { if (menuOpen()) menuEsc(); else if (!lb.hidden) lb.hidden = true; else if (S.card) act.closeCard(); else if (S.mode) act.zoomOut(); return }
+  if (k === 'escape') { if (menuOpen()) menuEsc(); else if (!lb.hidden) lb.hidden = true; else if (S.card) act.closeCard(); else if (S.mode || V.look) act.zoomOut(); return }
   if (held.has(k)) return; held.add(k);
   const one = k.length === 1, i = one ? KW.indexOf(k) : -1;
   if (i >= 0) { ensureAudio(); press(keyMeshes[i]); playNote(wMidi(i)) }

@@ -10,7 +10,8 @@ import { keyMeshes, sharpMeshes } from '../organisms/synth.js';
 import { GROUPS, boxOf } from '../organisms/underlights.js';
 import { openCard, closeCard, updateUI } from '../organisms/card.js';
 
-const BOX = { all: new THREE.Box3(new THREE.Vector3(-13.6, 0, -4.6), new THREE.Vector3(13.6, 1.6, 4.6)), // the synths fill the view; lamp and plant sit at the edge
+/* the overview shows the whole bench (mat, synths, polaroids, lamp, plant, to-do note) on a wide screen; on a phone, held upright, it stays on the synths so they're big enough to play */
+const BOX = { all: desktop() ? new THREE.Box3(new THREE.Vector3(-15.9, 0, -9.5), new THREE.Vector3(17.1, 1.6, 9.3)) : new THREE.Box3(new THREE.Vector3(-13.6, 0, -4.6), new THREE.Vector3(13.6, 1.6, 4.6)),
   kb: boxOf([...keyMeshes, ...sharpMeshes, ...ROWBTN.map(a => a[0])]), cv: GROUPS.contact.box,
   desk: new THREE.Box3(new THREE.Vector3(-15.7, -.9, -9.4), new THREE.Vector3(16.9, 0, 9.2)) }; // the whole table top: the furthest you can zoom out
 const POLAR = { all: .3, kb: 1.08, cv: 1, desk: .3 }; // angle from straight down
@@ -29,8 +30,11 @@ function tableFit(phi, theta = 0) {
    looking from (you can turn all the way round). Tilt is reined in as you zoom out (tiltCap below), so 0% looks down on the table */
 const theta = () => Math.atan2(camera.position.x - controls.target.x, camera.position.z - controls.target.z);
 const fitNow = () => Math.max(V.zoom.min * 1.5, tableFit(.3, theta()), tableFit(TILT_OUT, theta()));
+/* looking closer at something small on the bench (a polaroid, the to-do note): keepsakes register a box and the camera flies in over it.
+   While you're there (V.look) the zoom-in limit is that close-up, not a synth */
+export function lookAt(key, box, pol = .32) { cancelJourney(); if (S.mode || S.card) { S.mode = null; closeCard(); updateUI() } BOX[key] = box; POLAR[key] = pol; drum('whoosh'); flyTo(key, 1500) }
 export function lockZoom() {
-  V.zoom.min = Math.min(frameFor('kb').d, frameFor('cv').d) * .97; V.zoom.max = fitNow();
+  V.zoom.min = Math.min(frameFor('kb').d, frameFor('cv').d, V.look && BOX[V.look] ? frameFor(V.look).d : Infinity) * .97; V.zoom.max = fitNow();
   if (!V.fly) { controls.minDistance = V.zoom.min; controls.maxDistance = V.zoom.max }
 }
 const level = d => Math.min(1, Math.max(0, Math.log(V.zoom.max / d) / Math.log(V.zoom.max / V.zoom.min))); // 0 = the whole table, 1 = one synth
@@ -40,7 +44,7 @@ const sideOn = () => desktop() && !!(S.card || S.menu || V.side);
 export function frameFor(key) {
   const b = BOX[key], c = b.getCenter(new THREE.Vector3()), s = b.getSize(new THREE.Vector3()), all = key === 'all' || key === 'desk', wide = desktop();
   const vw = stage.clientWidth - (wide && !all && sideOn() ? sideW(stage.clientWidth) : 0); // fit the part into the space beside the panel
-  const pol = wide ? POLAR[key] : all ? .12 : .78, T = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
+  const pol = wide || V.look === key ? POLAR[key] : all ? .12 : .78, T = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
   const tanV = !all && !wide ? T * .62 : T, tanH = T * vw / stage.clientHeight, m = all || !wide ? 1.04 : .96;
   const d = Math.max((s.x / 2 * m) / tanH, ((s.z * Math.cos(pol) + s.y * Math.sin(pol)) / 2 * m + .3) / tanV) + s.y * .5;
   return { t: c, p: new THREE.Vector3(c.x, c.y + d * Math.cos(pol), c.z + d * Math.sin(pol)), d };
@@ -73,7 +77,7 @@ export function panBy(x, y) {
 /* the rotate buttons: turn round the centre by a radians */
 export function spinBy(a) { if (V.fly) return; nudge.subVectors(camera.position, controls.target).applyAxisAngle(AXIS_Y, a); camera.position.copy(controls.target).add(nudge) }
 /* the pad's centre button: back to the framing for where you are (a device, or the overview) */
-export function recentre() { if (!V.fly) flyTo(S.mode ? MODES[S.mode].box : 'all', 900) }
+export function recentre() { if (!V.fly) flyTo(S.mode ? MODES[S.mode].box : V.look || 'all', 900) }
 /* tilt follows zoom: zoomed out the view looks down on the table (so 0% always shows all of it from above), and the low,
    cinematic angles open up as you zoom in towards a synth */
 const TILT_OUT = .55, tiltCap = k => Math.min(1.2, TILT_OUT + .65 * k / .8);
@@ -87,6 +91,7 @@ function centre() {
   if (nudge.lengthSq() > 1e-8) { controls.target.add(nudge); camera.position.add(nudge) }
 }
 export function flyTo(key, dur = 2100) {
+  V.look = key in POLAR && !['all', 'kb', 'cv', 'desk'].includes(key) ? key : null;
   const f = frameFor(key); framedSide = key !== 'all' && key !== 'desk' && sideOn(); moved = false; sA.setFromVector3(off.copy(camera.position).sub(controls.target)); sB.setFromVector3(off.copy(f.p).sub(f.t));
   let dT = sB.theta - sA.theta; if (dT > Math.PI) dT -= 2 * Math.PI; if (dT < -Math.PI) dT += 2 * Math.PI;
   V.fly = { t0: controls.target.clone(), t1: f.t, r0: sA.radius, r1: sB.radius, p0: sA.phi, p1: sB.phi, th0: sA.theta, dT, lift: Math.min(.35, Math.abs(sB.phi - sA.phi) * .3), s: performance.now(), dur: reduceMotion ? 1 : dur };
@@ -136,7 +141,7 @@ export function updateCamera(now) {
 function resize() {
   const w = stage.clientWidth, h = stage.clientHeight; if (!w || !h) return; // a hidden page (zero size) would turn every framing into NaN and stick the camera
   renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
-  lockZoom(); if (!V.fly) { const f = frameFor(S.mode ? MODES[S.mode].box : 'all'); camera.position.copy(f.p); controls.target.copy(f.t); controls.update(); setHome(f.t) }
+  lockZoom(); if (!V.fly) { const f = frameFor(S.mode ? MODES[S.mode].box : V.look || 'all'); camera.position.copy(f.p); controls.target.copy(f.t); controls.update(); setHome(f.t) }
 }
 new ResizeObserver(resize).observe(stage); resize();
 /* the entrance: start high above the synth and swoop down to the overview */
