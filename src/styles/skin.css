@@ -65,12 +65,12 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
 .lamp-tip.on .ic path{fill:#ffd36b}
 
 /* ── detail card and menu: a sheet of paper on a coloured backing sheet ── */
-#card,#menu{overflow:visible;border:var(--edge);border-radius:var(--cut);background:var(--card) var(--crumpled) center/cover;color:var(--ink);
+#card,#menu{overflow:visible;border:var(--edge);border-radius:var(--cut);background:var(--kraft) var(--kraft-tex) center/360px;color:var(--ink);
   box-shadow:7px 9px 0 -1px var(--accent,var(--kraft)),7px 9px 0 1.5px var(--ink),15px 20px 0 var(--shadow);rotate:.5deg}
 #card{animation:sheetIn .34s both}
 #menu{background:var(--kraft) var(--corr-tex) center/420px;--accent:var(--kraft-dk);rotate:-.5deg;animation:sheetIn .34s both}
 #menu.out{animation:sheetOut .24s forwards}
-@media (min-width:761px){#menu{bottom:auto;max-height:calc(100% - var(--hdr-h) - 170px)}} /* the tray is only as tall as what's on it */
+@media (min-width:761px){#menu{bottom:auto!important;max-height:calc(100% - var(--hdr-h) - 228px)}} /* the tray is only as tall as what's on it */
 @keyframes sheetIn{from{opacity:0;translate:0 46px;rotate:5deg}}
 @keyframes sheetOut{to{opacity:0;translate:0 46px;rotate:5deg}}
 .content,.m-body{scrollbar-width:thin;scrollbar-color:var(--kraft-dk) transparent}
@@ -79,7 +79,22 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
 .ch button:hover{border-color:var(--ink);translate:-1px -2px}
 .ch button:active{transform:none;translate:1px 2px;box-shadow:none}
 #cls{background:var(--red) var(--paper);background-blend-mode:multiply;background-size:200px;color:var(--cream);border-radius:38% 30% 36% 32%;rotate:6deg}
-.cf{border-top:2.5px dashed var(--line);background:none}
+.cf{background:none}
+
+/* the card is a book: a card cover, and inside it a page of paper. The paper is the thing that scrolls (its texture is part of the page,
+   tiled top to bottom, and moves with the words), and paging to another project turns the page (.leaf, organisms/card.js) */
+.content{margin:0 10px 10px;padding:var(--s4) var(--s4) var(--s6);border:var(--edge);border-radius:3px 5px 4px 6px;background:var(--card) url("../../assets/tex/crumpled-page.jpg") top center/100% auto repeat-y;background-attachment:local;
+  box-shadow:inset 9px 0 12px -8px rgba(42,27,18,.45)}
+#cf:not([hidden]) ~ .content,.content:has(+ .cf:not([hidden])){margin-bottom:0}
+.cf{border-top:0;padding:var(--s3) var(--s3) var(--s3)}
+.leaf{position:absolute;z-index:3;pointer-events:none;transform-style:preserve-3d;transform-origin:left center;animation:leafFwd .6s forwards}
+.leaf.back{transform-origin:right center;animation-name:leafBack}
+.leaf-front,.leaf-back{position:absolute;inset:0;margin:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.leaf-front{overflow:hidden}
+.leaf-back{transform:rotateY(180deg);border:var(--edge);border-radius:3px 5px 4px 6px;background:#e7d9bd url("../../assets/tex/crumpled-page.jpg") center/100% auto;filter:brightness(.9)}
+@keyframes leafFwd{from{transform:perspective(1500px) rotateY(0)}to{transform:perspective(1500px) rotateY(-176deg)}}
+@keyframes leafBack{from{transform:perspective(1500px) rotateY(0)}to{transform:perspective(1500px) rotateY(176deg)}}
+.leaf{animation-timing-function:steps(7,end)!important}
 
 /* inside the card */
 .hd{gap:var(--s2);justify-items:start}
@@ -172,7 +187,12 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
 #wire.on .w-plug{animation:plugIn .12s .44s forwards}
 @keyframes plugIn{from{opacity:1;r:16px}to{opacity:1;r:9px}}
 
-/* ── joystick and zoom guide: card discs with pencil ticks ── */
+/* ── joystick and zoom guide: card discs with pencil ticks. They sit above the host's "Powered by Netlify" badge (bottom right) ── */
+:root{--badge:58px}
+#joy{bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4) + var(--badge))}
+#zoom{bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4) + var(--badge) + 31px)}
+@media (min-width:761px){#card,#menu{bottom:calc(env(safe-area-inset-bottom,0px) + 140px + var(--badge))}}
+@media (max-width:760px){#zoom{bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4) + var(--badge) + 23px)}}
 #joy,#zoom{border:var(--edge);background:var(--kraft) var(--kraft-tex);background-size:260px;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:var(--drop);color:var(--ink)}
 .j-dial{background:repeating-conic-gradient(from 0deg,var(--ink) 0 2deg,transparent 2deg 15deg)}
 .j-dial.on,#joy.mirror .j-dial{background:repeating-conic-gradient(from 0deg,var(--red) 0 2.4deg,transparent 2.4deg 15deg)}
@@ -242,6 +262,6 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
 @media (prefers-reduced-motion:reduce){
   .cta,.ico,.hd h2,.m-title,.box,#lbl,#toast,.tags span,#wire,.in-draw,.in-card h1,.z-ico,.ch button,.j-rot,.j-stick,.soc,.steps div{filter:none}
   .in-draw .d{animation:none;stroke-dashoffset:0;fill-opacity:var(--w,0)}
-  .box,.m-row.slip,.in-sheet,#intro.out .in-sheet,#loading span,#wire.on path,#wire.on .w-plug,.box .fl{animation:none;transition:none}
+  .leaf,.box,.m-row.slip,.in-sheet,#intro.out .in-sheet,#loading span,#wire.on path,#wire.on .w-plug,.box .fl{animation:none;transition:none}
   #wire.on path{stroke-dashoffset:0}#wire.on .w-plug{opacity:1}
 }

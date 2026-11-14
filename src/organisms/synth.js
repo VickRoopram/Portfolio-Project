@@ -10,26 +10,29 @@ import { canvasTex, radialTex } from '../atoms/textures.js';
 import { M, C, RUBBER, decal } from '../atoms/materials.js';
 import { printed, engraved } from '../atoms/labels.js';
 import { fxOf, FXMATS } from '../molecules/fx.js';
+import { wonk, tape, rnd } from '../atoms/craft.js';
 import { pressable, itemCtrl, knob, screw, cap } from '../molecules/controls.js';
 
 export const synth = new THREE.Group(); scene.add(synth);
 const TOP = .9, GX = c => -8 + c, GZ = r => -2.75 + r + (r >= 2 ? .5 : 0) /* rows 2+ sit half a row further forward */, at = (o, x, y, z) => { o.position.set(x, y, z); synth.add(o); return o };
-export const casing = [at(rbox(18.9, .9, 7.8, .3, M(C.body, .55)), 0, .45, 0), at(rbox(18.9, .4, 7.8, .2, M(C.black, .5)), 0, .2, .14)];
+export const casing = [at(rbox(18.9, .9, 7.8, .09, M(C.body, .55)), 0, .45, 0), at(rbox(18.9, .4, 7.8, .05, M(C.black, .5)), 0, .2, .14)];
 at(rbox(17.25, .12, 6.75, .05, M(C.recess, .8)), 0, TOP, 0);
 [[-9.2, -3.65], [9.2, -3.65], [-9.2, 3.65], [9.2, 3.65]].forEach(([x, z]) => screw(synth, x, .905, z));
+/* the panel is taped into the box at its corners and along its edges */
+[[-8.62, -3.37, .8], [8.62, -3.37, -.8], [-8.62, 3.37, -.8], [8.62, 3.37, .8], [-2.6, -3.42, 0], [3.4, 3.42, 0], [8.66, .3, 1.57]].forEach(([x, z, r]) => tape(synth, x, TOP + .068, z, 1.15, .36, r));
 /* a tile spanning w × h grid cells from column c, row r */
-const tile = (c, r, w = 1, h = 1, mat = M(C.tile, .6)) => at(rbox(w - .07, .3, h - .07, .07, mat), GX(c) + (w - 1) / 2, TOP + .15, GZ(r) + (h - 1) / 2);
-const capBtn = (c, r, label, onPress, tip, o) => { tile(c, r); const k = at(cap(.72, .72, .16, label, o), GX(c), TOP + .36, GZ(r)); pressable(k, onPress, tip); return k };
+const tile = (c, r, w = 1, h = 1, mat = M(C.tile, .6)) => wonk(at(rbox(w - .07, .3, h - .07, .03, mat), GX(c) + (w - 1) / 2, TOP + .15, GZ(r) + (h - 1) / 2), .007, .007); // panels of card, glued down by eye
+const capBtn = (c, r, label, onPress, tip, o) => { tile(c, r); const k = wonk(at(cap(.72, .72, .16, label, o), GX(c), TOP + .36, GZ(r)), .075, .03); pressable(k, onPress, tip); return k };
 const onTile = (o, c, r, y = .305) => at(o, GX(c), TOP + y, GZ(r));
 
 /* the top section is 2.5 rows deep; the right-hand column (detune, wave, beats, stop, mute) gets a blank half tile under it */
 const UPPER = 2.5, upperZ = GZ(0) + (UPPER - 1) / 2;
-at(rbox(3 - .07, .3, .5 - .07, .07, M(C.tile, .6)), GX(15), TOP + .15, GZ(1) + .75);
+at(rbox(3 - .07, .3, .5 - .07, .03, M(C.tile, .6)), GX(15), TOP + .15, GZ(1) + .75);
 
 /* screen (clicks through to About) */
 tile(0, 0, 4, UPPER, M(C.recess, .4));
-export const scr = canvasTex(800, 380);
-const scrP = at(flat(3.78, 1.8, decal(new THREE.MeshBasicMaterial({ map: scr.t, toneMapped: false }))), GX(1.5), TOP + .305, upperZ);
+export const scr = canvasTex(800, 476);
+const scrP = at(flat(3.78, 2.25, decal(new THREE.MeshBasicMaterial({ map: scr.t, toneMapped: false, transparent: true }))), GX(1.5), TOP + .305, upperZ);
 /* the screen opens the About page; while the Vickhal Roopram logo is up on it (screens.js, every 25–60 s) its tip invites the click
    and the click flies to the About key, presses it and opens the "about me" summary (the first About card) */
 scrP.userData = { tip: 'Screen · click for the About page', tipHTML: () => V.logo > .5 ? 'Vickhal Roopram<small>Click to meet me</small>' : 'Screen · click for the About page',
@@ -38,7 +41,7 @@ scrP.userData = { tip: 'Screen · click for the About page', tipHTML: () => V.lo
 /* the four big sound knobs (drag up/down; click for a note), each in a 2 × 2.5 tile with its name underneath.
    While you adjust a knob, a lit ring fades in on its bezel, round the cap (where the press stroke runs): a dim track over the knob's travel, a brighter arc up to its value, and a light dot that
    follows the knob as it turns (updateSynth). It fades out about a second after you let go */
-const RING_R = .73, RING_Y = .127, TRAVEL = 2.2, LED = '#ff5d1a'; // on the top of the knob's brass bezel, round the cap
+const RING_R = .73, RING_Y = .082, TRAVEL = 2.2, LED = '#ff5d1a'; // on the top of the knob's brass bezel, round the cap
 const dotTex = radialTex([[0, 1], [.3, .55], [1, 0]], 128, 128);
 const ringMat = o => decal(new THREE.MeshBasicMaterial({ color: LED, transparent: true, depthWrite: false, toneMapped: false, ...o }));
 export const KNOB_RINGS = [];
@@ -77,10 +80,10 @@ capBtn(16, 1, 'MUTE', toggleMute, 'Sound on / off');
 const coreTex = radialTex([[0, .9], [.45, .4], [1, 0]], 256, 64);
 [['gd', 'DESIGN'], ['ux', 'UI/UX'], ['mo', 'MOTION'], ['tl', 'TOOLS'], ['xp', 'EXPERIMENTAL']].forEach(([f, label], j) => {
   const W = 17 / 5, x = -8.5 + W * (j + .5), glow = MODES[f].glow;
-  const t = at(rbox(W - .07, .3, .93, .07, M(C.tile, .6)), x, TOP + .15, GZ(2));
-  const k = at(rbox(W - .3, .16, .72, .16, RUBBER()), x, TOP + .36, GZ(2));
-  k.core = flat(W - .62, .5, decal(new THREE.MeshBasicMaterial({ map: coreTex, color: glow, transparent: true, opacity: 0, depthWrite: false, toneMapped: false })), .082); k.core.visible = false; k.coreK = 0;
-  const l = engraved(label, W - .5, .5, 30); l.position.y = .084; l.renderOrder = 1; k.add(k.core, l); FXMATS.push(k.core.material);
+  const t = at(rbox(W - .07, .3, .93, .03, M(C.tile, .6)), x, TOP + .15, GZ(2));
+  const k = wonk(at(rbox(W - .3, .1, .72, .035, RUBBER()), x, TOP + .36, GZ(2)), .022, .025);
+  k.core = flat(W - .62, .5, decal(new THREE.MeshBasicMaterial({ map: coreTex, color: glow, transparent: true, opacity: 0, depthWrite: false, toneMapped: false })), .052); k.core.visible = false; k.coreK = 0;
+  const l = engraved(label, W - .5, .5, 30); l.position.y = .054; l.renderOrder = 1; k.add(k.core, l); FXMATS.push(k.core.material);
   pressable(k, () => { playNote(72 + [0, 4, 7, 11, 14][j], .5); act.zoomTo(f) }, `${CH[f].name} · ${MODES[f].n}`); // after the core: pressable replaces userData
   k.userData.filter = f; t.userData.proxy = k; hits.push(t); k.material.emissive = new THREE.Color(glow); fxOf(k).managed = true; ROWBTN.push([k, f]);
 });
@@ -94,9 +97,10 @@ const WHITE = [0, 2, 4, 5, 7, 9, 11], SHARP = { 0: 1, 1: 3, 3: 6, 4: 8, 5: 10 };
 export const wMidi = i => 60 + 12 * Math.floor(i / 7) + WHITE[i % 7];
 export const keyMeshes = [], sharpMeshes = [];
 for (let i = 0; i < 14; i++) {
-  tile(i, 3); const kt = tile(i, 4, 1, 2), k = at(rbox(.76, .16, 1.62, .26, M(C.cap, .5)), GX(i), TOP + .36, GZ(4.5));
+  tile(i, 3); const kt = tile(i, 4, 1, 2), k = wonk(at(rbox(.76, .1, 1.62, .04, M(C.cap, .5)), GX(i), TOP + .36, GZ(4.5)), .028, .022);
+  tape(kt, rnd(.08, -.04), .265, -.84, .52, .2, 0); // each key is hinged to the panel with a strip of tape
   kt.userData.proxy = k; hits.push(kt); keyMeshes.push(k); itemCtrl(k, 'kb', i, () => playNote(wMidi(i)));
-  if (i < 13 && SHARP[i % 7] !== undefined) { const m = 60 + 12 * Math.floor(i / 7) + SHARP[i % 7], s = at(cyl(.3, .3, .18, M('#5a4033')), GX(i) + .5, TOP + .4, GZ(3));
+  if (i < 13 && SHARP[i % 7] !== undefined) { const m = 60 + 12 * Math.floor(i / 7) + SHARP[i % 7], s = wonk(at(cyl(.3, .3, .1, M('#5a4033'), 9), GX(i) + .5, TOP + .36, GZ(3)), 1, .03);
     pressable(s, () => playNote(m), 'Sharp key'); sharpMeshes.push(s) }
 }
 for (let i = 0; i < 10; i++) at(cyl(.035, .035, .02, M('#6a6c72')), 9.18, .91, -1.2 + i * .22);

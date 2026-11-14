@@ -1,5 +1,5 @@
 /* Detail card: the work first, a tight headline group, then the story, links and gallery. Plus toast, lightbox and HUD state. */
-import { $, S, CTRL, ROWBTN, act } from '../core/state.js';
+import { $, S, CTRL, ROWBTN, act, reduceMotion } from '../core/state.js';
 import { CH, LINKS, MODES, onKeys } from '../core/data.js';
 import { ensureAudio, playNote, drum } from '../core/audio.js';
 import { press } from '../molecules/controls.js';
@@ -35,9 +35,17 @@ const card = $('card'), ct = $('ct'), cf = $('cf');
    o.quiet: the key was already pushed on the way in, so don't press it again */
 export function openCard(ch, i, o = {}) {
   const n = CH[ch].items.length; i = ((i % n) + n) % n;
-  const from = o.from ?? (S.card?.ch === ch ? S.card.from : undefined); S.card = { ch, i, from }; updateUI(); cf.hidden = from !== 'menu';
+  const was = S.card, from = o.from ?? (S.card?.ch === ch ? S.card.from : undefined); S.card = { ch, i, from }; updateUI(); cf.hidden = from !== 'menu';
+  /* paging to another project in the same book turns the page: the page you were reading lifts off and swings over
+     (to the left going forward, to the right going back), with its blank back showing, and the next page is underneath */
+  const n0 = CH[ch].items.length, turn = was && !card.hidden && was.ch === ch && was.i !== i && !reduceMotion ? ((i - was.i + n0) % n0 <= n0 / 2 ? 1 : -1) : 0;
+  if (turn) {
+    const leaf = document.createElement('div'), front = ct.cloneNode(true), top = ct.scrollTop; leaf.className = 'leaf ' + (turn > 0 ? 'fwd' : 'back'); leaf.setAttribute('aria-hidden', 'true');
+    front.removeAttribute('id'); front.classList.add('leaf-front'); leaf.style.cssText = `top:${ct.offsetTop}px;left:${ct.offsetLeft}px;width:${ct.offsetWidth}px;height:${ct.offsetHeight}px`;
+    leaf.append(front, Object.assign(document.createElement('div'), { className: 'leaf-back' })); card.append(leaf); front.scrollTop = top; setTimeout(() => leaf.remove(), 600);
+  }
   card.style.setProperty('--accent', CH[ch].col); ct.innerHTML = cardHTML(ch, i); ct.scrollTop = 0;
-  card.hidden = true; void card.offsetWidth; card.hidden = false; // replay the pop-in
+  if (!turn) { card.hidden = true; void card.offsetWidth; card.hidden = false } // a new book: the sheet drops in
   if (!o.quiet) { const rb = ROWBTN.find(a => a[1] === ch); if (rb) press(rb[0]); const m = (onKeys(ch) ? CTRL.kb : CTRL[ch])?.[i]; if (m) press(m) }
   const cp = $('cp'); if (cp) cp.onclick = () => navigator.clipboard?.writeText(EMAIL).then(() => {
     cp.classList.add('done'); cp.innerHTML = icon('check', 18, 'tick') + '<span>Copied</span>'; toast('Email copied to your clipboard'); drum('blip') }, () => toast(`Copy blocked: the address is ${EMAIL}`));

@@ -6,7 +6,7 @@ import { $ } from './state.js';
 import { radialTex, canvasTex } from '../atoms/textures.js';
 
 /* canvas labels are lettered in Londrina Solid: ask for it by name (fonts only load once something uses them), but don't wait long */
-await Promise.race([Promise.all([document.fonts.load('400 40px "Londrina Solid"'), document.fonts.load('900 40px "Londrina Solid"'), document.fonts.ready]).catch(() => {}), new Promise(r => setTimeout(r, 2500))]);
+await Promise.race([Promise.all([document.fonts.load('400 40px "Londrina Solid"'), document.fonts.load('900 40px "Londrina Solid"'), document.fonts.load('400 30px "Patrick Hand"'), document.fonts.ready]).catch(() => {}), new Promise(r => setTimeout(r, 2500))]);
 export const stage = $('stage');
 export const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
