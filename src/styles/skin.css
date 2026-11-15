@@ -317,15 +317,17 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
 
 /* Reset view: a utility button like sound, menu and the navigation: the same kraft pill, cream when pointed at. It rises at the
    bottom middle once you've moved the camera (page/camera.js) */
-#reset{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 44px);z-index:5;translate:-50% 0;animation:resetIn .3s backwards}
+#reset{--up:0px;position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4) + var(--badge) + 56px);z-index:5;translate:-50% calc(50% - var(--up));animation:resetIn .3s backwards}
 #reset .ic{width:17px;height:17px;color:#fff;stroke-width:2.6}
-#reset:hover{translate:-50% -2px}
+#reset:hover{translate:-50% calc(50% - var(--up) - 2px)}
 #reset:hover .ic{color:var(--ink)}
-#reset:active{translate:-50% 1px}
+#reset:active{translate:-50% calc(50% - var(--up) + 1px)}
+/* its middle is on the joystick / zoom guide / question mark line. When the zoom guide slides into the middle to explain itself, Reset view steps up out of its way */
+body:has(#zoom[data-state="on"]) #reset{--up:62px}
 #reset.out{animation:resetOut .25s forwards}
-@keyframes resetIn{from{opacity:0;translate:-50% 40px;rotate:6deg}}
-@keyframes resetOut{to{opacity:0;translate:-50% 40px;rotate:6deg}}
-@media (max-width:760px){#reset{bottom:calc(env(safe-area-inset-bottom,0px) + 150px)}}
+@keyframes resetIn{from{opacity:0;translate:-50% calc(50% + 40px);rotate:6deg}}
+@keyframes resetOut{to{opacity:0;translate:-50% calc(50% + 40px);rotate:6deg}}
+@media (max-width:760px){#reset{left:calc(50% - 60px);bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4) + var(--badge) + 48px)}} /* phones: centred in the gap between the question mark and the zoom guide */
 
 /* lightbox: the print on the dark bench */
 #lb{background:rgba(24,14,9,.92)}
@@ -394,7 +396,7 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
   #joy{scale:.82;transform-origin:100% 100%;bottom:calc(env(safe-area-inset-bottom,0px) + 8px)}
   #zoom{scale:.82;transform-origin:100% 100%;bottom:calc(env(safe-area-inset-bottom,0px) + 30px)}
   #legend{display:none}
-  #reset{bottom:calc(env(safe-area-inset-bottom,0px) + 10px)}
+  #reset{left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 54px)}
   #m-peek{display:none}
 }
 /* touch screens: the hover preview has nothing to hover with */
