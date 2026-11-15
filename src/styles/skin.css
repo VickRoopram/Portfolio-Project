@@ -9,7 +9,7 @@
 
 :root{
   /* the room and the materials */
-  --floor:#0a1838; --ink:#2a1b12; --cream:#fbf1dd; --kraft:#c9a06c; --kraft-dk:#7b5d45; --mute:#6f5846;
+  --floor:#24160f; --ink:#2a1b12; --cream:#fbf1dd; --kraft:#c9a06c; --kraft-dk:#7b5d45; --mute:#6f5846;
   --card:#f3e8d2; --card2:#ecdcbd; --line:rgba(42,27,18,.35); --chip:#e6d3ae; --chip-ink:#2a1b12; --track:#5d4534; --shadow:rgba(12,6,3,.45);
   --red:#e0301a; --blue:#e0301a; --glow:#e0301a; --accent-ui:#e0301a; --accent:#e0301a; --on-accent:#fff8ea; --stage-ink:#f4e6cc;
   --paper:url("../../assets/tex/paper.jpg"); --crumpled:url("../../assets/tex/crumpled.jpg"); --kraft-tex:url("../../assets/tex/kraft.jpg");
@@ -27,7 +27,7 @@
   color-scheme:light;
 }
 *,*::before,*::after{transition-timing-function:var(--step)!important;animation-timing-function:var(--ease)!important}
-body{background:radial-gradient(ellipse 75% 70% at 48% 52%,#1c3566 0%,#14274f 38%,#0b1736 72%,#060c20 100%) fixed;color:var(--stage-ink);font-size:var(--t-md)}
+body{background:linear-gradient(#1a100b,#23150e 30%,#2e1d15 65%,#2a1a13) fixed;color:var(--stage-ink);font-size:var(--t-md)}
 /* the pointer is a cardboard cut-out: an arrow, a pointing hand over anything you can press, an open hand where you can drag */
 :root{--cur-arrow:url("../../assets/ui/cursor/arrow.png") 3 2,auto;--cur-point:url("../../assets/ui/cursor/point.png") 12 2,pointer;--cur-grab:url("../../assets/ui/cursor/grab.png") 14 12,grab}
 @supports (cursor:image-set(url("a.png") 1x,url("b.png") 2x) 0 0,auto){:root{
@@ -82,8 +82,9 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
 .hdr-cta{--shape:var(--cut-g);--at:-20px -50px}
 .in-go{--shape:var(--cut-g)}
 .in-go:disabled{--face:var(--kraft-dk)}
-#reset{--shape:var(--cut-c);--at:-120px -30px}
-.ico{--face:var(--kraft-dk);--tex:var(--kraft-dk-tex);--shape:var(--cut-d)}
+.ico{--face:var(--kraft);--tex:var(--kraft-tex);--shape:var(--cut-d)}
+.ico:hover{--face:var(--cream);--tex:var(--paper)}
+.ico[aria-expanded="true"]{color:var(--red)}
 .ico.burger{--shape:var(--cut-e);--at:-60px -30px}
 .ch button{--face:var(--kraft);--tex:var(--kraft-tex);--shape:var(--cut-e)}
 .ch button:nth-child(2){--shape:var(--cut-d);--at:-80px -60px}
@@ -91,8 +92,9 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
 .m-title{--face:var(--cream);--shape:var(--cut-c)}
 .hd h2{--face:var(--kraft);--tex:var(--kraft-tex);--shape:var(--cut-g);--at:-30px -10px}
 
-/* icon buttons: squares of dark card with the icon painted on */
-.ico{width:44px;height:44px;padding:0;color:var(--cream);rotate:2deg}
+/* icon buttons (sound, menu): squares of the same kraft card as the joystick and zoom guide, the icon drawn on in ink */
+.ico{width:44px;height:44px;padding:0;color:var(--ink);rotate:2deg}
+.ico .ic{stroke-width:2.4}
 .ico.burger{rotate:-2.5deg}
 .ico:hover{translate:-1px -2px;background:none}
 .ico:active{transform:none;translate:2px 3px}
@@ -258,24 +260,31 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
 #zoom[data-edge="max"] .z-fill{animation:none}
 .z-ico.shake{animation-timing-function:steps(1,end)!important}
 
-/* Reset view: a paper tag that rises at the bottom middle once you've moved the camera (page/camera.js) */
-#reset{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 46px);z-index:5;translate:-50% 0;rotate:-1.5deg;animation:resetIn .3s backwards}
-#reset:hover{translate:calc(-50% - 1px) -3px}
-#reset:active{translate:calc(-50% + 1px) 3px}
+/* Reset view: a secondary action, so it's a small plain tab of kraft card (the same card as the joystick beside it) with ink lettering,
+   not a red tag: it's there when you want it and doesn't compete with Contact. The home icon alone is red, and on hover a red
+   marker line is drawn under the words. It rises at the bottom middle once you've moved the camera (page/camera.js) */
+#reset{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 44px);z-index:5;min-height:34px;padding:2px 14px 0 11px;gap:7px;translate:-50% 0;rotate:-1deg;
+  --face:var(--kraft);--tex:var(--kraft-tex);--shape:var(--cut-c);--at:-120px -30px;color:var(--ink);font:400 var(--t-md)/1 var(--display);letter-spacing:.05em;
+  filter:url(#boil) drop-shadow(2px 3px 0 var(--shadow));animation:resetIn .3s backwards}
+#reset .ic{width:17px;height:17px;color:var(--red);stroke-width:2.6}
+#reset span{background:linear-gradient(var(--red),var(--red)) left bottom/0 2.5px no-repeat;padding-bottom:2px;transition:background-size .25s}
+#reset:hover{translate:calc(-50% - 1px) -2px;rotate:.5deg;filter:url(#boil) drop-shadow(3px 5px 0 var(--shadow))}
+#reset:hover span{background-size:100% 2.5px}
+#reset:active{translate:calc(-50% + 1px) 2px;filter:url(#boil) drop-shadow(1px 1px 0 var(--shadow))}
 #reset.out{animation:resetOut .25s forwards}
 @keyframes resetIn{from{opacity:0;translate:-50% 40px;rotate:6deg}}
 @keyframes resetOut{to{opacity:0;translate:-50% 40px;rotate:6deg}}
 @media (max-width:760px){#reset{bottom:calc(env(safe-area-inset-bottom,0px) + 150px)}}
 
 /* lightbox: the print on the dark bench */
-#lb{background:rgba(6,13,36,.93)}
+#lb{background:rgba(24,14,9,.92)}
 #lb img{border:10px solid #fffaf0;border-radius:2px;box-shadow:0 0 0 2.5px var(--ink),10px 14px 0 rgba(0,0,0,.5);rotate:-.6deg}
 
 /* ── loader + intro: a sheet of paper on the workbench. The site is sketched on it in pencil, line by line, then coloured in ── */
-#loading{background:radial-gradient(ellipse 75% 70% at 48% 52%,#1c3566 0%,#14274f 38%,#0b1736 72%,#060c20 100%)}
+#loading{background:linear-gradient(#1a100b,#23150e 30%,#2e1d15 65%,#2a1a13)}
 #loading span{padding:10px 18px 7px;border:var(--edge);border-radius:var(--cut-s);background:var(--cream) var(--paper);background-size:300px;box-shadow:var(--drop);color:var(--ink);font:400 var(--t-lg)/1 var(--display);letter-spacing:.06em;text-transform:uppercase;rotate:-2deg;animation:wobble .5s infinite}
 @keyframes wobble{0%{rotate:-2deg}50%{rotate:1.5deg}100%{rotate:-2deg}}
-#intro{padding:var(--s4);background:linear-gradient(rgba(6,13,36,.8),rgba(10,24,56,.86)),var(--floor) var(--wood-tex) center/900px;backdrop-filter:none;-webkit-backdrop-filter:none;transition:opacity .5s .25s,visibility .5s .25s;overflow:hidden}
+#intro{padding:var(--s4);background:linear-gradient(rgba(22,12,8,.74),rgba(22,12,8,.82)),var(--floor) var(--wood-tex) center/900px;backdrop-filter:none;-webkit-backdrop-filter:none;transition:opacity .5s .25s,visibility .5s .25s;overflow:hidden}
 .in-sheet{position:relative;width:min(700px,100%);max-height:100%;padding:clamp(18px,3.4vw,34px) clamp(16px,3.4vw,36px) clamp(20px,3vw,32px);display:grid;justify-items:center;gap:var(--s3);
   border-radius:3px 6px 4px 7px;background:var(--card) var(--crumpled) center/cover;color:var(--ink);box-shadow:0 0 0 2px rgba(42,27,18,.5),10px 14px 0 rgba(0,0,0,.42);rotate:-1.3deg;animation:sheetDown .5s backwards}
 @keyframes sheetDown{from{translate:0 -110vh;rotate:9deg}}

@@ -391,6 +391,8 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - **Rough-cut card** (`skin.css`, "cut card" block): `.cta`, `.ico`, the card's header buttons, `.m-title` and `.hd h2` are no longer boxes with a border and radius. Each is two clipped layers (`::before` the ink line, `::after` the face) using one of seven hand-cut polygons (`--cut-a`…`--cut-g`: lopped corners, edges that wander and lean, knife nicks) with a scratch-and-scuff SVG (`--scratch`) over the card texture; the hard shadow is a `drop-shadow` so it follows the cut. Variants are assigned by selector (`--shape`, `--at`, `--face`, `--tex`).
     - Files: `index.html`, `organisms/cursor.js` (new), `core/scene.js`, `styles/skin.css`.
 
+47. **15 Nov 2026: back to the brown room; Reset view as a secondary button; kraft header buttons** (Vick). The backdrop is the smooth chocolate-brown vertical gradient again, with no grain (`BACKDROP` / `BG` in `core/scene.js`; `--floor`, `body`, `#loading`, `#intro`, `#lb` in `skin.css`); the blue room of entries 45–46 is gone, the red accent stays. **Reset view** is now a secondary action: a small tab of kraft card with ink lettering, a red home icon and a red marker underline that draws in on hover (`#reset` in `skin.css`; markup is `cta ghost sm`). The **sound and menu buttons** are the same kraft card with ink icons as the joystick and zoom guide (cream on hover; the menu's icon goes red while the menu is open). Files: `index.html`, `core/scene.js`, `styles/skin.css`.
+
 
 ---
 
