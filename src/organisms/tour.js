@@ -24,7 +24,7 @@ const STEPS = [
 
 const INK = '#2a1b12', CREAM = '#fbf1dd', RED = '#e0301a';
 /* Beep: a wooden cabinet (the wood from the texture library), a cream card bezel, a dark tube with his face on it, two knobs, a speaker,
-   two aerials, a sticker, and his plug dangling underneath. The face (.tv-face) is moved to look; eyes and mouths are swapped by data-eyes / data-m */
+   two aerials, a sticker of Vick's logo mark (the first four paths of assets/ui/logo-on-dark.svg, in ink on cream card), and his plug dangling underneath. The face (.tv-face) is moved to look; eyes and mouths are swapped by data-eyes / data-m */
 const BOX = 'M24 45Q22 38 30 37L170 35Q180 35 181 44L183 156Q183 165 174 166L30 168Q21 168 21 159Z';
 const TV = `<svg class="tv" viewBox="0 0 200 204" aria-hidden="true" focusable="false" data-eyes="open" data-m="rest">
   <defs><pattern id="tvWood" patternUnits="userSpaceOnUse" width="220" height="220"><image href="assets/tex/wood.jpg" width="220" height="220"/></pattern>
@@ -54,7 +54,7 @@ const TV = `<svg class="tv" viewBox="0 0 200 204" aria-hidden="true" focusable="
     <path d="M47 64Q62 60 80 61L58 92Q45 88 44 70Z" fill="#fff" opacity=".1"/></g>
   <g stroke="${INK}" stroke-linecap="round"><circle cx="163" cy="62" r="9.5" fill="${CREAM}" stroke-width="2.8"/><path d="M163 62L168 55" stroke-width="2.8"/><circle cx="163" cy="88" r="9.5" fill="${CREAM}" stroke-width="2.8"/><path d="M163 88L156 84" stroke-width="2.8"/>
     <g stroke-width="2.6"><path d="M154 108H172"/><path d="M154 116H172"/><path d="M154 124H172"/><path d="M154 132H172"/><path d="M154 140H172"/></g><circle class="tv-led" cx="163" cy="153" r="3.6" fill="${RED}" stroke-width="2"/></g>
-  <g transform="rotate(-9 34 30)"><rect x="20" y="20" width="27" height="23" fill="${CREAM}" stroke="${INK}" stroke-width="2.2"/><path d="M27 27V36M27 27H25M27 36H25M40 27V36M40 27H42M40 36H42" fill="none" stroke="${INK}" stroke-width="2" stroke-linecap="round"/><circle cx="33.5" cy="28.5" r="1.5" fill="${RED}"/><circle cx="33.5" cy="34.5" r="1.5" fill="${RED}"/></g>
+  <g transform="rotate(-9 32 30)"><rect x="15" y="13" width="34" height="33" fill="${CREAM}" stroke="${INK}" stroke-width="2.2"/><g transform="translate(20.6 17.6) scale(.235)" fill="${INK}"><path d="M0.601006 6.69453L0 100.385L92.8052 100.986L97.4296 93.5899L10.0501 93.0222L10.6511 0L0.601006 6.69453Z"/><path d="M46.1439 45.208H29.6997V65.2582H46.1439V45.208Z"/><path d="M46.1439 15.1245H29.6997V35.1747H46.1439V15.1245Z"/><path d="M55.5261 10.1169V5.0918H71.9536H88.3978V40.2005V75.3092H71.9536H55.5261V70.2842V65.2758H63.7399H71.9536V40.2005V15.1252H63.7399H55.5261V10.1169Z"/></g></g>
 </svg>`;
 
 /* built once, on the first click */
