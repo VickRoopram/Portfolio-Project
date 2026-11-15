@@ -27,16 +27,21 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 const chev = `<span class="go">${icon('chevron-right', 20)}</span>`;
 /* a closed box seen from above: two flaps with its name lettered across the seam, and whatever's inside underneath */
 const flaps = t => `<i class="fl l"><b>${t}</b></i><i class="fl r"><b>${t}</b></i>`;
-const box = (attrs, t, n, c, inner = '') => `<button class="m-row box" ${attrs} style="--n:${n}${c ? `;--c:${c}` : ''}"><span class="in">${inner}</span>${flaps(t)}</button>`;
+/* inside every box is a slip of paper with the box's name on it: you read it when the box is open */
+const box = (attrs, t, n, c, here) => `<button class="m-row box${here ? ' here' : ''}" ${attrs}${here ? ' aria-current="true"' : ''} style="--n:${n}${c ? `;--c:${c}` : ''}"><span class="in"><b class="in-name">${t}</b></span>${flaps(t)}</button>`;
+/* where you are now: Home on the overview, About / Contact on their cards, Projects (and that section's box) in a section.
+   That box is shown already open and faded: you're in it */
+const at = () => S.card?.ch === 'ab' || S.mode === 'ab' ? 'about' : S.card?.ch === 'cv' || S.mode === 'cv' ? 'contact' : S.mode ? 'mode:' + S.mode : S.card ? 'mode:' + S.card.ch : 'home';
+const isHere = go => { const a = at(); return go === a || (go === 'projects' && a.startsWith('mode:') && PROJECT_MODES.some(([m]) => 'mode:' + m === a)) };
 const slip = (attrs, inner, n) => `<button class="m-row slip" ${attrs} style="--n:${n}">${inner}</button>`;
 function render() {
   const { k, ch, i } = level; let h = '';
   if (k === 'root') {
     h = `<div class="m-list root boxes">${MENU.items.map(({ label: t, go, href }, n) => go === 'link'
       ? `<a class="m-row box" href="${esc(href || '#')}" target="_blank" rel="noopener" style="--n:${n}"><span class="in">${icon('external-link', 28)}</span>${flaps(esc(t))}</a>`
-      : box(`data-go="${go}"${go === 'home' ? ' id="home"' : ''}`, esc(t), n, go.startsWith('mode:') ? CH[go.slice(5)]?.col : go === 'contact' ? CH.cv?.col : go === 'about' ? CH.ab?.col : '')).join('')}</div>`;
+      : box(`data-go="${go}"${go === 'home' ? ' id="home"' : ''}`, esc(t), n, '', isHere(go))).join('')}</div>`;
   } else if (k === 'projects') {
-    h = `<p class="m-title">Projects</p><div class="m-list boxes">${PROJECT_MODES.map(([m, t], n) => CH[m] ? box(`data-mode="${m}"`, t, n, CH[m].col) : '').join('')}</div>`;
+    h = `<p class="m-title">Projects</p><div class="m-list boxes">${PROJECT_MODES.map(([m, t], n) => CH[m] ? box(`data-mode="${m}"`, t, n, '', isHere('mode:' + m)) : '').join('')}</div>`;
   } else {
     const c = CH[ch]; let n = 0;
     h = `<p class="m-title" style="--c:${c.col}">${LABEL[ch] || c.name}</p><div class="m-list slips" style="--c:${c.col}">${c.items.map((it, j) => isSlot(it) ? '' :
@@ -44,7 +49,7 @@ function render() {
   }
   head.hidden = k === 'root'; back.querySelector('span').textContent = k === 'mode' && !level.direct ? 'Projects' : 'Menu';
   body.innerHTML = h; body.scrollTop = 0; menu.dataset.level = k; syncHome(); hidePeek(); busy = false;
-  (body.querySelector('[aria-current="true"]') || body.querySelector('.m-row'))?.focus({ preventScroll: true });
+  (body.querySelector('.slip[aria-current="true"]') || body.querySelector('.m-row:not(.here)') || body.querySelector('.m-row'))?.focus({ preventScroll: true });
 }
 /* fold a box's flaps open, then carry on (three drawings later) */
 let busy = false;
@@ -79,7 +84,8 @@ function showPeek(b, x) {
   peek.style.transform = `translate(${left}px,${below ? r.bottom + 6 : r.top - 6 - PH}px)`; peek.style.setProperty('--c', CH[level.ch].col); peek.hidden = false;
 }
 function hidePeek() { peekRow = null; peek.hidden = true; peek.classList.remove('ok') }
-const syncHome = () => $('home')?.setAttribute('data-at-home', String(!S.mode && !S.card));
+const syncHome = () => { $('home')?.setAttribute('data-at-home', String(!S.mode && !S.card)); // and keep the open box in step if the view changes while the menu is up
+  body.querySelectorAll('.box[data-go],.box[data-mode]').forEach(b => { const h = isHere(b.dataset.go || 'mode:' + b.dataset.mode); b.classList.toggle('here', h); h ? b.setAttribute('aria-current', 'true') : b.removeAttribute('aria-current') }) };
 function show(k, ch, i, direct) { level = { k, ch, i, direct }; render() }
 
 /* open at a level (the burger opens the root). The card and the menu share one side, so the card closes first */

@@ -393,6 +393,13 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 
 47. **15 Nov 2026: back to the brown room; Reset view as a secondary button; kraft header buttons** (Vick). The backdrop is the smooth chocolate-brown vertical gradient again, with no grain (`BACKDROP` / `BG` in `core/scene.js`; `--floor`, `body`, `#loading`, `#intro`, `#lb` in `skin.css`); the blue room of entries 45–46 is gone, the red accent stays. **Reset view** is now a secondary action: a small tab of kraft card with ink lettering, a white home icon (changed from red the same day) and a red marker underline that draws in on hover (`#reset` in `skin.css`; markup is `cta ghost sm`). The **sound and menu buttons** are the same kraft card with ink icons as the joystick and zoom guide (cream on hover; the menu's icon goes red while the menu is open). Files: `index.html`, `core/scene.js`, `styles/skin.css`.
 
+48. **15 Nov 2026: one light, soft shadows; smooth kraft header buttons; the box you're in stands open** (Vick, with screenshots).
+    - **One fixed light for the whole site.** The spotlight moved to the back left (`sun.position` −8.5, 27, −8 in `core/scene.js`), so pieces on the bench throw their shadows forward and to the right, the same way every shadow on the page falls. In `skin.css` all shadows come from three tokens, `--sh-s` / `--sh-m` / `--sh-l` (same angle, down-right, soft-edged); the hard offset shadows are gone. The card's coloured backing sheet is a design layer, not a shadow, and is unchanged.
+    - **Menu shadows don't react:** nothing in `#menu` changes its shadow on hover or press.
+    - **Sound and menu buttons** (`.ico`) are no longer rough-cut tags: they're the same smooth rounded kraft piece with an ink edge as the zoom guide and joystick. Open, the menu button is always a cream piece with a red cross (not only on hover).
+    - **Where you are** (`organisms/menu.js`: `at()`, `isHere()`, class `here`): the box for the place you're in (Home on the overview; About / Contact on their cards; Projects and the section's own box inside a section) is shown already open and faded, and every box now has its name on the slip inside it (`.in-name`), which is what you read when it's open.
+    - Files: `core/scene.js`, `organisms/desk.js`, `organisms/menu.js`, `styles/skin.css`.
+
 
 ---
 
