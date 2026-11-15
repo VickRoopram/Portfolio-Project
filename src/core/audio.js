@@ -54,6 +54,16 @@ export function foley(k, vol = 1) {
         const o = ac.createOscillator(); o.type = 'triangle'; o.frequency.setValueAtTime(1500 + Math.random() * 500, t + t0); o.frequency.exponentialRampToValueAtTime(700, t + t0 + .04); o.start(t + t0); o.stop(t + t0 + .05); shape(o, [[.002, .16 * v], [.045, 0]], t + t0) } },
   })[k]?.();
 }
+/* Beep, the tour guide (organisms/tour.js), chirps before he speaks: two or three quick square-wave notes, a different little phrase
+   for each thing he explains. Like the foley it goes straight to the speakers (no echo, no waveform on the notebook) and obeys mute. */
+const CHIRPS = [[0, 7, 12], [0, 5], [7, 0, 7], [0, 12], [5, 9], [12, 7], [0, 4, 7], [9, 5, 12]];
+export function beep(n = 0) {
+  if (!ac || muted) return; const t = ac.currentTime + .02, out = ac.createGain(), lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 3200; out.gain.value = .07; lp.connect(out); out.connect(ac.destination);
+  CHIRPS[n % CHIRPS.length].forEach((semi, i) => { const t0 = t + i * .085, o = ac.createOscillator(), g = ac.createGain(), f = 880 * Math.pow(2, semi / 12);
+    o.type = 'square'; o.frequency.setValueAtTime(f, t0); o.frequency.exponentialRampToValueAtTime(f * 1.06, t0 + .06);
+    g.gain.setValueAtTime(.0001, t0); g.gain.linearRampToValueAtTime(1, t0 + .008); g.gain.setValueAtTime(1, t0 + .05); g.gain.linearRampToValueAtTime(.0001, t0 + .075);
+    o.connect(g); g.connect(lp); o.start(t0); o.stop(t0 + .09) });
+}
 export function drum(k) {
   if (!ac || muted) return; const t = ac.currentTime, out = ac.createGain(); out.gain.value = P.drums; out.connect(master);
   const env = (node, a, d, t0 = t) => { const g = ac.createGain(); g.gain.setValueAtTime(a, t0); g.gain.exponentialRampToValueAtTime(.001, t0 + d); node.connect(g); g.connect(out); return g };

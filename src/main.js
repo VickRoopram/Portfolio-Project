@@ -1,7 +1,7 @@
 /**
  * Vick Does Creative: a portfolio played as a 3D synthesizer.
  * Built atomically:  core (state, content, audio, renderer) → atoms (geometry, textures, materials, labels)
- *   → molecules (press FX, controls, cables) → organisms (synth, remote, desk, underlights, screens, card, menu, zoom guide, joystick, beats backdrop, intro)
+ *   → molecules (press FX, controls, cables) → organisms (synth, remote, desk, underlights, screens, card, menu, zoom guide, joystick, beats backdrop, intro, tour guide)
  *   → page (camera, input), assembled and run here.
  */
 import * as THREE from 'three';
@@ -15,10 +15,10 @@ import { grille, updateSynth } from './organisms/synth.js';
 import './organisms/remote.js';
 import { updateDesk } from './organisms/desk.js';
 import { updateKeepsakes } from './organisms/keepsakes.js';
-import { groupAt, updateUnderlights } from './organisms/underlights.js';
+import { GROUPS, groupAt, updateUnderlights } from './organisms/underlights.js';
 import { drawScreens } from './organisms/screens.js';
 import { openCard, closeCard, updateUI } from './organisms/card.js';
-import { openMenuFor } from './organisms/menu.js';
+import { openMenuFor, closeMenu } from './organisms/menu.js';
 import { initIntro } from './organisms/intro.js';
 import { updateZoom } from './organisms/zoom.js';
 import { updateJoystick } from './organisms/joystick.js';
@@ -26,8 +26,17 @@ import { updateParty } from './organisms/party.js';
 import { zoomTo, zoomOut, journey, cancelJourney, panBy, spinBy, recentre, lookAt, updateCamera, swoopIn } from './page/camera.js';
 import { ray, updateHover } from './page/input.js';
 import { FPS, BOIL_EVERY, boil } from './atoms/craft.js';
+import './organisms/tour.js';
 
-Object.assign(act, { zoomTo, zoomOut, openCard, closeCard, journey, cancelJourney, openMenuFor, panBy, spinBy, recentre, lookAt });
+/* where a thing on the bench is on screen right now (for Beep, the tour guide, to point at): its box's corners through the camera */
+const SPOTS = { synth: GROUPS.projects.box, remote: GROUPS.contact.box, desk: new THREE.Box3(new THREE.Vector3(-8.6, 0, -8.7), new THREE.Vector3(9.8, .3, -6.2)) }, corner = new THREE.Vector3();
+function spot(key) {
+  const b = SPOTS[key], r = renderer.domElement.getBoundingClientRect(); if (!b) return null; let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for (let i = 0; i < 8; i++) { corner.set(i & 1 ? b.max.x : b.min.x, i & 2 ? b.max.y : b.min.y, i & 4 ? b.max.z : b.min.z).project(camera); if (corner.z > 1) return null;
+    const x = r.left + (corner.x + 1) / 2 * r.width, y = r.top + (1 - corner.y) / 2 * r.height; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y) }
+  return { left: x0, top: y0, right: x1, bottom: y1 };
+}
+Object.assign(act, { zoomTo, zoomOut, openCard, closeCard, journey, cancelJourney, openMenuFor, panBy, spinBy, recentre, lookAt, closeMenu, spot });
 
 /* card slides on card whenever something scrolls: the project page, the menu, or the bench itself when you wheel in and out */
 for (const id of ['ct', 'm-body']) document.getElementById(id)?.addEventListener('scroll', () => foley('slide'), { passive: true });

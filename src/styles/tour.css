@@ -1,0 +1,111 @@
+/* ── TOUR: the cardboard question mark, Beep (a floating wooden TV) and his cardboard speech bubble (organisms/tour.js).
+   Same rules as the rest of the skin: photo textures from the texture library, an ink line round every piece, no shadows, everything on twos. ── */
+
+/* the question mark: cut from kraft card, its corrugated edge showing down one side. Cream under the pointer, like every utility button */
+#help{position:fixed;z-index:5;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4));width:56px;height:74px;padding:0;border:0;background:none;rotate:-6deg;filter:url(#boil);transition:rotate .2s,translate .2s,scale .2s;transform-origin:50% 90%}
+#help svg{display:block;overflow:visible}
+#help path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.q-ink{stroke:var(--ink);stroke-width:22}
+.q-ink-dot{fill:var(--ink)}
+.q-edge{stroke:url(#qEdge);stroke-width:17}
+.q-edge-dot{fill:url(#qEdge)}
+.q-face{stroke:url(#qKraft);stroke-width:17}
+.q-face-dot{fill:url(#qKraft)}
+.q-tint{stroke:var(--cream);stroke-width:17;opacity:0}
+.q-tint-dot{fill:var(--cream);opacity:0}
+#help:hover{rotate:5deg;translate:0 -4px;scale:1.06}
+#help:hover .q-tint,#help:hover .q-tint-dot,#help[aria-expanded="true"] .q-tint,#help[aria-expanded="true"] .q-tint-dot{opacity:.62}
+#help:active{translate:0 2px;scale:.96}
+#help[aria-expanded="true"]{rotate:8deg}
+#help.nudge{animation:qHop 4.2s 2.5s infinite}
+@keyframes qHop{0%,78%,100%{translate:0 0;rotate:-6deg}84%{translate:0 -12px;rotate:7deg}90%{translate:0 0;rotate:-10deg}95%{translate:0 -5px;rotate:3deg}}
+body[data-card="true"] #help{visibility:hidden}
+@media (min-width:761px){body[data-card="true"] #help{visibility:visible}}
+
+/* the felt-tip ring round whatever he's talking about */
+#tour-ring{position:fixed;z-index:24;pointer-events:none;filter:url(#boil)}
+#tour-ring svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+#tour-ring path{fill:none;stroke:var(--red);stroke-width:4.5;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0}
+#tour-ring.pop path{animation:ringDraw .5s backwards}
+@keyframes ringDraw{from{stroke-dashoffset:1}}
+
+/* Beep and his bubble: one piece that floats together, so the bubble's tail stays at his mouth */
+#tour{--tv:186px;--ty:calc(var(--tv) * .6);position:fixed;z-index:25;left:0;top:0;display:flex;align-items:flex-start;pointer-events:none;animation:tourIn .42s backwards;transition:left .34s,top .34s}
+#tour.flip{flex-direction:row-reverse}
+#tour.out{animation:tourOut .3s forwards}
+#tour>*{pointer-events:auto}
+@keyframes tourIn{from{opacity:0;translate:-30vw 40vh;rotate:-24deg;scale:.3}}
+@keyframes tourOut{to{opacity:0;translate:-30vw 40vh;rotate:-24deg;scale:.3}}
+.tv-wrap{flex:none;width:var(--tv);animation:tvBob 2.6s infinite}
+@keyframes tvBob{0%,100%{translate:0 0;rotate:-2deg}50%{translate:0 -9px;rotate:2.5deg}}
+.tv{display:block;width:100%;height:auto;overflow:visible;filter:url(#boil)}
+/* eyes and mouths: only the one named on the svg is drawn */
+.tv .e-open,.tv .e-wow,.tv .e-happy,.tv .e-shut,.tv .e-wink,.tv .m-rest,.tv .m-a,.tv .m-b,.tv .m-c,.tv .m-o{display:none}
+.tv[data-eyes="open"] .e-open,.tv[data-eyes="wow"] .e-wow,.tv[data-eyes="happy"] .e-happy,.tv[data-eyes="shut"] .e-shut,.tv[data-eyes="wink"] .e-wink,
+.tv[data-m="rest"] .m-rest,.tv[data-m="a"] .m-a,.tv[data-m="b"] .m-b,.tv[data-m="c"] .m-c,.tv[data-m="o"] .m-o{display:inline}
+.tv-ant{transform-origin:97px 38px}
+.tv.pop .tv-ant{animation:antTwitch .5s}
+@keyframes antTwitch{0%{rotate:0deg}25%{rotate:-9deg}50%{rotate:8deg}75%{rotate:-4deg}100%{rotate:0deg}}
+.tv-cord{transform-origin:96px 167px;animation:cordSway 2.6s infinite}
+@keyframes cordSway{0%,100%{rotate:9deg}50%{rotate:-9deg}}
+.tv-led{animation:ledBlink 1.4s steps(1,end) infinite!important}
+@keyframes ledBlink{0%{opacity:1}50%{opacity:.25}}
+.tv-lines{animation:tubeRoll .9s steps(2,end) infinite!important}
+@keyframes tubeRoll{to{translate:0 4px}}
+
+/* the speech bubble: a piece of kraft card with a tail cut into the side nearest his mouth, and the board's corrugated edge showing
+   under it (.ply). Three layers, all cut to the same shape (--bub): ink line, face, edge */
+.tv-say{--bub:polygon(20px 5px,31% 1px,62% 4px,calc(100% - 9px) 2px,calc(100% - 1px) 10px,calc(100% - 3px) 52%,calc(100% - 1px) calc(100% - 10px),calc(100% - 10px) calc(100% - 2px),61% calc(100% - 4px),29px calc(100% - 1px),21px calc(100% - 9px),22px calc(var(--ty) + 15px),0 var(--ty),21px calc(var(--ty) - 17px),19px 32px);
+  position:relative;isolation:isolate;flex:none;width:340px;min-height:calc(var(--ty) + 44px);margin:6px 0 0 -6px;padding:13px 16px 9px 38px;display:flex;flex-direction:column;justify-content:space-between;gap:6px;color:var(--ink);filter:url(#boil);transform-origin:0 var(--ty)}
+.tv-say::before{content:"";position:absolute;inset:0;z-index:-2;background:var(--ink);clip-path:var(--bub)}
+.tv-say::after{content:"";position:absolute;inset:2.5px;z-index:-1;background:var(--scratch) 0 0/260px 130px,var(--kraft) var(--kraft-tex) -40px -30px/300px;clip-path:var(--bub)}
+.tv-say .ply{position:absolute;inset:0;z-index:-3;translate:5px 6px;background:var(--ink);clip-path:var(--bub)}
+.tv-say .ply::after{content:"";position:absolute;inset:2px;background:#b98a58 url("../../assets/tex/edge.jpg") 0 0/120px 60px;clip-path:var(--bub)}
+#tour.flip .tv-say{margin:6px -6px 0 0;padding:13px 38px 9px 16px;transform-origin:100% var(--ty)}
+#tour.flip .tv-say::before,#tour.flip .tv-say::after,#tour.flip .tv-say .ply{scale:-1 1}
+#tour.flip .tv-say .ply{translate:-5px 6px}
+.tv-say.pop{animation:sayPop .3s backwards}
+@keyframes sayPop{from{scale:.5;opacity:0;rotate:-5deg}}
+.say-top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s2)}
+#tour-h{margin:0;font:900 30px/1 var(--display);letter-spacing:.015em;text-transform:uppercase;color:var(--ink);white-space:nowrap}
+#tour-p{margin:5px 0 0;min-height:2.5em;font:400 var(--t-md)/1.25 var(--body);color:var(--ink)}
+#tour-p .rest{visibility:hidden}
+/* where you are: a row of pencil dots, the current one filled in red */
+.pips{flex:none;display:flex;gap:4px;padding-top:9px}
+.pips i{width:7px;height:7px;border:1.5px solid var(--ink);border-radius:50%}
+.pips i.on{background:var(--red)}
+/* back · skip · next */
+.say-nav{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;gap:var(--s2);padding-top:5px;border-top:2.5px dashed var(--line)}
+.t-nav{display:grid;place-items:center;width:40px;height:36px;padding:0;border:var(--edge);border-radius:13px 10px 14px 9px / 10px 14px 9px 13px;background:var(--cream) var(--paper);background-size:200px;color:var(--ink)}
+.t-nav .ic{width:22px;height:22px;stroke-width:2.8}
+.t-nav:hover{translate:-2px 0;background-color:#fffaf0}
+.t-next:hover{translate:2px 0}
+.t-nav:active{translate:0 1px}
+.t-nav:disabled{opacity:.3;pointer-events:none}
+.t-next{background:var(--red) var(--paper);background-blend-mode:multiply;background-size:200px;color:var(--on-accent)}
+.t-next:hover{background-color:var(--red)}
+.t-next .done,.t-next.last .ic:not(.done){display:none}
+.t-next.last .done{display:block}
+.t-skip{justify-self:center;padding:4px 8px 2px;border:0;background:none;font:400 var(--t-md)/1 var(--body);color:var(--ink);text-decoration:underline wavy var(--red) 1.5px;text-underline-offset:4px}
+.t-skip:hover{color:var(--red)}
+
+/* phones: he sits on top of the bubble, and the tail is cut into its top edge */
+@media (max-width:760px){
+  #tour{--tv:104px;flex-direction:column;align-items:center}
+  .tv-say{--bub:polygon(8px 26px,calc(50% - 24px) 22px,calc(50% - 8px) 0,calc(50% + 12px) 23px,74% 21px,calc(100% - 9px) 23px,calc(100% - 1px) 31px,calc(100% - 3px) 60%,calc(100% - 1px) calc(100% - 10px),calc(100% - 10px) calc(100% - 2px),58% calc(100% - 4px),10px calc(100% - 1px),2px calc(100% - 9px),3px 58%,1px 34px);
+    width:min(340px,calc(100vw - 24px));min-height:0;margin:-36px 0 0;padding:34px 16px 9px 18px;transform-origin:50% 0}
+  #tour-h{font-size:26px}
+  #help{width:46px;height:61px}
+  #help svg{width:46px;height:61px}
+}
+@media (orientation:landscape) and (max-height:520px){
+  #tour{--tv:110px;flex-direction:row;align-items:flex-start}
+  .tv-say{--bub:polygon(20px 5px,31% 1px,62% 4px,calc(100% - 9px) 2px,calc(100% - 1px) 10px,calc(100% - 3px) 52%,calc(100% - 1px) calc(100% - 10px),calc(100% - 10px) calc(100% - 2px),61% calc(100% - 4px),29px calc(100% - 1px),21px calc(100% - 9px),22px calc(var(--ty) + 15px),0 var(--ty),21px calc(var(--ty) - 17px),19px 24px);
+    width:300px;min-height:calc(var(--ty) + 40px);margin:0 0 0 -4px;padding:10px 14px 7px 36px}
+  #help{bottom:calc(env(safe-area-inset-bottom,0px) + 8px)}
+}
+@media (prefers-reduced-motion:reduce){
+  #help,#tour-ring,.tv,.tv-say{filter:none}
+  #help.nudge,#tour,#tour.out,.tv-wrap,.tv-cord,.tv-led,.tv-lines,.tv.pop .tv-ant,.tv-say.pop,#tour-ring.pop path{animation:none!important}
+  #tour{transition:none}
+}

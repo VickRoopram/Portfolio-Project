@@ -59,6 +59,19 @@ addEventListener('DOMContentLoaded',function(){var t=document.querySelector('#bo
     <div class="z-bar"><span class="z-track" id="zr" role="meter" aria-label="Zoom" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0%"><i class="z-fill"></i></span><output class="z-pct" id="zpct" aria-hidden="true">0%</output></div>
   </div>
 </div>
+<!-- the tour: a cardboard question mark; click it and Beep, a floating wooden TV, explains the site one speech bubble at a time (organisms/tour.js) -->
+<button id="help" aria-expanded="false" aria-label="Take the tour: Beep explains the site">
+  <svg viewBox="0 0 64 84" width="56" height="74" aria-hidden="true" focusable="false">
+    <defs>
+      <pattern id="qKraft" patternUnits="userSpaceOnUse" width="120" height="120"><image href="assets/tex/kraft.jpg" width="120" height="120"/></pattern>
+      <pattern id="qEdge" patternUnits="userSpaceOnUse" width="90" height="45"><image href="assets/tex/edge.jpg" width="90" height="45"/></pattern>
+    </defs>
+    <g class="q-ply" transform="translate(4 5)"><path class="q-ink" d="M17 27Q17 11 32 11Q47 11 47 25Q47 34 38 39Q32 43 32 51"/><circle class="q-ink-dot" cx="32" cy="69" r="9.5"/><path class="q-edge" d="M17 27Q17 11 32 11Q47 11 47 25Q47 34 38 39Q32 43 32 51"/><circle class="q-edge-dot" cx="32" cy="69" r="7"/></g>
+    <path class="q-ink" d="M17 27Q17 11 32 11Q47 11 47 25Q47 34 38 39Q32 43 32 51"/><circle class="q-ink-dot" cx="32" cy="69" r="9.5"/>
+    <path class="q-face" d="M17 27Q17 11 32 11Q47 11 47 25Q47 34 38 39Q32 43 32 51"/><circle class="q-face-dot" cx="32" cy="69" r="7"/>
+    <path class="q-tint" d="M17 27Q17 11 32 11Q47 11 47 25Q47 34 38 39Q32 43 32 51"/><circle class="q-tint-dot" cx="32" cy="69" r="7"/>
+  </svg>
+</button>
 <div id="lbl" hidden></div>
 <div id="card" hidden role="dialog" aria-label="Details">
   <div class="ch"><button id="prev" aria-label="Previous project"></button><button id="next" aria-label="Next project"></button><button id="cls" aria-label="Close"></button></div>
