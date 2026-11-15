@@ -5,7 +5,8 @@
      · he beeps before each thing he says (core/audio.js beep), and his mouth moves while the line is written out
      · his eyes follow the pointer; when it rests they go back to the thing he's talking about, which gets a felt-tip ring round it
      · like everything else he's animated on twos: one tick here is one drawing (12 a second)
-   He never blocks the page: you can try what he's describing while he's up. Esc or the question mark sends him away. */
+   While he's up the rest of the site is switched off (tour.css: nothing else answers the pointer, so no hover effects pull the eye away).
+   Esc, the cross, Skip or the question mark sends him away. */
 import { $, S, V, act, desktop, reduceMotion } from '../core/state.js';
 import { ensureAudio, beep, foley } from '../core/audio.js';
 import { icon } from '../atoms/icons.js';
@@ -150,6 +151,7 @@ function go(i) {
 }
 function start() {
   if (!el) build(); ensureAudio();
+  S.hover = S.grp = null; // whatever was under the pointer lets go
   if (S.menu) act.closeMenu?.(); if (S.mode || S.card || V.look) act.zoomOut?.(); // back to the whole bench, so everything he points at is in view
   steps = STEPS.filter(s => !(s.wide && !desktop()) && !(s.at?.[0] === '#' && !visible(s.at)));
   open = true; el.hidden = false; el.classList.remove('out'); help.setAttribute('aria-expanded', 'true'); help.classList.remove('nudge', 'peeping'); document.body.dataset.tour = 'on';

@@ -44,6 +44,9 @@ body[data-tour="on"] #tour-dim{opacity:1}
 #tour-ring.pop path{animation:ringDraw .5s backwards}
 @keyframes ringDraw{from{stroke-dashoffset:1}}
 
+/* while he's talking, only he, his bubble and the question mark answer the pointer: no hover effects anywhere else, on the bench or the buttons */
+body[data-tour="on"]>:not(#tour):not(#help){pointer-events:none}
+
 /* Beep and his bubble: one piece that floats together, so the bubble's tail stays at his mouth */
 #tour{--tv:186px;--ty:calc(var(--tv) * .6);position:fixed;z-index:25;left:0;top:0;display:flex;align-items:flex-start;pointer-events:none;animation:tourIn .42s backwards;transition:left .34s,top .34s}
 #tour.flip{flex-direction:row-reverse}
