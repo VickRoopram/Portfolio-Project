@@ -1,7 +1,7 @@
 /* Detail card: the work first, a tight headline group, then the story, links and gallery. Plus toast, lightbox and HUD state. */
 import { $, S, CTRL, ROWBTN, act, reduceMotion } from '../core/state.js';
 import { CH, LINKS, onKeys } from '../core/data.js';
-import { ensureAudio, playNote, drum } from '../core/audio.js';
+import { ensureAudio, playNote, drum, foley } from '../core/audio.js';
 import { press } from '../molecules/controls.js';
 import { icon, socialIcon } from '../atoms/icons.js';
 
@@ -38,7 +38,7 @@ export function openCard(ch, i, o = {}) {
      (to the left going forward, to the right going back), with its blank back showing, and the next page is underneath */
   const n0 = CH[ch].items.length, turn = was && !card.hidden && was.ch === ch && was.i !== i && !reduceMotion ? ((i - was.i + n0) % n0 <= n0 / 2 ? 1 : -1) : 0;
   if (turn) {
-    const leaf = document.createElement('div'), front = ct.cloneNode(true), top = ct.scrollTop; leaf.className = 'leaf ' + (turn > 0 ? 'fwd' : 'back'); leaf.setAttribute('aria-hidden', 'true');
+    const leaf = document.createElement('div'), front = ct.cloneNode(true), top = ct.scrollTop; leaf.className = 'leaf ' + (turn > 0 ? 'fwd' : 'back'); foley('page'); leaf.setAttribute('aria-hidden', 'true');
     front.removeAttribute('id'); front.classList.add('leaf-front'); leaf.style.cssText = `top:${ct.offsetTop}px;left:${ct.offsetLeft}px;width:${ct.offsetWidth}px;height:${ct.offsetHeight}px`;
     leaf.append(front, Object.assign(document.createElement('div'), { className: 'leaf-back' })); card.append(leaf); front.scrollTop = top; setTimeout(() => leaf.remove(), 600);
   }
@@ -52,7 +52,7 @@ export function closeCard() { S.card = null; card.hidden = true; cf.hidden = tru
 /* footer CTAs (secondary): back to the menu level this card came from, or just close and stay on the synth */
 $('tomenu').onclick = () => { const c = S.card; drum('blip'); closeCard(); if (c) act.openMenuFor(c.ch, c.i) };
 $('cancel').onclick = () => { drum('blip'); closeCard() };
-const step = d => { ensureAudio(); openCard(S.card.ch, S.card.i + d); playNote(60 + [0, 4, 7, 12, 7, 4, 2, 5, 9, 11, 14, 16][S.card.i % 12]) };
+const step = d => { if (!S.card) return; ensureAudio(); openCard(S.card.ch, S.card.i + d); playNote(60 + [0, 4, 7, 12, 7, 4, 2, 5, 9, 11, 14, 16][S.card.i % 12]) };
 $('prev').innerHTML = icon('chevron-left', 20); $('next').innerHTML = icon('chevron-right', 20); $('cls').innerHTML = icon('close', 20);
 $('prev').onclick = () => step(-1); $('next').onclick = () => step(1); $('cls').onclick = closeCard;
 const lb = $('lb');

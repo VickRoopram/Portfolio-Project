@@ -30,6 +30,30 @@ export function playNote(m, len = 1) {
   osc(WAVES[P.wave], f, -P.detune * 30, g); osc(WAVES[P.wave], f, P.detune * 30, g);
   const sg = ac.createGain(); sg.gain.value = P.sub; sg.connect(g); osc('sine', f / 2, 0, sg);
 }
+/* Foley: small paper-and-plastic noises for the interface, made from filtered noise and clicks. Quiet, and wired straight to the
+   speakers (not through the synth's chain), so they don't echo, don't follow the volume knob and don't make the notebook draw a waveform.
+   They obey mute. Each kind is rate-limited so a fast pointer can't machine-gun it.
+     marker: a felt-tip dragged round an edge · slide: card sliding on card · page: a page turning · tap: two cassette shells knocking */
+const FOLEY_GAP = { marker: 380, slide: 90, page: 160, tap: 55 }, lastFoley = {};
+export function foley(k, vol = 1) {
+  if (!ac || muted || ac.state !== 'running') return; const now = performance.now(); if (now - (lastFoley[k] || 0) < FOLEY_GAP[k]) return; lastFoley[k] = now;
+  const t = ac.currentTime, out = ac.createGain(); out.gain.value = .5 * vol; out.connect(ac.destination);
+  const nz = (d, type, fq, q = 1, t0 = t) => { const s = ac.createBufferSource(); s.buffer = noiseBuf; s.playbackRate.value = .8 + Math.random() * .4; const f = ac.createBiquadFilter(); f.type = type; f.frequency.value = fq; f.Q.value = q; s.connect(f); s.start(t0, Math.random() * .5); s.stop(t0 + d); return f };
+  const shape = (node, pts, t0 = t) => { const g = ac.createGain(); g.gain.setValueAtTime(.0001, t0); pts.forEach(([dt, v]) => g.gain.linearRampToValueAtTime(Math.max(.0001, v), t0 + dt)); node.connect(g); g.connect(out); return g };
+  ({
+    /* a squeaky felt tip: a narrow band of hiss that wavers as the pen catches the card, in two strokes (it goes round twice) */
+    marker: () => { for (const [t0, d] of [[0, .34], [.3, .3]]) { const f = nz(d, 'bandpass', 2600 + Math.random() * 500, 3.5, t + t0); f.frequency.linearRampToValueAtTime(3400 + Math.random() * 600, t + t0 + d);
+        shape(f, [[.03, .16], [d * .3, .07], [d * .45, .15], [d * .7, .06], [d * .85, .12], [d, 0]], t + t0) } },
+    /* card on card: a short, dry, low shush */
+    slide: () => { const d = .16 + Math.random() * .08, f = nz(d, 'bandpass', 620 + Math.random() * 380, .8); shape(f, [[.03, .2], [d * .6, .13], [d, 0]]); const h = nz(d, 'highpass', 4200); shape(h, [[.02, .03], [d, 0]]) },
+    /* a page: the lift (a bright swish rising), then the flop as it lands */
+    page: () => { const f = nz(.34, 'bandpass', 1500, .7); f.frequency.exponentialRampToValueAtTime(5200, t + .26); shape(f, [[.05, .2], [.2, .1], [.34, 0]]);
+      const l = nz(.09, 'lowpass', 900, 1, t + .3); shape(l, [[.008, .28], [.09, 0]], t + .3) },
+    /* plastic on plastic: two quick hollow clicks, the second lighter (one shell settling against the next) */
+    tap: () => { for (const [t0, v] of [[0, 1], [.055 + Math.random() * .03, .5]]) { const f = nz(.03, 'bandpass', 2300 + Math.random() * 900, 6, t + t0); shape(f, [[.002, .5 * v], [.03, 0]], t + t0);
+        const o = ac.createOscillator(); o.type = 'triangle'; o.frequency.setValueAtTime(1500 + Math.random() * 500, t + t0); o.frequency.exponentialRampToValueAtTime(700, t + t0 + .04); o.start(t + t0); o.stop(t + t0 + .05); shape(o, [[.002, .16 * v], [.045, 0]], t + t0) } },
+  })[k]?.();
+}
 export function drum(k) {
   if (!ac || muted) return; const t = ac.currentTime, out = ac.createGain(); out.gain.value = P.drums; out.connect(master);
   const env = (node, a, d, t0 = t) => { const g = ac.createGain(); g.gain.setValueAtTime(a, t0); g.gain.exponentialRampToValueAtTime(.001, t0 + d); node.connect(g); g.connect(out); return g };

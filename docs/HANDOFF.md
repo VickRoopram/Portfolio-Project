@@ -420,6 +420,8 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 
 51. **15 Nov 2026: a rougher, shorter lead** (Vick). The remote's lead is 11 chunky boxes instead of 26 (`N` in `molecules/cable.js`), each with its own width, height, turn and roll, with wider tape strips slapped on at their own angles; its loose route is shorter and ends just off the mat (`organisms/remote.js`). The plugged-in route and the animation between the two are unchanged.
 
+52. **15 Nov 2026: foley** (Vick: subtle, detailed noises). `foley(kind, vol)` in `core/audio.js` makes four small sounds from filtered noise and clicks, wired straight to the speakers (not through the synth's filter/echo/analyser, so they don't echo, don't follow the volume knob and don't make the notebook draw a waveform); they obey mute and are rate-limited (`FOLEY_GAP`). `marker`: a felt-tip squeak in two strokes when the marker line starts round a synth (`organisms/underlights.js`). `slide`: card on card while the project page or menu scrolls and when you wheel-zoom the bench (`main.js`). `page`: a page turning when paging between projects (`organisms/card.js`), moving between menu levels (`organisms/menu.js`) and when the notebook turns (`organisms/screens.js`; quieter for sound pages). `tap`: two plastic clicks as the pointer passes from one cassette to the next (`organisms/menu.js`). Volumes are set in the `shape()` envelopes and the `.5` master in `foley`.
+
 
 ---
 

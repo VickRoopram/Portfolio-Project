@@ -7,6 +7,7 @@
 import * as THREE from 'three';
 import { S, anim, act } from './core/state.js';
 import { renderer, scene, camera, controls, sun } from './core/scene.js';
+import { foley } from './core/audio.js';
 import { updateFx } from './molecules/fx.js';
 import { updateItemGlow } from './molecules/controls.js';
 import { updateCables } from './molecules/cable.js';
@@ -28,6 +29,9 @@ import { FPS, BOIL_EVERY, boil } from './atoms/craft.js';
 
 Object.assign(act, { zoomTo, zoomOut, openCard, closeCard, journey, cancelJourney, openMenuFor, panBy, spinBy, recentre, lookAt });
 
+/* card slides on card whenever something scrolls: the project page, the menu, or the bench itself when you wheel in and out */
+for (const id of ['ct', 'm-body']) document.getElementById(id)?.addEventListener('scroll', () => foley('slide'), { passive: true });
+renderer.domElement.addEventListener('wheel', () => foley('slide', .7), { passive: true });
 const clock = new THREE.Clock(); let last = performance.now(), drawn = -1e9, pictures = 0;
 function loop() {
   const t = clock.getElapsedTime(), now = performance.now(), dt = Math.min(.05, (now - last) / 1000); last = now;

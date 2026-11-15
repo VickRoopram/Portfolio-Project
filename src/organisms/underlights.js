@@ -1,5 +1,6 @@
 /* Device marker lines (were underlights): a felt-tip line in the device's colour, drawn on the bench round its casing while you hover it in the overview;
    the keyboard's stays on (in its mode colour) while you're in a keyboard mode. */
+import { foley } from '../core/audio.js';
 import * as THREE from 'three';
 import { S, V, reduceMotion, act } from '../core/state.js';
 import { MODES, onKeys } from '../core/data.js';
@@ -28,8 +29,10 @@ export function groupAt(o, ray) {
   for (const g of Object.values(GROUPS)) if (ray.ray.intersectBox(g.box, hit)) { const d = hit.distanceTo(ray.ray.origin); if (d < bd) { bd = d; best = g.key } }
   return best;
 }
+let wasLit = null;
 export function updateUnderlights(dt, hoverGroup) {
   const lit = !S.mode && !S.card && !V.fly ? hoverGroup : null;
+  if (lit !== wasLit) { if (lit) foley('marker'); wasLit = lit } // the marker squeaks as its line is drawn on
   const ease = reduceMotion ? 1 : 1 - Math.exp(-dt * 3.2), cEase = reduceMotion ? 1 : 1 - Math.exp(-dt * 4), breathe = reduceMotion ? 1 : 1 + .035 * Math.sin(performance.now() / 1000 * 1.6);
   const kbOn = S.mode && onKeys(S.mode) || S.card && onKeys(S.card.ch);
   for (const g of Object.values(GROUPS)) {

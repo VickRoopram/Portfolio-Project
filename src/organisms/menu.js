@@ -10,7 +10,7 @@ import * as THREE from 'three';
 import { $, S, V, CTRL, act, reduceMotion } from '../core/state.js';
 import { CH, MENU, onKeys } from '../core/data.js';
 import { camera, stage } from '../core/scene.js';
-import { ensureAudio, drum } from '../core/audio.js';
+import { ensureAudio, drum, foley } from '../core/audio.js';
 import { icon } from '../atoms/icons.js';
 
 /* the sections under Projects, in menu order; labels read as sections, not button legends */
@@ -91,7 +91,11 @@ menu.addEventListener('keydown', e => { if (['Tab', 'ArrowUp', 'ArrowDown', 'Arr
 menu.addEventListener('pointermove', () => menu.classList.remove('kbd'), { passive: true });
 const syncHome = () => { $('home')?.setAttribute('data-at-home', String(!S.mode && !S.card)); // and keep the open box in step if the view changes while the menu is up
   body.querySelectorAll('.box[data-go],.box[data-mode]').forEach(b => { const h = isHere(b.dataset.go || 'mode:' + b.dataset.mode); b.classList.toggle('here', h); h ? b.setAttribute('aria-current', 'true') : b.removeAttribute('aria-current') }) };
-function show(k, ch, i, direct) { level = { k, ch, i, direct }; render() }
+function show(k, ch, i, direct) { const was = level.k; level = { k, ch, i, direct }; render(); if (was && was !== k) foley('page') } // moving between levels of the menu turns a page
+/* cassettes knock against each other as the pointer passes from one to the next */
+let overTape = null;
+body.addEventListener('pointerover', e => { const b = e.target.closest?.('.tape'); if (b !== overTape) { overTape = b; if (b) foley('tap') } });
+body.addEventListener('pointerleave', () => { overTape = null });
 
 /* open at a level (the burger opens the root). The card and the menu share one side, so the card closes first */
 export function openMenu(k = 'root', ch, i) {
