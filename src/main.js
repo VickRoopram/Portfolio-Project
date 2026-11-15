@@ -5,7 +5,7 @@
  *   → page (camera, input), assembled and run here.
  */
 import * as THREE from 'three';
-import { S, V, anim, act } from './core/state.js';
+import { S, anim, act } from './core/state.js';
 import { renderer, scene, camera, controls } from './core/scene.js';
 import { updateFx } from './molecules/fx.js';
 import { updateItemGlow } from './molecules/controls.js';

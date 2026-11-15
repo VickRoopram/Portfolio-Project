@@ -4,7 +4,7 @@ import { hits, lerp, reduceMotion } from '../core/state.js';
 import { drum } from '../core/audio.js';
 import { scene } from '../core/scene.js';
 import { rbox, cyl, flat } from '../atoms/geometry.js';
-import { canvasTex, radialTex, TEX } from '../atoms/textures.js';
+import { canvasTex, radialTex } from '../atoms/textures.js';
 import { decal } from '../atoms/materials.js';
 import { PAPER, card, outline } from '../atoms/craft.js';
 import { FXMATS } from '../molecules/fx.js';

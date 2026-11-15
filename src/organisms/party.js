@@ -6,7 +6,7 @@
    Videos load only when a track starts. Off under reduced motion. */
 import * as THREE from 'three';
 import { scene, BG, BACKDROP } from '../core/scene.js';
-import { V, reduceMotion } from '../core/state.js';
+import { reduceMotion } from '../core/state.js';
 import { demo, track, BEATS } from '../core/audio.js';
 import { canvasTex } from '../atoms/textures.js';
 import { decal } from '../atoms/materials.js';

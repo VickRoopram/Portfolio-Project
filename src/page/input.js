@@ -28,7 +28,7 @@ cv.addEventListener('pointerdown', e => {
 cv.addEventListener('pointermove', e => {
   const d = V.drag; if (d) { const dy = e.clientY - d.y, dx = e.clientX - d.x; d.y = e.clientY; d.x = e.clientX; d.o.userData.drag?.(-dy + dx * .5); live = d.o.userData.live?.() || ''; return }
   if (e.pointerType !== 'mouse') return; const o = pick(e); S.grp = S.mode || S.card ? null : groupAt(o, ray);
-  cv.style.cursor = o || S.grp ? 'pointer' : 'grab'; S.hover = o || null; S.hoverUntil = Infinity;
+  cv.dataset.cur = o || S.grp ? 'point' : 'grab'; // the cardboard cursors (skin.css) S.hover = o || null; S.hoverUntil = Infinity;
 });
 const end = () => { if (!V.drag) return; V.drag = null; live = ''; if (!V.fly) controls.enabled = true };
 cv.addEventListener('pointerup', e => { if (tap && Math.hypot(e.clientX - tap.x, e.clientY - tap.y) < 6 && !S.mode) GROUPS[tap.g].go(); tap = null; end() });

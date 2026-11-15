@@ -104,9 +104,9 @@ DESK.polaroids.slice(0, 8).forEach((p, i) => { const [x, z, r] = SPOTS[i];
 const noteTex = canvasTex(1024, 1024, x => drawNote(x));
 function drawNote(x) { x.setTransform(2, 0, 0, 2, 0, 0); const g = x.createLinearGradient(0, 0, 0, 512); g.addColorStop(0, '#f2d95c'); g.addColorStop(.12, '#f8e676'); g.addColorStop(1, '#f6e06a'); x.fillStyle = g; x.fillRect(0, 0, 512, 512);
   x.fillStyle = INK; x.textBaseline = 'middle'; x.textAlign = 'left'; x.font = cut(64); x.save(); x.translate(34, 62); x.rotate(-.03); x.fillText('TO DO', 0, 0); x.restore();
-  x.strokeStyle = '#d2451e'; x.lineWidth = 6; x.lineCap = 'round'; sketch(x, [[32, 100], [120, 96], [200, 101]], { jit: 2 });
+  x.strokeStyle = '#e0301a'; x.lineWidth = 6; x.lineCap = 'round'; sketch(x, [[32, 100], [120, 96], [200, 101]], { jit: 2 });
   DESK.todo.slice(0, 8).forEach((it, n) => { const y = 142 + n * 45; x.strokeStyle = INK; x.lineWidth = 3.5; sketch(x, [[34, y - 13], [60, y - 14], [61, y + 12], [35, y + 13]], { close: true, jit: 1.2 });
-    if (it.done) { x.strokeStyle = '#d2451e'; x.lineWidth = 6; sketch(x, [[36, y - 2], [46, y + 9], [68, y - 20]], { jit: 1, passes: 1 }) }
+    if (it.done) { x.strokeStyle = '#e0301a'; x.lineWidth = 6; sketch(x, [[36, y - 2], [46, y + 9], [68, y - 20]], { jit: 1, passes: 1 }) }
     x.fillStyle = INK; x.font = hand(34); x.fillText(it.t, 78, y + 2); if (it.done) { x.strokeStyle = 'rgba(42,27,18,.7)'; x.lineWidth = 3; sketch(x, [[76, y + 3], [78 + x.measureText(it.t).width, y + 1]], { jit: 1.5, passes: 1 }) } }) }
 document.fonts.ready.then(() => { drawNote(noteTex.x); noteTex.t.needsUpdate = true });
 { const m = rbox(2.5, .02, 2.5, .02, card('paper', '#f6e06a', { bumpScale: .1 })); m.position.set(13.9, .012, 6.3); m.rotation.y = -.16; scene.add(m);

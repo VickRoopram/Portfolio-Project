@@ -9,13 +9,13 @@
    drawScreens also hands the music level to the speaker. */
 import { scope } from '../core/audio.js';
 import { S, V, reduceMotion } from '../core/state.js';
-import { CH } from '../core/data.js';
+import { CH, ACCENT } from '../core/data.js';
 import { party, partyColours } from './party.js';
 import { scr } from './synth.js';
 import { rs } from './remote.js';
 import { INK } from '../atoms/craft.js';
 
-export const SCREEN_COL = '#d2451e'; // red marker
+const SCREEN_COL = ACCENT; // red marker
 const W = 800, H = 476, PW = 368, PH = 432, GAP_X = 16, LX = (W - GAP_X) / 2 - PW, RX = (W + GAP_X) / 2, PY = (H - PH) / 2, TITLE = 'My Projects';
 const TURN = .6, SWEEP = 2.6;      // seconds: one page turn · the pen crossing the page once
 const hand = px => `400 ${px}px "Patrick Hand", "Comic Sans MS", cursive`, cut = (px, w = 900) => `${w} ${px}px "Londrina Solid", "Arial Narrow", sans-serif`;
@@ -79,7 +79,7 @@ function pageWave(x) {
   else { x.fillStyle = '#2f9aa6'; trace.forEach(([px, py], i) => { if (i % 4) return; x.beginPath(); x.ellipse(px, py, 6 + Math.abs(py - cy) * .05, 5 + (i % 3), i, 0, 7); x.fill() }) }
   const tip = trace[trace.length - 1]; if (tip) { // the pencil doing the drawing
     x.save(); x.translate(tip[0], tip[1]); x.rotate(-1.05); x.fillStyle = INK; x.beginPath(); x.moveTo(0, 0); x.lineTo(13, -7); x.lineTo(13, 7); x.closePath(); x.fill();
-    x.fillStyle = '#e8b93c'; x.fillRect(13, -7, 66, 14); x.fillStyle = '#d2451e'; x.fillRect(79, -7, 12, 14); x.strokeStyle = INK; x.lineWidth = 2.5; x.strokeRect(13, -7, 78, 14); x.restore() }
+    x.fillStyle = '#e8b93c'; x.fillRect(13, -7, 66, 14); x.fillStyle = ACCENT; x.fillRect(79, -7, 12, 14); x.strokeStyle = INK; x.lineWidth = 2.5; x.strokeRect(13, -7, 78, 14); x.restore() }
 }
 /* the pen moves on: add the stretch of waveform it has just crossed */
 function draw(wave, time) {
@@ -117,7 +117,6 @@ function book(x, p) {
   x.setTransform(1, 0, 0, 1, 0, 0);
 }
 /* the remote's note, taped in, written once (and again when the paper photo arrives) */
-function tapeStrip(x, cx, cy, rot, w = 96, h = 30) { x.save(); x.translate(cx, cy); x.rotate(rot); x.fillStyle = 'rgba(238,222,172,.92)'; x.beginPath(); x.moveTo(-w / 2 + 5, -h / 2); x.lineTo(w / 2, -h / 2); x.lineTo(w / 2 - 6, 0); x.lineTo(w / 2, h / 2); x.lineTo(-w / 2, h / 2); x.lineTo(-w / 2 + 6, 0); x.closePath(); x.fill(); x.strokeStyle = 'rgba(90,70,36,.4)'; x.lineWidth = 1.5; x.stroke(); x.restore() }
 function note() {
   const o = off(264, 164), x = o.x; sheet(x, 264, 164, 34, 30);
   x.save(); x.translate(140, 70); x.rotate(.05); x.fillStyle = INK; x.textAlign = 'center'; x.textBaseline = 'middle'; x.font = cut(66); x.fillText('CONTACT', 0, 0);

@@ -10,7 +10,7 @@ const CABLES = [];
 export function socket(pos, rot) {
   const g = new THREE.Group(); g.position.set(...pos); scene.add(g);
   const s = cyl(.2, .2, .14, M('#1a1a1c', .4)); s.rotation.set(...rot); g.add(s);
-  const led = cyl(.06, .06, .04, new THREE.MeshStandardMaterial({ color: '#3a3b40', emissive: '#ff5d1a', emissiveIntensity: 0 })); led.position.set(rot[2] ? 0 : .35, .47, rot[2] ? .35 : 0); g.add(led);
+  const led = cyl(.06, .06, .04, new THREE.MeshStandardMaterial({ color: '#3a3b40', emissive: '#e0301a', emissiveIntensity: 0 })); led.position.set(rot[2] ? 0 : .35, .47, rot[2] ? .35 : 0); g.add(led);
   return led;
 }
 export function cable(loose, plug, color, r, isOn, led) {

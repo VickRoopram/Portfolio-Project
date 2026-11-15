@@ -10,7 +10,7 @@ import { canvasTex, radialTex } from '../atoms/textures.js';
 import { M, C, RUBBER, decal } from '../atoms/materials.js';
 import { printed, engraved } from '../atoms/labels.js';
 import { fxOf, FXMATS } from '../molecules/fx.js';
-import { wonk, tape, rnd, INK, card } from '../atoms/craft.js';
+import { wonk, tape, rnd, card } from '../atoms/craft.js';
 import { pressable, itemCtrl, knob, screw, cap, boardCap } from '../molecules/controls.js';
 
 export const synth = new THREE.Group(); scene.add(synth);
@@ -41,7 +41,7 @@ scrP.userData = { tip: 'Screen · click for the About page', tipHTML: () => V.lo
 /* the four big sound knobs (drag up/down; click for a note), each in a 2 × 2.5 tile with its name underneath.
    While you adjust a knob, a lit ring fades in on its bezel, round the cap (where the press stroke runs): a dim track over the knob's travel, a brighter arc up to its value, and a light dot that
    follows the knob as it turns (updateSynth). It fades out about a second after you let go */
-const RING_R = .92, RING_Y = .014, TRAVEL = 2.2, LED = '#ff5d1a'; // on the top of the knob's brass bezel, round the cap
+const RING_R = .92, RING_Y = .014, TRAVEL = 2.2, LED = '#e0301a'; // on the top of the knob's brass bezel, round the cap
 const dotTex = radialTex([[0, 1], [.3, .55], [1, 0]], 128, 128);
 const ringMat = o => decal(new THREE.MeshBasicMaterial({ color: LED, transparent: true, depthWrite: false, toneMapped: false, ...o }));
 export const KNOB_RINGS = [];
@@ -73,7 +73,7 @@ capBtn(14, 1, 'WAVE', () => { P.wave = (P.wave + 1) % 3; playNote(67, .4) }, 'Wa
 const beatsBtn = capBtn(15, 1, 'BEATS', toggleDemo, `Beats · each click plays the next of ${BEATS.length} tracks`);
 const stopBtn = capBtn(16, 0, 'STOP', () => { stopDemo(); drum('rim') }, 'Stop the music');
 { const sq = flat(.11, .11, decal(new THREE.MeshBasicMaterial({ color: '#d71920' }))); sq.position.set(0, .082, -.27); stopBtn.add(sq) }
-[stopBtn, beatsBtn].forEach(m => { m.material.emissive = new THREE.Color('#ff5d1a'); fxOf(m).managed = true });
+[stopBtn, beatsBtn].forEach(m => { m.material.emissive = new THREE.Color('#e0301a'); fxOf(m).managed = true });
 capBtn(16, 1, 'MUTE', toggleMute, 'Sound on / off');
 
 /* mode buttons: solid rubber caps with engraved white legends; light leaks from the gap, plus a dim core under a translucent top */

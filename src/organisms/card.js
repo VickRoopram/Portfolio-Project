@@ -1,6 +1,6 @@
 /* Detail card: the work first, a tight headline group, then the story, links and gallery. Plus toast, lightbox and HUD state. */
 import { $, S, CTRL, ROWBTN, act, reduceMotion } from '../core/state.js';
-import { CH, LINKS, MODES, onKeys } from '../core/data.js';
+import { CH, LINKS, onKeys } from '../core/data.js';
 import { ensureAudio, playNote, drum } from '../core/audio.js';
 import { press } from '../molecules/controls.js';
 import { icon, socialIcon } from '../atoms/icons.js';
@@ -24,11 +24,9 @@ function cardHTML(ch, i) {
 }
 
 export function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; t.classList.remove('show'); void t.offsetWidth; t.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => { t.hidden = true }, 2600) }
-/* HUD: Home greys out at home; header icons glow in the active mode's colour; phones hide the legend under the card sheet */
+/* HUD: Home greys out at home; phones hide the legend under the card sheet */
 export function updateUI() {
   $('home')?.setAttribute('data-at-home', String(!S.mode && !S.card)); document.body.dataset.card = String(!!S.card);
-  const g = S.card ? MODES[S.card.ch]?.glow : S.mode ? MODES[S.mode].glow : null;
-  document.documentElement.style.setProperty('--glow', !g || g === '#ffffff' ? '#ff5d1a' : g);
 }
 const card = $('card'), ct = $('ct'), cf = $('cf');
 /* o.from 'menu': opened through the menu, so the footer offers Back to menu and Cancel (kept while paging with prev/next).

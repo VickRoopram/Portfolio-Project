@@ -1,6 +1,6 @@
 /* Press FX, hand-drawn: a marker ring round a cap + a marker stroke racing round the cap edge. */
 import * as THREE from 'three';
-import { S, V, reduceMotion } from '../core/state.js';
+import { S, reduceMotion } from '../core/state.js';
 import { MODES } from '../core/data.js';
 import { dims, rrPath, flat } from '../atoms/geometry.js';
 import { haloTexture, canvasTex } from '../atoms/textures.js';
@@ -17,7 +17,7 @@ export function fxOf(mesh) {
   const halo = flat(w + 2 * ht.m, d + 2 * ht.m, decal(new THREE.MeshBasicMaterial({ map: ht.t, transparent: true, opacity: 0, depthWrite: false, toneMapped: false })));
   halo.position.set(mesh.position.x, mesh.position.y - h / 2 + .026, mesh.position.z); halo.renderOrder = 2; halo.visible = false; halo.rotation.z = mesh.rotation.y; mesh.parent.add(halo); FXMATS.push(halo.material);
   if (!mesh.noCut) cutout(mesh.parent, halo.position.x, halo.position.y - .012, halo.position.z, w, d, !mesh.geometry.userData.rr); // the hole it sits in, cut by hand (so it doesn't quite line up with the piece)
-  f = { m: mesh, halo, w, h, d, r, stroke: null, t0: -1e9, amp: 0, col: new THREE.Color('#ff5d1a'), managed: false };
+  f = { m: mesh, halo, w, h, d, r, stroke: null, t0: -1e9, amp: 0, col: new THREE.Color('#e0301a'), managed: false };
   FX.set(mesh, f); FXL.push(f); return f;
 }
 const STROKE_VS = `attribute float a;attribute float e;varying float vA;varying float vE;void main(){vA=a;vE=e;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
@@ -56,7 +56,7 @@ function burstFor(f) {
   b.position.set(f.m.position.x, f.halo.position.y + .004, f.m.position.z); b.renderOrder = 4; b.visible = false; f.m.parent.add(b); return f.burst = b;
 }
 /* fire a press: gap flash + stroke. delay (ms) lets waves ripple across many controls */
-export function pulse(mesh, delay = 0, amp = 1) { const f = fxOf(mesh); f.t0 = performance.now() + delay; f.amp = amp; if (!f.managed) f.col.set(S.mode ? MODES[S.mode].glow : '#ff5d1a') }
+export function pulse(mesh, delay = 0, amp = 1) { const f = fxOf(mesh); f.t0 = performance.now() + delay; f.amp = amp; if (!f.managed) f.col.set(S.mode ? MODES[S.mode].glow : '#e0301a') }
 const lightCol = new THREE.Color();
 export function updateFx(now) {
   const face = .5; // the cap's paper takes a wash of the colour; the marker ring round it carries the rest

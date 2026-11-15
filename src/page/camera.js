@@ -1,6 +1,6 @@
 /* Camera: a near top-down overview, low cinematic angles per device, crane-shot swoops between them. */
 import * as THREE from 'three';
-import { S, V, CTRL, ROWBTN, desktop, lerp, reduceMotion } from '../core/state.js';
+import { $, S, V, CTRL, ROWBTN, desktop, lerp, reduceMotion } from '../core/state.js';
 import { CH, MODES, onKeys } from '../core/data.js';
 import { drum } from '../core/audio.js';
 import { push } from '../molecules/controls.js';
@@ -127,7 +127,19 @@ export async function journey(ch, i, from = 'menu') { // from: 'menu' shows Back
 }
 const ease = k => k < .5 ? 8 * k ** 4 : 1 - Math.pow(-2 * k + 2, 4) / 2; // quartic in-out: slow start, slow landing
 let offX = 0, offY = 0;
+/* Reset view: once you've turned, panned or zoomed the bench away from where the camera last settled (or flown in to look at
+   something), a Home button rises at the bottom middle; it takes you back to the whole bench */
+const resetBtn = $('reset'), rest = { p: new THREE.Vector3(), t: new THREE.Vector3(), set: false }; let settling = true, strayed = false;
+resetBtn.onclick = () => { if (S.mode || S.card || V.look) zoomOut(); else recentre() };
+function watchView() {
+  if (V.fly) { settling = true; return show(false) }
+  if (settling || !rest.set) { settling = false; rest.set = true; rest.p.copy(camera.position); rest.t.copy(controls.target) }
+  show(!S.card && $('menu').hidden && (!!V.look || camera.position.distanceTo(rest.p) > .9 || controls.target.distanceTo(rest.t) > .35));
+}
+function show(on) { if (on === strayed) return; strayed = on; clearTimeout(show.h);
+  if (on) { resetBtn.hidden = false; resetBtn.classList.remove('out') } else { resetBtn.classList.add('out'); show.h = setTimeout(() => { resetBtn.hidden = true }, 260) } }
 export function updateCamera(now) {
+  watchView();
   if (!stage.clientWidth || !stage.clientHeight) return; // hidden: nothing to frame until it has a size again
   const F = V.fly; if (F) { const k = Math.min(1, (now - F.s) / F.dur), e = ease(k); controls.target.lerpVectors(F.t0, F.t1, e);
     sA.set(lerp(F.r0, F.r1, e) * (1 + F.lift * Math.sin(Math.PI * e)), lerp(F.p0, F.p1, e), F.th0 + F.dT * e); camera.position.copy(controls.target).add(off.setFromSpherical(sA));
@@ -139,6 +151,7 @@ export function updateCamera(now) {
   const side = S.card || S.menu || V.side; offX += ((side && wide ? sideW(w) / 2 : 0) - offX) * .08; offY += ((side && !wide ? h * .28 : 0) - offY) * .08; camera.setViewOffset(w, h, offX, offY, w, h);
 }
 function resize() {
+  settling = true; // a new window shape re-frames the view: that's not you moving it
   const w = stage.clientWidth, h = stage.clientHeight; if (!w || !h) return; // a hidden page (zero size) would turn every framing into NaN and stick the camera
   renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
   lockZoom(); if (!V.fly) { const f = frameFor(S.mode ? MODES[S.mode].box : V.look || 'all'); camera.position.copy(f.p); controls.target.copy(f.t); controls.update(); setHome(f.t) }

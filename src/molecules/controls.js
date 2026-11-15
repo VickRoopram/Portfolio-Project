@@ -3,8 +3,8 @@ import * as THREE from 'three';
 import { S, V, hits, anim, CTRL, realCh, act } from '../core/state.js';
 import { CH, MODES } from '../core/data.js';
 import { P, PNAMES, ensureAudio, applyP, playNote } from '../core/audio.js';
-import { rbox, cyl, flat } from '../atoms/geometry.js';
-import { M, C, STEEL } from '../atoms/materials.js';
+import { rbox, flat } from '../atoms/geometry.js';
+import { M, C } from '../atoms/materials.js';
 import { printed, printedIcon } from '../atoms/labels.js';
 import { fxOf, pulse } from './fx.js';
 import { card, rnd, sketch, INK } from '../atoms/craft.js';
@@ -44,9 +44,6 @@ export function updateItemGlow(t) {
       mt.emissiveIntensity = e });
   }
 }
-/* the knob's wide lower disc: a second, bigger circle of card under the cap, cut by hand (so it has corners) */
-const DISC = card('kraft', '#e6c796');
-export function knurl(parent, r, h, y, proxy) { const k = cyl(r, r, h, DISC, 11); k.position.y = y; k.rotation.y = rnd(1); k.userData.proxy = proxy; parent.add(k); hits.push(k); return k }
 /* a fixing, drawn on in pencil (no real nails or pins on a paper model): a little circle with a cross in it */
 const PIN = canvasTex(64, 64, x => { x.strokeStyle = '#2a1b12'; x.lineWidth = 5; x.lineCap = 'round'; sketch(x, Array.from({ length: 13 }, (_, i) => [32 + Math.cos(i / 12 * 6.4) * 21, 32 + Math.sin(i / 12 * 6.4) * 21]), { jit: 1.2 });
   x.lineWidth = 4; sketch(x, [[20, 22], [44, 42]], { jit: 1 }); sketch(x, [[43, 21], [21, 43]], { jit: 1 }) }).t;
@@ -58,11 +55,7 @@ export function cap(w, d, r, label, { col = C.cap, ink, inkDark, size = 50, lw =
   const k = rbox(w, .1, d, .035, M(col, .5)), l = glyph ? printedIcon(glyph, lw, lh, ink, undefined, inkDark) : label && printed(label, lw, lh, ink, size, inkDark);
   if (l) { l.position.y = .051; l.rotation.z = rnd(.08, -.04); k.add(l) } return k;
 }
-/* a sound knob, made of card: a collar, a wide disc and a smaller cap (all cut by hand, so they have corners), a pin drawn in the middle and a red paper pointer. The big ones (size 'lg') aren't built at all: they're drawn on the card (drawnKnob). Drag up/down to set P[key]; click for a note.
-   sm and lg are the two sizes on the hardware: [ring grow top, bottom, height] · [cap height, y] · [knurl grow, height, y] · [indicator width, length/r, z/r] */
-const SIZE = { sm: { ring: [.1, .1, .05], cap: [.09, .185], kn: [.05, .09, .095], ind: [.05, .7, .5] },
-               lg: { ring: [.22, .22, .07], cap: [.12, .25], kn: [.09, .12, .13], ind: [.08, .586, .517] } };
-/* a big knob isn't a thing at all: it's drawn on the card. dialBase = what stays put (a ring, tick marks round its travel, drawn in pencil);
+/* a sound knob isn't a thing at all: it's drawn on the card. dialBase = what stays put (a ring, tick marks round its travel, drawn in pencil);
    dialTurn = what turns with the value (the knob's circle, a pointer, a few hatch lines). Both are white, tinted by their material:
    ink normally, red marker while you're on it (the organism sets cp.hot / reads V.drag: see updateSynth) */
 const dial = draw => canvasTex(320, 320, x => { x.translate(160, 160); x.strokeStyle = '#fff'; x.fillStyle = '#fff'; x.lineCap = x.lineJoin = 'round'; draw(x) }).t;
@@ -87,20 +80,8 @@ function drawnKnob(parent, pos, r, key, note, big) {
     down() { cp.hot = performance.now(); pulse(cp); ensureAudio(); if (note) playNote(...note) }, drag(d) { cp.hot = performance.now(); P[key] = Math.min(1, Math.max(0, P[key] + d / 180)); set(); applyP() } };
   return { g, rot, cp };
 }
-export function knob(parent, pos, r, key, size, note) {
-  return drawnKnob(parent, pos, r, key, note, size === 'lg'); // every knob on both synths is drawn on; the built card knob below is no longer used
-
-  const z = SIZE[size], g = new THREE.Group(), rot = new THREE.Group(); g.position.copy(pos); parent.add(g); g.add(rot);
-  const ring = cyl(r + z.ring[0], r + z.ring[1], z.ring[2], M(C.ring, .5), 13); ring.position.y = z.ring[2] / 2; ring.rotation.y = rnd(1); g.add(ring);
-  const cp = cyl(r, r, z.cap[0], STEEL.clone(), 12); cp.position.y = z.cap[1]; rot.add(cp); knurl(rot, r + z.kn[0], z.kn[1], z.kn[2], cp);
-  screw(rot, 0, z.cap[1] + z.cap[0] / 2 + .002, 0, r * .2); // the pin it turns on, drawn on
-  const ind = new THREE.Mesh(new THREE.BoxGeometry(z.ind[0], .02, r * z.ind[1]), M('#d2451e')); ind.position.set(0, z.cap[1] + z.cap[0] / 2 + .01, -r * z.ind[2] - r * .08); rot.add(ind);
-  ring.userData.proxy = ind.userData.proxy = cp; hits.push(ring, ind, cp); anim.push(rot); fxOf(cp);
-  const set = () => { rot.userData.r = (.5 - P[key]) * 4.4 }; set(); rot.rotation.y = rot.userData.r;
-  cp.userData = { tip: `${PNAMES[key]} · drag up or down`, live: () => `${PNAMES[key]} ${Math.round(P[key] * 100)}%`,
-    down() { pulse(cp); ensureAudio(); if (note) playNote(...note) }, drag(d) { P[key] = Math.min(1, Math.max(0, P[key] + d / 180)); set(); applyP() } };
-  return { g, rot, cp };
-}
+/* size 'lg' = the four sound knobs; anything else = the smaller detune and volume dials */
+export const knob = (parent, pos, r, key, size, note) => drawnKnob(parent, pos, r, key, note, size === 'lg');
 
 /* a button cut from thick grey board (you see its cut edge), roughly painted, with its name or icon lettered on the paint */
 const BOARD = card('dark', '#cdbba4', { bumpScale: .5 });

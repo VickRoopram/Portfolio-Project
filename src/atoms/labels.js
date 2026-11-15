@@ -6,7 +6,7 @@ import { flat } from './geometry.js';
 import { drawIcon } from './icons.js';
 import { INK } from './craft.js';
 
-const PRINT_TONE = { '#6b6e76': INK, '#7b7e86': INK, '#ff5d1a': '#d2451e' }; // legends are lettered by hand in ink (orange ones in red marker)
+const PRINT_TONE = { '#6b6e76': INK, '#7b7e86': INK }; // grey legends are lettered by hand in ink
 const mono = '400 SIZEpx "Londrina Solid", "Arial Narrow", sans-serif';
 /* hand lettering: each letter sits a little off the line and a little turned, and the word is gone over twice */
 function letter(x, text, cx, cy, size, track = 0) {

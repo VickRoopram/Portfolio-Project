@@ -11,7 +11,7 @@ import { RM, casing as remoteCasing } from './remote.js';
 scene.updateMatrixWorld(true);
 export const boxOf = objs => { const b = new THREE.Box3(); objs.forEach(o => b.expandByObject(o)); return b };
 export const GROUPS = {
-  contact: { obj: RM, box: boxOf([RM]), foot: boxOf([remoteCasing]), col: () => '#ff2020', go: () => act.zoomTo('cv') },
+  contact: { obj: RM, box: boxOf([RM]), foot: boxOf([remoteCasing]), col: () => '#e0301a', go: () => act.zoomTo('cv') },
   projects: { obj: synth, box: boxOf([synth]), foot: boxOf(synthCasing), col: () => MODES[S.kb]?.glow || '#00bfff', go: () => act.zoomTo(S.kb) },
 };
 const tmp = new THREE.Color();

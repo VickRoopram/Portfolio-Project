@@ -82,7 +82,7 @@ export function markerLoop(w, d, r = .3, width = .16) {
     pos.push(px + nx * (wob - wd / 2), 0, pz + nz * (wob - wd / 2), px + nx * (wob + wd / 2), 0, pz + nz * (wob + wd / 2)); A.push(u, u); E.push(0, 1);
     if (i < N) { const q = i * 2; idx.push(q, q + 1, q + 2, q + 1, q + 3, q + 2) } }
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('a', new THREE.Float32BufferAttribute(A, 1)); g.setAttribute('e', new THREE.Float32BufferAttribute(E, 1)); g.setIndex(idx);
-  const mt = onTop(new THREE.ShaderMaterial({ uniforms: { uK: { value: 0 }, uCol: { value: new THREE.Color('#d2451e') } }, transparent: true, depthWrite: false, side: THREE.DoubleSide,
+  const mt = onTop(new THREE.ShaderMaterial({ uniforms: { uK: { value: 0 }, uCol: { value: new THREE.Color('#e0301a') } }, transparent: true, depthWrite: false, side: THREE.DoubleSide,
     vertexShader: 'attribute float a;attribute float e;varying float vA;varying float vE;void main(){vA=a;vE=e;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
     fragmentShader: `uniform float uK;uniform vec3 uCol;varying float vA;varying float vE;
       void main(){ if(vA>uK) discard; float edge=smoothstep(0.,.18,vE)*smoothstep(1.,.82,vE);

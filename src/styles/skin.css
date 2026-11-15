@@ -3,16 +3,15 @@
    (assets/tex), ink outlines, hard cut-paper shadows, hand lettering. Movement is "on twos": every transition and animation
    is stepped, so it shows about 12 new pictures a second like the 3D scene (atoms/craft.js FPS), and the ink lines boil. ── */
 /* lettering, kept with the site (SIL Open Font Licence, assets/fonts/OFL-*.txt) so the canvas labels never wait on another server */
-@font-face{font-family:"Londrina Solid";font-weight:300;font-display:swap;src:url("../../assets/fonts/LondrinaSolid-Light.ttf") format("truetype")}
 @font-face{font-family:"Londrina Solid";font-weight:400;font-display:swap;src:url("../../assets/fonts/LondrinaSolid-Regular.ttf") format("truetype")}
 @font-face{font-family:"Londrina Solid";font-weight:900;font-display:swap;src:url("../../assets/fonts/LondrinaSolid-Black.ttf") format("truetype")}
 @font-face{font-family:"Patrick Hand";font-weight:400;font-display:swap;src:url("../../assets/fonts/PatrickHand-Regular.ttf") format("truetype")}
 
 :root{
   /* the room and the materials */
-  --floor:#24160f; --ink:#2a1b12; --cream:#fbf1dd; --kraft:#c9a06c; --kraft-dk:#7b5d45; --mute:#6f5846;
+  --floor:#0a1838; --ink:#2a1b12; --cream:#fbf1dd; --kraft:#c9a06c; --kraft-dk:#7b5d45; --mute:#6f5846;
   --card:#f3e8d2; --card2:#ecdcbd; --line:rgba(42,27,18,.35); --chip:#e6d3ae; --chip-ink:#2a1b12; --track:#5d4534; --shadow:rgba(12,6,3,.45);
-  --red:#d2451e; --blue:#2f9aa6; --glow:#d2451e; --accent-ui:#d2451e; --on-accent:#fff8ea; --stage-ink:#f4e6cc;
+  --red:#e0301a; --blue:#e0301a; --glow:#e0301a; --accent-ui:#e0301a; --accent:#e0301a; --on-accent:#fff8ea; --stage-ink:#f4e6cc;
   --paper:url("../../assets/tex/paper.jpg"); --crumpled:url("../../assets/tex/crumpled.jpg"); --kraft-tex:url("../../assets/tex/kraft.jpg");
   --kraft-dk-tex:url("../../assets/tex/kraft-dark.jpg"); --corr-tex:url("../../assets/tex/corrugated.jpg"); --wood-tex:url("../../assets/tex/wood.jpg");
   /* lettering: cut-paper capitals and a felt-tip hand */
@@ -28,7 +27,16 @@
   color-scheme:light;
 }
 *,*::before,*::after{transition-timing-function:var(--step)!important;animation-timing-function:var(--ease)!important}
-body{background:var(--floor);color:var(--stage-ink);font-size:var(--t-md)}
+body{background:linear-gradient(#060d24,#0a1838 30%,#102a5c 65%,#0d2150) fixed;color:var(--stage-ink);font-size:var(--t-md)}
+/* the pointer is a cardboard cut-out: an arrow, a pointing hand over anything you can press, an open hand where you can drag */
+:root{--cur-arrow:url("../../assets/ui/cursor/arrow.png") 3 2,auto;--cur-point:url("../../assets/ui/cursor/point.png") 12 2,pointer;--cur-grab:url("../../assets/ui/cursor/grab.png") 14 12,grab}
+@supports (cursor:image-set(url("a.png") 1x,url("b.png") 2x) 0 0,auto){:root{
+  --cur-arrow:image-set(url("../../assets/ui/cursor/arrow.png") 1x,url("../../assets/ui/cursor/arrow@2x.png") 2x) 3 2,auto;
+  --cur-point:image-set(url("../../assets/ui/cursor/point.png") 1x,url("../../assets/ui/cursor/point@2x.png") 2x) 12 2,pointer;
+  --cur-grab:image-set(url("../../assets/ui/cursor/grab.png") 1x,url("../../assets/ui/cursor/grab@2x.png") 2x) 14 12,grab}}
+html,body{cursor:var(--cur-arrow)}
+button,a,.ico,.cta,.pic,.m-row,.z-ico,.j-rot,#stage canvas[data-cur="point"],.in-go:disabled{cursor:var(--cur-point)}
+#stage canvas,#stage canvas[data-cur="grab"],.j-dial,.j-dial.on,.j-stick,.j-stick:active{cursor:var(--cur-grab)}
 button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offset:3px}
 /* the boiling ink line */
 .cta,.ico,.hd h2,.m-title,.box,#lbl,#toast,.tags span,#wire,.in-draw,.in-card h1,.z-ico,.ch button,.j-rot,.j-stick,.soc,.steps div{filter:url(#boil)}
@@ -141,7 +149,7 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
 .box:hover,.box:focus-visible{background:none}
 .box .in{position:absolute;inset:0;display:grid;place-items:center;border:var(--edge);border-radius:var(--cut-s);background:#3a281d var(--kraft-dk-tex);background-blend-mode:multiply;background-size:240px;box-shadow:inset 0 10px 0 rgba(0,0,0,.4),var(--drop);overflow:hidden}
 /* what's waiting inside: a slip of paper in the section's colour */
-.box .in::before{content:"";position:absolute;inset:22% 16% -20%;border:2px solid var(--ink);border-radius:3px;background:var(--c,var(--cream)) var(--paper);background-blend-mode:multiply;background-size:200px;rotate:-5deg}
+.box .in::before{content:"";position:absolute;inset:22% 16% -20%;border:2px solid var(--ink);border-radius:3px;background:var(--cream) var(--paper);background-blend-mode:multiply;background-size:200px;rotate:-5deg}
 .box .in .ic{position:relative;color:var(--ink);width:30px;height:30px}
 .box .fl{position:absolute;top:0;bottom:0;width:calc(50% + 1px);overflow:hidden;border:var(--edge);background:var(--kraft) var(--kraft-tex);background-size:300px;transition:transform .34s;backface-visibility:visible}
 .box .fl.l{left:0;transform-origin:left center;border-radius:7px 0 0 6px;background-position:0 0}
@@ -210,15 +218,24 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
 #zoom[data-edge="max"] .z-fill{animation:none}
 .z-ico.shake{animation-timing-function:steps(1,end)!important}
 
+/* Reset view: a paper tag that rises at the bottom middle once you've moved the camera (page/camera.js) */
+#reset{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 46px);z-index:5;translate:-50% 0;rotate:-1.5deg;animation:resetIn .3s backwards}
+#reset:hover{translate:calc(-50% - 1px) -3px}
+#reset:active{translate:calc(-50% + 1px) 3px}
+#reset.out{animation:resetOut .25s forwards}
+@keyframes resetIn{from{opacity:0;translate:-50% 40px;rotate:6deg}}
+@keyframes resetOut{to{opacity:0;translate:-50% 40px;rotate:6deg}}
+@media (max-width:760px){#reset{bottom:calc(env(safe-area-inset-bottom,0px) + 150px)}}
+
 /* lightbox: the print on the dark bench */
-#lb{background:rgba(24,14,9,.92)}
+#lb{background:rgba(6,13,36,.93)}
 #lb img{border:10px solid #fffaf0;border-radius:2px;box-shadow:0 0 0 2.5px var(--ink),10px 14px 0 rgba(0,0,0,.5);rotate:-.6deg}
 
 /* ── loader + intro: a sheet of paper on the workbench. The site is sketched on it in pencil, line by line, then coloured in ── */
-#loading{background:var(--floor)}
+#loading{background:linear-gradient(#060d24,#0a1838 30%,#102a5c 65%,#0d2150)}
 #loading span{padding:10px 18px 7px;border:var(--edge);border-radius:var(--cut-s);background:var(--cream) var(--paper);background-size:300px;box-shadow:var(--drop);color:var(--ink);font:400 var(--t-lg)/1 var(--display);letter-spacing:.06em;text-transform:uppercase;rotate:-2deg;animation:wobble .5s infinite}
 @keyframes wobble{0%{rotate:-2deg}50%{rotate:1.5deg}100%{rotate:-2deg}}
-#intro{padding:var(--s4);background:linear-gradient(rgba(22,12,8,.74),rgba(22,12,8,.82)),var(--floor) var(--wood-tex) center/900px;backdrop-filter:none;-webkit-backdrop-filter:none;transition:opacity .5s .25s,visibility .5s .25s;overflow:hidden}
+#intro{padding:var(--s4);background:linear-gradient(rgba(6,13,36,.8),rgba(10,24,56,.86)),var(--floor) var(--wood-tex) center/900px;backdrop-filter:none;-webkit-backdrop-filter:none;transition:opacity .5s .25s,visibility .5s .25s;overflow:hidden}
 .in-sheet{position:relative;width:min(700px,100%);max-height:100%;padding:clamp(18px,3.4vw,34px) clamp(16px,3.4vw,36px) clamp(20px,3vw,32px);display:grid;justify-items:center;gap:var(--s3);
   border-radius:3px 6px 4px 7px;background:var(--card) var(--crumpled) center/cover;color:var(--ink);box-shadow:0 0 0 2px rgba(42,27,18,.5),10px 14px 0 rgba(0,0,0,.42);rotate:-1.3deg;animation:sheetDown .5s backwards}
 @keyframes sheetDown{from{translate:0 -110vh;rotate:9deg}}
@@ -236,15 +253,14 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
 .in-draw .screen{fill:#3b2a1e;--w:.85}
 .in-draw .key{fill:#fffaf0;--w:.95}
 .in-draw .tab{fill:#fffaf0;--w:.95}
-.in-draw .t0{fill:#57c97a}.in-draw .t1{fill:#55b3ea}.in-draw .t2{fill:#f08a45}.in-draw .t3{fill:#b08cf0}.in-draw .t4{fill:#f07cc4}
-.in-draw .pad{fill:#3f9aa3;--w:.95}
+.in-draw .pad{fill:#2f7fd6;--w:.95}
 .in-draw .knob{fill:#f1e2c6;--w:.95}
 .in-draw .sharp{fill:#5a4033;--w:.95}
 .in-draw .lamp{fill:#fff0cf;--w:.95}
 .in-draw .pot{fill:#e9d4b0;--w:.95}
 .in-draw .leaf{fill:#7fb24a;--w:.95}
-.in-draw .ink2{stroke:#d2451e;stroke-width:2.4}
-.in-draw .cable{stroke:#d2451e;stroke-width:4.5}
+.in-draw .ink2{stroke:#e0301a;stroke-width:2.4}
+.in-draw .cable{stroke:#e0301a;stroke-width:4.5}
 .in-card{gap:var(--s3)}
 .in-card h1{font:900 var(--t-2xl)/.92 var(--display);letter-spacing:.01em;text-transform:uppercase;color:var(--ink)}
 .in-sub{margin:0 0 var(--s1);font:400 var(--t-lg)/1.25 var(--body);color:var(--ink);opacity:1}
