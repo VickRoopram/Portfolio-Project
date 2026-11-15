@@ -400,6 +400,14 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - **Where you are** (`organisms/menu.js`: `at()`, `isHere()`, class `here`): the box for the place you're in (Home on the overview; About / Contact on their cards; Projects and the section's own box inside a section) is shown already open and faded, and every box now has its name on the slip inside it (`.in-name`), which is what you read when it's open.
     - Files: `core/scene.js`, `organisms/desk.js`, `organisms/menu.js`, `styles/skin.css`.
 
+49. **15 Nov 2026: crates and cassette tapes in the menu; no shadows but the bench's** (Vick, with screenshots).
+    - **Crate** (`crate()` in `organisms/menu.js`, `.crate` in `skin.css`): opening Projects or a section turns that box into a big open crate round what was inside it: its name is lettered on the top flap, side flaps stand open, and the contents are packed inside, each a little off straight.
+    - **Cassette tapes** (`tape()`, `.m-row.tape`): a section's projects are cassettes, two across: the project's name on the label along the top, two reels in the window (they spin while you point at one or it's being plugged in). The index-card slips are gone. The hover preview, the cable to the synth and the journey are unchanged.
+    - **Hover is instant** in the menu (no transitions; boxes still fold open in steps on click). **The red dashed marker** now goes round whatever the pointer is over; it only follows keyboard focus after a Tab or arrow key in the menu (`#menu.kbd`), so it no longer sits on the first box when the menu opens.
+    - **Back** (`#m-back`, now `.pill`): a small kraft pill like the zoom guide, top left of the menu.
+    - **Shadows:** the only shadow on the ground is the bench's, a painted soft patch (`pool` in `core/scene.js`); the shadow-catching floor is gone, so legs, lamp and plant don't mark it. The interface throws no shadows at all (`--sh-s/-m/-l` are empty; the cursor images were redrawn without theirs). Things standing on the bench still shade the bench and mat under the spotlight.
+    - Files: `index.html`, `organisms/menu.js`, `core/scene.js`, `styles/skin.css`, `assets/ui/cursor/*`.
+
 
 ---
 

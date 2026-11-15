@@ -31,11 +31,10 @@ export const hemi = new THREE.HemisphereLight('#ffe9cf', '#3a281c', .36); scene.
 export const rim = new THREE.DirectionalLight('#cfe0ff', .16); rim.position.set(9, 6, -12); scene.add(rim);
 export const sun = new THREE.SpotLight('#fff1dc', 3.3, 0, .82, .78, 0); sun.position.set(-8.5, 27, -8); sun.target.position.copy(MAT_CENTRE); scene.add(sun.target); // decay 0: the pool's shape, not distance, sets the fall-off
 sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.focus = .72; sun.shadow.camera.near = 8; sun.shadow.camera.far = 70; sun.shadow.bias = -.0006; sun.shadow.normalBias = .03; scene.add(sun);
-/* the room floor under the desk, and a soft studio pool of light on it */
-export const floor = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.ShadowMaterial({ opacity: .4 }));
-floor.rotation.x = -Math.PI / 2; floor.position.y = -30.9; floor.receiveShadow = true; scene.add(floor);
-export const pool = new THREE.Mesh(new THREE.PlaneGeometry(64, 36), new THREE.MeshBasicMaterial({ color: '#3d291e', map: radialTex([[0, 1], [.55, .45], [1, 0]]), transparent: true, depthWrite: false, opacity: .8 }));
-pool.rotation.x = -Math.PI / 2; pool.position.set(-1.5, -30.87, -1.5); pool.renderOrder = -1; scene.add(pool);
+/* the ground: the only thing on it is the bench's own shadow, one soft patch under and a little forward-right of it (away from the light).
+   It's painted, not computed, so nothing else (legs, lamp, plant, the things on the bench) ever marks the floor */
+export const pool = new THREE.Mesh(new THREE.PlaneGeometry(62, 40), new THREE.MeshBasicMaterial({ color: '#0b0604', map: radialTex([[0, .85], [.45, .7], [.8, .2], [1, 0]]), transparent: true, depthWrite: false }));
+pool.rotation.x = -Math.PI / 2; pool.position.set(3.2, -30.87, 2.6); pool.renderOrder = -1; scene.add(pool);
 
 export const controls = new OrbitControls(camera, cv);
 Object.assign(controls, { enableDamping: true, dampingFactor: .06, enablePan: true, screenSpacePanning: false, zoomToCursor: false, rotateSpeed: .7, zoomSpeed: .9,

@@ -1,6 +1,6 @@
 /* Menu behind the burger: a tray of cardboard boxes, in the same spot as the detail card, so the synth stays visible and reachable.
    Point at a box and its flaps lift; click and they fold open. A box with more inside (Projects, a section) opens onto the next tray;
-   a project is an index card standing in its section's box. Picking a project, About or Contact runs a cable from it to its key
+   a section's projects are cassette tapes packed in its crate. Picking a project, About or Contact runs a cable from it to its key
    on the synth (#wire), then the journey starts.
    Root: MENU.items (default Home · About · Projects › · Contact; editable in /admin).
    Projects drills down to the five keyboard modes; a mode drills down to the projects on its keys.
@@ -33,7 +33,10 @@ const box = (attrs, t, n, c, here) => `<button class="m-row box${here ? ' here' 
    That box is shown already open and faded: you're in it */
 const at = () => S.card?.ch === 'ab' || S.mode === 'ab' ? 'about' : S.card?.ch === 'cv' || S.mode === 'cv' ? 'contact' : S.mode ? 'mode:' + S.mode : S.card ? 'mode:' + S.card.ch : 'home';
 const isHere = go => { const a = at(); return go === a || (go === 'projects' && a.startsWith('mode:') && PROJECT_MODES.some(([m]) => 'mode:' + m === a)) };
-const slip = (attrs, inner, n) => `<button class="m-row slip" ${attrs} style="--n:${n}">${inner}</button>`;
+/* a project is a cassette tape: its name written on the label along the top, two reels in the window underneath */
+const tape = (attrs, t, n) => `<button class="m-row tape" ${attrs} style="--n:${n}"><span class="lbl"><b>${t}</b></span><span class="win" aria-hidden="true"><i></i><i></i></span></button>`;
+/* the box you opened becomes a big crate round everything that was inside it: its name is lettered on the top flap */
+const crate = (name, inner, cls) => `<div class="crate"><p class="m-title crate-name">${name}</p><i class="cf l"></i><i class="cf r"></i><div class="m-list ${cls}">${inner}</div></div>`;
 function render() {
   const { k, ch, i } = level; let h = '';
   if (k === 'root') {
@@ -41,15 +44,14 @@ function render() {
       ? `<a class="m-row box" href="${esc(href || '#')}" target="_blank" rel="noopener" style="--n:${n}"><span class="in">${icon('external-link', 28)}</span>${flaps(esc(t))}</a>`
       : box(`data-go="${go}"${go === 'home' ? ' id="home"' : ''}`, esc(t), n, '', isHere(go))).join('')}</div>`;
   } else if (k === 'projects') {
-    h = `<p class="m-title">Projects</p><div class="m-list boxes">${PROJECT_MODES.map(([m, t], n) => CH[m] ? box(`data-mode="${m}"`, t, n, '', isHere('mode:' + m)) : '').join('')}</div>`;
+    h = crate('Projects', PROJECT_MODES.map(([m, t], n) => CH[m] ? box(`data-mode="${m}"`, t, n, '', isHere('mode:' + m)) : '').join(''), 'boxes');
   } else {
     const c = CH[ch]; let n = 0;
-    h = `<p class="m-title" style="--c:${c.col}">${LABEL[ch] || c.name}</p><div class="m-list slips" style="--c:${c.col}">${c.items.map((it, j) => isSlot(it) ? '' :
-      slip(`data-item="${j}"${j === i ? ' aria-current="true"' : ''}`, `<span class="tx"><b>${it.t}</b></span>${chev}`, n++)).join('')}</div>`;
+    h = crate(LABEL[ch] || c.name, c.items.map((it, j) => isSlot(it) ? '' : tape(`data-item="${j}"${j === i ? ' aria-current="true"' : ''}`, it.t, n++)).join(''), 'tapes');
   }
   head.hidden = k === 'root'; back.querySelector('span').textContent = k === 'mode' && !level.direct ? 'Projects' : 'Menu';
   body.innerHTML = h; body.scrollTop = 0; menu.dataset.level = k; syncHome(); hidePeek(); busy = false;
-  (body.querySelector('.slip[aria-current="true"]') || body.querySelector('.m-row:not(.here)') || body.querySelector('.m-row'))?.focus({ preventScroll: true });
+  (body.querySelector('.tape[aria-current="true"]') || body.querySelector('.m-row:not(.here)') || body.querySelector('.m-row'))?.focus({ preventScroll: true });
 }
 /* fold a box's flaps open, then carry on (three drawings later) */
 let busy = false;
@@ -84,6 +86,9 @@ function showPeek(b, x) {
   peek.style.transform = `translate(${left}px,${below ? r.bottom + 6 : r.top - 6 - PH}px)`; peek.style.setProperty('--c', CH[level.ch].col); peek.hidden = false;
 }
 function hidePeek() { peekRow = null; peek.hidden = true; peek.classList.remove('ok') }
+/* the dashed marker follows the pointer; it only follows keyboard focus once you've actually used the keyboard in the menu */
+menu.addEventListener('keydown', e => { if (['Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) menu.classList.add('kbd') });
+menu.addEventListener('pointermove', () => menu.classList.remove('kbd'), { passive: true });
 const syncHome = () => { $('home')?.setAttribute('data-at-home', String(!S.mode && !S.card)); // and keep the open box in step if the view changes while the menu is up
   body.querySelectorAll('.box[data-go],.box[data-mode]').forEach(b => { const h = isHere(b.dataset.go || 'mode:' + b.dataset.mode); b.classList.toggle('here', h); h ? b.setAttribute('aria-current', 'true') : b.removeAttribute('aria-current') }) };
 function show(k, ch, i, direct) { level = { k, ch, i, direct }; render() }
