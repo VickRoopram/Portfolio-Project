@@ -261,12 +261,12 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
 .z-ico.shake{animation-timing-function:steps(1,end)!important}
 
 /* Reset view: a secondary action, so it's a small plain tab of kraft card (the same card as the joystick beside it) with ink lettering,
-   not a red tag: it's there when you want it and doesn't compete with Contact. The home icon alone is red, and on hover a red
+   not a red tag: it's there when you want it and doesn't compete with Contact. The home icon is white, and on hover a red
    marker line is drawn under the words. It rises at the bottom middle once you've moved the camera (page/camera.js) */
 #reset{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 44px);z-index:5;min-height:34px;padding:2px 14px 0 11px;gap:7px;translate:-50% 0;rotate:-1deg;
   --face:var(--kraft);--tex:var(--kraft-tex);--shape:var(--cut-c);--at:-120px -30px;color:var(--ink);font:400 var(--t-md)/1 var(--display);letter-spacing:.05em;
   filter:url(#boil) drop-shadow(2px 3px 0 var(--shadow));animation:resetIn .3s backwards}
-#reset .ic{width:17px;height:17px;color:var(--red);stroke-width:2.6}
+#reset .ic{width:17px;height:17px;color:#fff;stroke-width:2.6}
 #reset span{background:linear-gradient(var(--red),var(--red)) left bottom/0 2.5px no-repeat;padding-bottom:2px;transition:background-size .25s}
 #reset:hover{translate:calc(-50% - 1px) -2px;rotate:.5deg;filter:url(#boil) drop-shadow(3px 5px 0 var(--shadow))}
 #reset:hover span{background-size:100% 2.5px}
