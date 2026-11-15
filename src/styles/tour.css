@@ -2,7 +2,8 @@
    Same rules as the rest of the skin: photo textures from the texture library, an ink line round every piece, no shadows, everything on twos. ── */
 
 /* the question mark: cut from kraft card, its corrugated edge showing down one side. Cream under the pointer, like every utility button */
-#help{position:fixed;z-index:5;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4));width:56px;height:74px;padding:0;border:0;background:none;rotate:-6deg;filter:url(#boil);transition:rotate .2s,translate .2s,scale .2s;transform-origin:50% 90%}
+/* it sits on the same line as the joystick and zoom guide, above the host's badge: its box is centred on theirs and then dropped 3px, because the hook makes it top-heavy; its inked edge (not its box) is as far from the left as the joystick is from the right */
+#help{position:fixed;z-index:5;left:max(14px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4) + var(--badge) + 16px);width:56px;height:74px;padding:0;border:0;background:none;rotate:-6deg;filter:url(#boil);transition:rotate .2s,translate .2s,scale .2s;transform-origin:50% 90%}
 #help svg{display:block;overflow:visible}
 #help>svg path{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .q-ink{stroke:var(--ink);stroke-width:22}
@@ -108,14 +109,14 @@ body[data-tour="on"] #tour-dim{opacity:1}
   .tv-say{--bub:polygon(8px 26px,calc(50% - 24px) 22px,calc(50% - 8px) 0,calc(50% + 12px) 23px,74% 21px,calc(100% - 9px) 23px,calc(100% - 1px) 31px,calc(100% - 3px) 60%,calc(100% - 1px) calc(100% - 10px),calc(100% - 10px) calc(100% - 2px),58% calc(100% - 4px),10px calc(100% - 1px),2px calc(100% - 9px),3px 58%,1px 34px);
     width:min(340px,calc(100vw - 24px));min-height:0;margin:-36px 0 0;padding:34px 16px 9px 18px;transform-origin:50% 0}
   #tour-h{font-size:26px}
-  #help{width:46px;height:61px}
+  #help{width:46px;height:61px;left:max(15px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4) + var(--badge) + 15px)}
   #help svg{width:46px;height:61px}
 }
 @media (orientation:landscape) and (max-height:520px){
   #tour{--tv:110px;flex-direction:row;align-items:flex-start}
   .tv-say{--bub:polygon(20px 5px,31% 1px,62% 4px,calc(100% - 9px) 2px,calc(100% - 1px) 10px,calc(100% - 3px) 52%,calc(100% - 1px) calc(100% - 10px),calc(100% - 10px) calc(100% - 2px),61% calc(100% - 4px),29px calc(100% - 1px),21px calc(100% - 9px),22px calc(var(--ty) + 15px),0 var(--ty),21px calc(var(--ty) - 17px),19px 24px);
     width:300px;min-height:calc(var(--ty) + 40px);margin:0 0 0 -4px;padding:10px 14px 7px 36px}
-  #help{bottom:calc(env(safe-area-inset-bottom,0px) + 8px)}
+  #help{bottom:calc(env(safe-area-inset-bottom,0px) + 14px)}
 }
 @media (prefers-reduced-motion:reduce){
   #help,#tour-ring,.tv,.tv-say{filter:none}

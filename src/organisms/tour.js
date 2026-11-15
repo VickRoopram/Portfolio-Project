@@ -177,9 +177,11 @@ const PEEP = `<span class="peep" aria-hidden="true"><svg viewBox="0 0 60 58"><de
   <circle cx="50" cy="24" r="2.6" fill="${CREAM}" stroke="${INK}" stroke-width="1.4"/><circle cx="50" cy="32" r="2.6" fill="${CREAM}" stroke="${INK}" stroke-width="1.4"/></svg></span>`;
 if (!reduceMotion) {
   help.insertAdjacentHTML('afterbegin', PEEP);
-  const peep = () => { if (open || document.hidden || getComputedStyle(help).visibility === 'hidden') return; help.classList.remove('peeping'); void help.offsetWidth; help.classList.add('peeping') };
+  /* the rule: once someone has opened the tour (met him), he never peeps again and the question mark stays still unless it's clicked */
+  const met = () => { try { return !!localStorage.getItem('vdc-tour') } catch { return false } };
+  const peep = () => { if (met() || open || document.hidden || getComputedStyle(help).visibility === 'hidden') return; help.classList.remove('peeping'); void help.offsetWidth; help.classList.add('peeping') };
   help.addEventListener('animationend', e => { if (e.animationName === 'peep') help.classList.remove('peeping') });
-  const later = () => setTimeout(() => { peep(); later() }, 14000 + Math.random() * 10000);
+  const later = () => setTimeout(() => { if (met()) return; peep(); later() }, 14000 + Math.random() * 10000);
   const wait = setInterval(() => { const it = $('intro'); if (it && !it.classList.contains('out')) return; // not until the paper intro has been whipped away
     clearInterval(wait); setTimeout(peep, 2200); setTimeout(peep, 6200); setTimeout(later, 6200) }, 400);
 }
