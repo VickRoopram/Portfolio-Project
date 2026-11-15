@@ -12,7 +12,7 @@ import { icon } from '../atoms/icons.js';
 const touch = matchMedia('(hover: none)').matches, click = touch ? 'Tap' : 'Click';
 /* what he says. h: three words at most · p: one or two lines · at: an element's id, or a thing on the bench (main.js spot) · wide: only where the whole bench is in view */
 const STEPS = [
-  { h: 'Hi, I’m Beep!', p: 'I live on Vick’s desk. Let me show you round his portfolio.', mood: 'happy' },
+  { h: 'Hi, I’m Bleep!', p: 'I live on Vick’s desk. Let me show you round his portfolio.', mood: 'happy' },
   { h: 'Play the synth', p: `${click} the synth to fly in. Every key opens one of Vick’s projects.`, at: 'synth' },
   { h: 'Around the desk', p: `Polaroids and notes show the person behind the work. ${click} one!`, at: 'desk', wide: true },
   { h: 'Look around', p: 'Drag to turn the desk, or steer with this dial.', at: '#joy' },
@@ -63,7 +63,7 @@ let el, say, hEl, pEl, pips, back, next, ring, dim, face, tvSvg, ringSize = '';
 const LOOP = [[52, 4], [24, 2, 4, 22, 5, 50], [6, 80, 28, 97, 52, 96], [80, 95, 97, 76, 95, 48], [93, 20, 72, 3, 44, 6], [36, 7, 30, 9, 26, 12]];
 const loop = (w, h) => LOOP.map((c, i) => (i ? 'C' : 'M') + c.map((v, k) => (v / 100 * (k % 2 ? h : w)).toFixed(1)).join(' ')).join('');
 function build() {
-  el = document.createElement('div'); el.id = 'tour'; el.hidden = true; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Site tour with Beep');
+  el = document.createElement('div'); el.id = 'tour'; el.hidden = true; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Site tour with Bleep');
   el.innerHTML = `<div class="tv-wrap">${TV}</div>
     <div class="tv-say"><i class="ply" aria-hidden="true"></i>
       <div class="say-in" aria-live="polite"><div class="say-top"><h2 id="tour-h"></h2><span class="pips" aria-hidden="true"></span></div><p id="tour-p"></p></div>
@@ -179,7 +179,7 @@ if (!reduceMotion) {
   help.insertAdjacentHTML('afterbegin', PEEP);
   const peep = () => { if (open || document.hidden || getComputedStyle(help).visibility === 'hidden') return; help.classList.remove('peeping'); void help.offsetWidth; help.classList.add('peeping') };
   help.addEventListener('animationend', e => { if (e.animationName === 'peep') help.classList.remove('peeping') });
-  const later = () => setTimeout(() => { peep(); later() }, 26000 + Math.random() * 20000);
+  const later = () => setTimeout(() => { peep(); later() }, 14000 + Math.random() * 10000);
   const wait = setInterval(() => { const it = $('intro'); if (it && !it.classList.contains('out')) return; // not until the paper intro has been whipped away
     clearInterval(wait); setTimeout(peep, 2200); setTimeout(peep, 6200); setTimeout(later, 6200) }, 400);
 }

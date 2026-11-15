@@ -23,13 +23,13 @@ body[data-card="true"] #help{visibility:hidden}
 @media (min-width:761px){body[data-card="true"] #help{visibility:visible}}
 
 /* Beep peeping out from behind the question mark (tour.js peep): up and out to the side, a look left and right, and back in */
-#help .peep{position:absolute;z-index:-1;left:50%;top:26%;width:50px;translate:-50% 0;scale:.2;opacity:0;pointer-events:none}
+#help .peep{position:absolute;z-index:-1;left:50%;top:22%;width:84px;translate:-50% 0;scale:.15;opacity:0;pointer-events:none;transform-origin:50% 100%}
 #help .peep svg{width:100%;height:auto}
-#help.peeping .peep{animation:peep 2.6s steps(3,end) both!important}
-#help.peeping .pe{animation:peepLook 2.6s steps(1,end) both!important}
-@keyframes peep{0%{translate:-50% 0;scale:.2;opacity:0;rotate:0deg}5%{opacity:1}16%{translate:8% -92%;scale:1;opacity:1;rotate:16deg}24%{translate:2% -80%;rotate:9deg}32%,78%{translate:6% -86%;scale:1;opacity:1;rotate:12deg}86%{translate:8% -96%;scale:1;opacity:1;rotate:16deg}100%{translate:-50% 0;scale:.2;opacity:0;rotate:0deg}}
+#help.peeping .peep{animation:peep 3.6s steps(3,end) both!important}
+#help.peeping .pe{animation:peepLook 3.6s steps(1,end) both!important}
+@keyframes peep{0%{translate:-50% 0;scale:.15;opacity:0;rotate:0deg}4%{opacity:1}12%{translate:-2% -112%;scale:1.12;opacity:1;rotate:18deg}18%{translate:-6% -96%;scale:1;rotate:6deg}26%{translate:-2% -104%;rotate:20deg}34%{rotate:2deg}42%{rotate:18deg}50%{rotate:4deg}58%,84%{translate:-4% -100%;scale:1;opacity:1;rotate:12deg}90%{translate:-2% -112%;scale:1.08;opacity:1;rotate:16deg}100%{translate:-50% 0;scale:.15;opacity:0;rotate:0deg}}
 @keyframes peepLook{0%{translate:0 0}34%{translate:-3px 0}50%{translate:3px 1px}64%{translate:0 0;scale:1 .15;transform-origin:50% 55%}70%{translate:0 0;scale:1}}
-@media (max-width:760px){#help .peep{width:42px}}
+@media (max-width:760px){#help .peep{width:66px}}
 
 /* the lights down: one box the size of what he's explaining, with a shadow that covers everything else. With nothing to point at it has no size, so it's dark all over */
 #tour-dim{position:fixed;z-index:23;left:50%;top:50%;width:0;height:0;pointer-events:none;border-radius:26px 20px 28px 22px / 22px 28px 20px 26px;box-shadow:0 0 0 200vmax rgba(18,10,6,.68);opacity:0;transition:opacity .3s,left .25s,top .25s,width .25s,height .25s}
