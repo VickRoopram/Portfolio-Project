@@ -94,11 +94,3 @@ export function markerLoop(w, d, r = .3, width = .16) {
   m.userData.at = k => { const i = Math.max(0, Math.min(N, Math.round(k * N))) * 6; return [(pos[i] + pos[i + 3]) / 2, (pos[i + 2] + pos[i + 5]) / 2] }; // where the line's end is at uK = k
   return m;
 }
-/* the rubber that wipes a marker line out: a drawn block eraser (cream, a red paper sleeve, one corner worn round), lying flat */
-export function eraser(w = 2.1) {
-  const t = canvas(192, 112, (x, W, H) => { x.lineJoin = 'round'; x.lineWidth = 7; x.strokeStyle = '#2a1b12';
-    const body = () => { x.beginPath(); x.moveTo(14, 16); x.lineTo(W - 40, 12); x.quadraticCurveTo(W - 10, 16, W - 12, 46); x.lineTo(W - 14, H - 16); x.lineTo(16, H - 12); x.closePath() };
-    body(); x.fillStyle = '#fbf1dd'; x.fill(); x.save(); body(); x.clip(); x.fillStyle = '#e0301a'; x.fillRect(0, 0, W * .52, H); x.fillStyle = 'rgba(42,27,18,.16)'; x.fillRect(0, H - 34, W, 34); x.restore(); body(); x.stroke();
-    x.lineWidth = 5; x.beginPath(); x.moveTo(W * .52, 14); x.lineTo(W * .52 + 3, H - 13); x.stroke(); x.strokeStyle = '#fbf1dd'; x.lineWidth = 6; x.lineCap = 'round'; x.beginPath(); x.moveTo(34, 44); x.lineTo(74, 42); x.moveTo(34, 64); x.lineTo(62, 63); x.stroke() });
-  const m = lay(w, w * 112 / 192, onTop(new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false }))); m.renderOrder = 3; m.visible = false; return m;
-}

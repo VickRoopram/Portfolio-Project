@@ -5,7 +5,8 @@ import * as THREE from 'three';
 import { S, V, reduceMotion, act } from '../core/state.js';
 import { MODES, onKeys } from '../core/data.js';
 import { scene } from '../core/scene.js';
-import { markerLoop, eraser } from '../atoms/craft.js';
+import { markerLoop } from '../atoms/craft.js';
+import { eraser } from '../molecules/eraser.js';
 import { synth, casing as synthCasing } from './synth.js';
 import { RM, casing as remoteCasing } from './remote.js';
 
@@ -41,7 +42,7 @@ export function updateUnderlights(dt, hoverGroup) {
     g.k = wipe ? Math.max(0, g.k - dt * .7) : g.k + (to - g.k) * ease; // drawn on fast; rubbed out slower and at a steady pace, so you see the eraser run back along the line
     g.rub.visible = wipe && g.k > .004;
     if (g.rub.visible) { const [x, z] = g.mesh.userData.at(g.k), [x1, z1] = g.mesh.userData.at(g.k - .01), scrub = Math.sin(performance.now() / 45); // it scrubs as it goes
-      g.rub.position.set(g.mesh.position.x + x, .13, g.mesh.position.z + z); g.rub.rotation.z = -Math.atan2(z1 - z, x1 - x) + Math.PI / 2 + scrub * .35 }
+      g.rub.position.set(g.mesh.position.x + x, .1, g.mesh.position.z + z); g.rub.rotation.y = -Math.atan2(z1 - z, x1 - x) + scrub * .3 }
     g.tint.lerp(tmp.set(g.col()), cEase); g.mat.uniforms.uCol.value.copy(g.tint);
     g.mat.uniforms.uK.value = g.k; g.mesh.visible = g.k > .004; // the line is drawn on round the device as you point at it, and rubbed out by the eraser as you leave
   }
