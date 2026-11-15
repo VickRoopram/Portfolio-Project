@@ -18,6 +18,8 @@ addEventListener('DOMContentLoaded',function(){var t=document.querySelector('#bo
 <link rel="preload" as="font" type="font/ttf" href="assets/fonts/LondrinaSolid-Regular.ttf" crossorigin>
 <link rel="preload" as="image" href="assets/tex/crumpled.jpg">
 <link rel="stylesheet" href="src/styles.css">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
 <body>
@@ -42,7 +44,7 @@ addEventListener('DOMContentLoaded',function(){var t=document.querySelector('#bo
   <div class="m-body" id="m-body"></div>
 </nav>
 <div id="toast" role="status" hidden></div>
-<button class="cta ghost sm" id="reset" hidden><i data-icon="home" data-size="18"></i><span>Reset view</span></button>
+<button class="pill" id="reset" hidden><i data-icon="home" data-size="18"></i><span>Reset view</span></button>
 <p id="legend"><span class="d-only">Drag to rotate · Right-drag to pan</span><span class="m-only">Drag to rotate</span></p>
 <div id="joy" role="group" aria-label="Move the view">
   <div class="j-dial" id="jdial" aria-hidden="true"><i class="j-north"></i></div>

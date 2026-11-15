@@ -36,7 +36,7 @@ const isHere = go => { const a = at(); return go === a || (go === 'projects' && 
 /* a project is a cassette tape: its name written on the label along the top, two reels in the window underneath */
 const tape = (attrs, t, n) => `<button class="m-row tape" ${attrs} style="--n:${n}"><span class="lbl"><b>${t}</b></span><span class="win" aria-hidden="true"><i></i><i></i></span></button>`;
 /* the box you opened becomes a big crate round everything that was inside it: its name is lettered on the top flap */
-const crate = (name, inner, cls) => `<div class="crate"><p class="m-title crate-name">${name}</p><i class="cf l"></i><i class="cf r"></i><div class="m-list ${cls}">${inner}</div></div>`;
+const crate = (name, inner, cls) => `<div class="crate"><p class="m-title crate-name">${name}</p><i class="cf l"></i><i class="cf r"></i><i class="cf b"></i><div class="m-list ${cls}">${inner}</div></div>`;
 function render() {
   const { k, ch, i } = level; let h = '';
   if (k === 'root') {

@@ -6,7 +6,7 @@
  */
 import * as THREE from 'three';
 import { S, anim, act } from './core/state.js';
-import { renderer, scene, camera, controls } from './core/scene.js';
+import { renderer, scene, camera, controls, sun } from './core/scene.js';
 import { updateFx } from './molecules/fx.js';
 import { updateItemGlow } from './molecules/controls.js';
 import { updateCables } from './molecules/cable.js';
@@ -42,6 +42,7 @@ function loop() {
      and the ink lines boil (are redrawn a touch different) on every second picture */
   if (now - drawn < 1000 / FPS - 3) return; drawn = now;
   if (++pictures % BOIL_EVERY === 0) boil();
+  if (pictures % 3 === 0) sun.shadow.needsUpdate = true; // shadows: four times a second is plenty
   renderer.render(scene, camera);
 }
 updateUI(); initIntro(swoopIn); loop();

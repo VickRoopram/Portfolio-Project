@@ -54,8 +54,12 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
 .cta{min-height:46px;padding:2px var(--s4) 0;color:var(--on-accent);
   font:400 var(--t-lg)/1 var(--display);letter-spacing:.04em;text-transform:uppercase;rotate:-1.2deg}
 .cta:nth-of-type(even){rotate:1deg}
-.cta:hover{translate:-2px -3px;rotate:.6deg}
-.cta:active{transform:none;translate:2px 3px}
+/* THE RULE FOR BUTTONS. Two kinds, and nothing else:
+   · the call to action (.cta: red or cream rough-cut card): pointing at it makes it step towards you: it moves up and grows. No glow, no shadow, no underline.
+   · everything else you press (.ico sound and menu, .pill back and reset, the zoom guide, the joystick's arrows, the card's ‹ › ×): kraft card that
+     turns cream when you point at it, and nudges. Nothing else changes. */
+.cta:hover{box-shadow:none;translate:-2px -4px;scale:1.07;rotate:.6deg}
+.cta:active{transform:none;translate:1px 2px;scale:.98}
 .cta.ghost{color:var(--red)}
 .cta.ghost:hover{background:none}
 .cta.sm{min-height:40px;font-size:var(--t-md)}
@@ -73,11 +77,9 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
   --cut-g:polygon(8.4px 0.6px,8.4% 1.6px,21.9% 1.6px,32.3% 1.2px,34.3% 6.4px,36.5% 1.0px,42.6% 1.2px,53.6% 0.0px,66.5% 1.9px,73.9% 0.4px,75.9% 4.9px,78.10000000000001% 1.0px,89.0% 1.6px,calc(100% - 6.1px) 2.0px,calc(100% - 1.0px) 6.1px,calc(100% - 3.4px) 38.2%,calc(100% - 3.0px) 71.9%,calc(100% - 6.0px) calc(100% - 6.4px),calc(100% - 6.4px) calc(100% - 0.3px),88.6% calc(100% - 1.6px),80.2% calc(100% - 1.0px),67.1% calc(100% - 2.3px),57.3% calc(100% - 2.5px),44.2% calc(100% - 1.7px),31.6% calc(100% - 1.9px),24.1% calc(100% - 1.7px),12.4% calc(100% - 0.6px),7.4px calc(100% - 2.3px),2.6px calc(100% - 7.4px),2.6px 67.1%,2.1px 31.2%,2.4px 8.4px);
   --scratch:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='130' fill='none' stroke-linecap='round'%3E%3Cpath d='M223 45Q245 58 260 80' stroke='%23fff' stroke-opacity='0.44' stroke-width='0.9'/%3E%3Cpath d='M87 102Q106 88 125 65' stroke='%232a1b12' stroke-opacity='0.33' stroke-width='1.4'/%3E%3Cpath d='M197 57Q225 56 251 59' stroke='%232a1b12' stroke-opacity='0.28' stroke-width='1.5'/%3E%3Cpath d='M234 27Q248 3 271 -9' stroke='%23fff' stroke-opacity='0.33' stroke-width='1.2'/%3E%3Cpath d='M11 119Q45 119 78 121' stroke='%23fff' stroke-opacity='0.49' stroke-width='1.6'/%3E%3Cpath d='M70 62Q89 74 109 98' stroke='%23fff' stroke-opacity='0.29' stroke-width='1.4'/%3E%3Cpath d='M254 5Q263 -8 281 -26' stroke='%232a1b12' stroke-opacity='0.23' stroke-width='1.2'/%3E%3Cpath d='M65 26Q94 56 121 78' stroke='%232a1b12' stroke-opacity='0.32' stroke-width='0.9'/%3E%3Cpath d='M56 71Q85 46 117 26' stroke='%232a1b12' stroke-opacity='0.40' stroke-width='0.9'/%3E%3Cpath d='M260 115Q282 130 293 143' stroke='%23fff' stroke-opacity='0.42' stroke-width='0.9'/%3E%3Cpath d='M163 104Q174 112 179 120' stroke='%23fff' stroke-opacity='0.41' stroke-width='0.9'/%3E%3Cpath d='M18 14Q32 -8 55 -21' stroke='%23fff' stroke-opacity='0.26' stroke-width='1.0'/%3E%3Cpath d='M175 75Q194 71 213 68' stroke='%23fff' stroke-opacity='0.39' stroke-width='0.7'/%3E%3Cpath d='M182 110Q208 142 243 168' stroke='%232a1b12' stroke-opacity='0.27' stroke-width='0.8'/%3E%3Cpath d='M219 114Q248 116 270 124' stroke='%232a1b12' stroke-opacity='0.40' stroke-width='1.4'/%3E%3Cpath d='M202 106Q215 90 236 81' stroke='%23fff' stroke-opacity='0.27' stroke-width='1.5'/%3E%3Cpath d='M78 13Q96 14 109 19' stroke='%232a1b12' stroke-opacity='0.35' stroke-width='1.3'/%3E%3Cpath d='M139 51Q170 86 199 116' stroke='%23fff' stroke-opacity='0.29' stroke-width='1.1'/%3E%3Cpath d='M13 25Q41 43 58 58' stroke='%23fff' stroke-opacity='0.50' stroke-width='1.3'/%3E%3Cpath d='M210 10Q236 11 254 12' stroke='%232a1b12' stroke-opacity='0.33' stroke-width='1.1'/%3E%3Cpath d='M129 37Q190 95 257 147' stroke='%232a1b12' stroke-opacity='0.27' stroke-width='0.7'/%3E%3Cpath d='M64 6Q127 78 179 140' stroke='%23fff' stroke-opacity='0.24' stroke-width='1.6'/%3E%3Cpath d='M112 62Q186 -8 250 -71' stroke='%23fff' stroke-opacity='0.42' stroke-width='0.8'/%3E%3Cpath d='M108 15Q164 62 221 115' stroke='%232a1b12' stroke-opacity='0.33' stroke-width='1.1'/%3E%3Cpath d='M202 69Q274 88 351 107' stroke='%23fff' stroke-opacity='0.46' stroke-width='1.0'/%3E%3Cpath d='M159 94Q228 106 285 107' stroke='%23fff' stroke-opacity='0.47' stroke-width='0.7'/%3E%3Cpath d='M25 40l11 -6' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M28 41l9 -6' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M31 43l9 -9' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M34 44l13 -6' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M161 51l12 -8' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M164 53l11 -5' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M167 54l15 -9' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M170 56l9 -5' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M160 95l10 -7' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M163 96l10 -5' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M166 98l11 -6' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M169 99l16 -7' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M142 92l15 -7' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M145 94l11 -9' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M148 95l15 -9' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M151 97l9 -6' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M126 85l10 -5' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M129 87l9 -8' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M132 88l13 -9' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M135 90l10 -5' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M177 41l9 -7' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M180 43l14 -7' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M183 44l9 -5' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M186 46l13 -4' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M236 110l12 -5' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M239 112l10 -7' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M242 113l11 -4' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M245 115l15 -8' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M97 50l11 -7' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M100 52l11 -8' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M103 53l13 -5' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M106 55l12 -5' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M145 29l14 -5' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M148 31l10 -9' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M151 32l12 -6' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3Cpath d='M154 34l13 -4' stroke='%23fff' stroke-opacity='.3' stroke-width='1'/%3E%3C/svg%3E");
 }
-.cta,.ch button,.m-title,.hd h2{position:relative;isolation:isolate;border:0;border-radius:0;background:none;box-shadow:none;filter:url(#boil) drop-shadow(var(--sh-m));--face:var(--red);--tex:var(--paper);--shape:var(--cut-a);--at:0 0}
+.cta,.ch button,.m-title,.hd h2{position:relative;isolation:isolate;border:0;border-radius:0;background:none;box-shadow:none;filter:url(#boil);--face:var(--red);--tex:var(--paper);--shape:var(--cut-a);--at:0 0}
 .cta::before,.ch button::before,.m-title::before,.hd h2::before{content:"";position:absolute;inset:0;z-index:-2;background:var(--ink);clip-path:var(--shape)}
 .cta::after,.ch button::after,.m-title::after,.hd h2::after{content:"";position:absolute;inset:2.5px;z-index:-1;background:var(--scratch) var(--at)/260px 130px,var(--face) var(--tex) var(--at)/300px;background-blend-mode:normal,multiply;clip-path:var(--shape)}
-.cta:hover,.ch button:hover{filter:url(#boil) drop-shadow(var(--sh-m))}
-.cta:active,.ch button:active{filter:url(#boil) drop-shadow(var(--sh-s))}
 .cta:nth-of-type(even){--shape:var(--cut-b);--at:-90px -40px}
 .cta.ghost{--face:var(--cream);--shape:var(--cut-c);--at:-40px -70px}
 .cta.ghost:nth-of-type(even){--shape:var(--cut-g);--at:-150px -20px}
@@ -126,7 +128,8 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
 .content,.m-body{scrollbar-width:thin;scrollbar-color:var(--kraft-dk) transparent}
 .ch{padding:var(--s3) var(--s3) var(--s1) var(--s4)}
 .ch button{width:38px;height:38px;color:var(--ink)}
-.ch button:hover{translate:-1px -2px;background:none}
+.ch button:hover{translate:-1px -2px;background:none;--face:var(--cream);--tex:var(--paper)}
+#cls:hover{--face:var(--red);scale:1.08}
 .ch button:active{transform:none;translate:1px 2px}
 #cls{color:var(--cream);rotate:6deg}
 .cf{background:none}
@@ -218,26 +221,43 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
 .crate{position:relative;margin:38px 14px 6px;padding:var(--s5) var(--s3) var(--s4);border:var(--edge);border-radius:var(--cut-s);background:#3a281d var(--kraft-dk-tex);background-blend-mode:multiply;background-size:240px;box-shadow:inset 0 10px 0 rgba(0,0,0,.4)}
 .crate .m-title.crate-name{position:absolute;left:-7px;right:-7px;top:-36px;margin:0;padding:9px var(--s4) 5px;rotate:0deg;font-size:var(--t-lg);color:#fff8ea;text-shadow:1.5px 2px 0 rgba(42,27,18,.55);
   --face:var(--kraft);--tex:var(--kraft-tex);--shape:polygon(14px 3px,30% 0,62% 2px,calc(100% - 16px) 1px,100% 100%,0 100%);filter:url(#boil)}
-.crate .cf{position:absolute;top:10px;bottom:10px;width:12px;border:var(--edge);background:var(--kraft) var(--kraft-tex);background-size:200px}
-.crate .cf.l{left:-13px;clip-path:polygon(0 9px,100% 0,100% 100%,0 calc(100% - 12px));border-right:0}
-.crate .cf.r{right:-13px;clip-path:polygon(0 0,100% 11px,100% calc(100% - 8px),0 100%);border-left:0}
+.crate{margin-bottom:36px}
+/* all four flaps are the same card as the one with the name on it */
+.crate .cf{position:absolute;border:var(--edge);background:var(--scratch) 0 0/260px 130px,var(--kraft) var(--kraft-tex) 0 0/300px;background-blend-mode:normal,multiply}
+.crate .cf.l,.crate .cf.r{top:10px;bottom:10px;width:13px}
+.crate .cf.l{left:-14px;clip-path:polygon(0 9px,100% 0,100% 100%,0 calc(100% - 12px));border-right:0}
+.crate .cf.r{right:-14px;clip-path:polygon(0 0,100% 11px,100% calc(100% - 8px),0 100%);border-left:0}
+.crate .cf.b{left:-7px;right:-7px;bottom:-30px;height:28px;clip-path:polygon(0 0,100% 0,calc(100% - 15px) calc(100% - 2px),64% 100%,28% calc(100% - 3px),13px 100%);border-top:0;background-position:-60px -40px,-60px -40px}
 .crate .m-list.boxes{padding:var(--s2) 0 0;gap:var(--s4) var(--s3)}
 .crate .box .fl b{font-size:clamp(17px,1.6vw,22px)}
 /* cassette tapes: a project each, its name on the label along the top, reels in the window; packed two across, none quite straight */
-.m-list.tapes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:112px;gap:var(--s4) var(--s3);padding:var(--s1) 2px}
-.m-row.tape{position:relative;display:grid;grid-template-rows:1fr auto;gap:5px;width:100%;height:112px;min-height:0;padding:6px 7px 9px;border:var(--edge);border-radius:6px 5px 7px 5px;background:#4a372a var(--kraft-dk-tex);background-size:220px;color:var(--ink);
+.m-list.tapes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:118px;gap:var(--s4) var(--s3);padding:var(--s1) 2px}
+.m-row.tape{position:relative;display:grid;grid-template-rows:1fr auto;gap:6px;width:100%;height:118px;min-height:0;padding:8px 9px 13px;border:var(--edge);border-radius:7px 6px 8px 6px;color:var(--ink);
+  /* moulded plastic: a sheen across the top-left, a darker foot, a raised rim just inside the edge */
+  background:linear-gradient(115deg,rgba(255,255,255,.2) 0,rgba(255,255,255,.05) 22%,transparent 38%,transparent 72%,rgba(0,0,0,.22) 100%),linear-gradient(#55463c,#3b302a 62%,#2e2520);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.1),inset 0 0 0 4px rgba(0,0,0,.22),inset 0 -9px 10px -6px rgba(0,0,0,.5);
   animation:slipIn .3s backwards;animation-delay:calc(var(--n,0) * 40ms);rotate:var(--tilt,0deg);transition:none}
 .m-row.tape:nth-child(4n+1){--tilt:-1.4deg}.m-row.tape:nth-child(4n+2){--tilt:1deg}.m-row.tape:nth-child(4n+3){--tilt:1.6deg}.m-row.tape:nth-child(4n){--tilt:-.8deg}
 @keyframes slipIn{from{opacity:0;translate:0 -22px}}
-.tape .lbl{display:grid;place-items:center;padding:3px 6px 2px;border:2px solid var(--ink);border-radius:3px;background:linear-gradient(transparent calc(100% - 7px),var(--red) calc(100% - 7px),var(--red) calc(100% - 3px),transparent calc(100% - 3px)),var(--cream) var(--paper);background-size:auto,260px;overflow:hidden}
-.tape .lbl b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;padding-bottom:6px;text-align:center;font:400 clamp(13px,1.15vw,16px)/1 var(--body);color:var(--ink)}
-.tape .win{justify-self:center;display:flex;align-items:center;justify-content:space-between;width:62%;height:22px;padding:0 6px;border:2px solid var(--ink);border-radius:11px;background:#2a1b12}
-.tape .win i{width:14px;height:14px;border-radius:50%;border:3px dotted var(--cream);background:#6b5443}
-.tape::after{content:"";position:absolute;left:22%;right:22%;bottom:-2.5px;height:7px;border:2px solid var(--ink);border-bottom:0;background:#3a281d;clip-path:polygon(8% 0,92% 0,100% 100%,0 100%)}
-.m-row.tape:hover,.m-row.tape:focus-visible{background:#5a4434 var(--kraft-dk-tex);background-size:220px;translate:0 -3px;rotate:calc(var(--tilt,0deg) * -1.4)}
+/* four screws, one in each corner of the shell */
+.m-row.tape::before{content:"";position:absolute;inset:5px;pointer-events:none;background:radial-gradient(circle,#191310 0 1.6px,#8d7c6e 1.7px 2.9px,transparent 3px) 0 0/8px 8px no-repeat,radial-gradient(circle,#191310 0 1.6px,#8d7c6e 1.7px 2.9px,transparent 3px) 100% 0/8px 8px no-repeat,
+  radial-gradient(circle,#191310 0 1.6px,#8d7c6e 1.7px 2.9px,transparent 3px) 0 100%/8px 8px no-repeat,radial-gradient(circle,#191310 0 1.6px,#8d7c6e 1.7px 2.9px,transparent 3px) 100% 100%/8px 8px no-repeat}
+/* the label: a slip of real paper stuck on by hand: ruled, a red band along the foot, edges not quite cut square, the name in felt-tip */
+.tape .lbl{position:relative;display:grid;place-items:center;margin:0 9px;padding:4px 7px 3px;border:1.5px solid rgba(42,27,18,.55);border-radius:2px 4px 3px 5px / 4px 2px 5px 3px;rotate:-.8deg;overflow:hidden;
+  background:linear-gradient(transparent calc(100% - 9px),var(--red) calc(100% - 9px),var(--red) calc(100% - 4px),transparent calc(100% - 4px)),repeating-linear-gradient(transparent 0 15px,rgba(64,118,170,.28) 15px 16px),#fbf3e2 var(--paper);background-size:auto,auto,240px;background-blend-mode:normal,normal,multiply}
+.m-row.tape:nth-child(odd) .lbl{rotate:.7deg}
+.tape .lbl b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;padding-bottom:8px;text-align:center;font:400 clamp(13px,1.15vw,16px)/1 var(--body);color:var(--ink)}
+/* the window: smoky clear plastic over the two spools of tape and their toothed hubs */
+.tape .win{position:relative;justify-self:center;display:flex;align-items:center;justify-content:space-between;width:66%;height:26px;padding:0 5px;border:2px solid var(--ink);border-radius:13px;
+  background:linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,0) 45%),radial-gradient(circle at 13px 50%,#7a5a3c 0 12px,transparent 12.5px),radial-gradient(circle at calc(100% - 13px) 50%,#7a5a3c 0 9px,transparent 9.5px),#17100c;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.12)}
+.tape .win i{position:relative;width:16px;height:16px;border-radius:50%;border:3px dotted #f4ead6;background:radial-gradient(circle,#17100c 0 2.5px,#cfc3ae 3px 5px,#4b3a2e 5.5px)}
+/* the foot: the raised trapezoid with the head openings */
+.tape::after{content:"";position:absolute;left:18%;right:18%;bottom:-2.5px;height:9px;border:2px solid var(--ink);border-bottom:0;clip-path:polygon(7% 0,93% 0,100% 100%,0 100%);
+  background:radial-gradient(circle,#120d0a 0 1.6px,transparent 2px) 22% 60%/7px 7px no-repeat,radial-gradient(circle,#120d0a 0 1.6px,transparent 2px) 78% 60%/7px 7px no-repeat,radial-gradient(circle,#120d0a 0 2px,transparent 2.4px) 50% 60%/8px 8px no-repeat,linear-gradient(#4a3c33,#2c231e)}
+.m-row.tape:hover,.m-row.tape:focus-visible{translate:0 -3px;rotate:calc(var(--tilt,0deg) * -1.4);filter:brightness(1.12)}
 .tape:hover .win i{animation:reel .5s infinite linear}
 @keyframes reel{to{rotate:1turn}}
-.m-row.tape[aria-current="true"] .lbl{background:linear-gradient(transparent calc(100% - 7px),var(--red) calc(100% - 7px),var(--red) calc(100% - 3px),transparent calc(100% - 3px)),color-mix(in srgb,var(--red) 22%,#fffaf0) var(--paper)}
+.m-row.tape[aria-current="true"] .lbl{background-color:color-mix(in srgb,var(--red) 24%,#fbf3e2)}
 .m-row.tape.plugged{translate:-6px -4px;rotate:-3deg}
 .m-row.tape.plugged .win i{animation:reel .5s infinite linear}
 /* in the menu, pointing at something answers at once: no easing in (boxes still fold open in steps when you click them) */
@@ -293,17 +313,13 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
 #zoom[data-edge="max"] .z-fill{animation:none}
 .z-ico.shake{animation-timing-function:steps(1,end)!important}
 
-/* Reset view: a secondary action, so it's a small plain tab of kraft card (the same card as the joystick beside it) with ink lettering,
-   not a red tag: it's there when you want it and doesn't compete with Contact. The home icon is white, and on hover a red
-   marker line is drawn under the words. It rises at the bottom middle once you've moved the camera (page/camera.js) */
-#reset{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 44px);z-index:5;min-height:34px;padding:2px 14px 0 11px;gap:7px;translate:-50% 0;rotate:-1deg;
-  --face:var(--kraft);--tex:var(--kraft-tex);--shape:var(--cut-c);--at:-120px -30px;color:var(--ink);font:400 var(--t-md)/1 var(--display);letter-spacing:.05em;
-  filter:url(#boil) drop-shadow(var(--sh-s));animation:resetIn .3s backwards}
+/* Reset view: a utility button like sound, menu and the navigation: the same kraft pill, cream when pointed at. It rises at the
+   bottom middle once you've moved the camera (page/camera.js) */
+#reset{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 44px);z-index:5;translate:-50% 0;animation:resetIn .3s backwards}
 #reset .ic{width:17px;height:17px;color:#fff;stroke-width:2.6}
-#reset span{background:linear-gradient(var(--red),var(--red)) left bottom/0 2.5px no-repeat;padding-bottom:2px;transition:background-size .25s}
-#reset:hover{translate:calc(-50% - 1px) -2px;rotate:.5deg;filter:url(#boil) drop-shadow(var(--sh-m))}
-#reset:hover span{background-size:100% 2.5px}
-#reset:active{translate:calc(-50% + 1px) 2px;filter:url(#boil) drop-shadow(var(--sh-s))}
+#reset:hover{translate:-50% -2px}
+#reset:hover .ic{color:var(--ink)}
+#reset:active{translate:-50% 1px}
 #reset.out{animation:resetOut .25s forwards}
 @keyframes resetIn{from{opacity:0;translate:-50% 40px;rotate:6deg}}
 @keyframes resetOut{to{opacity:0;translate:-50% 40px;rotate:6deg}}
@@ -357,9 +373,33 @@ button:focus-visible,a:focus-visible{outline:3px dashed var(--blue);outline-offs
   .in-draw{max-height:30vh}
   .box .fl b{font-size:20px}
 }
+/* ── a phone on its side (short and wide): the sheet, the card and the menu use the full height at the right, over the controls;
+   the intro puts the sketch beside the words so the button is always on screen ── */
+@media (orientation:landscape) and (max-height:520px){
+  #intro{padding:8px}
+  .in-sheet{grid-template-columns:minmax(0,.9fr) minmax(0,1fr);align-items:center;justify-items:stretch;gap:var(--s4);width:min(760px,100%);padding:14px 20px;rotate:-.6deg}
+  .in-draw{max-height:calc(100dvh - 60px)}
+  .in-card{gap:var(--s2);justify-items:start;text-align:left}
+  .in-card h1{font-size:clamp(30px,6.2vw,48px)}
+  .in-sub{font-size:var(--t-md);margin:0}
+  .in-go{min-height:44px;font-size:var(--t-lg)}
+  #card,#menu{z-index:8;top:calc(env(safe-area-inset-top,0px) + var(--hdr-h) + 4px)!important;bottom:calc(env(safe-area-inset-bottom,0px) + 8px)!important;right:max(8px,env(safe-area-inset-right,0px));left:auto;width:min(48vw,430px);height:auto;max-height:none!important;rotate:0deg}
+  .ch{padding:6px 8px 2px}
+  .content{padding:var(--s3) var(--s3) var(--s4)}
+  .cf{padding:6px 8px}
+  .cf .cta{min-height:36px;font-size:var(--t-md)}
+  .crate{margin-top:34px}
+  #joy{scale:.82;transform-origin:100% 100%;bottom:calc(env(safe-area-inset-bottom,0px) + 8px)}
+  #zoom{scale:.82;transform-origin:100% 100%;bottom:calc(env(safe-area-inset-bottom,0px) + 30px)}
+  #legend{display:none}
+  #reset{bottom:calc(env(safe-area-inset-bottom,0px) + 10px)}
+  #m-peek{display:none}
+}
+/* touch screens: the hover preview has nothing to hover with */
+@media (hover:none){#m-peek{display:none!important}}
 @media (prefers-reduced-motion:reduce){
   .cta,.ico,.hd h2,.m-title,.box,#lbl,#toast,.tags span,#wire,.in-draw,.in-card h1,.z-ico,.ch button,.j-rot,.j-stick,.soc,.steps div{filter:none}
-  .cta,.ch button,.m-title,.hd h2{filter:drop-shadow(var(--sh-m))}
+  .cta,.ch button,.m-title,.hd h2{filter:none}
   .in-draw .d{animation:none;stroke-dashoffset:0;fill-opacity:var(--w,0)}
   .leaf,.box,.m-row.slip,.in-sheet,#intro.out .in-sheet,#loading span,#wire.on path,#wire.on .w-plug,.box .fl{animation:none;transition:none}
   #wire.on path{stroke-dashoffset:0}#wire.on .w-plug{opacity:1}

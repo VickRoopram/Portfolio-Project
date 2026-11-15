@@ -408,6 +408,16 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - **Shadows:** the only shadow on the ground is the bench's, a painted soft patch (`pool` in `core/scene.js`); the shadow-catching floor is gone, so legs, lamp and plant don't mark it. The interface throws no shadows at all (`--sh-s/-m/-l` are empty; the cursor images were redrawn without theirs). Things standing on the bench still shade the bench and mat under the spotlight.
     - Files: `index.html`, `organisms/menu.js`, `core/scene.js`, `styles/skin.css`, `assets/ui/cursor/*`.
 
+50. **15 Nov 2026: one rule for buttons, crate flaps, better cassettes, a chain-of-boxes lead, lighter load, phone landscape** (Vick, with screenshots).
+    - **Button rule** (written above `.cta:hover` in `skin.css`): two kinds only. The call to action (`.cta`) steps towards you on hover (moves up, scales 1.07): no glow, shadow or underline (the base `.cta:hover` glow is overridden). Everything else you press (`.ico`, `.pill`, zoom guide, joystick arrows, the card's ‹ › ×) is kraft card that turns cream. **Reset view** is now a `.pill` like the menu's Back; its red hover underline is gone.
+    - **Crates:** a bottom flap (`.cf.b`) joins the top and side flaps, all four in the same scratched kraft card.
+    - **Cassettes:** moulded-plastic shells (sheen, rim, four screws, foot with head openings, smoky window with two spools and toothed hubs) and paper labels (ruled, red band, slightly crooked). Animations unchanged.
+    - **The remote's lead** (`molecules/cable.js`): 26 small orange-painted card boxes with ink outlines, taped at every joint, following the same loose and plugged-in routes and easing between them as the cord did (three `InstancedMesh`es, rebuilt only while it moves); it rides on top of the mat. The end box is the plug.
+    - **Load:** `three` is preconnected and module-preloaded; five textures recompressed (assets/tex 1.68 MB → 1.46 MB); on touch devices the canvas draws at up to 1.5× (was 2×) with a 1024 shadow map; the shadow map is redrawn every third picture instead of every one.
+    - **Phone on its side** (`@media (orientation:landscape) and (max-height:520px)`): the intro puts the sketch beside the words so Enter is always on screen; the card and menu take the full height at the right; joystick and zoom guide are smaller; the legend is hidden. The hover preview is off on touch screens. Portrait was reviewed and left as it was.
+    - A slip to know about: appending a `//` comment mid-line in `core/scene.js` commented out `scene.add(sun)` during this pass (caught in test renders, fixed before push). Keep comments on that line as `/* */`.
+    - Files: `index.html`, `core/scene.js`, `main.js`, `molecules/cable.js`, `organisms/menu.js`, `styles/skin.css`, `assets/tex/*`.
+
 
 ---
 
