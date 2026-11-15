@@ -4,7 +4,7 @@
 /* the question mark: cut from kraft card, its corrugated edge showing down one side. Cream under the pointer, like every utility button */
 #help{position:fixed;z-index:5;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4));width:56px;height:74px;padding:0;border:0;background:none;rotate:-6deg;filter:url(#boil);transition:rotate .2s,translate .2s,scale .2s;transform-origin:50% 90%}
 #help svg{display:block;overflow:visible}
-#help path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+#help>svg path{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .q-ink{stroke:var(--ink);stroke-width:22}
 .q-ink-dot{fill:var(--ink)}
 .q-edge{stroke:url(#qEdge);stroke-width:17}
@@ -21,6 +21,19 @@
 @keyframes qHop{0%,78%,100%{translate:0 0;rotate:-6deg}84%{translate:0 -12px;rotate:7deg}90%{translate:0 0;rotate:-10deg}95%{translate:0 -5px;rotate:3deg}}
 body[data-card="true"] #help{visibility:hidden}
 @media (min-width:761px){body[data-card="true"] #help{visibility:visible}}
+
+/* Beep peeping out from behind the question mark (tour.js peep): up and out to the side, a look left and right, and back in */
+#help .peep{position:absolute;z-index:-1;left:50%;top:26%;width:50px;translate:-50% 0;scale:.2;opacity:0;pointer-events:none}
+#help .peep svg{width:100%;height:auto}
+#help.peeping .peep{animation:peep 2.6s steps(3,end) both!important}
+#help.peeping .pe{animation:peepLook 2.6s steps(1,end) both!important}
+@keyframes peep{0%{translate:-50% 0;scale:.2;opacity:0;rotate:0deg}5%{opacity:1}16%{translate:8% -92%;scale:1;opacity:1;rotate:16deg}24%{translate:2% -80%;rotate:9deg}32%,78%{translate:6% -86%;scale:1;opacity:1;rotate:12deg}86%{translate:8% -96%;scale:1;opacity:1;rotate:16deg}100%{translate:-50% 0;scale:.2;opacity:0;rotate:0deg}}
+@keyframes peepLook{0%{translate:0 0}34%{translate:-3px 0}50%{translate:3px 1px}64%{translate:0 0;scale:1 .15;transform-origin:50% 55%}70%{translate:0 0;scale:1}}
+@media (max-width:760px){#help .peep{width:42px}}
+
+/* the lights down: one box the size of what he's explaining, with a shadow that covers everything else. With nothing to point at it has no size, so it's dark all over */
+#tour-dim{position:fixed;z-index:23;left:50%;top:50%;width:0;height:0;pointer-events:none;border-radius:26px 20px 28px 22px / 22px 28px 20px 26px;box-shadow:0 0 0 200vmax rgba(18,10,6,.68);opacity:0;transition:opacity .3s,left .25s,top .25s,width .25s,height .25s}
+body[data-tour="on"] #tour-dim{opacity:1}
 
 /* the felt-tip ring round whatever he's talking about */
 #tour-ring{position:fixed;z-index:24;pointer-events:none;filter:url(#boil)}
@@ -107,5 +120,5 @@ body[data-card="true"] #help{visibility:hidden}
 @media (prefers-reduced-motion:reduce){
   #help,#tour-ring,.tv,.tv-say{filter:none}
   #help.nudge,#tour,#tour.out,.tv-wrap,.tv-cord,.tv-led,.tv-lines,.tv.pop .tv-ant,.tv-say.pop,#tour-ring.pop path{animation:none!important}
-  #tour{transition:none}
+  #tour,#tour-dim{transition:none}
 }

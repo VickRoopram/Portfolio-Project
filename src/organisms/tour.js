@@ -58,7 +58,7 @@ const TV = `<svg class="tv" viewBox="0 0 200 204" aria-hidden="true" focusable="
 </svg>`;
 
 /* built once, on the first click */
-let el, say, hEl, pEl, pips, back, next, ring, face, tvSvg, ringSize = '';
+let el, say, hEl, pEl, pips, back, next, ring, dim, face, tvSvg, ringSize = '';
 /* the loop, on a 100 × 100 square; stretched to whatever it goes round */
 const LOOP = [[52, 4], [24, 2, 4, 22, 5, 50], [6, 80, 28, 97, 52, 96], [80, 95, 97, 76, 95, 48], [93, 20, 72, 3, 44, 6], [36, 7, 30, 9, 26, 12]];
 const loop = (w, h) => LOOP.map((c, i) => (i ? 'C' : 'M') + c.map((v, k) => (v / 100 * (k % 2 ? h : w)).toFixed(1)).join(' ')).join('');
@@ -73,7 +73,9 @@ function build() {
   /* the felt-tip ring round what he's talking about: one wobbly loop that overshoots where it started, like the marker lines on the bench */
   ring = document.createElement('div'); ring.id = 'tour-ring'; ring.hidden = true; ring.setAttribute('aria-hidden', 'true');
   ring.innerHTML = '<svg><path pathLength="1"/></svg>';
-  document.body.append(ring, el);
+  /* the lights go down while he talks: everything dims except the thing he's explaining (a hole in the dark, where the ring is) and Beep himself */
+  dim = document.createElement('div'); dim.id = 'tour-dim'; dim.setAttribute('aria-hidden', 'true');
+  document.body.append(dim, ring, el);
   say = el.querySelector('.tv-say'); hEl = $('tour-h'); pEl = $('tour-p'); pips = el.querySelector('.pips'); back = $('tour-back'); next = $('tour-next');
   tvSvg = el.querySelector('.tv'); face = el.querySelector('.tv-face');
   back.onclick = () => go(at - 1); next.onclick = () => go(at + 1); $('tour-skip').onclick = () => close();
@@ -108,7 +110,9 @@ function place(force) {
   if (!T) el.classList.remove('flip');
   const key = `${Math.round(x)},${Math.round(y)}`; if (key !== placed || force) { placed = key; el.style.left = Math.round(x) + 'px'; el.style.top = Math.round(y) + 'px' }
   if (T) { const rw = Math.round(T.r - T.l), rh = Math.round(T.b - T.t); ring.hidden = false; Object.assign(ring.style, { left: T.l + 'px', top: T.t + 'px', width: rw + 'px', height: rh + 'px' });
-    if (ringSize !== rw + 'x' + rh) { ringSize = rw + 'x' + rh; ring.querySelector('path').setAttribute('d', loop(rw, rh)) } } else ring.hidden = true;
+    if (ringSize !== rw + 'x' + rh) { ringSize = rw + 'x' + rh; ring.querySelector('path').setAttribute('d', loop(rw, rh)) }
+    Object.assign(dim.style, { left: T.l - 8 + 'px', top: T.t - 8 + 'px', width: rw + 16 + 'px', height: rh + 16 + 'px' });
+  } else { ring.hidden = true; Object.assign(dim.style, { left: w / 2 + 'px', top: h / 2 + 'px', width: '0px', height: '0px' }) } // nothing to point at: dark all over
   return T;
 }
 const setEyes = k => { if (tvSvg.dataset.eyes !== k) tvSvg.dataset.eyes = k }, setMouth = k => { if (tvSvg.dataset.m !== k) tvSvg.dataset.m = k };
@@ -143,7 +147,7 @@ function start() {
   if (!el) build(); ensureAudio();
   if (S.menu) act.closeMenu?.(); if (S.mode || S.card || V.look) act.zoomOut?.(); // back to the whole bench, so everything he points at is in view
   steps = STEPS.filter(s => !(s.wide && !desktop()) && !(s.at?.[0] === '#' && !visible(s.at)));
-  open = true; el.hidden = false; el.classList.remove('out'); help.setAttribute('aria-expanded', 'true'); help.classList.remove('nudge'); document.body.dataset.tour = 'on';
+  open = true; el.hidden = false; el.classList.remove('out'); help.setAttribute('aria-expanded', 'true'); help.classList.remove('nudge', 'peeping'); document.body.dataset.tour = 'on';
   try { localStorage.setItem('vdc-tour', '1') } catch {}
   tick = 0; blinkAt = 30; go(0); clearInterval(timer); timer = setInterval(draw, 1000 / 12); next.focus({ preventScroll: true });
 }
@@ -162,3 +166,20 @@ addEventListener('keydown', e => {
 }, { capture: true });
 /* until it's been used once, the question mark hops now and then to say it's there */
 try { if (!localStorage.getItem('vdc-tour')) help.classList.add('nudge') } catch { help.classList.add('nudge') }
+
+/* Beep peeps out from behind the question mark and ducks back in: twice soon after you arrive (to say "play with me first"), then once in a while */
+const PEEP = `<span class="peep" aria-hidden="true"><svg viewBox="0 0 60 58"><defs><pattern id="pWood" patternUnits="userSpaceOnUse" width="80" height="80"><image href="assets/tex/wood.jpg" width="80" height="80"/></pattern></defs>
+  <g fill="none" stroke="${INK}" stroke-linecap="round"><path d="M26 16L17 4M33 16L44 3" stroke-width="4"/><path d="M26 16L17 4M33 16L44 3" stroke="#c9a06c" stroke-width="1.6"/><circle cx="17" cy="4" r="2.6" fill="${CREAM}" stroke-width="1.6"/><circle cx="44" cy="3" r="2.6" fill="${RED}" stroke-width="1.6"/></g>
+  <path d="M6 18Q5 14 10 14L50 13Q55 13 55 18L56 50Q56 55 51 55L10 56Q5 56 5 51Z" fill="#b9834f" stroke="${CREAM}" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M6 18Q5 14 10 14L50 13Q55 13 55 18L56 50Q56 55 51 55L10 56Q5 56 5 51Z" fill="url(#pWood)" stroke="${INK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M6 18Q5 14 10 14L50 13Q55 13 55 18L56 50Q56 55 51 55L10 56Q5 56 5 51Z" fill="#f6b272" opacity=".46"/>
+  <path d="M12 21Q27 19 41 21Q42 35 41 49Q27 51 12 49Q11 35 12 21Z" fill="#1d130d" stroke="${CREAM}" stroke-width="2.2"/>
+  <g class="pe" fill="${CREAM}"><rect x="18" y="27" width="6" height="10" rx="2.6"/><rect x="31" y="27" width="6" height="10" rx="2.6"/><path d="M22 42Q27.500 47 33 42" fill="none" stroke="${CREAM}" stroke-width="2.2" stroke-linecap="round"/></g>
+  <circle cx="50" cy="24" r="2.6" fill="${CREAM}" stroke="${INK}" stroke-width="1.4"/><circle cx="50" cy="32" r="2.6" fill="${CREAM}" stroke="${INK}" stroke-width="1.4"/></svg></span>`;
+if (!reduceMotion) {
+  help.insertAdjacentHTML('afterbegin', PEEP);
+  const peep = () => { if (open || document.hidden || getComputedStyle(help).visibility === 'hidden') return; help.classList.remove('peeping'); void help.offsetWidth; help.classList.add('peeping') };
+  help.addEventListener('animationend', e => { if (e.animationName === 'peep') help.classList.remove('peeping') });
+  const later = () => setTimeout(() => { peep(); later() }, 26000 + Math.random() * 20000);
+  const wait = setInterval(() => { const it = $('intro'); if (it && !it.classList.contains('out')) return; // not until the paper intro has been whipped away
+    clearInterval(wait); setTimeout(peep, 2200); setTimeout(peep, 6200); setTimeout(later, 6200) }, 400);
+}
