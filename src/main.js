@@ -7,15 +7,14 @@
 import * as THREE from 'three';
 import { S, anim, act } from './core/state.js';
 import { renderer, scene, camera, controls, sun } from './core/scene.js';
-import { foley } from './core/audio.js';
 import { updateFx } from './molecules/fx.js';
 import { updateItemGlow } from './molecules/controls.js';
 import { updateCables } from './molecules/cable.js';
-import { grille, updateSynth } from './organisms/synth.js';
+import { grille, updateSynth, PARTS } from './organisms/synth.js';
 import './organisms/remote.js';
 import { updateDesk } from './organisms/desk.js';
 import { updateKeepsakes } from './organisms/keepsakes.js';
-import { GROUPS, groupAt, updateUnderlights } from './organisms/underlights.js';
+import { GROUPS, boxOf, groupAt, updateUnderlights } from './organisms/underlights.js';
 import { drawScreens } from './organisms/screens.js';
 import { openCard, closeCard, updateUI } from './organisms/card.js';
 import { openMenuFor, closeMenu } from './organisms/menu.js';
@@ -29,7 +28,7 @@ import { FPS, BOIL_EVERY, boil } from './atoms/craft.js';
 import './organisms/tour.js';
 
 /* where a thing on the bench is on screen right now (for Beep, the tour guide, to point at): its box's corners through the camera */
-const SPOTS = { synth: GROUPS.projects.box, remote: GROUPS.contact.box, desk: new THREE.Box3(new THREE.Vector3(-8.6, 0, -8.7), new THREE.Vector3(9.8, .3, -6.2)) }, corner = new THREE.Vector3();
+const SPOTS = { synth: GROUPS.projects.box, remote: GROUPS.contact.box, beats: boxOf(PARTS.beats), pads: boxOf(PARTS.pads), knobs: boxOf(PARTS.knobs), desk: new THREE.Box3(new THREE.Vector3(-8.6, 0, -8.7), new THREE.Vector3(9.8, .3, -6.2)) }, corner = new THREE.Vector3();
 function spot(key) {
   const b = SPOTS[key], r = renderer.domElement.getBoundingClientRect(); if (!b) return null; let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
   for (let i = 0; i < 8; i++) { corner.set(i & 1 ? b.max.x : b.min.x, i & 2 ? b.max.y : b.min.y, i & 4 ? b.max.z : b.min.z).project(camera); if (corner.z > 1) return null;
@@ -38,9 +37,6 @@ function spot(key) {
 }
 Object.assign(act, { zoomTo, zoomOut, openCard, closeCard, journey, cancelJourney, openMenuFor, panBy, spinBy, recentre, lookAt, closeMenu, spot });
 
-/* card slides on card whenever something scrolls: the project page, the menu, or the bench itself when you wheel in and out */
-for (const id of ['ct', 'm-body']) document.getElementById(id)?.addEventListener('scroll', () => foley('slide'), { passive: true });
-renderer.domElement.addEventListener('wheel', () => foley('slide', .7), { passive: true });
 const clock = new THREE.Clock(); let last = performance.now(), drawn = -1e9, pictures = 0;
 function loop() {
   const t = clock.getElapsedTime(), now = performance.now(), dt = Math.min(.05, (now - last) / 1000); last = now;

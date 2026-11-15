@@ -33,8 +33,8 @@ export function playNote(m, len = 1) {
 /* Foley: small paper-and-plastic noises for the interface, made from filtered noise and clicks. Quiet, and wired straight to the
    speakers (not through the synth's chain), so they don't echo, don't follow the volume knob and don't make the notebook draw a waveform.
    They obey mute. Each kind is rate-limited so a fast pointer can't machine-gun it.
-     marker: a felt-tip dragged round an edge · slide: card sliding on card · page: a page turning · tap: two cassette shells knocking */
-const FOLEY_GAP = { marker: 380, slide: 90, page: 160, tap: 55 }, lastFoley = {};
+     marker: a felt-tip dragged round an edge · page: a page turning · tap: two cassette shells knocking */
+const FOLEY_GAP = { marker: 380, page: 160, tap: 55 }, lastFoley = {};
 export function foley(k, vol = 1) {
   if (!ac || muted || ac.state !== 'running') return; const now = performance.now(); if (now - (lastFoley[k] || 0) < FOLEY_GAP[k]) return; lastFoley[k] = now;
   const t = ac.currentTime, out = ac.createGain(); out.gain.value = .5 * vol; out.connect(ac.destination);
@@ -44,8 +44,6 @@ export function foley(k, vol = 1) {
     /* a squeaky felt tip: a narrow band of hiss that wavers as the pen catches the card, in two strokes (it goes round twice) */
     marker: () => { for (const [t0, d] of [[0, .34], [.3, .3]]) { const f = nz(d, 'bandpass', 2600 + Math.random() * 500, 3.5, t + t0); f.frequency.linearRampToValueAtTime(3400 + Math.random() * 600, t + t0 + d);
         shape(f, [[.03, .16], [d * .3, .07], [d * .45, .15], [d * .7, .06], [d * .85, .12], [d, 0]], t + t0) } },
-    /* card on card: a short, dry, low shush */
-    slide: () => { const d = .16 + Math.random() * .08, f = nz(d, 'bandpass', 620 + Math.random() * 380, .8); shape(f, [[.03, .2], [d * .6, .13], [d, 0]]); const h = nz(d, 'highpass', 4200); shape(h, [[.02, .03], [d, 0]]) },
     /* a page: the lift (a bright swish rising), then the flop as it lands */
     page: () => { const f = nz(.34, 'bandpass', 1500, .7); f.frequency.exponentialRampToValueAtTime(5200, t + .26); shape(f, [[.05, .2], [.2, .1], [.34, 0]]);
       const l = nz(.09, 'lowpass', 900, 1, t + .3); shape(l, [[.008, .28], [.09, 0]], t + .3) },

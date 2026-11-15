@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { S, V, reduceMotion, act } from '../core/state.js';
 import { MODES, onKeys } from '../core/data.js';
 import { scene } from '../core/scene.js';
-import { markerLoop } from '../atoms/craft.js';
+import { markerLoop, eraser } from '../atoms/craft.js';
 import { synth, casing as synthCasing } from './synth.js';
 import { RM, casing as remoteCasing } from './remote.js';
 
@@ -19,7 +19,8 @@ const tmp = new THREE.Color();
 for (const [key, g] of Object.entries(GROUPS)) {
   const s = g.foot.getSize(new THREE.Vector3()), c = g.foot.getCenter(new THREE.Vector3());
   const mesh = markerLoop(s.x + .8, s.z + .8, .45, .3), mat = mesh.material; mesh.position.set(c.x, .1, c.z) /* on the craft mat */; mesh.visible = false; scene.add(mesh);
-  Object.assign(g, { key, mesh, mat, k: 0, tint: new THREE.Color(g.col()) });
+  const rub = eraser(); scene.add(rub);
+  Object.assign(g, { key, mesh, mat, rub, k: 0, tint: new THREE.Color(g.col()) });
 }
 /* which device the pointer is over: the control's parent chain first, then (over bare casing) the devices' bounding boxes */
 export function groupAt(o, ray) {
@@ -36,8 +37,12 @@ export function updateUnderlights(dt, hoverGroup) {
   const ease = reduceMotion ? 1 : 1 - Math.exp(-dt * 3.2), cEase = reduceMotion ? 1 : 1 - Math.exp(-dt * 4), breathe = reduceMotion ? 1 : 1 + .035 * Math.sin(performance.now() / 1000 * 1.6);
   const kbOn = S.mode && onKeys(S.mode) || S.card && onKeys(S.card.ch);
   for (const g of Object.values(GROUPS)) {
-    g.k += ((g.key === lit ? 1 : g.key === 'projects' && kbOn ? .75 : 0) - g.k) * ease;
+    const to = g.key === lit ? 1 : g.key === 'projects' && kbOn ? .75 : 0, wipe = to === 0 && g.k > .004 && !reduceMotion;
+    g.k = wipe ? Math.max(0, g.k - dt * 1.25) : g.k + (to - g.k) * ease; // rubbed out at a steady pace (the eraser runs back along the line); drawn on with an ease
+    g.rub.visible = wipe && g.k > .004;
+    if (g.rub.visible) { const [x, z] = g.mesh.userData.at(g.k), [x1, z1] = g.mesh.userData.at(g.k - .01), scrub = Math.sin(performance.now() / 45); // it scrubs as it goes
+      g.rub.position.set(g.mesh.position.x + x, .13, g.mesh.position.z + z); g.rub.rotation.z = -Math.atan2(z1 - z, x1 - x) + Math.PI / 2 + scrub * .35 }
     g.tint.lerp(tmp.set(g.col()), cEase); g.mat.uniforms.uCol.value.copy(g.tint);
-    g.mat.uniforms.uK.value = g.k; g.mesh.visible = g.k > .004; // the line is drawn on round the device as you point at it, and rubbed out as you leave
+    g.mat.uniforms.uK.value = g.k; g.mesh.visible = g.k > .004; // the line is drawn on round the device as you point at it, and rubbed out by the eraser as you leave
   }
 }

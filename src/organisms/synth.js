@@ -14,6 +14,7 @@ import { wonk, tape, rnd, card } from '../atoms/craft.js';
 import { pressable, itemCtrl, knob, screw, cap, boardCap } from '../molecules/controls.js';
 
 export const synth = new THREE.Group(); scene.add(synth);
+export const PARTS = { knobs: [], pads: [], beats: [] }; // the fun bits, for the tour guide to point at (main.js spot)
 const TOP = .9, GX = c => -8 + c, GZ = r => -2.75 + r + (r >= 2 ? .5 : 0) /* rows 2+ sit half a row further forward */, at = (o, x, y, z) => { o.position.set(x, y, z); synth.add(o); return o };
 export const casing = [at(rbox(18.9, .9, 7.8, .09, M(C.body, .55)), 0, .45, 0), at(rbox(18.9, .4, 7.8, .05, M(C.black, .5)), 0, .2, .14)];
 at(rbox(17.25, .12, 6.75, .05, M(C.recess, .8)), 0, TOP, 0);
@@ -47,7 +48,7 @@ const ringMat = o => decal(new THREE.MeshBasicMaterial({ color: LED, transparent
 export const KNOB_RINGS = [];
 [['cutoff', 'FILTER'], ['q', 'RESONANCE'], ['decay', 'DECAY'], ['wet', 'ECHO']].forEach(([key, label], i) => {
   const c = 4 + i * 2; tile(c, 0, 2, UPPER);
-  const { g, rot, cp } = knob(synth, new THREE.Vector3(GX(c + .5), TOP + .3, GZ(0) + .42), .5, key, 'lg', [[48, 52, 55, 60][i], 1.2]);
+  const { g, rot, cp } = knob(synth, new THREE.Vector3(GX(c + .5), TOP + .3, GZ(0) + .42), .5, key, 'lg', [[48, 52, 55, 60][i], 1.2]); PARTS.knobs.push(g);
   const L = printed(label, 1.6, .32, '#7b7e86', 58); L.position.set(0, .01, 1.42); g.add(L);
   // arcs lie flat on the tile; angle t on the ring = knob turn a + π/2 (a = 0 points straight back, like the knob's indicator)
   const track = new THREE.Mesh(new THREE.RingGeometry(RING_R - .022, RING_R + .022, 72, 1, Math.PI / 2 - TRAVEL, TRAVEL * 2), ringMat({ opacity: .35 }));
@@ -73,6 +74,7 @@ capBtn(14, 1, 'WAVE', () => { P.wave = (P.wave + 1) % 3; playNote(67, .4) }, 'Wa
 const beatsBtn = capBtn(15, 1, 'BEATS', toggleDemo, `Beats · each click plays the next of ${BEATS.length} tracks`);
 const stopBtn = capBtn(16, 0, 'STOP', () => { stopDemo(); drum('rim') }, 'Stop the music');
 { const sq = flat(.11, .11, decal(new THREE.MeshBasicMaterial({ color: '#d71920' }))); sq.position.set(0, .082, -.27); stopBtn.add(sq) }
+PARTS.beats.push(stopBtn, beatsBtn);
 [stopBtn, beatsBtn].forEach(m => { m.material.emissive = new THREE.Color('#e0301a'); fxOf(m).managed = true });
 capBtn(16, 1, 'MUTE', toggleMute, 'Sound on / off');
 
@@ -92,7 +94,7 @@ const coreTex = radialTex([[0, .9], [.45, .4], [1, 0]], 256, 64);
 export const PADS = ['kick', 'snare', 'hat', 'clap', 'tom', 'rim', 'shaker', 'crash', 'blip'];
 /* the beats pads are squares of thick grey board, roughly painted blue */
 PADS.forEach((p, i) => { const c = 14 + i % 3, r = 3 + Math.floor(i / 3); tile(c, r);
-  pressable(wonk(at(boardCap(.74, .74, p.toUpperCase(), { paint: '#2f7fd6' }), GX(c), TOP + .39, GZ(r)), .09, .035), () => drum(p), `Drum pad · ${p}`) });
+  const pad = wonk(at(boardCap(.74, .74, p.toUpperCase(), { paint: '#2f7fd6' }), GX(c), TOP + .39, GZ(r)), .09, .035); PARTS.pads.push(pad); pressable(pad, () => drum(p), `Drum pad · ${p}`) });
 
 /* the keyboard: 14 white keys hold the current mode's projects; sharps just play */
 const WHITE = [0, 2, 4, 5, 7, 9, 11], SHARP = { 0: 1, 1: 3, 3: 6, 4: 8, 5: 10 };

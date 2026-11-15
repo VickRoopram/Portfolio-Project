@@ -1,6 +1,7 @@
 /* The tour. A cardboard question mark sits bottom left (#help, index.html). Click it and Beep pops out: a small wooden TV that floats,
    with eyes and a mouth on his screen. He explains the site one thing at a time, in a cardboard speech bubble that comes from his mouth:
-   a heading of three words at most and one or two lines under it. Arrows step on and back; "Skip tour" sits bottom middle.
+   a heading of three words at most and one or two lines under it. Arrows step on and back; "Skip tour" sits bottom middle;
+   a bar fills as the tour goes (no numbers) and a cross on the bubble's corner closes it.
      · he beeps before each thing he says (core/audio.js beep), and his mouth moves while the line is written out
      · his eyes follow the pointer; when it rests they go back to the thing he's talking about, which gets a felt-tip ring round it
      · like everything else he's animated on twos: one tick here is one drawing (12 a second)
@@ -14,11 +15,15 @@ const touch = matchMedia('(hover: none)').matches, click = touch ? 'Tap' : 'Clic
 const STEPS = [
   { h: 'Hi, I’m Bleep!', p: 'I live on Vick’s desk. Let me show you round his portfolio.', mood: 'happy' },
   { h: 'Play the synth', p: `${click} the synth to fly in. Every key opens one of Vick’s projects.`, at: 'synth' },
+  { h: 'A real instrument', p: `It really plays! ${touch ? 'Tap the keys' : 'Click the keys, or type on your keyboard,'} to make music.`, at: 'synth', mood: 'wow' },
+  { h: 'Drop a beat', p: 'Press BEATS for one of Vick’s own tracks. Press again for the next.', at: 'beats', mood: 'happy' },
+  { h: 'Bang the drums', p: 'Nine blue pads: kick, snare, hat and more. Tap out your own rhythm.', at: 'pads' },
+  { h: 'Twist the knobs', p: 'Drag the four big knobs up or down to bend and shape the sound.', at: 'knobs' },
   { h: 'Around the desk', p: `Polaroids and notes show the person behind the work. ${click} one!`, at: 'desk', wide: true },
   { h: 'Look around', p: 'Drag to turn the desk, or steer with this dial.', at: '#joy' },
   { h: 'Zoom right in', p: `${touch ? 'Pinch' : 'Scroll'} to go from the whole desk to one synth.`, at: '#zoom' },
   { h: 'Open the menu', p: 'Everything is boxed up in here if you’d rather pick from a list.', at: '#mnu' },
-  { h: 'Sound on, off', p: `The keys really play. ${click} here whenever you need quiet.`, at: '#snd', mood: 'wow' },
+  { h: 'Sound on, off', p: `Too loud? ${click} here whenever you need some quiet.`, at: '#snd' },
   { h: 'Say hello', p: 'Contact flies you straight to Vick’s details. He’d love to chat.', at: '#ctaContact', mood: 'happy' },
 ];
 
@@ -65,8 +70,8 @@ const loop = (w, h) => LOOP.map((c, i) => (i ? 'C' : 'M') + c.map((v, k) => (v /
 function build() {
   el = document.createElement('div'); el.id = 'tour'; el.hidden = true; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Site tour with Bleep');
   el.innerHTML = `<div class="tv-wrap">${TV}</div>
-    <div class="tv-say"><i class="ply" aria-hidden="true"></i>
-      <div class="say-in" aria-live="polite"><div class="say-top"><h2 id="tour-h"></h2><span class="pips" aria-hidden="true"></span></div><p id="tour-p"></p></div>
+    <div class="tv-say"><button class="t-x" id="tour-x" aria-label="Close the tour">${icon('close', 18)}</button>
+      <div class="say-in" aria-live="polite"><div class="say-top"><h2 id="tour-h"></h2><span class="t-bar" aria-hidden="true"><i></i></span></div><p id="tour-p"></p></div>
       <div class="say-nav"><button class="t-nav" id="tour-back" aria-label="Back">${icon('chevron-left', 22)}</button>
         <button class="t-skip" id="tour-skip">Skip tour</button>
         <button class="t-nav t-next" id="tour-next" aria-label="Next">${icon('chevron-right', 22)}${icon('check', 22, 'done')}</button></div></div>`;
@@ -76,9 +81,9 @@ function build() {
   /* the lights go down while he talks: everything dims except the thing he's explaining (a hole in the dark, where the ring is) and Beep himself */
   dim = document.createElement('div'); dim.id = 'tour-dim'; dim.setAttribute('aria-hidden', 'true');
   document.body.append(dim, ring, el);
-  say = el.querySelector('.tv-say'); hEl = $('tour-h'); pEl = $('tour-p'); pips = el.querySelector('.pips'); back = $('tour-back'); next = $('tour-next');
+  say = el.querySelector('.tv-say'); hEl = $('tour-h'); pEl = $('tour-p'); pips = el.querySelector('.t-bar i'); back = $('tour-back'); next = $('tour-next');
   tvSvg = el.querySelector('.tv'); face = el.querySelector('.tv-face');
-  back.onclick = () => go(at - 1); next.onclick = () => go(at + 1); $('tour-skip').onclick = () => close();
+  back.onclick = () => go(at - 1); next.onclick = () => go(at + 1); $('tour-skip').onclick = $('tour-x').onclick = () => close();
 }
 
 const help = $('help');
@@ -137,7 +142,7 @@ function go(i) {
   at = i; const s = steps[i], last = i === steps.length - 1;
   hEl.textContent = s.h; pEl.innerHTML = '<span></span><span class="rest"></span>'; typed = reduceMotion ? s.p.length : 0;
   pEl.firstChild.textContent = s.p.slice(0, typed); pEl.lastChild.textContent = s.p.slice(typed); pEl.setAttribute('aria-label', s.p);
-  pips.innerHTML = steps.map((_, k) => `<i${k === i ? ' class="on"' : ''}></i>`).join('');
+  pips.style.width = (i + 1) / steps.length * 100 + '%';
   back.disabled = i === 0; next.classList.toggle('last', last); next.setAttribute('aria-label', last ? 'Finish the tour' : 'Next');
   startTick = tick; beep(i); foley('marker', .6);
   for (const e of [say, ring, tvSvg]) { e.classList.remove('pop'); void e.offsetWidth; e.classList.add('pop') } // the bubble pops, the ring is drawn again, his aerials twitch

@@ -30,6 +30,8 @@
   color-scheme:light;
 }
 *,*::before,*::after{transition-timing-function:var(--step)!important;animation-timing-function:var(--ease)!important}
+/* anything you can press changes in drawings, never in one jump or a smooth slide, when the pointer comes over it (no specificity: a piece's own transition wins) */
+:where(button,a,[role="button"]){transition:background-color .18s,color .18s,border-color .18s,translate .18s,scale .18s,rotate .18s}
 body{background:linear-gradient(#1a100b,#23150e 30%,#2e1d15 65%,#2a1a13) fixed;color:var(--stage-ink);font-size:var(--t-md)}
 /* the pointer is a cardboard cut-out: an arrow, a pointing hand over anything you can press, an open hand where you can drag */
 :root{--cur-arrow:url("../../assets/ui/cursor/arrow.png") 3 2,auto;--cur-point:url("../../assets/ui/cursor/point.png") 12 2,pointer;--cur-grab:url("../../assets/ui/cursor/grab.png") 14 12,grab}

@@ -7,7 +7,7 @@
    shows, and a click on the notebook opens the About summary: synth.js).
    Every change of page is a page turn round the rings: the right-hand page lifts, swings over the spine and lands on the left.
    drawScreens also hands the music level to the speaker. */
-import { scope, foley } from '../core/audio.js';
+import { scope } from '../core/audio.js';
 import { S, V, reduceMotion } from '../core/state.js';
 import { CH, ACCENT } from '../core/data.js';
 import { party, partyColours } from './party.js';
@@ -143,7 +143,7 @@ export function drawScreens(time) {
   const want = up ? 'logo' : c && CH[c.ch] ? `item:${c.ch}:${c.i}` : active ? `wave:${sweepN}` : h?.item && S.mode === h.ch ? `item:${h.ch}:${h.i}` : 'title';
   V.logo = up ? 1 : 0;
   if (want !== shown) { // turn the page: what was on the right swings over to the left (and whatever was turning already is put down there first)
-    if (shown) { if (time - turnAt < TURN) prev.x.drawImage(from.c, 0, 0); from.x.drawImage(pg.c, 0, 0); turnAt = reduceMotion ? time - TURN : time; turned = true; foley('page', want.startsWith('wave') ? .35 : .8) } // quieter when it's only the sound page filling up
+    if (shown) { if (time - turnAt < TURN) prev.x.drawImage(from.c, 0, 0); from.x.drawImage(pg.c, 0, 0); turnAt = reduceMotion ? time - TURN : time; turned = true } // the synth's own pages turn silently
     shown = want; dirty = true }
   const p = (time - turnAt) / TURN, turning = p < 1, live = want.startsWith('wave') || party() > .01;
   if (wasTurning && !turning) prev.x.drawImage(from.c, 0, 0); // it has landed: it's now the left-hand page
