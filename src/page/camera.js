@@ -127,14 +127,14 @@ export async function journey(ch, i, from = 'menu') { // from: 'menu' shows Back
 }
 const ease = k => k < .5 ? 8 * k ** 4 : 1 - Math.pow(-2 * k + 2, 4) / 2; // quartic in-out: slow start, slow landing
 let offX = 0, offY = 0;
-/* Reset view: once you've turned, panned or zoomed the bench away from where the camera last settled (or flown in to look at
-   something), a Home button rises at the bottom middle; it takes you back to the whole bench */
+/* Reset view: whenever the camera is zoomed in on something (a synth, a project's picture, a keepsake), or you've turned, panned or
+   zoomed the bench away from where it last settled, a Home button rises at the bottom middle; it takes you back to the whole bench */
 const resetBtn = $('reset'), rest = { p: new THREE.Vector3(), t: new THREE.Vector3(), set: false }; let settling = true, strayed = false;
 resetBtn.onclick = () => { if (S.mode || S.card || V.look) zoomOut(); else recentre() };
 function watchView() {
   if (V.fly) { settling = true; return show(false) }
   if (settling || !rest.set) { settling = false; rest.set = true; rest.p.copy(camera.position); rest.t.copy(controls.target) }
-  show(!S.card && $('menu').hidden && (!!V.look || camera.position.distanceTo(rest.p) > .9 || controls.target.distanceTo(rest.t) > .35));
+  show(!!(S.mode || S.card || V.look) || $('menu').hidden && (camera.position.distanceTo(rest.p) > .9 || controls.target.distanceTo(rest.t) > .35)); // always there once you're zoomed in on anything: a synth, a project, a keepsake
 }
 function show(on) { if (on === strayed) return; strayed = on; clearTimeout(show.h);
   if (on) { resetBtn.hidden = false; resetBtn.classList.remove('out') } else { resetBtn.classList.add('out'); show.h = setTimeout(() => { resetBtn.hidden = true }, 260) } }

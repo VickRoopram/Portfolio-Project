@@ -39,9 +39,11 @@ export function updateUnderlights(dt, hoverGroup) {
   const kbOn = S.mode && onKeys(S.mode) || S.card && onKeys(S.card.ch);
   for (const g of Object.values(GROUPS)) {
     const to = g.key === lit ? 1 : g.key === 'projects' && kbOn ? .75 : 0, wipe = to === 0 && g.k > .004 && !reduceMotion;
-    g.k = wipe ? Math.max(0, g.k - dt * .7) : g.k + (to - g.k) * ease; // drawn on fast; rubbed out slower and at a steady pace, so you see the eraser run back along the line
+    const [x, z] = g.mesh.userData.at(g.k), [x1, z1] = g.mesh.userData.at(g.k - .01), long = Math.abs(x1 - x) > Math.abs(z1 - z);
+    /* drawn on fast; rubbed out slower, so you see the eraser run back along the line. Round the big synth it takes its time down the long sides and nips round the short ones */
+    g.k = wipe ? Math.max(0, g.k - dt * (g.key === 'projects' ? long ? .55 : 1.3 : .7)) : g.k + (to - g.k) * ease;
     g.rub.visible = wipe && g.k > .004;
-    if (g.rub.visible) { const [x, z] = g.mesh.userData.at(g.k), [x1, z1] = g.mesh.userData.at(g.k - .01), scrub = Math.sin(performance.now() / 45); // it scrubs as it goes
+    if (g.rub.visible) { const scrub = Math.sin(performance.now() / 45); // it scrubs as it goes
       g.rub.position.set(g.mesh.position.x + x, .1, g.mesh.position.z + z); g.rub.rotation.y = -Math.atan2(z1 - z, x1 - x) + scrub * .3 }
     g.tint.lerp(tmp.set(g.col()), cEase); g.mat.uniforms.uCol.value.copy(g.tint);
     g.mat.uniforms.uK.value = g.k; g.mesh.visible = g.k > .004; // the line is drawn on round the device as you point at it, and rubbed out by the eraser as you leave
