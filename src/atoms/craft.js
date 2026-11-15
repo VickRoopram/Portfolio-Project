@@ -95,7 +95,7 @@ export function markerLoop(w, d, r = .3, width = .16) {
   return m;
 }
 /* the rubber that wipes a marker line out: a drawn block eraser (cream, a red paper sleeve, one corner worn round), lying flat */
-export function eraser(w = 1.5) {
+export function eraser(w = 2.1) {
   const t = canvas(192, 112, (x, W, H) => { x.lineJoin = 'round'; x.lineWidth = 7; x.strokeStyle = '#2a1b12';
     const body = () => { x.beginPath(); x.moveTo(14, 16); x.lineTo(W - 40, 12); x.quadraticCurveTo(W - 10, 16, W - 12, 46); x.lineTo(W - 14, H - 16); x.lineTo(16, H - 12); x.closePath() };
     body(); x.fillStyle = '#fbf1dd'; x.fill(); x.save(); body(); x.clip(); x.fillStyle = '#e0301a'; x.fillRect(0, 0, W * .52, H); x.fillStyle = 'rgba(42,27,18,.16)'; x.fillRect(0, H - 34, W, 34); x.restore(); body(); x.stroke();
