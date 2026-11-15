@@ -418,6 +418,8 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - A slip to know about: appending a `//` comment mid-line in `core/scene.js` commented out `scene.add(sun)` during this pass (caught in test renders, fixed before push). Keep comments on that line as `/* */`.
     - Files: `index.html`, `core/scene.js`, `main.js`, `molecules/cable.js`, `organisms/menu.js`, `styles/skin.css`, `assets/tex/*`.
 
+51. **15 Nov 2026: a rougher, shorter lead** (Vick). The remote's lead is 11 chunky boxes instead of 26 (`N` in `molecules/cable.js`), each with its own width, height, turn and roll, with wider tape strips slapped on at their own angles; its loose route is shorter and ends just off the mat (`organisms/remote.js`). The plugged-in route and the animation between the two are unchanged.
+
 
 ---
 
