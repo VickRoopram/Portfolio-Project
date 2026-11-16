@@ -21,10 +21,11 @@ export function noCVDownload(CH, LINKS = []) {
   for (let i = LINKS.length - 1; i >= 0; i--) if (CV_FILE.test(LINKS[i]?.[1] || '')) LINKS.splice(i, 1);
 }
 
-/* sections rewritten in content.js since the admin last saved them: until the admin saves again, the copy in content.js is the one shown
-   (the admin applies the same rule when it loads, so its next save keeps the new copy). 16 Nov 2026: About, rewritten round "I use the box" */
-const REVISED = { ab: '2026-11-16T21:00', info: '2026-11-16T21:00' };
-export const stale = (k, doc) => !!REVISED[k] && !(doc?.updated > REVISED[k]);
+/* the site's copy was rewritten in content.js to the brand voice (docs/BRAND.md) on 16 Nov 2026. Sections saved in /admin before then no
+   longer override it; the admin applies the same rule when it loads, so its next save starts from, and keeps, the new copy. Links and the
+   menu from /admin still apply */
+const REVISED = '2026-11-16T21:00';
+export const stale = (k, doc) => !(doc?.updated > REVISED);
 
 /* a menu from /admin replaces the default, if it is well formed */
 export function applyMenu(MENU, m) {

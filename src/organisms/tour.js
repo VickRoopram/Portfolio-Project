@@ -14,19 +14,19 @@ import { icon } from '../atoms/icons.js';
 const touch = matchMedia('(hover: none)').matches, click = touch ? 'Tap' : 'Click';
 /* what he says. h: three words at most · p: one or two lines · at: an element's id, or a thing on the bench (main.js spot) · wide: only where the whole bench is in view */
 const STEPS = [
-  { h: 'Hi, I’m Bleep!', p: 'I live on Vick’s desk. Let me show you round his portfolio.', mood: 'happy' },
+  { h: 'Hi, I’m Bleep!', p: 'I live on Vick’s desk. He built me from a box. Let me show you round.', mood: 'happy' },
   { h: 'Play the synth', p: `${click} the synth to fly in. Every key opens one of Vick’s projects.`, at: 'synth' },
-  { h: 'A real instrument', p: `It really plays! ${touch ? 'Tap the keys' : 'Click the keys, or type on your keyboard,'} to make music.`, at: 'synth', mood: 'wow' },
+  { h: 'A real instrument', p: `Yes, it really plays. ${touch ? 'Tap the keys.' : 'Click the keys, or type on your keyboard.'} He checked.`, at: 'synth', mood: 'wow' },
   { h: 'Drop a beat', p: 'Press BEATS for one of Vick’s own tracks. Press again for the next.', at: 'beats', mood: 'happy' },
-  { h: 'Bang the drums', p: 'Nine blue pads: kick, snare, hat and more. Tap out your own rhythm.', at: 'pads' },
-  { h: 'Twist the knobs', p: 'Drag the four big knobs up or down to bend and shape the sound.', at: 'knobs' },
-  { h: 'Just jam', p: 'Hit the play button to clear the desk and loop your own beats. No projects, only noise.', at: '#jam', mood: 'happy' },
-  { h: 'Around the desk', p: `Polaroids and notes show the person behind the work. ${click} one!`, at: 'desk', wide: true },
-  { h: 'Look around', p: 'Drag to turn the desk, or steer with this dial.', at: '#joy' },
-  { h: 'Zoom right in', p: `${touch ? 'Pinch' : 'Scroll'} to go from the whole desk to one synth.`, at: '#zoom' },
-  { h: 'Open the menu', p: 'Everything is boxed up in here if you’d rather pick from a list.', at: '#mnu' },
-  { h: 'Sound on, off', p: `Too loud? ${click} here whenever you need some quiet.`, at: '#snd' },
-  { h: 'Say hello', p: 'Contact flies you straight to Vick’s details. He’d love to chat.', at: '#ctaContact', mood: 'happy' },
+  { h: 'Bang the drums', p: 'Nine blue pads: kick, snare, hat and six more. Vick counted. Twice.', at: 'pads' },
+  { h: 'Twist the knobs', p: 'Drag the four big knobs up or down. Nothing breaks. Try all of them.', at: 'knobs' },
+  { h: 'Just jam', p: 'Hit play to clear the desk and loop your own beats. No projects. No homework.', at: '#jam', mood: 'happy' },
+  { h: 'Around the desk', p: `The polaroids and notes are the person behind the work. ${click} one.`, at: 'desk', wide: true },
+  { h: 'Look around', p: 'Drag to turn the desk, or steer with this dial. Every side is finished.', at: '#joy' },
+  { h: 'Zoom right in', p: `${touch ? 'Pinch' : 'Scroll'} to zoom from the whole desk to one key. The tape is worth a look.`, at: '#zoom' },
+  { h: 'Open the menu', p: 'Rather pick from a list? Everything is boxed up in here. Literally.', at: '#mnu' },
+  { h: 'Sound on, off', p: `Too loud? ${click} here for quiet. Vick won’t take it personally.`, at: '#snd' },
+  { h: 'Say hello', p: 'Contact flies you to Vick’s details. He likes a good brief, or a good chat.', at: '#ctaContact', mood: 'happy' },
 ];
 
 const INK = '#2a1b12', CREAM = '#fbf1dd', RED = '#e0301a';

@@ -18,7 +18,7 @@ function cardHTML(ch, i) {
   if (it.hero) h += `<div class="hero"><img src="assets/img/vick.jpg" alt="Portrait of Vickhal Roopram"><div class="d"><p><b>Vickhal Roopram</b><br>UX & Motion Designer<br>27 · South Africa</p></div></div>`;
   if (it.bars) h += `<div class="bars">${it.bars.map(b => `<div class="bar"><span>${b[0]}</span><small>${b[1]}</small><div><i style="--w:${b[2] * 100}%"></i></div></div>`).join('')}</div>`;
   if (it.life) h += CH.life.items.map(x => `<div class="d"><h3>${x.t}</h3>${x.d}</div>`).join('');
-  if (it.contact) h += `<div class="d"><p>For work, collaborations or a chat about design and faith:</p></div><div class="cta-row"><a class="cta" href="mailto:${EMAIL}">${icon('mail', 18)}<span>Email ${EMAIL}</span></a><button class="cta ghost" id="cp">${icon('copy', 18)}<span>Copy</span></button></div>`
+  if (it.contact) h += `<div class="d"><p>A job, a project, or a long chat about design, faith or D&amp;D. All welcome:</p></div><div class="cta-row"><a class="cta" href="mailto:${EMAIL}">${icon('mail', 18)}<span>Email ${EMAIL}</span></a><button class="cta ghost" id="cp">${icon('copy', 18)}<span>Copy</span></button></div>`
     + `<p class="copy">${icon('phone', 16)}Cell <span class="num">+27 73 482 7221</span></p><div class="socials">${LINKS.map(([n, u]) => `<a class="soc" href="${u}" target="_blank" rel="noopener">${socialIcon(n)}<span>${n}<small>${u.replace(/^https:\/\/(www\.)?/, '').replace(/\/$/, '')}</small></span>${out(u)}</a>`).join('')}</div>`;
   if (it.d) h += `<div class="d">${it.d}</div>`;
   if (it.links) h += `<div class="cta-row">${it.links.map((l, k) => `<a class="cta${k ? ' ghost' : ''}" href="${l[1]}" target="_blank" rel="noopener"><span>${l[0]}</span>${out(l[1])}</a>`).join('')}</div>`;

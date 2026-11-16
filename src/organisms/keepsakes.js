@@ -111,7 +111,7 @@ function drawNote(x) { x.setTransform(2, 0, 0, 2, 0, 0); const g = x.createLinea
 document.fonts.ready.then(() => { drawNote(noteTex.x); noteTex.t.needsUpdate = true });
 { const m = rbox(2.5, .02, 2.5, .02, card('paper', '#f6e06a', { bumpScale: .1 })); m.position.set(13.9, .012, 6.3); m.rotation.y = -.16; scene.add(m);
   const f = flat(2.5, 2.5, decal(new THREE.MeshStandardMaterial({ map: noteTex.t, roughness: .8, metalness: 0, envMapIntensity: .2 })), .012); f.receiveShadow = true; f.raycast = () => {}; m.add(f);
-  keepsake(m, 'todo', () => 'To do<small>One day. Probably.</small>', 3.6) }
+  keepsake(m, 'todo', () => 'To do<small>Researching it first.</small>', 3.6) }
 
 /* a hop: up and back down in three drawings' time, with a little twist */
 export function updateKeepsakes(dt) { for (const m of HOPS) { if (!m.hop) continue; m.hop = Math.max(0, m.hop - dt * (reduceMotion ? 99 : 3.4)); const k = Math.sin(m.hop * Math.PI); m.position.y = m.y0 + k * .5; m.rotation.z = k * .12 } }

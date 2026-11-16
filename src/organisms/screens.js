@@ -42,11 +42,11 @@ function fit(x, lines, px, maxW, w = 900) { for (; px > 20; px -= 4) { x.font = 
 /* ── the pages ── */
 function pageFirst(x) { // what's on the left before any page has been turned
   sheet(x, PW, PH); x.fillStyle = INK; x.textAlign = 'center'; x.textBaseline = 'middle'; x.save(); x.translate(PW / 2 + 10, PH / 2 - 20); x.rotate(.04);
-  const px = fit(x, ['I AM', 'CREATIVE.'], 96, PW - 80); x.fillText('I AM', 0, -px * .5); x.fillText('CREATIVE.', 0, px * .5);
+  const px = fit(x, ['I USE', 'THE BOX.'], 96, PW - 80); x.fillText('I USE', 0, -px * .5); x.fillText('THE BOX.', 0, px * .5);
   x.strokeStyle = SCREEN_COL; x.lineWidth = 6; x.lineCap = 'round'; wavy(x, -130, px * 1.12, 130, px * 1.06, 4, 12); x.restore();
   x.fillStyle = 'rgba(42,27,18,.7)'; x.font = hand(24); x.fillText('— Vick', PW - 70, PH - 34);
 }
-function pageTitle(x, title = TITLE, hint = 'play a key to draw the sound →') {
+function pageTitle(x, title = TITLE, hint = 'play a key, I draw the sound →') {
   sheet(x, PW, PH); x.save(); x.translate(PW / 2 + 12, PH / 2 - 26); x.rotate(-.045); x.fillStyle = INK; x.textAlign = 'center'; x.textBaseline = 'middle';
   const [a, b] = title.toUpperCase().split(' '), px = fit(x, [a, b], 116, PW - 70);
   [[a, -px * .5], [b, px * .46]].forEach(([t, y]) => { x.fillText(t, 0, y); x.globalAlpha = .5; x.fillText(t, 2, y + 1.5); x.globalAlpha = 1 });
@@ -63,7 +63,7 @@ function pageItem(x, ch, i) {
 }
 function pageLogo(x) {
   sheet(x, PW, PH); if (logoInk) { const w = PW - 70, h = w * logoInk.height / logoInk.width; x.save(); x.translate(PW / 2 + 12, PH / 2 - 20); x.rotate(-.03); x.drawImage(logoInk, -w / 2, -h / 2, w, h); x.restore() }
-  x.fillStyle = SCREEN_COL; x.font = hand(28); x.textAlign = 'right'; x.textBaseline = 'alphabetic'; x.fillText('click to meet me →', PW - 18, PH - 20);
+  x.fillStyle = SCREEN_COL; x.font = hand(28); x.textAlign = 'right'; x.textBaseline = 'alphabetic'; x.fillText('click to meet the nerd →', PW - 18, PH - 20);
 }
 /* the sound page: whatever the pen has drawn so far this sweep, and the pencil */
 const STYLES = ['marker', 'pencil', 'stitch', 'dabs'], trace = [], X0 = 46, X1 = PW - 22; // trace: [x, y] in page pixels
@@ -150,7 +150,7 @@ export function drawScreens(time) {
   if (!dirty && !turning && !wasTurning && !live) return level; // nothing has changed on the page
   wasTurning = turning; dirty = false; // (one more drawing after a turn ends, so the pages are left lying flat)
   const x = pg.x; x.save();
-  if (want === 'logo') pageLogo(x); else if (want === 'title') pageTitle(x); else if (want === 'jam') pageTitle(x, 'Jam Session', '← hit REC, then play'); else if (want.startsWith('item')) { const [, ch, i] = want.split(':'); pageItem(x, ch, +i) } else pageWave(x);
+  if (want === 'logo') pageLogo(x); else if (want === 'title') pageTitle(x); else if (want === 'jam') pageTitle(x, 'Jam Session', '← hit REC. No homework today'); else if (want.startsWith('item')) { const [, ch, i] = want.split(':'); pageItem(x, ch, +i) } else pageWave(x);
   const pp = party(); if (pp > .01) { const cols = partyColours(); x.setTransform(1, 0, 0, 1, 0, 0); // beats: dabs of paint in the video's colours along the foot of the page
     for (let i = 0; i < 16; i++) { const n = Math.abs(Math.sin(i * 12.99 + Math.floor(time * 6) * 4.1) * 43758.5) % 1; x.globalAlpha = pp * (.35 + n * .5); x.fillStyle = cols[i % cols.length]; x.beginPath(); x.arc(48 + i * (PW - 70) / 15, PH - 16 - n * 26, 5 + n * 9, 0, 7); x.fill() } x.globalAlpha = 1 }
   x.restore();
