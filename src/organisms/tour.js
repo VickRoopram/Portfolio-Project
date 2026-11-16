@@ -20,6 +20,7 @@ const STEPS = [
   { h: 'Drop a beat', p: 'Press BEATS for one of Vick’s own tracks. Press again for the next.', at: 'beats', mood: 'happy' },
   { h: 'Bang the drums', p: 'Nine blue pads: kick, snare, hat and more. Tap out your own rhythm.', at: 'pads' },
   { h: 'Twist the knobs', p: 'Drag the four big knobs up or down to bend and shape the sound.', at: 'knobs' },
+  { h: 'Just jam', p: 'Hit Play to clear the desk and loop your own beats. No projects, only noise.', at: '#jam', mood: 'happy' },
   { h: 'Around the desk', p: `Polaroids and notes show the person behind the work. ${click} one!`, at: 'desk', wide: true },
   { h: 'Look around', p: 'Drag to turn the desk, or steer with this dial.', at: '#joy' },
   { h: 'Zoom right in', p: `${touch ? 'Pinch' : 'Scroll'} to go from the whole desk to one synth.`, at: '#zoom' },
@@ -149,11 +150,11 @@ function go(i) {
   for (const e of [say, ring, tvSvg]) { e.classList.remove('pop'); void e.offsetWidth; e.classList.add('pop') } // the bubble pops, the ring is drawn again, his aerials twitch
   place(true);
 }
-function start() {
+function start(list) { // list: a one-off thing to say (welcomeBack) in place of the tour
   if (!el) build(); ensureAudio();
   S.hover = S.grp = null; // whatever was under the pointer lets go
   if (S.menu) act.closeMenu?.(); if (S.mode || S.card || V.look) act.zoomOut?.(); // back to the whole bench, so everything he points at is in view
-  steps = STEPS.filter(s => !(s.wide && !desktop()) && !(s.at?.[0] === '#' && !visible(s.at)));
+  steps = list || STEPS.filter(s => !(s.wide && !desktop()) && !(s.at?.[0] === '#' && !visible(s.at)));
   open = true; el.hidden = false; el.classList.remove('out'); help.setAttribute('aria-expanded', 'true'); help.classList.remove('nudge', 'peeping'); document.body.dataset.tour = 'on';
   try { localStorage.setItem('vdc-tour', '1') } catch {}
   tick = 0; blinkAt = 30; go(0); clearInterval(timer); timer = setInterval(draw, 1000 / 12); next.focus({ preventScroll: true });
@@ -163,6 +164,8 @@ function close(done) {
   if (done) beep(7); el.classList.add('out'); setTimeout(() => { if (!open) el.hidden = true }, reduceMotion ? 0 : 320); help.focus({ preventScroll: true });
 }
 help.onclick = () => open ? close() : start();
+/* coming back from jam mode (organisms/jam.js): he pops up to say hello again */
+export const welcomeBack = () => { if (!open) start([{ h: 'Welcome back!', p: 'Lovely noise. The projects you were avoiding are still right here.', mood: 'happy' }]) };
 addEventListener('pointermove', e => { if (open && e.pointerType !== 'touch') { mx = e.clientX; my = e.clientY; movedAt = performance.now() } }, { passive: true });
 addEventListener('resize', () => { if (open) place(true) });
 /* keys, ahead of the synth's own (page/input.js): Esc sends him away, the arrows step (unless a project card is using them) */

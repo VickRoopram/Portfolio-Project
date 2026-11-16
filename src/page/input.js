@@ -14,20 +14,21 @@ const ptr = new THREE.Vector2(), lbl = $('lbl'), lb = $('lb');
 /* the control under the pointer: walk up to whatever handles input, then follow a proxy (a tile passes clicks to its cap) */
 function pick(e) {
   const r = cv.getBoundingClientRect(); ptr.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1); ray.setFromCamera(ptr, camera);
-  let o = ray.intersectObjects(hits, true)[0]?.object; while (o && !o.userData.down && !o.userData.proxy) o = o.parent; return o?.userData.proxy || o;
+  const seen = o => { for (; o; o = o.parent) if (!o.visible) return false; return true }; // a piece that's put away (the remote's other set of buttons) can't be pressed
+  let o = ray.intersectObjects(hits, true).find(h => seen(h.object))?.object; while (o && !o.userData.down && !o.userData.proxy) o = o.parent; return o?.userData.proxy || o;
 }
 const tipHTML = ({ userData: u }) => u.item ? (S.mode === u.ch ? CH[u.ch].items[u.i].t : `${MODES[u.ch].n}<small>Click to open</small>`) : u.tipHTML ? u.tipHTML() : u.tip; // tipHTML: a tip that changes (the lamp's on/off)
 let tap = null, live = '';
 /* capture phase: runs before OrbitControls, so grabbing a control never also orbits the camera */
 cv.addEventListener('pointerdown', e => {
   ensureAudio(); act.cancelJourney(); if (e.button > 0) return; // any click on the synth takes over from a running menu journey; right drag pans, middle zooms
-  const o = pick(e); if (!o) { const g = !S.mode && !S.card && groupAt(null, ray); if (g) tap = { g, x: e.clientX, y: e.clientY }; return }
+  const o = pick(e); if (!o) { const g = !S.mode && !S.card && !S.play && groupAt(null, ray); if (g) tap = { g, x: e.clientX, y: e.clientY }; return }
   controls.enabled = false; V.drag = { o, x: e.clientX, y: e.clientY }; o.userData.down?.();
   if (e.pointerType !== 'mouse') { S.hover = o; S.hoverUntil = performance.now() + 1600 } try { cv.setPointerCapture(e.pointerId) } catch {}
 }, { capture: true });
 cv.addEventListener('pointermove', e => {
   const d = V.drag; if (d) { const dy = e.clientY - d.y, dx = e.clientX - d.x; d.y = e.clientY; d.x = e.clientX; d.o.userData.drag?.(-dy + dx * .5); live = d.o.userData.live?.() || ''; return }
-  if (e.pointerType !== 'mouse') return; const o = pick(e); S.grp = S.mode || S.card ? null : groupAt(o, ray);
+  if (e.pointerType !== 'mouse') return; const o = pick(e); S.grp = S.mode || S.card || S.play ? null : groupAt(o, ray);
   cv.dataset.cur = o || S.grp ? 'point' : 'grab'; // the cardboard cursors (skin.css) S.hover = o || null; S.hoverUntil = Infinity;
 });
 const end = () => { if (!V.drag) return; V.drag = null; live = ''; if (!V.fly) controls.enabled = true };
@@ -46,16 +47,18 @@ export function updateHover(now) {
   lbl.style.left = Math.min(w - half, Math.max(half, (v3.x + 1) / 2 * w)) + 'px'; lbl.style.top = (1 - v3.y) / 2 * stage.clientHeight + 'px';
 }
 
-/* keyboard: A–; white keys, W E T Y U O P sharps, Z–. drum pads, 1–7 modes, 0 overview, arrows step the card, Esc backs out */
+/* keyboard: A–; white keys, W E T Y U O P sharps, Z–. drum pads, 1–7 modes, 0 overview, arrows step the card, Esc backs out.
+   In jam mode 1–5 pick the keys' sound, space starts and stops recording, Esc goes back to the portfolio */
 const KW = 'asdfghjkl;', KS = { w: 0, e: 1, t: 2, y: 3, u: 4, o: 5, p: 6 }, KD = 'zxcvbnm,.', held = new Set();
 addEventListener('keydown', e => {
   if (e.metaKey || e.ctrlKey || e.altKey) return; const k = e.key.toLowerCase();
-  if (k === 'escape') { if (menuOpen()) menuEsc(); else if (!lb.hidden) lb.hidden = true; else if (S.card) act.closeCard(); else if (S.mode || V.look) act.zoomOut(); return }
+  if (k === 'escape') { if (menuOpen()) menuEsc(); else if (!lb.hidden) lb.hidden = true; else if (S.card) act.closeCard(); else if (S.mode || V.look) act.zoomOut(); else if (S.play) act.jam(false); return }
   if (held.has(k)) return; held.add(k);
   const one = k.length === 1, i = one ? KW.indexOf(k) : -1;
   if (i >= 0) { ensureAudio(); press(keyMeshes[i]); playNote(wMidi(i)) }
   else if (k in KS) { ensureAudio(); sharpMeshes[KS[k]]?.userData.down() }
   else if (one && KD.includes(k)) { ensureAudio(); drum(PADS[KD.indexOf(k)]) }
+  else if (S.play) { if (one && k >= '1' && k <= '5') act.voice(+k - 1); else if (k === ' ') { e.preventDefault(); act.loop('rec') } } // jam mode: 1–5 pick a sound, space records
   else if (one && k >= '1' && k <= String(ORDER.length)) { ensureAudio(); act.zoomTo(ORDER[+k - 1]) }
   else if (k === '0') { ensureAudio(); act.zoomOut() }
   else if (S.card && (k === 'arrowright' || k === 'arrowleft')) act.openCard(S.card.ch, S.card.i + (k === 'arrowright' ? 1 : -1));

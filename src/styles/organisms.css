@@ -65,14 +65,6 @@
 .in-card{display:grid;justify-items:center;gap:var(--s4);max-width:520px;text-align:center}
 .in-card h1{margin:0;font:800 var(--t-2xl)/1 var(--body);letter-spacing:-.03em;color:var(--ink)}
 .in-sub{margin:0 0 var(--s2);font:500 var(--t-lg)/1.4 var(--body);color:var(--ink);opacity:.85;text-wrap:balance}
-.in-go{min-height:52px;padding:0 var(--s5);font-size:var(--t-md)}
-.in-go:disabled{cursor:progress;opacity:.85}
-.in-go:disabled .spin{display:inline-block}
-.in-go:disabled .go{display:none}
-.in-go .go{transition:transform .2s var(--ease)}
-.in-go:hover .go{transform:translateX(3px)}
-.in-quiet{display:inline-flex;align-items:center;gap:6px;padding:var(--s2);border:0;background:none;font:600 var(--t-sm)/1 var(--body);color:var(--mute);cursor:pointer;text-decoration:underline;text-underline-offset:4px}
-.in-quiet:hover{color:var(--ink)}
 
 @media (prefers-reduced-motion:reduce){
   #card,#menu,#menu.out,.m-row,.burger path,.ico .ic,#toast.show,.spin,.cta .tick,.pic:not(.ok)::after{animation:none;transition:none}

@@ -1,7 +1,7 @@
 /**
  * Vick Does Creative: a portfolio played as a 3D synthesizer.
  * Built atomically:  core (state, content, audio, renderer) → atoms (geometry, textures, materials, labels)
- *   → molecules (press FX, controls, cables) → organisms (synth, remote, desk, underlights, screens, card, menu, zoom guide, joystick, beats backdrop, intro, tour guide)
+ *   → molecules (press FX, controls, cables) → organisms (synth, remote, desk, underlights, screens, card, menu, zoom guide, joystick, beats backdrop, intro, tour guide, jam mode)
  *   → page (camera, input), assembled and run here.
  */
 import * as THREE from 'three';
@@ -26,6 +26,7 @@ import { zoomTo, zoomOut, journey, cancelJourney, panBy, spinBy, recentre, lookA
 import { ray, updateHover } from './page/input.js';
 import { FPS, BOIL_EVERY, boil } from './atoms/craft.js';
 import './organisms/tour.js';
+import { updateJam } from './organisms/jam.js';
 
 /* where a thing on the bench is on screen right now (for Beep, the tour guide, to point at): its box's corners through the camera */
 const SPOTS = { synth: GROUPS.projects.box, remote: GROUPS.contact.box, beats: boxOf(PARTS.beats), pads: boxOf(PARTS.pads), knobs: boxOf(PARTS.knobs), desk: new THREE.Box3(new THREE.Vector3(-8.6, 0, -8.7), new THREE.Vector3(9.8, .3, -6.2)) }, corner = new THREE.Vector3();
@@ -44,7 +45,7 @@ function loop() {
   for (const o of anim) { const u = o.userData; if (u.ty !== undefined) o.position.y += (u.ty - o.position.y) * .35; if (u.r !== undefined) o.rotation.y += (u.r - o.rotation.y) * .18 } // keys spring, knobs turn
   updateHover(now);
   updateUnderlights(dt, S.grp || (S.hover && groupAt(S.hover, ray))); updateDesk(dt, t); updateKeepsakes(dt); // the view is kept over the table top by page/camera.js
-  updateCables(); updateSynth(t); updateItemGlow(t); updateFx(now);
+  updateCables(); updateJam(); updateSynth(t); updateItemGlow(t); updateFx(now);
   grille.scale.setScalar(1 + drawScreens(t) * .04); updateParty(t);
   controls.update(); requestAnimationFrame(loop);
   /* animated on twos: everything keeps moving smoothly underneath, but a new picture is only drawn FPS (12) times a second,

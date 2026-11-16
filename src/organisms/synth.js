@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import { S, V, ROWBTN, hits, act } from '../core/state.js';
 import { CH, MODES } from '../core/data.js';
-import { P, playNote, drum, toggleMute, toggleDemo, stopDemo, demo, track, BEATS } from '../core/audio.js';
+import { P, VOICES, playNote, drum, toggleMute, toggleDemo, stopDemo, demo, track, BEATS } from '../core/audio.js';
 import { scene } from '../core/scene.js';
 import { rbox, cyl, flat } from '../atoms/geometry.js';
 import { canvasTex, radialTex } from '../atoms/textures.js';
@@ -36,8 +36,8 @@ export const scr = canvasTex(800, 476);
 const scrP = at(flat(3.78, 2.25, decal(new THREE.MeshBasicMaterial({ map: scr.t, toneMapped: false, transparent: true }))), GX(1.5), TOP + .305, upperZ);
 /* the screen opens the About page; while the Vickhal Roopram logo is up on it (screens.js, every 25–60 s) its tip invites the click
    and the click flies to the About key, presses it and opens the "about me" summary (the first About card) */
-scrP.userData = { tip: 'Screen · click for the About page', tipHTML: () => V.logo > .5 ? 'Vickhal Roopram<small>Click to meet me</small>' : 'Screen · click for the About page',
-  down() { if (V.logo > .3) act.journey('ab', 0, 'logo'); else { act.zoomTo('ab'); act.openCard('ab', 0) } } };
+scrP.userData = { tip: 'Screen · click for the About page', tipHTML: () => S.play ? 'The sound, as you play it' : V.logo > .5 ? 'Vickhal Roopram<small>Click to meet me</small>' : 'Screen · click for the About page',
+  down() { if (S.play) return; if (V.logo > .3) act.journey('ab', 0, 'logo'); else { act.zoomTo('ab'); act.openCard('ab', 0) } } };
 
 /* the four big sound knobs (drag up/down; click for a note), each in a 2 × 2.5 tile with its name underneath.
    While you adjust a knob, a lit ring fades in on its bezel, round the cap (where the press stroke runs): a dim track over the knob's travel, a brighter arc up to its value, and a light dot that
@@ -85,9 +85,10 @@ const coreTex = radialTex([[0, .9], [.45, .4], [1, 0]], 256, 64);
   const t = at(rbox(W - .07, .3, .93, .03, M(C.tile, .6)), x, TOP + .15, GZ(2));
   const k = wonk(at(rbox(W - .3, .1, .72, .035, RUBBER()), x, TOP + .36, GZ(2)), .022, .025);
   k.core = flat(W - .62, .5, decal(new THREE.MeshBasicMaterial({ map: coreTex, color: glow, transparent: true, opacity: 0, depthWrite: false, toneMapped: false })), .052); k.core.visible = false; k.coreK = 0;
-  const l = engraved(label, W - .5, .5, 30); l.position.y = .054; l.renderOrder = 1; k.add(k.core, l); FXMATS.push(k.core.material);
-  pressable(k, () => { playNote(72 + [0, 4, 7, 11, 14][j], .5); act.zoomTo(f) }, `${CH[f].name} · ${MODES[f].n}`); // after the core: pressable replaces userData
-  k.userData.filter = f; t.userData.proxy = k; hits.push(t); k.material.emissive = new THREE.Color(glow); fxOf(k).managed = true; ROWBTN.push([k, f]);
+  /* two legends: its section of the portfolio, and (jam mode) the sound it gives the keys */
+  k.legend = [label, VOICES[j].n].map((txt, n) => { const l = engraved(txt, W - .5, .5, 30); l.position.y = .054; l.renderOrder = 1; l.visible = !n; return l }); k.add(k.core, ...k.legend); FXMATS.push(k.core.material);
+  pressable(k, () => { if (S.play) return act.voice(j); playNote(72 + [0, 4, 7, 11, 14][j], .5); act.zoomTo(f) }, `${CH[f].name} · ${MODES[f].n}`); // after the core: pressable replaces userData
+  k.userData.tipHTML = () => S.play ? `Sound · ${VOICES[j].n.toLowerCase()}` : k.userData.tip; k.userData.filter = f; k.userData.j = j; t.userData.proxy = k; hits.push(t); k.material.emissive = new THREE.Color(glow); fxOf(k).managed = true; ROWBTN.push([k, f]);
 });
 
 /* drum pads (graphite caps, light print) */
@@ -127,8 +128,9 @@ export function updateSynth(t) {
   const beat = demo ? .4 + .25 * Math.max(0, Math.sin(t * Math.PI * 2 * (BEATS[track]?.bpm || 120) / 60)) : 0;
   stopBtn.material.emissiveIntensity = beatsBtn.material.emissiveIntensity = beat;
   for (const [m, k] of ROWBTN) {
-    let edge = S.mode === k ? .85 + .08 * Math.sin(t * 3) : 0;
-    if (S.card?.ch === k || S.hover === m || S.mode === k && S.hover?.userData?.item && S.hover.userData.ch === k) edge = 1;
+    m.legend[0].visible = !S.play; m.legend[1].visible = S.play;
+    let edge = (S.play ? S.voice === m.userData.j : S.mode === k) ? .85 + .08 * Math.sin(t * 3) : 0;
+    if (S.play ? S.hover === m : S.card?.ch === k || S.hover === m || S.mode === k && S.hover?.userData?.item && S.hover.userData.ch === k) edge = 1;
     m.userData.edge = edge; m.material.emissiveIntensity = edge ? .035 : 0; // the solid cap itself only shows a faint glow
     m.coreK += ((edge ? 1 : 0) - m.coreK) * .12; m.core.material.opacity = m.coreK * edge * .32; m.core.visible = m.core.material.opacity > .003;
   }

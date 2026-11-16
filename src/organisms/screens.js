@@ -22,7 +22,7 @@ const hand = px => `400 ${px}px "Patrick Hand", "Comic Sans MS", cursive`, cut =
 const off = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return { c, x: c.getContext('2d') } };
 const pg = off(PW, PH), from = off(PW, PH), prev = off(PW, PH); // the page you're on · the page that's turning · the page before, lying on the left
 let dirty = true;
-const paper = new Image(); paper.onload = () => { dirty = true; note(); if (!turned) pageFirst(prev.x) }; paper.src = 'assets/tex/paper.jpg';
+const paper = new Image(); paper.onload = () => { dirty = true; if (!S.play) note(); if (!turned) pageFirst(prev.x) }; paper.src = 'assets/tex/paper.jpg';
 const logo = new Image(); let logoInk = null; // the header logo, re-inked for paper
 logo.onload = () => { const w = 560, h = Math.round(w * logo.height / logo.width), o = off(w, h); o.x.drawImage(logo, 0, 0, w, h); o.x.globalCompositeOperation = 'source-in'; o.x.fillStyle = INK; o.x.fillRect(0, 0, w, h); logoInk = o.c }; logo.src = 'assets/ui/logo-on-dark.svg';
 
@@ -46,12 +46,12 @@ function pageFirst(x) { // what's on the left before any page has been turned
   x.strokeStyle = SCREEN_COL; x.lineWidth = 6; x.lineCap = 'round'; wavy(x, -130, px * 1.12, 130, px * 1.06, 4, 12); x.restore();
   x.fillStyle = 'rgba(42,27,18,.7)'; x.font = hand(24); x.fillText('— Vick', PW - 70, PH - 34);
 }
-function pageTitle(x) {
+function pageTitle(x, title = TITLE, hint = 'play a key to draw the sound →') {
   sheet(x, PW, PH); x.save(); x.translate(PW / 2 + 12, PH / 2 - 26); x.rotate(-.045); x.fillStyle = INK; x.textAlign = 'center'; x.textBaseline = 'middle';
-  const [a, b] = TITLE.toUpperCase().split(' '), px = fit(x, [a, b], 116, PW - 70);
+  const [a, b] = title.toUpperCase().split(' '), px = fit(x, [a, b], 116, PW - 70);
   [[a, -px * .5], [b, px * .46]].forEach(([t, y]) => { x.fillText(t, 0, y); x.globalAlpha = .5; x.fillText(t, 2, y + 1.5); x.globalAlpha = 1 });
   x.strokeStyle = SCREEN_COL; x.lineWidth = 7; x.lineCap = 'round'; wavy(x, -140, px * 1.06, 140, px * .98, 5, 14); x.lineWidth = 4; wavy(x, -120, px * 1.2, 100, px * 1.14, 4, 12, 2); x.restore();
-  x.fillStyle = 'rgba(42,27,18,.75)'; x.font = hand(25); x.textAlign = 'right'; x.textBaseline = 'alphabetic'; x.fillText('play a key to draw the sound →', PW - 16, PH - 18);
+  x.fillStyle = 'rgba(42,27,18,.75)'; x.font = hand(25); x.textAlign = 'right'; x.textBaseline = 'alphabetic'; x.fillText(hint, PW - 16, PH - 18);
 }
 function pageItem(x, ch, i) {
   const c = CH[ch], it = c?.items[i]; sheet(x, PW, PH); if (!it) return;
@@ -117,11 +117,11 @@ function book(x, p) {
   x.setTransform(1, 0, 0, 1, 0, 0);
 }
 /* the remote's note, taped in, written once (and again when the paper photo arrives) */
-function note() {
+export function note(big = 'CONTACT', small = 'say hello ↓') { // jam mode writes the looper's state here (organisms/jam.js)
   const o = off(264, 164), x = o.x; sheet(x, 264, 164, 34, 30);
-  x.save(); x.translate(140, 70); x.rotate(.05); x.fillStyle = INK; x.textAlign = 'center'; x.textBaseline = 'middle'; x.font = cut(66); x.fillText('CONTACT', 0, 0);
+  x.save(); x.translate(140, 70); x.rotate(.05); x.fillStyle = INK; x.textAlign = 'center'; x.textBaseline = 'middle'; x.font = cut(66); x.fillText(big, 0, 0);
   x.strokeStyle = SCREEN_COL; x.lineWidth = 5; x.lineCap = 'round'; wavy(x, -92, 38, 92, 34, 3, 10); x.restore();
-  x.fillStyle = 'rgba(42,27,18,.8)'; x.font = hand(26); x.textAlign = 'right'; x.fillText('say hello ↓', 250, 146);
+  x.fillStyle = 'rgba(42,27,18,.8)'; x.font = hand(26); x.textAlign = 'right'; x.fillText(small, 250, 146);
   const r = rs.x; r.setTransform(1, 0, 0, 1, 0, 0); r.clearRect(0, 0, 300, 200); r.translate(150, 106); r.rotate(.03); r.translate(-132, -82);
   r.fillStyle = 'rgba(0,0,0,.4)'; r.fillRect(5, 7, 264, 164); r.drawImage(o.c, 0, 0); r.strokeStyle = INK; r.lineWidth = 3; r.strokeRect(0, 0, 264, 164);
   for (let i = 0; i < 7; i++) { const cx = 26 + i * 35.5; // ring-bound along the top, like the notebook on the synth
@@ -130,7 +130,7 @@ function note() {
   r.setTransform(1, 0, 0, 1, 0, 0); rs.t.needsUpdate = true;
 }
 let turned = false;
-document.fonts.ready.then(() => { dirty = true; note(); if (!turned) pageFirst(prev.x) }); note(); pageFirst(prev.x);
+document.fonts.ready.then(() => { dirty = true; if (!S.play) note(); if (!turned) pageFirst(prev.x) }); note(); pageFirst(prev.x);
 
 let heard = -1e9, wasActive = false, shown = '', turnAt = -1e9, wasTurning = false;
 /* returns the music level (0..1) so the speaker can pulse with it */
@@ -139,8 +139,8 @@ export function drawScreens(time) {
   if (level > .02) heard = time; const active = time - heard < 1.4; // the sound page stays up a moment after the sound stops
   if (active && !wasActive) newSweep(time); wasActive = active;
   if (active && draw(wave, time)) newSweep(time); // the pen reached the edge: next page
-  const up = logoUp(time), h = S.hover?.userData, c = S.card;
-  const want = up ? 'logo' : c && CH[c.ch] ? `item:${c.ch}:${c.i}` : active ? `wave:${sweepN}` : h?.item && S.mode === h.ch ? `item:${h.ch}:${h.i}` : 'title';
+  const up = !S.play && logoUp(time), h = S.hover?.userData, c = S.card;
+  const want = S.play ? (active ? `wave:${sweepN}` : 'jam') : up ? 'logo' : c && CH[c.ch] ? `item:${c.ch}:${c.i}` : active ? `wave:${sweepN}` : h?.item && S.mode === h.ch ? `item:${h.ch}:${h.i}` : 'title';
   V.logo = up ? 1 : 0;
   if (want !== shown) { // turn the page: what was on the right swings over to the left (and whatever was turning already is put down there first)
     if (shown) { if (time - turnAt < TURN) prev.x.drawImage(from.c, 0, 0); from.x.drawImage(pg.c, 0, 0); turnAt = reduceMotion ? time - TURN : time; turned = true } // the synth's own pages turn silently
@@ -150,7 +150,7 @@ export function drawScreens(time) {
   if (!dirty && !turning && !wasTurning && !live) return level; // nothing has changed on the page
   wasTurning = turning; dirty = false; // (one more drawing after a turn ends, so the pages are left lying flat)
   const x = pg.x; x.save();
-  if (want === 'logo') pageLogo(x); else if (want === 'title') pageTitle(x); else if (want.startsWith('item')) { const [, ch, i] = want.split(':'); pageItem(x, ch, +i) } else pageWave(x);
+  if (want === 'logo') pageLogo(x); else if (want === 'title') pageTitle(x); else if (want === 'jam') pageTitle(x, 'Jam Session', '← hit REC, then play'); else if (want.startsWith('item')) { const [, ch, i] = want.split(':'); pageItem(x, ch, +i) } else pageWave(x);
   const pp = party(); if (pp > .01) { const cols = partyColours(); x.setTransform(1, 0, 0, 1, 0, 0); // beats: dabs of paint in the video's colours along the foot of the page
     for (let i = 0; i < 16; i++) { const n = Math.abs(Math.sin(i * 12.99 + Math.floor(time * 6) * 4.1) * 43758.5) % 1; x.globalAlpha = pp * (.35 + n * .5); x.fillStyle = cols[i % cols.length]; x.beginPath(); x.arc(48 + i * (PW - 70) / 15, PH - 16 - n * 26, 5 + n * 9, 0, 7); x.fill() } x.globalAlpha = 1 }
   x.restore();

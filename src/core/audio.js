@@ -2,8 +2,12 @@
    (Vick's own audio files, with the synthesised patterns as a fallback). */
 import { $, flip } from './state.js';
 
-export const P = { cutoff: .62, q: .22, dtime: .35, fb: .3, wet: .22, detune: .15, decay: .45, attack: .03, sub: .3, drums: .8, vol: .7, wave: 1 };
-export const PNAMES = { cutoff: 'Filter', q: 'Resonance', wet: 'Echo mix', detune: 'Detune', decay: 'Decay', vol: 'Volume' };
+export const P = { cutoff: .62, q: .22, dtime: .35, fb: .3, wet: .22, detune: .15, decay: .45, attack: .03, sub: .3, drums: .8, vol: .7, wave: 1, oct: 0, tempo: .5 };
+/* jam mode's five sounds for the keys (organisms/jam.js): a wave, how fast it speaks, how much sub, and which octave */
+export const VOICES = [{ n: 'KEYS', wave: 1, attack: .03, sub: .3, oct: 0 }, { n: 'BASS', wave: 0, attack: .01, sub: .9, oct: -2 }, { n: 'PLUCK', wave: 2, attack: 0, sub: 0, oct: 1 }, { n: 'PAD', wave: 0, attack: .9, sub: .4, oct: 0 }, { n: 'LEAD', wave: 2, attack: .02, sub: .15, oct: 1 }];
+/* jam mode listens to what's played by hand (LIVE.fn(kind, what, len)) and plays it back on the audio clock (the `when` arguments below) */
+export const LIVE = { fn: null }, clock = () => ac ? ac.currentTime : 0;
+export const PNAMES = { cutoff: 'Filter', q: 'Resonance', wet: 'Echo mix', detune: 'Detune', decay: 'Decay', vol: 'Volume', tempo: 'Tempo' };
 const WAVES = ['triangle', 'square', 'sawtooth'];
 let ac, master, filter, delay, fb, wet, an, noiseBuf, tdata;
 export let muted = false;
@@ -23,12 +27,13 @@ export function applyP() {
   to(filter.frequency, 180 * Math.pow(90, P.cutoff)); to(filter.Q, .5 + P.q * 16);
   to(delay.delayTime, .05 + P.dtime * .7, .05); to(fb.gain, P.fb * .85); to(wet.gain, P.wet); to(master.gain, muted ? 0 : P.vol * .8);
 }
-export function playNote(m, len = 1) {
-  if (!ac || muted) return; const t = ac.currentTime, f = 440 * Math.pow(2, (m - 69) / 12), g = ac.createGain(), dec = .25 + P.decay * 2.2 * len;
-  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.22, t + .005 + P.attack * .6); g.gain.exponentialRampToValueAtTime(.0008, t + dec); g.connect(filter);
+export function playNote(m, len = 1, when, v) { // when: an audio-clock time (a looped note); v: the voice it was recorded with
+  if (!ac || muted) return; if (!when) LIVE.fn?.('n', m, len);
+  const Q = v || P, t = when || ac.currentTime, f = 440 * Math.pow(2, (m + 12 * Q.oct - 69) / 12), g = ac.createGain(), dec = .25 + P.decay * 2.2 * len + Q.attack;
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.22, t + .005 + Q.attack * .6); g.gain.exponentialRampToValueAtTime(.0008, t + dec); g.connect(filter);
   const osc = (type, fq, det, out) => { const o = ac.createOscillator(); o.type = type; o.frequency.value = fq; o.detune.value = det; o.connect(out); o.start(t); o.stop(t + dec + .05) };
-  osc(WAVES[P.wave], f, -P.detune * 30, g); osc(WAVES[P.wave], f, P.detune * 30, g);
-  const sg = ac.createGain(); sg.gain.value = P.sub; sg.connect(g); osc('sine', f / 2, 0, sg);
+  osc(WAVES[Q.wave], f, -P.detune * 30, g); osc(WAVES[Q.wave], f, P.detune * 30, g);
+  const sg = ac.createGain(); sg.gain.value = Q.sub; sg.connect(g); osc('sine', f / 2, 0, sg);
 }
 /* Foley: small paper-and-plastic noises for the interface, made from filtered noise and clicks. Quiet, and wired straight to the
    speakers (not through the synth's chain), so they don't echo, don't follow the volume knob and don't make the notebook draw a waveform.
@@ -62,8 +67,8 @@ export function beep(n = 0) {
     g.gain.setValueAtTime(.0001, t0); g.gain.linearRampToValueAtTime(1, t0 + .008); g.gain.setValueAtTime(1, t0 + .05); g.gain.linearRampToValueAtTime(.0001, t0 + .075);
     o.connect(g); g.connect(lp); o.start(t0); o.stop(t0 + .09) });
 }
-export function drum(k) {
-  if (!ac || muted) return; const t = ac.currentTime, out = ac.createGain(); out.gain.value = P.drums; out.connect(master);
+export function drum(k, when) {
+  if (!ac || muted) return; if (!when) LIVE.fn?.('d', k); const t = when || ac.currentTime, out = ac.createGain(); out.gain.value = P.drums; out.connect(master);
   const env = (node, a, d, t0 = t) => { const g = ac.createGain(); g.gain.setValueAtTime(a, t0); g.gain.exponentialRampToValueAtTime(.001, t0 + d); node.connect(g); g.connect(out); return g };
   const nz = (d, type, fq, t0 = t) => { const s = ac.createBufferSource(); s.buffer = noiseBuf; const f = ac.createBiquadFilter(); f.type = type; f.frequency.value = fq; s.connect(f); s.start(t0); s.stop(t0 + d); return f };
   const osc = (type, f0, f1, d) => { const o = ac.createOscillator(); o.type = type; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + d); o.start(t); o.stop(t + d); return o };

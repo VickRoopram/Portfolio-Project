@@ -24,7 +24,7 @@ export function pressable(mesh, onPress, tip) {
 /* an item control: item i of channel ch ('kb' follows the keyboard's current mode). First click zooms to the mode, the next opens the card */
 export function itemCtrl(mesh, ch, i, sound) {
   CTRL[ch][i] = mesh; mesh.sound = sound; mesh.material = mesh.material.clone(); mesh.material.emissive = new THREE.Color(MODES[realCh(ch)].glow); fxOf(mesh).managed = true;
-  const has = () => i < CH[realCh(ch)].items.length;
+  const has = () => !S.play && i < CH[realCh(ch)].items.length; // in jam mode a key is only a key
   mesh.userData = { get ch() { return realCh(ch) }, i, get item() { return has() }, tip: 'Play a note', ...sprung(mesh),
     down() { sound?.(); press(mesh); if (!has()) return; const c = realCh(ch); S.mode !== c ? act.zoomTo(c) : act.openCard(c, i) } };
   hits.push(mesh); anim.push(mesh);

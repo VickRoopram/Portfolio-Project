@@ -7,7 +7,7 @@ export const desktop = () => innerWidth > 760;
 /* restart a one-shot CSS animation (icon flips) */
 export const flip = b => { b.classList.remove('flip'); void b.offsetWidth; b.classList.add('flip') };
 
-export const S = { mode: null, card: null, hover: null, hoverUntil: 0, kb: 'gd', grp: null, menu: false }; // what the visitor is doing (menu: the side panel is open)
+export const S = { mode: null, card: null, hover: null, hoverUntil: 0, kb: 'gd', grp: null, menu: false, play: false, voice: 0 }; // what the visitor is doing (menu: the side panel is open · play: jam mode, the bench is just an instrument · voice: which sound the keys have in jam mode)
 export const V = { fly: null, drag: null, side: false, zoom: { min: 1, max: 100 }, logo: 0, look: null };          // camera flight, active drag, a panel is about to open, zoom limits (synth ↔ table), how much the logo is showing on the synth screen (0..1)
 export const hits = [], anim = [];          // raycast targets · meshes easing toward userData.ty / .r
 export const CTRL = { kb: [], cv: [] };     // item controls: the keys (current keyboard mode) and the remote
