@@ -154,6 +154,7 @@ function start(list) { // list: a one-off thing to say (welcomeBack) in place of
   if (!el) build(); ensureAudio();
   S.hover = S.grp = null; // whatever was under the pointer lets go
   if (S.menu) act.closeMenu?.(); if (S.mode || S.card || V.look) act.zoomOut?.(); // back to the whole bench, so everything he points at is in view
+  for (const b of [$('tour-skip'), back, pips.parentNode]) b.style.visibility = list ? 'hidden' : ''; // a one-off has nothing to skip, step back through or count
   steps = list || STEPS.filter(s => !(s.wide && !desktop()) && !(s.at?.[0] === '#' && !visible(s.at)));
   open = true; el.hidden = false; el.classList.remove('out'); help.setAttribute('aria-expanded', 'true'); help.classList.remove('nudge', 'peeping'); document.body.dataset.tour = 'on';
   try { localStorage.setItem('vdc-tour', '1') } catch {}
