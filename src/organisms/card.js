@@ -9,8 +9,11 @@ const out = url => icon(/\.pdf$/i.test(url) ? 'download' : 'external-link', 16);
 const EMAIL = 'vickhal10@gmail.com';
 /* images shimmer until they arrive, then fade in */
 const pic = (g, cls = '') => `<button class="pic ${cls}" data-src="${g.s}" aria-label="Enlarge: ${g.a}"><img src="${g.s}" alt="${g.a}" loading="lazy" onload="this.parentNode.classList.add('ok')" onerror="this.parentNode.classList.add('ok')"></button>`;
+/* About is one page you scroll: every About item under the next, each a section you can be sent to (openCard scrolls to it) */
+const ONE = 'ab';
 function cardHTML(ch, i) {
-  const it = CH[ch].items[i]; let h = it.img?.length ? pic(it.img[0], 'lead') : '';
+  if (ch === ONE && i !== -1) return cardHTML(ch, -1) + CH[ch].items.slice(1).map((x, n) => `<section class="d sec" data-sec="${n + 1}"><h3>${x.t}</h3><p class="k">${x.k}</p>${x.d || ''}</section>`).join('');
+  const it = CH[ch].items[Math.max(0, i)]; let h = it.img?.length ? pic(it.img[0], 'lead') : '';
   h += `<header class="hd"><h2>${it.t}</h2><p class="k">${it.k}</p></header>`;
   if (it.hero) h += `<div class="hero"><img src="assets/img/vick.jpg" alt="Portrait of Vickhal Roopram"><div class="d"><p><b>Vickhal Roopram</b><br>UX & Motion Designer<br>27 · South Africa</p></div></div>`;
   if (it.bars) h += `<div class="bars">${it.bars.map(b => `<div class="bar"><span>${b[0]}</span><small>${b[1]}</small><div><i style="--w:${b[2] * 100}%"></i></div></div>`).join('')}</div>`;
@@ -36,14 +39,17 @@ export function openCard(ch, i, o = {}) {
   const was = S.card, from = o.from ?? (S.card?.ch === ch ? S.card.from : undefined); S.card = { ch, i, from }; updateUI(); cf.hidden = from !== 'menu';
   /* paging to another project in the same book turns the page: the page you were reading lifts off and swings over
      (to the left going forward, to the right going back), with its blank back showing, and the next page is underneath */
-  const n0 = CH[ch].items.length, turn = was && !card.hidden && was.ch === ch && was.i !== i && !reduceMotion ? ((i - was.i + n0) % n0 <= n0 / 2 ? 1 : -1) : 0;
+  const n0 = CH[ch].items.length, turn = was && !card.hidden && was.ch === ch && was.i !== i && ch !== ONE && !reduceMotion ? ((i - was.i + n0) % n0 <= n0 / 2 ? 1 : -1) : 0;
   if (turn) {
     const leaf = document.createElement('div'), front = ct.cloneNode(true), top = ct.scrollTop; leaf.className = 'leaf ' + (turn > 0 ? 'fwd' : 'back'); foley('page'); leaf.setAttribute('aria-hidden', 'true');
     front.removeAttribute('id'); front.classList.add('leaf-front'); leaf.style.cssText = `top:${ct.offsetTop}px;left:${ct.offsetLeft}px;width:${ct.offsetWidth}px;height:${ct.offsetHeight}px`;
     leaf.append(front, Object.assign(document.createElement('div'), { className: 'leaf-back' })); card.append(leaf); front.scrollTop = top; setTimeout(() => leaf.remove(), 600);
   }
-  card.style.setProperty('--accent', CH[ch].col); ct.innerHTML = cardHTML(ch, i); ct.scrollTop = 0;
-  if (!turn) { card.hidden = true; void card.offsetWidth; card.hidden = false } // a new book: the sheet drops in
+  card.style.setProperty('--accent', CH[ch].col); const same = ch === ONE && was?.ch === ch && !card.hidden; // already on the About page: only scroll
+  if (!same) ct.innerHTML = cardHTML(ch, i); card.dataset.one = String(ch === ONE);
+  if (!turn && !same) { card.hidden = true; void card.offsetWidth; card.hidden = false } // a new book: the sheet drops in
+  const sec = ch === ONE && i ? ct.querySelector(`[data-sec="${i}"]`) : null;
+  ct.scrollTo({ top: sec ? sec.getBoundingClientRect().top - ct.getBoundingClientRect().top + ct.scrollTop - 14 : 0, behavior: same && !reduceMotion ? 'smooth' : 'auto' });
   if (!o.quiet) { const rb = ROWBTN.find(a => a[1] === ch); if (rb) press(rb[0]); const m = (onKeys(ch) ? CTRL.kb : CTRL[ch])?.[i]; if (m) press(m) }
   const cp = $('cp'); if (cp) cp.onclick = () => navigator.clipboard?.writeText(EMAIL).then(() => {
     cp.classList.add('done'); cp.innerHTML = icon('check', 18, 'tick') + '<span>Copied</span>'; toast('Email copied to your clipboard'); drum('blip') }, () => toast(`Copy blocked: the address is ${EMAIL}`));

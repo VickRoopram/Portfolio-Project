@@ -35,8 +35,8 @@ function login(msg = '') {
 async function start() {
   root.innerHTML = '<div class="center"><span class="spin"></span>Loading your content…</div>';
   try {
-    const [{ CH, LINKS, MENU }, { noCVDownload }] = await Promise.all([import('/src/content.js'), import('/src/cms.js')]);
-    const store = await siteStore({ api, signOut, defaults: { CH, LINKS, MENU }, noCV: noCVDownload });
+    const [{ CH, LINKS, MENU }, { noCVDownload, stale }] = await Promise.all([import('/src/content.js'), import('/src/cms.js')]);
+    const store = await siteStore({ api, signOut, defaults: { CH, LINKS, MENU }, noCV: noCVDownload, stale });
     store.onToken = keep;
     startAdmin(root, { store, icon });
   } catch (e) { if (e.message !== 'signed out') root.innerHTML = `<div class="center"><b>Couldn’t load the content.</b><span>${esc(e.message)}</span><button class="btn" onclick="location.reload()">Try again</button></div>` }

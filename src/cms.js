@@ -21,6 +21,11 @@ export function noCVDownload(CH, LINKS = []) {
   for (let i = LINKS.length - 1; i >= 0; i--) if (CV_FILE.test(LINKS[i]?.[1] || '')) LINKS.splice(i, 1);
 }
 
+/* sections rewritten in content.js since the admin last saved them: until the admin saves again, the copy in content.js is the one shown
+   (the admin applies the same rule when it loads, so its next save keeps the new copy). 16 Nov 2026: About, rewritten round "I use the box" */
+const REVISED = { ab: '2026-11-16T21:00', info: '2026-11-16T21:00' };
+export const stale = (k, doc) => !!REVISED[k] && !(doc?.updated > REVISED[k]);
+
 /* a menu from /admin replaces the default, if it is well formed */
 export function applyMenu(MENU, m) {
   const ok = x => x && typeof x.label === 'string' && /^(home|about|projects|contact|link|mode:[a-z]{2,8})$/.test(x.go);
@@ -37,6 +42,7 @@ export async function applyCMS(CH, LINKS, MENU) {
     const doc = await r.json();
     if (!doc?.ch) return false;
     for (const [k, g] of Object.entries(doc.ch)) {
+      if (stale(k, doc)) continue;
       if (!CH[k]) CH[k] = { name: g.name, col: g.col, items: [] };
       Object.assign(CH[k], { name: g.name, col: g.col }, g.glow ? { glow: g.glow } : {}, g.knob ? { knob: g.knob } : {});
       CH[k].items = g.items;

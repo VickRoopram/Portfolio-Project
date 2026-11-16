@@ -1,7 +1,8 @@
-/* Intro, in two parts, on one sheet of paper on the workbench. No buttons.
+/* Intro, in two parts, on one sheet of paper on the workbench.
    1 The loader: only the sketch of the site, drawn in CSS while the scene loads.
-   2 The welcome: when the scene is ready, the name on one line and a line of copy are written under the sketch. Click it, or scroll (the sheet slides up with the wheel), swipe or press a key,
-     and it's whipped off the bench to show the site. It greets every visit and every refresh. */
+   2 The welcome: when the scene is ready, the name on one line, a line of copy and the red Enter button are written under the sketch.
+     Press Enter, or scroll (the sheet slides up with the wheel), swipe or press a key, and it's whipped off the bench to show the site.
+     It greets every visit and every refresh. */
 import { $ } from '../core/state.js';
 import { ensureAudio, drum } from '../core/audio.js';
 
@@ -14,7 +15,7 @@ export function initIntro(swoop) {
     clearTimeout(idle); idle = setTimeout(() => { pulled = 0; sheet.style.translate = '' }, 500) };
   const on = [['wheel', drag], ['touchmove', go], ['keydown', e => { if (!e.metaKey && !e.ctrlKey && !e.altKey && e.key !== 'Tab') go() }]];
   setTimeout(() => {
-    it.classList.add('ready'); it.removeAttribute('aria-busy'); if (matchMedia('(hover: none)').matches) $('in-hint').textContent = 'Tap or swipe to come in';
-    it.onclick = go; for (const [ev, fn] of on) addEventListener(ev, fn, { passive: true });
+    it.classList.add('ready'); it.removeAttribute('aria-busy'); if (matchMedia('(hover: none)').matches) $('in-or').textContent = 'or swipe';
+    $('enter').onclick = go; for (const [ev, fn] of on) addEventListener(ev, fn, { passive: true });
   }, Math.max(0, SHOWN - performance.now()));
 }

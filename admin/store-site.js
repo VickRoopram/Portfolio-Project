@@ -12,12 +12,12 @@ const ago = iso => { if (!iso) return 'never'; const s = (Date.now() - Date.pars
   return new Date(iso).toLocaleString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) };
 const strip = (k, v) => k.startsWith('_') ? undefined : v; // upload placeholders and other UI-only fields never leave the page
 
-export async function siteStore({ api, signOut, defaults, noCV }) {
+export async function siteStore({ api, signOut, defaults, noCV, stale }) {
   let base = null, from = 'defaults';
   for (const stage of ['draft', 'live']) { try { base = await api(`/api/content?stage=${stage}`); from = stage; break } catch (e) { if (e.message === 'signed out') throw e } }
   base ||= { v: 1, ch: {}, links: defaults.LINKS };
   const CH = JSON.parse(JSON.stringify(defaults.CH)), links = base.links?.length ? base.links : defaults.LINKS;
-  for (const [k, g] of Object.entries(base.ch || {})) CH[k] = { ...(CH[k] || {}), ...g };
+  for (const [k, g] of Object.entries(base.ch || {})) if (!stale?.(k, base)) CH[k] = { ...(CH[k] || {}), ...g }; // a section rewritten in content.js since the last save starts from the new copy (src/cms.js)
   noCV?.(CH, links); // the CV isn't downloadable from the site: same rule as the site itself
   const data = {
     groups: Object.fromEntries(MANAGED.map(k => [k, { name: CH[k].name, col: CH[k].col, ...(CH[k].glow ? { glow: CH[k].glow } : {}), ...(CH[k].knob ? { knob: CH[k].knob } : {}), items: CH[k].items || [] }])),
