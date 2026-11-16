@@ -367,12 +367,10 @@ body:has(#zoom[data-state="on"]) #reset{--up:62px}
 /* the name on one line, however narrow the sheet; the hint under the line says what the sheet is doing */
 .in-card h1{white-space:nowrap;font-size:min(var(--t-2xl),9.2vw)}
 .in-hint{margin:0;font:400 var(--t-md)/1 var(--body);color:var(--red);animation:hintNod 1.1s infinite}
-/* 1 loading: the sheet is only the sketch. 2 ready: the sketch fades and folds away, the welcome is written in its place, and the whole
-   sheet is something to click or scroll off the bench */
-#intro:not(.ready) .in-card{display:none}
-.in-draw{transition:opacity .45s}
+/* 1 loading: only the sketch is on the sheet (the space under it is kept, so the sheet doesn't jump). 2 ready: the welcome is written
+   under the sketch, and the whole sheet is something to click or scroll off the bench */
+#intro:not(.ready) .in-card{visibility:hidden}
 #intro.ready{cursor:var(--cur-point)}
-#intro.ready .in-draw{opacity:0;position:absolute;inset:0;pointer-events:none}
 #intro.ready .in-card{animation:welcomeIn .5s .3s backwards}
 @keyframes welcomeIn{from{opacity:0;translate:0 10px}}
 @keyframes hintNod{50%{translate:0 3px}}
