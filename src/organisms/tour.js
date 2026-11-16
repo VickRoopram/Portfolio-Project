@@ -20,7 +20,7 @@ const STEPS = [
   { h: 'Drop a beat', p: 'Press BEATS for one of Vick’s own tracks. Press again for the next.', at: 'beats', mood: 'happy' },
   { h: 'Bang the drums', p: 'Nine blue pads: kick, snare, hat and more. Tap out your own rhythm.', at: 'pads' },
   { h: 'Twist the knobs', p: 'Drag the four big knobs up or down to bend and shape the sound.', at: 'knobs' },
-  { h: 'Just jam', p: 'Hit Play to clear the desk and loop your own beats. No projects, only noise.', at: '#jam', mood: 'happy' },
+  { h: 'Just jam', p: 'Hit the play button to clear the desk and loop your own beats. No projects, only noise.', at: '#jam', mood: 'happy' },
   { h: 'Around the desk', p: `Polaroids and notes show the person behind the work. ${click} one!`, at: 'desk', wide: true },
   { h: 'Look around', p: 'Drag to turn the desk, or steer with this dial.', at: '#joy' },
   { h: 'Zoom right in', p: `${touch ? 'Pinch' : 'Scroll'} to go from the whole desk to one synth.`, at: '#zoom' },

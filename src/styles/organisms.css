@@ -60,7 +60,6 @@
 
 /* intro: the live synth shows through; one clear primary action */
 #intro{position:fixed;inset:0;z-index:30;display:grid;place-items:center;padding:var(--s5);background:color-mix(in srgb,var(--floor) 55%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:opacity .7s ease,visibility .7s}
-.entered #intro{display:none}
 #intro.out{opacity:0;visibility:hidden}
 .in-card{display:grid;justify-items:center;gap:var(--s4);max-width:520px;text-align:center}
 .in-card h1{margin:0;font:800 var(--t-2xl)/1 var(--body);letter-spacing:-.03em;color:var(--ink)}

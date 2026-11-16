@@ -56,6 +56,6 @@ act.jam = on => {
   else { halt(); DO.clear(); S.play = false; wear(kept); act.zoomOut(); note(); setTimeout(welcomeBack, 1300) }
   for (const o of RC.folio) o.visible = !on; for (const o of RC.jam) o.visible = on;
   S.hover = S.grp = null; applyP(); if (on) document.body.dataset.play = 'on'; else delete document.body.dataset.play;
-  $('jam').hidden = on; $('jamBack').hidden = !on;
+  $('jamBack').hidden = !on;
 };
 $('jam').onclick = () => act.jam(true); $('jamBack').onclick = () => act.jam(false);

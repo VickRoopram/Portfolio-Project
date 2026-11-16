@@ -1,22 +1,20 @@
-/* Intro and loader: a sheet of paper on the workbench with the site sketched on it (drawn in CSS while the scene loads), the name and one line.
-   No button: when the scene is ready the sketch fades away, and the sheet can be clicked, scrolled, swiped or keyed off the bench.
-   Skipped for the rest of the session once entered. */
+/* Intro, in two parts, on one sheet of paper on the workbench. No buttons.
+   1 The loader: only the sketch of the site, drawn in CSS while the scene loads. When the scene is ready the sketch fades away.
+   2 The welcome: the name on one line and a line of copy. Click it, or scroll (the sheet slides up with the wheel), swipe or press a key,
+     and it's whipped off the bench to show the site. It greets every visit. */
 import { $ } from '../core/state.js';
 import { ensureAudio, drum } from '../core/audio.js';
 
-const SHOWN = 2600; // the sketch gets at least this long (ms from page load) to be drawn before it goes
+const SHOWN = 2600, PULL = 220; // the sketch gets at least this long (ms from page load) to be drawn · how far (px of wheel) the sheet is dragged before it lets go
 /* swoop() runs the camera's entrance once the sheet is whipped away */
 export function initIntro(swoop) {
-  const it = $('intro'); if (!it) return;
-  if (document.documentElement.classList.contains('entered')) { it.remove(); return }
-  const go = () => {
-    if (it.classList.contains('out')) return; try { sessionStorage.setItem('vdc-in', '1') } catch {}
-    ensureAudio(); drum('whoosh'); it.classList.add('out'); setTimeout(() => it.remove(), 900); swoop();
-    for (const [ev, fn] of on) removeEventListener(ev, fn);
-  };
-  const on = [['wheel', go], ['touchmove', go], ['keydown', e => { if (!e.metaKey && !e.ctrlKey && !e.altKey && e.key !== 'Tab') go() }]];
+  const it = $('intro'), sheet = it?.querySelector('.in-sheet'); if (!it) return; let pulled = 0, idle = 0;
+  const go = () => { if (it.classList.contains('out')) return; ensureAudio(); drum('whoosh'); it.classList.add('out'); setTimeout(() => it.remove(), 900); swoop(); for (const [ev, fn] of on) removeEventListener(ev, fn) };
+  const drag = e => { pulled += Math.abs(e.deltaY); if (pulled > PULL) return go(); sheet.style.translate = `0 ${-pulled * .5}px`; // the sheet rides up with the scroll, and settles back if you stop short
+    clearTimeout(idle); idle = setTimeout(() => { pulled = 0; sheet.style.translate = '' }, 500) };
+  const on = [['wheel', drag], ['touchmove', go], ['keydown', e => { if (!e.metaKey && !e.ctrlKey && !e.altKey && e.key !== 'Tab') go() }]];
   setTimeout(() => {
-    it.classList.add('ready'); it.removeAttribute('aria-busy'); $('in-hint').textContent = matchMedia('(hover: none)').matches ? 'Tap or swipe to come in' : 'Click or scroll to come in';
+    it.classList.add('ready'); it.removeAttribute('aria-busy'); if (matchMedia('(hover: none)').matches) $('in-hint').textContent = 'Tap or swipe to come in';
     it.onclick = go; for (const [ev, fn] of on) addEventListener(ev, fn, { passive: true });
   }, Math.max(0, SHOWN - performance.now()));
 }
