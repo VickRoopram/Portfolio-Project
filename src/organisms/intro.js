@@ -15,7 +15,7 @@ export function initIntro(swoop) {
     clearTimeout(idle); idle = setTimeout(() => { pulled = 0; sheet.style.translate = '' }, 500) };
   const on = [['wheel', drag], ['touchmove', go], ['keydown', e => { if (!e.metaKey && !e.ctrlKey && !e.altKey && e.key !== 'Tab') go() }]];
   setTimeout(() => {
-    it.classList.add('ready'); it.removeAttribute('aria-busy'); if (matchMedia('(hover: none)').matches) $('in-or').textContent = 'or swipe';
+    it.classList.add('ready'); it.removeAttribute('aria-busy'); if (matchMedia('(hover: none)').matches) $('in-or').textContent = 'or swipe to continue';
     $('enter').onclick = go; for (const [ev, fn] of on) addEventListener(ev, fn, { passive: true });
   }, Math.max(0, SHOWN - performance.now()));
 }
