@@ -5,3 +5,4 @@
 @import url("styles/organisms.css");
 @import url("styles/skin.css"); /* the cardboard-model skin (14 Nov 2026): paper, card, ink lines, animated on twos */
 @import url("styles/tour.css"); /* Beep the tour guide: the cardboard question mark, the wooden TV and his speech bubble */
+@import url("styles/pocket.css"); /* phones: the pocket page held upright, the synth turned sideways */

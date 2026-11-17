@@ -17,8 +17,14 @@ addEventListener('DOMContentLoaded',function(){var t=document.querySelector('#bo
 <link rel="preload" as="image" href="assets/tex/crumpled.jpg">
 <link rel="stylesheet" href="src/styles.css">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script>
+/* a phone (a touch screen with a phone's short side, or ?phone=1 to try it on a desktop) gets the pocket page held upright and the playable
+   synth turned sideways (src/boot.js). Everything else gets the 3D desk, and three.js starts downloading now */
+(function(){var h=document.documentElement,p=/[?&]phone=1/.test(location.search)||matchMedia('(pointer: coarse)').matches&&Math.min(screen.width,screen.height)<=540;
+  if(p){h.classList.add('phone');h.dataset.view=matchMedia('(orientation: landscape)').matches?'play':'page'}
+  else{var l=document.createElement('link');l.rel='modulepreload';l.href='https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';document.head.appendChild(l)}})();
+</script>
 </head>
 <body>
 <!-- hand-drawn line: this filter nudges whatever it's on; its seed is stepped a few times a second so the lines "boil" (organisms/craftui.js) -->
@@ -26,6 +32,7 @@ addEventListener('DOMContentLoaded',function(){var t=document.querySelector('#bo
   <filter id="boil" x="-4%" y="-8%" width="108%" height="116%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="2" seed="1" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.2" xChannelSelector="R" yChannelSelector="G"/></filter>
   <filter id="torn" x="-3%" y="-3%" width="106%" height="106%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".045" numOctaves="3" seed="8" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter>
 </defs></svg>
+<div id="pocket"></div>
 <div id="stage"><div id="loading"><span>Sketching…</span></div></div>
 <header class="top" id="top">
   <a class="brand" id="brand" href="./" aria-label="Vickhal Roopram: back to the full synth"><img src="assets/ui/logo-on-dark.svg" width="290" height="101" alt=""></a>
@@ -97,6 +104,6 @@ addEventListener('DOMContentLoaded',function(){var t=document.querySelector('#bo
 </div>
 <script type="module" src="src/atoms/icons.js"></script>
 <script type="module" src="src/organisms/cursor.js"></script>
-<script type="module" src="src/main.js"></script>
+<script type="module" src="src/boot.js"></script>
 </body>
 </html>

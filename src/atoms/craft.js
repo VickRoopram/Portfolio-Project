@@ -28,11 +28,7 @@ export function outline(mesh, w, h, d, t = .03) {
 export function boil() { for (const o of LINES) { const { w, h, d } = o.line, t = o.line.t * (.7 + Math.random() * .6); o.scale.set((w + 2 * t) / w, (h + 2 * t) / h, (d + 2 * t) / d) } }
 
 /* a wobbly hand-drawn line through points on a canvas: drawn twice, slightly off, like a marker gone over */
-export function sketch(x, pts, { close = false, jit = 1.5, passes = 2 } = {}) {
-  for (let p = 0; p < passes; p++) { x.beginPath();
-    pts.forEach(([px, py], i) => { const jx = px + (Math.random() - .5) * jit * 2, jy = py + (Math.random() - .5) * jit * 2; i ? x.lineTo(jx, jy) : x.moveTo(jx, jy) });
-    if (close) x.closePath(); x.stroke() }
-}
+export { sketch } from './sketch.js';
 
 /* ── hand-made: nothing is cut or stuck down perfectly ── */
 /* a repeatable random (same model on every visit) */

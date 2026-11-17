@@ -10,6 +10,7 @@ import { rbox, flat } from '../atoms/geometry.js';
 import { canvasTex } from '../atoms/textures.js';
 import { decal } from '../atoms/materials.js';
 import { card, rnd, sketch, outline, INK } from '../atoms/craft.js';
+import { DOODLES } from '../atoms/sketch.js';
 
 const hand = px => `400 ${px}px "Patrick Hand", "Comic Sans MS", cursive`, cut = (px, w = 900) => `${w} ${px}px "Londrina Solid", "Arial Narrow", sans-serif`;
 
@@ -69,16 +70,6 @@ function keepsake(mesh, key, tip, pad, onClick) {
 
 /* ── polaroids ── */
 const PW = .95 * 2, PD = 1.15 * 2, WHITE = card('paper', '#fffdf6', { bumpScale: .1 });
-const DOODLES = [ // placeholder sketches, one per snapshot, in a 100 × 100 box
-  x => { sketch(x, [[50, 12], [50, 88]]); sketch(x, [[26, 36], [74, 36]]) },                                                             // a cross
-  x => { [[30, 40, 13], [58, 34, 16], [80, 46, 11]].forEach(([cx, cy, r]) => { sketch(x, Array.from({ length: 11 }, (_, i) => [cx + Math.cos(i / 10 * 6.3) * r, cy + Math.sin(i / 10 * 6.3) * r])); sketch(x, [[cx - r, cy + r + 30], [cx - r * .6, cy + r + 4], [cx + r * .6, cy + r + 4], [cx + r, cy + r + 30]]) }) }, // three people
-  x => { sketch(x, [[8, 52], [30, 46], [70, 46], [92, 52], [70, 58], [30, 58]], { close: true }); sketch(x, [[44, 42], [50, 62], [56, 42]]) },    // a belt
-  x => { sketch(x, [[50, 8], [88, 34], [74, 82], [26, 82], [12, 34]], { close: true }); sketch(x, [[50, 8], [50, 44], [88, 34]]); sketch(x, [[12, 34], [50, 44], [26, 82]]); sketch(x, [[50, 44], [74, 82]]) }, // a twenty-sided die
-  x => { sketch(x, [[6, 84], [36, 26], [52, 54], [66, 36], [94, 84]]); sketch(x, [[27, 42], [36, 48], [44, 40]]) },                              // mountains
-  x => { sketch(x, [[28, 50], [38, 30], [62, 30], [72, 50], [62, 76], [38, 76]], { close: true }); sketch(x, [[28, 50], [16, 26], [36, 34]]); sketch(x, [[72, 50], [84, 26], [64, 34]]); sketch(x, [[44, 62], [50, 68], [56, 62]]) }, // a dog
-  x => { sketch(x, [[20, 84], [72, 22], [84, 34], [32, 94], [16, 98]], { close: true }); sketch(x, [[64, 32], [76, 44]]) },                      // a pencil
-  x => { sketch(x, Array.from({ length: 13 }, (_, i) => [50 + Math.cos(i / 12 * 6.3) * 30, 48 + Math.sin(i / 12 * 6.3) * 34])); sketch(x, [[38, 58], [50, 66], [62, 58]]); sketch(x, [[38, 40], [42, 40]]); sketch(x, [[58, 40], [62, 40]]) }, // a face
-];
 function snap(p, i) { // the face of a polaroid: the picture (or its placeholder) and a handwritten caption
   const T = canvasTex(760, 920, (x, W, H) => draw(x, null)); // drawn at twice the size, to be read close up
   function draw(x, img) { x.setTransform(2, 0, 0, 2, 0, 0); x.clearRect(0, 0, 380, 460); const S = 336, o = 22;
@@ -109,7 +100,8 @@ function drawNote(x) { x.setTransform(2, 0, 0, 2, 0, 0); const g = x.createLinea
     if (it.done) { x.strokeStyle = '#e0301a'; x.lineWidth = 6; sketch(x, [[36, y - 2], [46, y + 9], [68, y - 20]], { jit: 1, passes: 1 }) }
     x.fillStyle = INK; x.font = hand(34); x.fillText(it.t, 78, y + 2); if (it.done) { x.strokeStyle = 'rgba(42,27,18,.7)'; x.lineWidth = 3; sketch(x, [[76, y + 3], [78 + x.measureText(it.t).width, y + 1]], { jit: 1.5, passes: 1 }) } }) }
 document.fonts.ready.then(() => { drawNote(noteTex.x); noteTex.t.needsUpdate = true });
-{ const m = rbox(2.5, .02, 2.5, .02, card('paper', '#f6e06a', { bumpScale: .1 })); m.position.set(13.9, .012, 6.3); m.rotation.y = -.16; scene.add(m);
+if (!document.documentElement.classList.contains('phone')) { // not on a phone, where the desk is only the synth's stand
+  const m = rbox(2.5, .02, 2.5, .02, card('paper', '#f6e06a', { bumpScale: .1 })); m.position.set(13.9, .012, 6.3); m.rotation.y = -.16; scene.add(m);
   const f = flat(2.5, 2.5, decal(new THREE.MeshStandardMaterial({ map: noteTex.t, roughness: .8, metalness: 0, envMapIntensity: .2 })), .012); f.receiveShadow = true; f.raycast = () => {}; m.add(f);
   keepsake(m, 'todo', () => 'To do<small>Researching it first.</small>', 3.6) }
 

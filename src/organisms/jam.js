@@ -50,8 +50,11 @@ function drawNote() {
 export function updateJam() { if (S.play) drawNote() }
 
 const BOX = new THREE.Box3(new THREE.Vector3(-13, 0, -4.2), new THREE.Vector3(9.7, 1.2, 4.3)); // both boxes, a bit closer than the whole bench
+const PHONE = document.documentElement.classList.contains('phone');
+/* on a phone the synth is only ever in jam mode (turning upright is the way back), and the loop stops when it's turned upright */
+if (PHONE) matchMedia('(orientation: portrait)').addEventListener('change', e => { if (e.matches && L.on) { halt(); drawNote() } });
 act.jam = on => {
-  if (on === S.play) return; ensureAudio();
+  if (on === S.play || PHONE && !on) return; ensureAudio();
   if (on) { act.cancelJourney(); if (S.menu) act.closeMenu(); kept = voiceNow(); S.play = true; S.voice = 0; wear(VOICES[0]); act.lookAt('jam', BOX); shown = ''; drawNote() }
   else { halt(); DO.clear(); S.play = false; wear(kept); act.zoomOut(); note(); setTimeout(welcomeBack, 1300) }
   for (const o of RC.folio) o.visible = !on; for (const o of RC.jam) o.visible = on;

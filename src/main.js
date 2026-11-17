@@ -39,7 +39,9 @@ function spot(key) {
 Object.assign(act, { zoomTo, zoomOut, openCard, closeCard, journey, cancelJourney, openMenuFor, panBy, spinBy, recentre, lookAt, closeMenu, spot });
 
 const clock = new THREE.Clock(); let last = performance.now(), drawn = -1e9, pictures = 0;
+const html = document.documentElement, PHONE = html.classList.contains('phone'); // a phone: this is only the synth, shown while it's turned sideways (boot.js)
 function loop() {
+  if (html.dataset.view === 'page') { last = performance.now(); return requestAnimationFrame(loop) } // held upright: the page is showing, so nothing to draw
   const t = clock.getElapsedTime(), now = performance.now(), dt = Math.min(.05, (now - last) / 1000); last = now;
   updateCamera(now); updateJoystick(now, dt); updateZoom(now);
   for (const o of anim) { const u = o.userData; if (u.ty !== undefined) o.position.y += (u.ty - o.position.y) * .35; if (u.r !== undefined) o.rotation.y += (u.r - o.rotation.y) * .18 } // keys spring, knobs turn
@@ -55,4 +57,5 @@ function loop() {
   if (pictures % 3 === 0) sun.shadow.needsUpdate = true; // shadows: four times a second is plenty
   renderer.render(scene, camera);
 }
-updateUI(); initIntro(swoopIn); loop();
+updateUI(); initIntro(PHONE ? () => act.jam(true) : swoopIn); loop();
+if (PHONE && !document.getElementById('intro')) act.jam(true); // the page already said hello: straight to the instrument
