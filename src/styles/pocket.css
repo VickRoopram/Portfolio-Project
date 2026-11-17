@@ -17,11 +17,11 @@ html.phone[data-view="play"][data-locked] #p-unplay{display:inline-flex;position
 .o-wall{position:absolute;inset:0;background:radial-gradient(120% 60% at 50% 0,rgba(255,226,180,.07),transparent 70%),linear-gradient(rgba(34,21,14,.86),rgba(52,34,23,.8) 70%),#2c1c13 var(--kraft-dk-tex) 0 0/320px}
 .o-floor{position:absolute;left:0;right:0;bottom:0;top:calc(var(--top) + 688px * var(--k));border-top:3px solid var(--ink);
   background:linear-gradient(rgba(20,11,7,.45),rgba(14,8,5,.8)),#3a2417 var(--wood-tex) center/640px;box-shadow:inset 0 7px 0 rgba(255,220,170,.08)}
-.o-glow{position:absolute;left:calc(50% + 132px * var(--k));top:calc(var(--top) + 434px * var(--k));width:calc(1150px * var(--k));aspect-ratio:1;translate:-50% -50%;pointer-events:none;
+.o-glow{position:absolute;left:calc(50% + 135px * var(--k));top:calc(var(--top) + 92px * var(--k));width:calc(1250px * var(--k));aspect-ratio:1;translate:-50% -50%;pointer-events:none;
   background:radial-gradient(circle,rgba(255,206,130,.3),rgba(255,190,110,.1) 34%,transparent 60%);mix-blend-mode:screen;transition:opacity .25s}
 html[data-dark] .o-glow{opacity:0}
 html[data-dark] :is(.o-wall,.o-floor){filter:brightness(.5)}
-html[data-dark] .o-stage>:not(.o-lamp){filter:brightness(.62) saturate(.8)}
+html[data-dark] .o-stage{filter:brightness(.62) saturate(.8)}
 
 /* the wall is drawn at 390 × 700 and scaled to fit (pocket.js fit()) */
 .o-stage{position:absolute;left:50%;top:var(--top);width:390px;height:700px;margin-left:-195px;transform:scale(var(--k));transform-origin:50% 0}
@@ -31,106 +31,128 @@ html[data-dark] .o-stage>:not(.o-lamp){filter:brightness(.62) saturate(.8)}
 .o-cable{fill:none;stroke:var(--ink);stroke-width:7.5;stroke-linecap:round}
 .o-cable.c2{stroke:#f2e3c6;stroke-width:4.6}
 .o-cable.c3{stroke:var(--red);stroke-width:4.6;stroke-dasharray:7 7}
-.o-string,.o-tagstr{fill:none;stroke:#e8d9bb;stroke-width:1.6;stroke-linecap:round}
-.o-nail{fill:var(--ink);stroke:#c9b38f;stroke-width:1}
+.o-jack{fill:#2a1b12;stroke:#8c7a66;stroke-width:1.4}
 
-/* every thing on the wall throws a hard little shadow, like the cut-paper pieces on the desk */
-.o-syn,.o-plant svg,.o-lamp svg,.o-note,.o-play{filter:drop-shadow(4px 6px 0 rgba(10,5,2,.4))}
+/* ── everything solid on the wall (pocket.js slabSVG): kraft or wood, a lit lid, a shaded and hatched side, ink round it all.
+   The ink lines boil: #p-boil gets a new seed 12 times a second, so the line work is traced again on twos ── */
+.slab{position:absolute;left:-2px;top:-2px;overflow:visible}
+.ob-ink{fill:none;stroke:var(--ink);stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round}
+.ob-hi{fill:none;stroke:rgba(255,242,214,.35);stroke-width:1.4;stroke-linecap:round}
+.hatch{fill:none;stroke:var(--ink);stroke-width:1.2;stroke-linecap:round;opacity:.55}
+.crease{fill:none;stroke:rgba(42,27,18,.55);stroke-width:1.2;stroke-linecap:round}
+.o-stage :is(.o-shelf,.o-rem,.o-syn,.o-plant,.o-lamp,.o-play,.o-snap,.ob,.o-lines){filter:url(#p-boil) drop-shadow(4px 6px 0 rgba(10,5,2,.42))}
+.o-stage .o-lines{filter:url(#p-boil)}
 
-/* the shelf: a plank on two brackets */
-.o-shelf{position:absolute;left:10px;top:150px;width:370px;height:16px;border:var(--edge);border-radius:3px 2px 4px 2px;background:#7a5034 var(--wood-tex) 0 0/320px;
-  box-shadow:inset 0 3px 0 rgba(255,225,180,.18),0 9px 0 -1px rgba(10,5,2,.38)}
-.o-shelf .br{position:absolute;top:13px;width:20px;height:26px;background:#4b3020;clip-path:polygon(0 0,100% 0,18% 100%,0 100%)}
-.o-shelf .br.l{left:30px}.o-shelf .br.r{right:30px;scale:-1 1}
+/* the shelf: a plank seen a little from above, on two brackets */
+.o-shelf{position:absolute;left:6px;top:124px;width:379px;height:28px}
+.o-shelf .br{position:absolute;top:27px;width:18px;height:20px;background:#4b3020;border-top:2.5px solid var(--ink);clip-path:polygon(0 0,100% 0,14% 100%,0 100%)}
+.o-shelf .br.l{left:34px}.o-shelf .br.r{right:44px;scale:-1 1}
 
-/* ── the synth: the desktop one in miniature. A wood frame round a card panel: screen, four knobs, the speaker; the five section
-   tags; the keys and the pads ── */
-.o-syn{left:24px;top:62px;width:262px;height:88px;display:grid;grid-template-rows:30px 9px 1fr;gap:4px;padding:5px 7px 6px;
-  border:5px solid transparent;border-radius:9px 7px 8px 10px;background:var(--kraft-tex) 0 0/220px padding-box,linear-gradient(var(--kraft),var(--kraft)) padding-box,#8a5a38 var(--wood-tex) center/300px border-box;
-  box-shadow:0 0 0 2.5px var(--ink),inset 0 0 0 1.5px var(--ink)}
-.syn-top,.syn-tags,.syn-low{display:flex;gap:6px;min-height:0}
+/* the front panels of the two synths, set into their wood cases */
+.face{position:absolute;display:grid;min-height:0}
+
+/* ── the synth: the desktop one in miniature. Screen, four knobs, the speaker; the five section tags; the keys and the pads ── */
+.o-syn{left:70px;top:48px;width:226px;height:82px}
+.o-syn .face{grid-template-rows:25px 8px 1fr;gap:3px;padding:2px 3px 3px}
+.syn-top,.syn-tags,.syn-low{display:flex;gap:5px;min-height:0}
 .syn-top{align-items:center}
-.syn-scr{position:relative;display:grid;place-items:center;width:46px;height:27px;border:2px solid var(--ink);border-radius:3px;background:#2a1b12}
-.syn-scr svg{width:38px;height:18px}
-.syn-scr path{fill:none;stroke:var(--red);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:60;animation:wave 1.2s infinite}
+.syn-scr{position:relative;display:grid;place-items:center;width:40px;height:23px;border:2px solid var(--ink);border-radius:3px;background:#22150e;box-shadow:inset 0 2px 0 rgba(0,0,0,.5),0 1.5px 0 rgba(255,240,210,.4)}
+.syn-scr svg{width:32px;height:16px}
+.syn-scr path{fill:none;stroke:#ff5a3c;stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:60;animation:wave 1.2s steps(6,end) infinite}
 @keyframes wave{0%{stroke-dashoffset:60}60%,100%{stroke-dashoffset:0}}
-.syn-scr .led{position:absolute;top:3px;right:3px;width:4px;height:4px;border-radius:50%;background:#ff6a4d;animation:blink 1.3s infinite}
+.syn-scr .led{position:absolute;top:3px;right:3px;width:4px;height:4px;border-radius:50%;background:#ff6a4d;box-shadow:0 0 4px #ff6a4d;animation:blink 1.3s steps(1,end) infinite}
 @keyframes blink{50%{opacity:.15}}
-.knob{--a:-40deg;position:relative;flex:none;width:23px;height:23px;border:2px solid var(--ink);border-radius:50%;background:var(--cream) var(--paper) 0 0/80px;box-shadow:0 2px 0 rgba(42,27,18,.4);rotate:var(--a);transition:rotate .3s}
-.knob::after{content:"";position:absolute;left:50%;top:1px;width:2.4px;height:8px;margin-left:-1.2px;border-radius:2px;background:var(--ink)}
-.knob:nth-of-type(2){--a:30deg}.knob:nth-of-type(3){--a:-10deg}.knob:nth-of-type(4){--a:70deg}
-.o-syn.tap .knob{--a:200deg}
-.grille{flex:none;width:27px;height:27px;margin-left:auto;border:2px solid var(--ink);border-radius:50%;background:radial-gradient(circle,var(--ink) 1.1px,transparent 1.5px) 1px 1px/5px 5px,var(--cream)}
-.syn-tags{gap:4px}
-.syn-tags i{flex:1;border:1.5px solid var(--ink);border-radius:2px;background:linear-gradient(var(--ink),var(--ink)) center/46% 1.4px no-repeat,var(--cream)}
-.syn-low{gap:5px}
-.keys{position:relative;flex:1;display:flex;border:2px solid var(--ink);border-radius:2px 2px 3px 3px;background:#fbf4e4;overflow:hidden}
-.keys i{flex:1;border-right:1.4px solid var(--ink)}
+/* a knob: a cream cap on a turned side, lit from the top left, its pointer line in ink */
+.face .knob{--a:-40deg;position:relative;flex:none;width:20px;height:20px;border:2px solid var(--ink);border-radius:50%;
+  background:radial-gradient(circle at 34% 30%,#fffaf0 0 18%,transparent 52%),radial-gradient(circle at 50% 50%,transparent 62%,rgba(42,27,18,.28) 63% 70%,transparent 71%),var(--cream) var(--paper) 0 0/80px;
+  box-shadow:0 2.5px 0 #9c7a55,0 2.5px 0 2px var(--ink)}
+.face .knob i{position:absolute;inset:0;rotate:var(--a);transition:rotate .3s}
+.face .knob i::after{content:"";position:absolute;left:50%;top:1px;width:2.2px;height:7px;margin-left:-1.1px;border-radius:2px;background:var(--ink)}
+.face .knob:nth-of-type(2){--a:30deg}.face .knob:nth-of-type(3){--a:-10deg}.face .knob:nth-of-type(4){--a:70deg}
+.o-syn .knob:nth-of-type(3) i{animation:twitch 3.4s steps(1,end) infinite}
+@keyframes twitch{0%,70%{rotate:-10deg}74%,86%{rotate:24deg}90%{rotate:8deg}}
+.tap .knob{--a:200deg}
+.grille{flex:none;width:24px;height:24px;margin-left:auto;border:2px solid var(--ink);border-radius:50%;background:radial-gradient(circle,var(--ink) 1px,transparent 1.4px) 1px 1px/4.4px 4.4px,radial-gradient(circle at 35% 30%,#fff8e8,#d9c6a2);box-shadow:inset 0 -2px 0 rgba(42,27,18,.25)}
+.syn-tags{gap:3px}
+.syn-tags i{flex:1;border:1.5px solid var(--ink);border-radius:1.5px;background:linear-gradient(var(--ink),var(--ink)) center/44% 1.3px no-repeat,var(--cream);box-shadow:0 1.5px 0 rgba(42,27,18,.35)}
+.syn-low{gap:4px}
+/* keys: ivory, each with a shadowed front lip; the black keys raised over them */
+.keys{position:relative;flex:1;display:flex;border:2px solid var(--ink);border-radius:2px 2px 3px 3px;background:#fbf4e4;overflow:hidden;box-shadow:inset 0 3px 0 rgba(42,27,18,.22)}
+.keys i{flex:1;border-right:1.3px solid var(--ink);box-shadow:inset 0 -4px 0 #dccab0}
 .keys i:last-of-type{border:0}
-.keys b{position:absolute;top:0;left:calc(100% / 15 * (var(--k) + 1) - 100% / 15 * .3);width:calc(100% / 15 * .6);height:56%;border-radius:0 0 2px 2px;background:var(--ink)}
-.pads{display:grid;grid-template-columns:repeat(3,11px);gap:2px}
-.pads i{border:1.5px solid var(--ink);border-radius:2px;background:#4a78b3}
-.o-syn.tap .keys i:nth-child(3n+2),.o-syn.tap .pads i:nth-child(odd){animation:hit .35s}
-@keyframes hit{0%,60%{background:var(--red)}}
-.o-syn:active{translate:0 2px}
+.keys b{position:absolute;top:0;left:calc(100% / 15 * (var(--k) + 1) - 100% / 15 * .3);width:calc(100% / 15 * .6);height:56%;border-radius:0 0 2px 2px;background:linear-gradient(90deg,#4a3528 0 30%,var(--ink) 31%);box-shadow:0 2px 0 #120a06}
+.pads{display:grid;grid-template-columns:repeat(3,10px);gap:2px}
+.pads i{border:1.5px solid var(--ink);border-radius:2px;background:linear-gradient(#6f9ad0,#3f6ca6);box-shadow:inset 0 -2px 0 rgba(0,0,0,.25)}
+.tap .keys i:nth-child(3n+2){animation:hit .35s steps(2,end)}
+.tap .pads i:nth-child(odd){animation:hit .35s steps(2,end)}
+@keyframes hit{0%,60%{background:var(--red);box-shadow:inset 0 -1px 0 rgba(0,0,0,.3)}}
+.o-syn:active,.o-rem:active{translate:0 2px}
 
-/* the tag hung from the shelf: Play me, with the little phone that keeps tipping onto its side */
-.o-play{left:126px;top:190px;width:88px;height:31px;display:flex;align-items:center;justify-content:center;gap:7px;border:var(--edge);border-radius:var(--cut-s);
-  background:var(--cream) var(--paper) 0 0/140px;color:var(--red);rotate:-4deg;transform-origin:50% -24px}
-.o-play b{font:900 15px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;padding-top:2px}
-.o-play::before{content:"";position:absolute;left:50%;top:3px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:#3a2519}
-.o-play .ph-ico{width:11px;height:17px;border-width:2px;border-radius:3px}
+/* the Contact synth: CONTACT on its little screen, the volume knob, the red key and the four social keys */
+.o-rem{left:14px;top:34px;width:50px;height:96px}
+.face.rem{justify-items:center;align-content:start;gap:5px;padding:3px 2px}
+.rem-scr{width:100%;padding:3px 0 2px;border:1.5px solid var(--ink);border-radius:2px;background:#22150e;color:#ff7a5c;font:400 7.5px/1 var(--display);letter-spacing:.06em;text-align:center;box-shadow:inset 0 1.5px 0 rgba(0,0,0,.5)}
+.face .knob.big{width:20px;height:20px;background:radial-gradient(circle at 34% 30%,#ffd9a8 0 18%,transparent 52%),#e98a3a;box-shadow:0 2.5px 0 #9a5520,0 2.5px 0 2px var(--ink)}
+.rem-key{width:100%;height:10px;border:1.5px solid var(--ink);border-radius:2px;background:linear-gradient(#f05a40,#c8291a);box-shadow:0 2px 0 #7a1a10}
+.rem-keys{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:100%}
+.rem-keys i{height:9px;border:1.5px solid var(--ink);border-radius:2px;background:linear-gradient(#5b4535,#2e2018);box-shadow:0 2px 0 #120a06}
+.o-rem.tap .rem-key{animation:hit .3s steps(2,end)}
+
+/* the sign left on the shelf, in front of the synths: a folded card tent that says Play me, the little phone tipping onto its side */
+.o-play{left:150px;top:112px;width:78px;height:40px;rotate:-2deg}
+.o-play svg{position:absolute;left:0;top:0;width:78px;height:40px;overflow:visible}
+.sg-back{fill:#9c7650;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.sg-face{fill:var(--cream)}
+.sg-side{fill:#b89870}
+.sg-txt{position:absolute;left:3px;top:9px;width:66px;height:28px;display:flex;align-items:center;justify-content:center;gap:5px;color:var(--red)}
+.sg-txt b{font:900 14px/1 var(--display);letter-spacing:.05em;text-transform:uppercase;padding-top:2px}
+.o-play .ph-ico{width:10px;height:16px;border-width:2px;border-radius:3px}
 .o-play .ph-ico::after{bottom:1px;width:3px;height:1.5px;margin-left:-1.5px}
-.o-play:active{rotate:2deg}
+.o-play:active{translate:0 2px;rotate:1deg}
 .ph-ico{flex:none;position:relative;display:block;width:18px;height:28px;border:2.5px solid currentColor;border-radius:4px;animation:tipOver 3.2s steps(1,end) infinite}
 .ph-ico::after{content:"";position:absolute;left:50%;bottom:2px;width:4px;height:2px;margin-left:-2px;background:currentColor;border-radius:1px}
 @keyframes tipOver{0%,40%{rotate:0deg}48%{rotate:-30deg}56%,92%{rotate:-90deg}}
 
-/* the plant: full, wilted or a sprout (the same life it has on the desk) */
-.o-plant{left:300px;top:40px;width:74px;height:110px}
+/* the plant, behind the lamp: full, wilted or a sprout (the same life it has on the desk) */
+.o-plant{left:306px;top:24px;width:70px;height:104px}
 .o-plant svg{display:block;width:100%;height:100%;overflow:visible}
-.o-plant .lf{fill:#86ad4f;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.o-plant .lf{fill:#8db357;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
 .o-plant .lf.b{fill:#5f8a37}.o-plant .lf.d{fill:#b8955e}
 .o-plant .stem{fill:none;stroke:#5f8a37;stroke-width:3;stroke-linecap:round}
 .o-plant .pot{fill:#c8643a;stroke:var(--ink);stroke-width:2.2;stroke-linejoin:round}
 .o-plant .pot-rim{fill:#db7a4d;stroke:var(--ink);stroke-width:2.2;stroke-linejoin:round}
+.o-plant .soil{fill:#3a2418;stroke:var(--ink);stroke-width:1.5}
 .o-plant[data-life="full"] :is(.pl-dead,.pl-sprout),.o-plant[data-life="dead"] :is(.pl-full,.pl-sprout),.o-plant[data-life="sprout"] :is(.pl-full,.pl-dead){display:none}
-.pl-full,.pl-sprout{transform-origin:37px 70px;animation:sway 2.8s infinite}
+.pl-full,.pl-sprout{transform-origin:35px 66px;animation:sway 2.8s steps(8,end) infinite}
 @keyframes sway{0%,100%{rotate:-2deg}50%{rotate:2.5deg}}
 .o-plant:active{translate:0 2px}
 
-/* snapshots on the string, each held by a peg */
-.o-snap{width:42px;height:52px;rotate:var(--r);transform-origin:50% -4px}
-.o-pol{position:absolute;inset:0;display:block;border:1.5px solid var(--ink);background:#fffdf6;box-shadow:3px 4px 0 rgba(10,5,2,.42)}
+/* the snapshots: posters taped to the wall, two strips of masking tape each, the bottom corner curling off */
+.o-snap{width:70px;height:88px;rotate:var(--r);transform-origin:50% 0}
+.o-pol{position:absolute;inset:0;display:block;border:2px solid var(--ink);border-radius:1px;background:#f3e6c8;overflow:hidden}
 .o-pol canvas{display:block;width:100%;height:100%}
-.o-peg{position:absolute;z-index:1;left:50%;top:-9px;width:6px;height:15px;margin-left:-3px;border:1.5px solid var(--ink);border-radius:2px;background:#d9b98a}
-.o-snap.hop{animation:swing .7s}
-@keyframes swing{25%{rotate:calc(var(--r) + 9deg)}55%{rotate:calc(var(--r) - 6deg)}80%{rotate:calc(var(--r) + 2deg)}}
-.o-snap:active{scale:1.06}
-
-/* the brand line, on an index card taped to the wall */
-.o-note{position:absolute;left:208px;top:298px;width:158px;margin:0;padding:12px 12px 9px;background:var(--cream) var(--paper) 0 0/160px;border:2px solid var(--ink);border-radius:2px 3px 2px 4px;
-  rotate:3deg;color:var(--ink);font:400 16px/1.15 var(--body)}
-.o-note::before{content:"";position:absolute;left:50%;top:-10px;width:56px;height:18px;margin-left:-28px;background:rgba(236,220,170,.9);rotate:-4deg;box-shadow:0 1px 0 rgba(42,27,18,.3)}
-.o-note b{font:900 19px/1.1 var(--display);letter-spacing:.04em;text-transform:uppercase;color:var(--red)}
+.o-pol::after{content:"";position:absolute;right:-1px;bottom:-1px;width:11px;height:11px;background:linear-gradient(135deg,transparent 49%,#d8c6a2 50%,#efe0c0 70%,#c9b48c);border-left:2px solid var(--ink);border-top:2px solid var(--ink);border-radius:0 0 2px 0;clip-path:polygon(0 0,100% 0,0 100%)}
+.o-snap .tp{position:absolute;z-index:1;top:-7px;width:26px;height:13px;background:rgba(236,220,170,.92);box-shadow:0 1px 0 rgba(42,27,18,.3);
+  clip-path:polygon(0 10%,14% 0,46% 8%,72% 0,100% 6%,97% 52%,100% 94%,74% 100%,40% 92%,12% 100%,0 90%,3% 50%)}
+.o-snap .tp.a{left:-8px;rotate:-38deg}.o-snap .tp.b{right:-8px;rotate:36deg}
+.o-snap.hop{animation:lift .6s steps(4,end)}
+@keyframes lift{30%{rotate:calc(var(--r) + 3deg);translate:0 -3px}60%{rotate:calc(var(--r) - 1.5deg);translate:0 0}}
+.o-snap:active{scale:1.05}
 
 /* ── the boxes: the menu, stacked on the floor. A cream label on each front says what's packed inside ── */
 .ob{transition:translate .2s,rotate .2s}
-.ob-svg{position:absolute;left:-2px;top:-2px;overflow:visible;filter:drop-shadow(4px 5px 0 rgba(10,5,2,.36))}
-.ob-ink{fill:none;stroke:var(--ink);stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round}
 .ob-seam{fill:none;stroke:rgba(42,27,18,.5);stroke-width:1.4}
+.ob-flap{fill:none;stroke:rgba(42,27,18,.4);stroke-width:1.3;stroke-dasharray:3 3}
 .ob-tape{fill:rgba(236,220,170,.92);stroke:rgba(42,27,18,.35);stroke-width:1}
 .ob-mark{font:400 9.5px/1 var(--display);letter-spacing:.08em;fill:rgba(42,27,18,.55)}
 .ob-lab{position:absolute;left:0;right:var(--d);top:calc(var(--t) + 14px);bottom:0;display:grid;place-items:center;padding:2px 7px 16px;pointer-events:none}
-.ob-tag{position:relative;display:grid;gap:1px;max-width:100%;padding:6px 8px 4px;border:2px solid var(--ink);border-radius:var(--cut-s);text-align:center;
+.ob-tag{position:relative;display:grid;gap:1px;max-width:100%;padding:7px 9px 5px;border:2px solid var(--ink);border-radius:var(--cut-s);text-align:center;
   background:var(--cream) var(--paper) 0 0/140px;color:var(--ink);rotate:-1.6deg;box-shadow:0 2px 0 rgba(42,27,18,.3)}
 .ob:nth-of-type(even) .ob-tag{rotate:1.3deg}
-.ob-tag b{font:900 17px/.95 var(--display);letter-spacing:.03em;text-transform:uppercase}
-.ob-tag small{font:400 11.5px/1.1 var(--body);color:var(--mute)}
-.ob[data-box="mo"] .ob-tag b{font-size:15px}
+.ob-tag b{font:900 19px/.95 var(--display);letter-spacing:.03em;text-transform:uppercase}
+.ob:is([data-box="mo"],[data-box="xp"]) .ob-tag b{font-size:16px}
 .ob[data-box="hello"] .ob-tag{padding:6px 6px 4px;background:var(--red);color:var(--on-accent)}
 .ob[data-box="hello"] .ob-tag b{font-size:15px}
-.ob[data-box="hello"] .ob-tag small{display:none}
 /* a tick on the label once a box has been opened */
 .ob.got .ob-tag::after{content:"";position:absolute;top:-8px;right:-8px;width:17px;height:17px;border-radius:50%;
   background:var(--ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23fbf1dd' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/13px no-repeat}
@@ -138,22 +160,27 @@ html[data-dark] .o-stage>:not(.o-lamp){filter:brightness(.62) saturate(.8)}
 .hop:not(.o-snap){animation:hop .5s}
 @keyframes hop{30%{translate:0 -8px;rotate:-2deg}60%{translate:0 0;rotate:1.2deg}}
 
-/* the lamp, standing on the Experimental box: on, it lights the room; off, the room goes dim */
-.o-lamp{left:294px;top:404px;width:66px;height:80px}
+/* the lamp, on the shelf in front of the plant: on, it lights the room; off, the room goes dim */
+.o-lamp{left:298px;top:54px;width:60px;height:80px}
 .o-lamp svg{display:block;width:100%;height:100%;overflow:visible}
-.lp-stand{fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round}
-.lp-base{fill:#6b4630;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
-.lp-shade{fill:#fff4dc;stroke:var(--ink);stroke-width:2.2}
-.lp-crease{fill:none;stroke:rgba(42,27,18,.32);stroke-width:1.4;stroke-linecap:round}
-.lp-glow{fill:rgba(255,214,140,.38);transition:opacity .2s}
-html[data-dark] .lp-glow{opacity:0}
-html[data-dark] .lp-shade{fill:#bfb29a}
+.lp-beam{fill:rgba(255,214,140,.22);transition:opacity .2s}
+.lp-base,.lp-top{fill:#7a5034;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.lp-top{fill:#9a6a44}
+.lp-arm{fill:none;stroke:var(--ink);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+.lp-joint{fill:#e0c49a;stroke:var(--ink);stroke-width:1.6}
+.lp-shade{fill:#e98a3a;stroke:var(--ink);stroke-width:2.2;stroke-linejoin:round}
+.lp-rim{fill:#c46a24;stroke:var(--ink);stroke-width:1.6}
+.lp-bulb{fill:#fff3c8;stroke:var(--ink);stroke-width:1.8;animation:flick 4.2s steps(1,end) infinite}
+@keyframes flick{0%,88%,94%,100%{fill:#fff3c8}91%{fill:#e8d39a}}
+html[data-dark] :is(.lp-beam){opacity:0}
+html[data-dark] .lp-bulb{fill:#9a8c70;animation:none}
 .o-lamp:active{translate:0 2px}
 
 /* Hints: a red dot on everything not found yet (the site's one red marker for "you can press this") */
 .o-dot{position:absolute;z-index:3;top:-6px;right:-6px;width:15px;height:15px;border:2.5px solid var(--cream);border-radius:50%;background:var(--red);opacity:0;scale:.3;pointer-events:none;transition:opacity .15s,scale .2s}
 .ob .o-dot{top:calc(var(--t) - 6px);right:calc(var(--d) - 6px)}
 .o-snap .o-dot{top:auto;bottom:-6px}
+.o-rem .o-dot{top:-4px;right:2px}
 .hinting [data-find]:not(.got) .o-dot{opacity:1;scale:1;animation:ping .7s infinite}
 @keyframes ping{50%{scale:1.4}}
 
@@ -216,7 +243,6 @@ html.p-navon .p-bar{background:#2a1b12}
 @keyframes peek{from{translate:0 34px;opacity:0}}
 .o-head{flex:none;max-width:520px;padding:18px 22px 10px;text-align:center}
 .o-head h2{margin:0;font:900 var(--t-xl)/1 var(--display);letter-spacing:.03em;text-transform:uppercase;color:var(--stage-ink)}
-.o-head p{margin:5px 0 0;font:400 var(--t-md)/1.2 var(--body);color:var(--stage-ink);opacity:.82}
 .o-body{flex:1;min-height:0;width:100%;max-width:520px;overflow-y:auto;overscroll-behavior:contain;padding:4px 12px 10px}
 .o-pan.in :is(.o-head,.o-body){animation:sheetIn .34s both .12s}
 .o-body>.content{flex:none;overflow:visible;margin:4px 2px 14px;rotate:.4deg}
@@ -232,9 +258,10 @@ html.p-navon .p-bar{background:#2a1b12}
 .o-pan-foot .pill{min-height:44px}
 
 /* a snapshot, opened: the polaroid big, flipping over to the note on its back */
-.o-pan[data-kind="snap"] .o-hero{height:min(56vh,440px)}
+.o-pan[data-kind="snap"] .o-hero{height:min(66vh,520px);padding:68px 0 10px}
+.o-pan[data-kind="snap"] .o-head{display:none}
 .o-pan[data-kind="snap"] .o-body{visibility:hidden}
-.snap{all:unset;box-sizing:border-box;display:block;aspect-ratio:380/460;height:100%;perspective:900px;cursor:pointer;rotate:-2deg;-webkit-tap-highlight-color:transparent}
+.snap{all:unset;box-sizing:border-box;display:block;aspect-ratio:280/350;height:100%;perspective:900px;cursor:pointer;rotate:-2deg;-webkit-tap-highlight-color:transparent}
 .snap-in{position:relative;display:block;height:100%;transform-style:preserve-3d;transition:transform .5s}
 .snap.flip .snap-in{transform:rotateY(180deg)}
 .snap-f,.snap-b{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:2px solid var(--ink);border-radius:2px;overflow:hidden;box-shadow:5px 7px 0 rgba(0,0,0,.4)}
@@ -277,6 +304,6 @@ html.p-navon .p-bar{background:#2a1b12}
 
 @media (prefers-reduced-motion:reduce){
   .o-pan.in,.o-pan.in *,.p-nav,.p-sheet,.p-turn-card,.o-hello .in-sheet,.pl-full,.pl-sprout,.syn-scr path,.syn-scr .led,.o-in,.hinting .o-dot{animation:none!important}
-  .snap-in,.o-hero>*,.knob{transition:none}
+  .snap-in,.o-hero>*,.face .knob{transition:none}
   .ph-ico{animation:none;rotate:-90deg}
 }

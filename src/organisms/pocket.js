@@ -11,7 +11,7 @@ import { icon } from '../atoms/icons.js';
 import { DOODLES } from '../atoms/sketch.js';
 
 const $ = id => document.getElementById(id), html = document.documentElement, reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const W = 390, H = 670, LIFT = 30; // the wall, in its own units (drawn 700 tall, its top 30 left empty); scaled to fit the screen (fit())
+const W = 390, H = 672, LIFT = 18; // the wall, in its own units (drawn 700 tall, its top 18 left empty); scaled to fit the screen (fit())
 const PHONE_ICO = '<span class="ph-ico" aria-hidden="true"></span>';
 const store = { get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d } catch { return d } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)) } catch {} } };
 
@@ -35,20 +35,23 @@ function boxes() {
   ];
 }
 
-/* a closed box, seen from the front and a little above: front, lid and side, the lid taped down its seam. d is the side's depth,
-   t the lid's. Ink outline, kraft card, a corrugated side, and a hand-written mark or two */
+/* ── everything solid on the wall is drawn the same way: a front, a lid seen from a little above and a side, the side shaded and
+   hatched in ink like a marker drawing, the lid catching the light. d is the side's depth, t the lid's (the same angle everywhere) ── */
 const D = 9, T = 12;
+function slabSVG(w, h, { d = D, t = T, fill = 'url(#p-kraft)', inner = '', extra = '', cls = '' } = {}) {
+  const f = w - d, side = `${f},${t} ${w},0 ${w},${h - t} ${f},${h}`, lid = `0,${t} ${d},0 ${w},0 ${f},${t}`;
+  return `<svg class="slab ${cls}" viewBox="-2 -2 ${w + 4} ${h + 4}" width="${w + 4}" height="${h + 4}" aria-hidden="true">
+    <rect x="0" y="${t}" width="${f}" height="${h - t}" fill="${fill}"/><rect x="0" y="${t}" width="${f}" height="${h - t}" fill="url(#p-shade)"/>
+    <polygon points="${side}" fill="${fill}"/><polygon points="${side}" fill="rgba(42,27,18,.34)"/><polygon points="${side}" fill="url(#p-hatch)"/>
+    <polygon points="${lid}" fill="${fill}"/><polygon points="${lid}" fill="rgba(255,240,210,.26)"/>${inner}${extra}
+    <path class="ob-ink" d="M0 ${t}H${f}V${h}H0Z M${f} ${t}L${w} 0V${h - t}L${f} ${h} M0 ${t}L${d} 0H${w}"/>
+    <path class="ob-hi" d="M3 ${t + 2.5}H${f - 3}"/></svg>`;
+}
+/* a closed box: the slab in kraft, taped down the seam of its lid, a hand-written mark on the front */
 function boxSVG(w, h, mark) {
   const f = w - D, s = (f / 2) | 0;
-  return `<svg class="ob-svg" viewBox="-2 -2 ${w + 4} ${h + 4}" width="${w + 4}" height="${h + 4}" aria-hidden="true">
-    <rect x="0" y="${T}" width="${f}" height="${h - T}" fill="url(#p-kraft)"/>
-    <polygon points="${f},${T} ${w},0 ${w},${h - T} ${f},${h}" fill="url(#p-corr)"/><polygon points="${f},${T} ${w},0 ${w},${h - T} ${f},${h}" fill="rgba(42,27,18,.32)"/>
-    <polygon points="0,${T} ${D},0 ${w},0 ${f},${T}" fill="url(#p-kraft)"/><polygon points="0,${T} ${D},0 ${w},0 ${f},${T}" fill="rgba(255,240,210,.22)"/>
-    <polygon class="ob-tape" points="${s - 8},${T} ${s - 8 + D},0 ${s + 8 + D},0 ${s + 8},${T} ${s + 8},${T + 15} ${s - 8},${T + 13}"/>
-    <path class="ob-ink" d="M0 ${T}H${f}V${h}H0Z M${f} ${T}L${w} 0V${h - T}L${f} ${h} M0 ${T}L${D} 0H${w} M${s + D / 2} ${T / 2 + .5}" />
-    <path class="ob-seam" d="M${s} ${T}L${s + D} 0"/>
-    ${mark ? `<text class="ob-mark" x="${f - 7}" y="${h - 8}" text-anchor="end">${mark}</text>` : ''}
-  </svg>`;
+  return slabSVG(w, h, { cls: 'ob-svg', extra: `<polygon class="ob-tape" points="${s - 8},${T} ${s - 8 + D},0 ${s + 8 + D},0 ${s + 8},${T} ${s + 8},${T + 15} ${s - 8},${T + 13}"/>
+    <path class="ob-seam" d="M${s} ${T}L${s + D} 0"/><path class="ob-flap" d="M4 ${T + 9}Q${f / 2} ${T + 12} ${f - 4} ${T + 9}"/>${mark ? `<text class="ob-mark" x="${f - 7}" y="${h - 8}" text-anchor="end">${mark}</text>` : ''}` });
 }
 /* the same box, open: four flaps stood up and out, something peeking over the rim. Each flap unfolds from its hinge (pocket.css) */
 function openSVG(peek) {
@@ -63,38 +66,57 @@ function openSVG(peek) {
     <g class="fl fl-l"><polygon points="0,${t} ${d},0 -38,-22 -54,${t - 4}" fill="url(#p-kraft)"/><path class="ob-ink" d="M0 ${t}L-54 ${t - 4}L-38 -22L${d} 0"/></g>
     <g class="fl fl-r"><polygon points="${f},${t} ${w},0 ${w + 46},-14 ${w + 34},${t + 6}" fill="url(#p-kraft)"/><polygon points="${f},${t} ${w},0 ${w + 46},-14 ${w + 34},${t + 6}" fill="rgba(42,27,18,.25)"/><path class="ob-ink" d="M${f} ${t}L${w + 34} ${t + 6}L${w + 46} -14L${w} 0"/></g>
     <rect x="0" y="${t}" width="${f}" height="${h - t}" fill="url(#p-kraft)"/>
-    <polygon points="${f},${t} ${w},0 ${w},${h - t} ${f},${h}" fill="url(#p-corr)"/><polygon points="${f},${t} ${w},0 ${w},${h - t} ${f},${h}" fill="rgba(42,27,18,.32)"/>
+    <rect x="0" y="${t}" width="${f}" height="${h - t}" fill="url(#p-shade)"/><polygon points="${f},${t} ${w},0 ${w},${h - t} ${f},${h}" fill="url(#p-kraft)"/><polygon points="${f},${t} ${w},0 ${w},${h - t} ${f},${h}" fill="rgba(42,27,18,.34)"/><polygon points="${f},${t} ${w},0 ${w},${h - t} ${f},${h}" fill="url(#p-hatch)"/>
     <path class="ob-ink" d="M0 ${t}H${f}V${h}H0Z M${f} ${t}L${w} 0V${h - t}L${f} ${h}"/>
     <g class="fl fl-f"><polygon points="0,${t} ${f},${t} ${f - 6},${t + 30} 6,${t + 30}" fill="url(#p-kraft)"/><polygon points="0,${t} ${f},${t} ${f - 6},${t + 30} 6,${t + 30}" fill="rgba(255,240,210,.2)"/><path class="ob-ink" d="M0 ${t}L6 ${t + 30}H${f - 6}L${f} ${t}"/></g>
   </svg>`;
 }
 
-/* ── the shelf: the synth (a cardboard copy of the desktop one: wood frame, screen, four knobs, the five section tags, keys and pads),
-   the plant, and the tag that says Play ── */
-function synthHTML() {
+/* ── the shelf: both synths (cardboard copies of the desktop pair), the sign that says Play, the lamp in front of the plant ── */
+/* the synth: a wood case with a card panel set in it: screen, four knobs and the speaker; the five section tags; keys and pads */
+function synthHTML(w, h) {
   const keys = Array.from({ length: 15 }, () => '<i></i>').join(''), blk = [0, 1, 3, 4, 5, 7, 8, 10, 11, 12].map(n => `<b style="--k:${n}"></b>`).join('');
-  return `<span class="syn-top"><span class="syn-scr"><svg viewBox="0 0 40 20" aria-hidden="true"><path d="M2 12 L8 6 L13 14 L19 5 L25 13 L31 8 L38 11"/></svg><i class="led"></i></span>
-    ${'<span class="knob"></span>'.repeat(4)}<span class="grille"></span></span>
+  return slabSVG(w, h, { d: 8, t: 10, fill: 'url(#p-wood)', inner: `<rect class="panel" x="5" y="15" width="${w - 18}" height="${h - 20}" rx="2" fill="url(#p-kraft)"/><rect x="5" y="15" width="${w - 18}" height="${h - 20}" rx="2" fill="url(#p-shade)"/>` })
+    + `<span class="face" style="left:7px;top:17px;width:${w - 22}px;height:${h - 24}px"><span class="syn-top"><span class="syn-scr"><svg viewBox="0 0 40 20" aria-hidden="true"><path d="M2 12 L8 6 L13 14 L19 5 L25 13 L31 8 L38 11"/></svg><i class="led"></i></span>
+    ${'<span class="knob"><i></i></span>'.repeat(4)}<span class="grille"></span></span>
     <span class="syn-tags">${'<i></i>'.repeat(5)}</span>
-    <span class="syn-low"><span class="keys">${keys}${blk}</span><span class="pads">${'<i></i>'.repeat(9)}</span></span>`;
+    <span class="syn-low"><span class="keys">${keys}${blk}</span><span class="pads">${'<i></i>'.repeat(9)}</span></span></span>`;
 }
-const PLANT = `<svg viewBox="0 0 74 110" aria-hidden="true">
-  <g class="pl-full"><path class="lf" d="M37 70 L10 22 L30 50Z"/><path class="lf b" d="M37 70 L22 6 L38 46Z"/><path class="lf" d="M37 70 L50 2 L44 48Z"/><path class="lf b" d="M37 70 L68 18 L46 52Z"/><path class="lf" d="M37 70 L72 46 L48 60Z"/><path class="lf b" d="M37 70 L2 48 L26 60Z"/></g>
-  <g class="pl-dead"><path class="lf d" d="M36 68 Q18 52 4 70 Q10 84 14 92 Q16 74 34 70Z"/><path class="lf d" d="M38 68 Q58 50 70 66 Q66 80 62 90 Q60 72 40 70Z"/><path class="lf d" d="M37 68 Q34 40 20 34 Q26 50 30 52 Q34 58 36 68Z"/></g>
-  <g class="pl-sprout"><path class="stem" d="M37 70 Q37 56 40 48"/><path class="lf" d="M40 48 Q52 34 60 40 Q50 50 40 48Z"/><path class="lf b" d="M39 54 Q26 44 20 50 Q28 58 39 54Z"/></g>
-  <path class="pot" d="M14 68 H60 L55 108 H19Z"/><path class="pot-rim" d="M10 64 H64 V74 H10Z"/></svg>`;
-const LAMP = `<svg viewBox="0 0 66 80" aria-hidden="true"><path class="lp-stand" d="M33 52 V72 M18 76 H48"/><path class="lp-base" d="M16 72 H50 L52 79 H14Z"/>
-  <circle class="lp-glow" cx="33" cy="30" r="30"/><circle class="lp-shade" cx="33" cy="30" r="23"/><path class="lp-crease" d="M16 24 Q26 30 22 42 M38 9 Q34 22 44 30 M47 40 Q40 44 34 52"/></svg>`;
+/* the Contact synth (the remote): its screen says CONTACT, the volume knob, the red Contact key and the four social keys */
+function remoteHTML(w, h) {
+  return slabSVG(w, h, { d: 6, t: 8, fill: 'url(#p-wood)', inner: `<rect x="4" y="12" width="${w - 14}" height="${h - 16}" rx="2" fill="url(#p-kraft)"/><rect x="4" y="12" width="${w - 14}" height="${h - 16}" rx="2" fill="url(#p-shade)"/>` })
+    + `<span class="face rem" style="left:6px;top:14px;width:${w - 18}px;height:${h - 20}px"><span class="rem-scr">CONTACT</span><span class="knob big"><i></i></span><span class="rem-key"></span><span class="rem-keys">${'<i></i>'.repeat(4)}</span></span>`;
+}
+/* the plant: a terracotta pot (rim, soil, shaded and hatched side) and folded paper leaves, each with a crease down the middle */
+const leaf = (d, crease, cls = '') => `<path class="lf ${cls}" d="${d}"/><path class="crease" d="${crease}"/>`;
+const PLANT = `<svg viewBox="0 0 70 104" aria-hidden="true">
+  <g class="pl-full">${leaf('M35 66 L8 20 L28 48Z', 'M35 66 L14 30', '')}${leaf('M35 66 L20 4 L36 44Z', 'M35 66 L23 14', 'b')}${leaf('M35 66 L48 0 L42 46Z', 'M35 66 L46 10')}${leaf('M35 66 L66 16 L44 50Z', 'M35 66 L60 24', 'b')}${leaf('M35 66 L70 44 L46 58Z', 'M35 66 L64 47')}${leaf('M35 66 L0 46 L24 58Z', 'M35 66 L6 49', 'b')}</g>
+  <g class="pl-dead">${leaf('M34 64 Q16 48 2 66 Q8 80 12 88 Q14 70 32 66Z', 'M33 65 Q16 56 8 74', 'd')}${leaf('M36 64 Q56 46 68 62 Q64 76 60 86 Q58 68 38 66Z', 'M37 65 Q54 56 62 70', 'd')}${leaf('M35 64 Q32 36 18 30 Q24 46 28 48 Q32 54 34 64Z', 'M34 63 Q28 44 21 35', 'd')}</g>
+  <g class="pl-sprout"><path class="stem" d="M35 66 Q35 52 38 44"/>${leaf('M38 44 Q50 30 58 36 Q48 46 38 44Z', 'M39 44 Q48 38 56 37')}${leaf('M37 50 Q24 40 18 46 Q26 54 37 50Z', 'M36 50 Q28 46 20 46', 'b')}</g>
+  <path class="pot" d="M12 66 H58 L53 102 H17Z"/><path class="pot" d="M12 66 H58 L53 102 H17Z" fill="url(#p-shadeL)"/><path class="hatch" d="M44 72 L50 70 M44 80 L51 78 M45 88 L50 86 M45 96 L49 94"/>
+  <path class="pot-rim" d="M8 60 H62 V70 H8Z"/><ellipse class="soil" cx="35" cy="61" rx="24" ry="3"/></svg>`;
+/* the lamp: a weighted wooden base, a jointed arm, a paper drum shade with its light spilling out of the bottom */
+const LAMP = `<svg viewBox="0 0 60 80" aria-hidden="true">
+  <path class="lp-beam" d="M18 40 L4 78 H56 L42 40Z"/>
+  <ellipse class="lp-base" cx="30" cy="74" rx="20" ry="4.5"/><path class="lp-base" d="M10 74 V69 H50 V74"/><ellipse class="lp-top" cx="30" cy="69" rx="20" ry="4.5"/><path class="hatch" d="M38 72 L42 76 M43 71 L46 75"/>
+  <path class="lp-arm" d="M30 69 L38 46 L30 30"/><circle class="lp-joint" cx="38" cy="46" r="3"/>
+  <path class="lp-shade" d="M14 34 L19 10 H41 L46 34Z"/><path class="lp-shade" d="M14 34 L19 10 H41 L46 34Z" fill="url(#p-shadeL)"/><path class="hatch" d="M39 15 L42 13 M40 21 L43 19 M41 27 L44 25"/>
+  <ellipse class="lp-bulb" cx="30" cy="34" rx="16" ry="3.5"/><ellipse class="lp-rim" cx="30" cy="10" rx="11" ry="2.2"/></svg>`;
+/* the sign left on the shelf: a folded card tent, Play me on its face */
+const SIGN = `<svg viewBox="-2 -2 78 40" aria-hidden="true"><polygon class="sg-back" points="8,0 70,0 74,34 4,34" /><polygon class="sg-face" points="2,6 64,6 68,34 0,34"/><polygon points="2,6 64,6 68,34 0,34" fill="url(#p-shade)"/>
+  <polygon class="sg-side" points="64,6 70,0 74,34 68,34"/><path class="ob-ink" d="M2 6H64L68 34H0Z M64 6L70 0H8L2 6 M70 0L74 34H68"/></svg>`;
 
-/* a snapshot's front: the polaroid (photo, or its doodle until the photo arrives) drawn on a canvas */
-function snapFront(p, i) {
-  const c = document.createElement('canvas'); c.width = 380; c.height = 460; const x = c.getContext('2d'), S = 336, o = 22;
-  const draw = img => { x.clearRect(0, 0, 380, 460); x.fillStyle = '#fffdf6'; x.fillRect(0, 0, 380, 460);
+/* a snapshot as a poster: the photo (or its doodle until the photo arrives) printed edge to edge, its name lettered under it */
+function posterFront(p, i) {
+  const c = document.createElement('canvas'); c.width = 280; c.height = 350; const x = c.getContext('2d'), o = 14, S = 252;
+  const draw = img => { x.clearRect(0, 0, 280, 350); x.fillStyle = ['#f3e6c8', '#efe2c9', '#f2e1d6', '#e6e9dc'][i % 4]; x.fillRect(0, 0, 280, 350);
     if (img) { const s = Math.max(S / img.width, S / img.height); x.save(); x.beginPath(); x.rect(o, o, S, S); x.clip(); x.drawImage(img, o + (S - img.width * s) / 2, o + (S - img.height * s) / 2, img.width * s, img.height * s); x.restore() }
-    else { x.fillStyle = ['#d9cbb0', '#cfd8c4', '#d8c7c0', '#c9d3d8'][i % 4]; x.fillRect(o, o, S, S);
-      x.save(); x.translate(o + S / 2 - 105, o + S / 2 - 105); x.scale(2.1, 2.1); x.strokeStyle = '#2a1b12'; x.lineWidth = 2.6; x.lineCap = x.lineJoin = 'round'; DOODLES[i % DOODLES.length](x); x.restore() }
-    x.strokeStyle = 'rgba(42,27,18,.55)'; x.lineWidth = 2; x.strokeRect(o, o, S, S);
-    x.fillStyle = '#2a1b12'; x.font = '400 44px "Patrick Hand", cursive'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(p.cap || '', 190, 410) };
+    else { x.fillStyle = ['#d9a066', '#8fae7a', '#c97b6a', '#7fa3b8', '#b59ad0', '#d7c06a', '#9cb6a8', '#e08f6a'][i % 8]; x.fillRect(o, o, S, S);
+      x.fillStyle = 'rgba(255,248,232,.18)'; for (let k = 0; k < 9; k++) { x.beginPath(); x.arc(o + S * .5, o + S * .5, 30 + k * 26, 0, 7); x.lineWidth = 9; x.strokeStyle = 'rgba(255,248,232,.09)'; x.stroke() }
+      x.save(); x.translate(o + S / 2 - 105, o + S / 2 - 105); x.scale(2.1, 2.1); x.strokeStyle = '#2a1b12'; x.lineWidth = 3; x.lineCap = x.lineJoin = 'round'; DOODLES[i % DOODLES.length](x); x.restore() }
+    x.strokeStyle = '#2a1b12'; x.lineWidth = 3; x.strokeRect(o, o, S, S);
+    x.fillStyle = '#2a1b12'; const cap = (p.cap || '').toUpperCase(); let fs = 40; do x.font = `900 ${fs}px "Londrina Solid", sans-serif`; while (x.measureText(cap).width > 216 && --fs > 18);
+    x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(cap, 132, 310) };
   document.fonts.ready.then(() => draw(null));
   if (p.img) { const im = new Image(); im.onload = () => document.fonts.ready.then(() => draw(im)); im.src = p.img }
   return c;
@@ -117,10 +139,10 @@ function fly(from, to) { // from where the tapped thing sits on the wall to wher
   to.style.transition = 'none'; to.style.transform = `translate(${a.left + a.width / 2 - b.left - b.width / 2}px,${a.top + a.height / 2 - b.top - b.height / 2}px) scale(${Math.max(.2, a.width / b.width)})`;
   void to.offsetWidth; to.style.transition = ''; to.style.transform = '';
 }
-function openPanel({ kind, key, title, sub, hero, body, next, from }) {
+function openPanel({ kind, key, title, hero, body, next, from }) {
   const fresh = !pan; pan = { kind, key, from };
   const p = $('o-pan'); p.dataset.kind = kind;
-  $('o-hero').innerHTML = hero; $('o-pan-h').textContent = title; $('o-pan-sub').textContent = sub;
+  $('o-hero').innerHTML = hero; $('o-pan-h').textContent = title;
   const b = $('o-body'); b.innerHTML = body; b.scrollTop = 0; wire(b);
   $('o-next').hidden = !next; if (next) { $('o-next').querySelector('span').textContent = next.label; $('o-next').onclick = next.go }
   p.hidden = false; html.classList.add('p-lock'); p.classList.remove('in'); void p.offsetWidth; p.classList.add('in');
@@ -132,14 +154,14 @@ function openBox(id, from) {
   const i = BOX.findIndex(b => b.id === id); if (i < 0) return; const bx = BOX[i], nx = BOX[(i + 1) % BOX.length];
   from ||= document.querySelector(`.ob[data-box="${id}"]`); find('box:' + id);
   from?.classList.add('opened');
-  openPanel({ kind: 'box', key: id, title: bx.name, sub: bx.sub, hero: openSVG(bx.peek), body: bx.fill(), from, next: { label: `Next box: ${nx.name}`, go: () => openBox(nx.id) } });
+  openPanel({ kind: 'box', key: id, title: bx.name, hero: openSVG(bx.peek), body: bx.fill(), from, next: { label: `Next box: ${nx.name}`, go: () => openBox(nx.id) } });
 }
 function openSnap(n, from) {
   const ps = DESK.polaroids.slice(0, 8), p = ps[n], m = (n + 1) % ps.length; from ||= document.querySelector(`.o-snap[data-n="${n}"]`); find('snap:' + n);
-  openPanel({ kind: 'snap', key: n, title: p.cap || 'Snapshot', sub: 'Tap the photo to read the back', from,
-    hero: `<button class="snap big" aria-pressed="false" aria-label="${p.cap}: flip to read the back"><span class="snap-in"><span class="snap-f"></span><span class="snap-b">${back(p)}</span></span></button>`,
-    body: '', next: { label: 'Next snapshot', go: () => openSnap(m) } });
-  const s = $('o-hero').querySelector('.snap'); s.querySelector('.snap-f').append(snapFront(p, n));
+  openPanel({ kind: 'snap', key: n, title: p.cap || 'Snapshot', from,
+    hero: `<button class="snap big" aria-pressed="false" aria-label="${p.cap}: flip it over to read the back"><span class="snap-in"><span class="snap-f"></span><span class="snap-b">${back(p)}</span></span></button>`,
+    body: '', next: { label: 'Next poster', go: () => openSnap(m) } });
+  const s = $('o-hero').querySelector('.snap'); s.querySelector('.snap-f').append(posterFront(p, n));
   s.onclick = () => { const on = s.classList.toggle('flip'); s.setAttribute('aria-pressed', on) };
 }
 
@@ -212,21 +234,25 @@ export function initPocket() {
   if (html.dataset.view === 'page') intro?.remove(); // upright at the start: the office says hello itself (turning sideways goes straight to the synth)
   BOX = boxes();
   const snaps = DESK.polaroids.slice(0, 8);
-  FINDS = ['synth', 'plant', 'lamp', ...snaps.map((_, i) => 'snap:' + i), ...BOX.map(b => 'box:' + b.id)];
+  FINDS = ['synth', 'remote', 'plant', 'lamp', ...snaps.map((_, i) => 'snap:' + i), ...BOX.map(b => 'box:' + b.id)];
   found = new Set([...found].filter(f => FINDS.includes(f)));
   const q = document.querySelector('#help svg')?.cloneNode(true);
   if (q) { q.querySelectorAll('[id]').forEach(e => e.id = 'p-' + e.id); q.querySelectorAll('[class]').forEach(e => e.setAttribute('class', e.getAttribute('class').replace(/\bq-(\w+)/g, 'q-$1 p-q-$1'))) }
-  /* the string the snapshots hang from sags in the middle; each one is pegged where the string is */
-  const sag = x => 214 + 22 * (1 - ((x - 195) / 181) ** 2);
-  const snapAt = i => { const x = 18 + i * 44.6; return [x, sag(x + 21) - 4] };
+  /* the snapshots are posters taped to the wall, four by two, with room round each for a thumb */
+  const posterAt = i => [18 + (i % 4) * 94, i < 4 ? 168 : 270];
   const boxHTML = b => { const [x, y, w, h] = SLOT[b.id]; return `<button class="ob" data-box="${b.id}" data-find="box:${b.id}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;--d:${D}px;--t:${T}px" aria-label="${b.name} box: ${b.sub}. Open it">
-    ${boxSVG(w, h, MARK[b.id])}<span class="ob-lab"><span class="ob-tag"><b>${b.name}</b><small>${b.sub}</small></span></span><i class="o-dot"></i></button>` };
+    ${boxSVG(w, h, MARK[b.id])}<span class="ob-lab"><span class="ob-tag"><b>${b.name}</b></span></span><i class="o-dot"></i></button>` };
   const order = ['gd', 'ux', 'mo', 'hello', 'tl', 'xp', 'about'];
 
   root.innerHTML = `
     <svg class="o-defs" width="0" height="0" aria-hidden="true"><defs>
       <pattern id="p-kraft" patternUnits="userSpaceOnUse" width="160" height="160"><image href="assets/tex/kraft.jpg" width="160" height="160"/></pattern>
-      <pattern id="p-corr" patternUnits="userSpaceOnUse" width="120" height="120"><image href="assets/tex/corrugated.jpg" width="120" height="120"/></pattern></defs></svg>
+      <pattern id="p-corr" patternUnits="userSpaceOnUse" width="120" height="120"><image href="assets/tex/corrugated.jpg" width="120" height="120"/></pattern>
+      <pattern id="p-wood" patternUnits="userSpaceOnUse" width="220" height="220"><image href="assets/tex/wood.jpg" width="220" height="220"/></pattern>
+      <pattern id="p-hatch" patternUnits="userSpaceOnUse" width="5" height="5" patternTransform="rotate(-35)"><path d="M0 2.5H5" stroke="#2a1b12" stroke-width="1" opacity=".4"/></pattern>
+      <linearGradient id="p-shade" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#fff2d8" stop-opacity=".22"/><stop offset=".55" stop-color="#fff2d8" stop-opacity="0"/><stop offset="1" stop-color="#1a0f08" stop-opacity=".3"/></linearGradient>
+      <linearGradient id="p-shadeL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff2d8" stop-opacity=".25"/><stop offset=".45" stop-color="#fff2d8" stop-opacity="0"/><stop offset="1" stop-color="#1a0f08" stop-opacity=".38"/></linearGradient>
+      <filter id="p-boil" x="-6%" y="-6%" width="112%" height="112%" color-interpolation-filters="sRGB"><feTurbulence id="p-boil-n" type="fractalNoise" baseFrequency=".045" numOctaves="2" seed="1" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
     <header class="p-bar" id="p-bar"><div class="o-id"><img src="assets/ui/logo-on-dark.svg" width="290" height="101" alt="Vickhal Roopram"><span class="o-count" id="o-count" aria-live="polite">${found.size} of ${FINDS.length} found</span></div>
       <a class="cta sm hdr-cta p-cta" href="#">${icon('mail', 18)}<span>Contact</span></a>
       <button class="ico p-mnu" id="p-mnu" aria-expanded="false" aria-controls="p-nav" aria-label="Menu">${icon('menu', 24)}</button></header>
@@ -237,26 +263,22 @@ export function initPocket() {
     <main class="o-room" id="o-room" aria-label="Vick’s office: tap things to explore">
       <div class="o-wall" aria-hidden="true"></div><div class="o-floor" aria-hidden="true"></div><div class="o-glow" aria-hidden="true"></div>
       <div class="o-stage" id="o-stage">
-        <svg class="o-lines" viewBox="0 0 390 700" aria-hidden="true">
-          <path class="o-cable" d="M30 132 C2 136 4 168 10 200 C16 260 2 330 8 420 C12 470 4 510 22 540"/><path class="o-cable c2" d="M30 132 C2 136 4 168 10 200 C16 260 2 330 8 420 C12 470 4 510 22 540"/><path class="o-cable c3" d="M30 132 C2 136 4 168 10 200 C16 260 2 330 8 420 C12 470 4 510 22 540"/>
-          <path class="o-string" d="M14 214 Q195 258 376 214"/><circle class="o-nail" cx="14" cy="214" r="3"/><circle class="o-nail" cx="376" cy="214" r="3"/>
-          <path class="o-tagstr" d="M152 166 L170 190 M188 166 L170 190"/>
-        </svg>
-        <div class="o-shelf" aria-hidden="true"><i class="br l"></i><i class="br r"></i></div>
-        <button class="o-syn" data-find="synth" aria-label="The synth: play it (turn your phone sideways)">${synthHTML()}<i class="o-dot"></i></button>
-        <button class="o-play" aria-label="Play the synth">${PHONE_ICO}<b>Play me</b></button>
+        <div class="o-shelf" aria-hidden="true">${slabSVG(379, 28, { fill: 'url(#p-wood)' })}<i class="br l"></i><i class="br r"></i></div>
         <button class="o-plant" data-find="plant" data-life="full" aria-label="The plant: tap to keep it going">${PLANT}<i class="o-dot"></i></button>
-        ${snaps.map((p, i) => { const [x, y] = snapAt(i); return `<button class="o-snap" data-n="${i}" data-find="snap:${i}" style="left:${x}px;top:${y}px;--r:${[-5, 4, -2, 6, -4, 3, -6, 2][i]}deg" aria-label="Snapshot: ${p.cap}"><span class="o-peg"></span><span class="o-pol"></span><i class="o-dot"></i></button>` }).join('')}
-        <p class="o-note" aria-hidden="true">Research like a nerd.<br>Play like a kid.<br><b>Use the box.</b></p>
-        ${order.map(id => BOX.find(b => b.id === id)).filter(Boolean).map(boxHTML).join('')}
+        <button class="o-rem" data-find="remote" aria-label="The Contact synth: say hello">${remoteHTML(50, 96)}<i class="o-dot"></i></button>
+        <button class="o-syn" data-find="synth" aria-label="The synth: play it (turn your phone sideways)">${synthHTML(226, 82)}<i class="o-dot"></i></button>
+        <svg class="o-lines" viewBox="0 0 390 700" aria-hidden="true"><path class="o-cable" d="M24 118 C0 124 2 168 8 200 C14 260 2 330 8 420 C12 470 4 510 22 540"/><path class="o-cable c2" d="M24 118 C0 124 2 168 8 200 C14 260 2 330 8 420 C12 470 4 510 22 540"/><path class="o-cable c3" d="M24 118 C0 124 2 168 8 200 C14 260 2 330 8 420 C12 470 4 510 22 540"/><path class="o-cable" d="M58 122 C60 170 86 172 88 124"/><path class="o-cable c2" d="M58 122 C60 170 86 172 88 124"/><path class="o-cable c3" d="M58 122 C60 170 86 172 88 124"/><circle class="o-jack" cx="24" cy="118" r="3.5"/><circle class="o-jack" cx="58" cy="122" r="3.5"/><circle class="o-jack" cx="88" cy="124" r="3.5"/></svg>
         <button class="o-lamp" data-find="lamp" aria-pressed="true" aria-label="The lamp: switch the light">${LAMP}<i class="o-dot"></i></button>
+        <button class="o-play" aria-label="Play the synth">${SIGN}<span class="sg-txt">${PHONE_ICO}<b>Play me</b></span></button>
+        ${snaps.map((p, i) => { const [x, y] = posterAt(i); return `<button class="o-snap" data-n="${i}" data-find="snap:${i}" style="left:${x}px;top:${y}px;--r:${[-3, 2.5, -1.5, 3, 2, -2.5, 1.5, -3][i]}deg" aria-label="Poster: ${p.cap}"><span class="o-pol"></span><i class="tp a"></i><i class="tp b"></i><i class="o-dot"></i></button>` }).join('')}
+        ${order.map(id => BOX.find(b => b.id === id)).filter(Boolean).map(boxHTML).join('')}
       </div>
     </main>
     <footer class="o-foot" id="o-foot"><button class="o-hint" id="o-hint" aria-label="Hints: show what you haven’t found yet"></button><p>Poke around. Things open.<br>The menu’s quicker, but less fun.</p></footer>
     <div class="o-pan" id="o-pan" role="dialog" aria-modal="true" aria-labelledby="o-pan-h" hidden>
       <button class="o-x" id="o-x" aria-label="Close">${icon('close', 22)}</button>
       <div class="o-hero" id="o-hero"></div>
-      <div class="o-head"><h2 id="o-pan-h"></h2><p id="o-pan-sub"></p></div>
+      <div class="o-head"><h2 id="o-pan-h"></h2></div>
       <div class="o-body" id="o-body"></div>
       <footer class="o-pan-foot"><button class="pill" id="o-next"><span></span>${icon('chevron-right', 18)}</button></footer></div>
     <div class="o-hello" id="o-hello" role="dialog" aria-modal="true" aria-label="Welcome" tabindex="-1"><div class="o-hello-in"></div><button class="o-in" id="o-in">Tap anywhere to come in</button></div>
@@ -270,7 +292,7 @@ export function initPocket() {
   if (q) $('o-hint').append(q); else $('o-hint').textContent = '?';
   document.body.append($('p-unplay')); // shown over the synth (outside the page), only while a Play has locked the screen sideways
   found.forEach(f => document.querySelector(`[data-find="${f}"]`)?.classList.add('got'));
-  root.querySelectorAll('.o-snap').forEach(s => { const i = +s.dataset.n; s.querySelector('.o-pol').append(snapFront(snaps[i], i)); s.onclick = () => openSnap(i, s) });
+  root.querySelectorAll('.o-snap').forEach(s => { const i = +s.dataset.n; s.querySelector('.o-pol').append(posterFront(snaps[i], i)); s.onclick = () => openSnap(i, s) });
   root.querySelectorAll('.ob').forEach(b => b.onclick = () => openBox(b.dataset.box, b));
 
   /* the welcome: the drawn sheet pinned over the office; any tap (or a swipe, or a key) and it drops away */
@@ -282,6 +304,7 @@ export function initPocket() {
   const syn = root.querySelector('.o-syn');
   const playIt = () => { syn.classList.remove('tap'); void syn.offsetWidth; syn.classList.add('tap'); setTimeout(play, reduce ? 0 : 380) };
   syn.onclick = playIt; root.querySelector('.o-play').onclick = playIt;
+  root.querySelector('.o-rem').onclick = e => { const r = e.currentTarget; r.classList.remove('tap'); void r.offsetWidth; r.classList.add('tap'); find('remote'); setTimeout(() => openBox('hello', r), reduce ? 0 : 260) };
   root.querySelector('.o-plant').onclick = e => water(e.currentTarget);
   root.querySelector('.o-lamp').onclick = e => light(e.currentTarget);
   $('o-hint').onclick = hints;
@@ -298,5 +321,11 @@ export function initPocket() {
   $('p-sh-back').onclick = () => history.back(); addEventListener('popstate', () => { if (at) unsheet(); else closePanel() });
   $('p-sh-prev').onclick = () => sheet(at.k, at.i - 1); $('p-sh-next').onclick = () => sheet(at.k, at.i + 1);
   $('lb').onclick = () => { $('lb').hidden = true };
-  fit(); addEventListener('resize', fit); document.fonts?.ready.then(fit); nudge();
+  fit(); addEventListener('resize', fit); document.fonts?.ready.then(fit); nudge(); boil();
+}
+
+/* on twos: the ink lines on the wall are traced again 12 times a second (a new seed for the wobble), like the desk's boiling outlines */
+function boil() {
+  const n = $('p-boil-n'); if (reduce || !n) return; let k = 0;
+  setInterval(() => { if (document.hidden || at || html.dataset.view !== 'page') return; n.setAttribute('seed', 1 + (k = (k + 1) % 6)) }, 1000 / 12);
 }
