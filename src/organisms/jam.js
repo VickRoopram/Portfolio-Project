@@ -50,6 +50,7 @@ function drawNote() {
 export function updateJam() { if (S.play) drawNote() }
 
 const BOX = new THREE.Box3(new THREE.Vector3(-13, 0, -4.2), new THREE.Vector3(9.7, 1.2, 4.3)); // both boxes, a bit closer than the whole bench
+if (document.documentElement.classList.contains('phone')) BOX.min.x = -15.2, BOX.max.x = 10.2; // a phone's screen is all synth: leave room for the whole remote
 const PHONE = document.documentElement.classList.contains('phone');
 /* on a phone the synth is only ever in jam mode (turning upright is the way back), and the loop stops when it's turned upright */
 if (PHONE) matchMedia('(orientation: portrait)').addEventListener('change', e => { if (e.matches && L.on) { halt(); drawNote() } });
