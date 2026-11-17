@@ -73,20 +73,9 @@ function openSVG(peek) {
 }
 
 /* ── the shelf: both synths (cardboard copies of the desktop pair), the sign that says Play, the lamp in front of the plant ── */
-/* the synth: a wood case with a card panel set in it: screen, four knobs and the speaker; the five section tags; keys and pads */
-function synthHTML(w, h) {
-  const keys = Array.from({ length: 15 }, () => '<i></i>').join(''), blk = [0, 1, 3, 4, 5, 7, 8, 10, 11, 12].map(n => `<b style="--k:${n}"></b>`).join('');
-  return slabSVG(w, h, { d: 8, t: 10, fill: 'url(#p-wood)', inner: `<rect class="panel" x="5" y="15" width="${w - 18}" height="${h - 20}" rx="2" fill="url(#p-kraft)"/><rect x="5" y="15" width="${w - 18}" height="${h - 20}" rx="2" fill="url(#p-shade)"/>` })
-    + `<span class="face" style="left:7px;top:17px;width:${w - 22}px;height:${h - 24}px"><span class="syn-top"><span class="syn-scr"><svg viewBox="0 0 40 20" aria-hidden="true"><path d="M2 12 L8 6 L13 14 L19 5 L25 13 L31 8 L38 11"/></svg><i class="led"></i></span>
-    ${'<span class="knob"><i></i></span>'.repeat(4)}<span class="grille"></span></span>
-    <span class="syn-tags">${'<i></i>'.repeat(5)}</span>
-    <span class="syn-low"><span class="keys">${keys}${blk}</span><span class="pads">${'<i></i>'.repeat(9)}</span></span></span>`;
-}
-/* the Contact synth (the remote): its screen says CONTACT, the volume knob, the red Contact key and the four social keys */
-function remoteHTML(w, h) {
-  return slabSVG(w, h, { d: 6, t: 8, fill: 'url(#p-wood)', inner: `<rect x="4" y="12" width="${w - 14}" height="${h - 16}" rx="2" fill="url(#p-kraft)"/><rect x="4" y="12" width="${w - 14}" height="${h - 16}" rx="2" fill="url(#p-shade)"/>` })
-    + `<span class="face rem" style="left:6px;top:14px;width:${w - 18}px;height:${h - 20}px"><span class="rem-scr">CONTACT</span><span class="knob big"><i></i></span><span class="rem-key"></span><span class="rem-keys">${'<i></i>'.repeat(4)}</span></span>`;
-}
+/* the two synths are the desktop's own 3D models, tilted for the shelf and rendered (tools/phone-synth): three drawings of them stacked
+   in one picture, their ink outlines boiled a little differently in each, swapped 12 times a second (boil() below) */
+const SYNTHS = 'assets/ui/phone-synths.webp';
 /* the plant: a terracotta pot (rim, soil, shaded and hatched side) and folded paper leaves, each with a crease down the middle */
 const leaf = (d, crease, cls = '') => `<path class="lf ${cls}" d="${d}"/><path class="crease" d="${crease}"/>`;
 const PLANT = `<svg viewBox="0 0 70 104" aria-hidden="true">
@@ -126,7 +115,6 @@ function posterFront(p, i) {
 let FINDS = [], found = new Set(store.get('vdc-office-found', []));
 function find(id) {
   if (found.has(id) || !FINDS.includes(id)) return; found.add(id); store.set('vdc-office-found', [...found]);
-  $('o-count').textContent = `${found.size} of ${FINDS.length} found`; $('o-count').classList.remove('bump'); void $('o-count').offsetWidth; $('o-count').classList.add('bump');
   document.querySelector(`[data-find="${id}"]`)?.classList.add('got');
   if (found.size === FINDS.length) setTimeout(() => toast(`All ${FINDS.length} found. Thorough. Let’s talk: Contact’s up top.`), 700);
 }
@@ -239,7 +227,7 @@ export function initPocket() {
   const q = document.querySelector('#help svg')?.cloneNode(true);
   if (q) { q.querySelectorAll('[id]').forEach(e => e.id = 'p-' + e.id); q.querySelectorAll('[class]').forEach(e => e.setAttribute('class', e.getAttribute('class').replace(/\bq-(\w+)/g, 'q-$1 p-q-$1'))) }
   /* the snapshots are posters taped to the wall, four by two, with room round each for a thumb */
-  const posterAt = i => [18 + (i % 4) * 94, i < 4 ? 168 : 270];
+  const posterAt = i => [18 + (i % 4) * 94, i < 4 ? 186 : 286];
   const boxHTML = b => { const [x, y, w, h] = SLOT[b.id]; return `<button class="ob" data-box="${b.id}" data-find="box:${b.id}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;--d:${D}px;--t:${T}px" aria-label="${b.name} box: ${b.sub}. Open it">
     ${boxSVG(w, h, MARK[b.id])}<span class="ob-lab"><span class="ob-tag"><b>${b.name}</b></span></span><i class="o-dot"></i></button>` };
   const order = ['gd', 'ux', 'mo', 'hello', 'tl', 'xp', 'about'];
@@ -253,7 +241,7 @@ export function initPocket() {
       <linearGradient id="p-shade" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#fff2d8" stop-opacity=".22"/><stop offset=".55" stop-color="#fff2d8" stop-opacity="0"/><stop offset="1" stop-color="#1a0f08" stop-opacity=".3"/></linearGradient>
       <linearGradient id="p-shadeL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff2d8" stop-opacity=".25"/><stop offset=".45" stop-color="#fff2d8" stop-opacity="0"/><stop offset="1" stop-color="#1a0f08" stop-opacity=".38"/></linearGradient>
       <filter id="p-boil" x="-6%" y="-6%" width="112%" height="112%" color-interpolation-filters="sRGB"><feTurbulence id="p-boil-n" type="fractalNoise" baseFrequency=".045" numOctaves="2" seed="1" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
-    <header class="p-bar" id="p-bar"><div class="o-id"><img src="assets/ui/logo-on-dark.svg" width="290" height="101" alt="Vickhal Roopram"><span class="o-count" id="o-count" aria-live="polite">${found.size} of ${FINDS.length} found</span></div>
+    <header class="p-bar" id="p-bar"><div class="o-id"><img src="assets/ui/logo-on-dark.svg" width="290" height="101" alt="Vickhal Roopram"></div>
       <a class="cta sm hdr-cta p-cta" href="#">${icon('mail', 18)}<span>Contact</span></a>
       <button class="ico p-mnu" id="p-mnu" aria-expanded="false" aria-controls="p-nav" aria-label="Menu">${icon('menu', 24)}</button></header>
     <nav class="p-nav" id="p-nav" aria-label="Sections" hidden><ul>
@@ -263,11 +251,11 @@ export function initPocket() {
     <main class="o-room" id="o-room" aria-label="Vick’s office: tap things to explore">
       <div class="o-wall" aria-hidden="true"></div><div class="o-floor" aria-hidden="true"></div><div class="o-glow" aria-hidden="true"></div>
       <div class="o-stage" id="o-stage">
-        <div class="o-shelf" aria-hidden="true">${slabSVG(379, 28, { fill: 'url(#p-wood)' })}<i class="br l"></i><i class="br r"></i></div>
+        <div class="o-shelf" aria-hidden="true">${slabSVG(379, 40, { d: 18, t: 24, fill: 'url(#p-wood)' })}<i class="br l"></i><i class="br r"></i></div>
         <button class="o-plant" data-find="plant" data-life="full" aria-label="The plant: tap to keep it going">${PLANT}<i class="o-dot"></i></button>
-        <button class="o-rem" data-find="remote" aria-label="The Contact synth: say hello">${remoteHTML(50, 96)}<i class="o-dot"></i></button>
-        <button class="o-syn" data-find="synth" aria-label="The synth: play it (turn your phone sideways)">${synthHTML(226, 82)}<i class="o-dot"></i></button>
-        <svg class="o-lines" viewBox="0 0 390 700" aria-hidden="true"><path class="o-cable" d="M24 118 C0 124 2 168 8 200 C14 260 2 330 8 420 C12 470 4 510 22 540"/><path class="o-cable c2" d="M24 118 C0 124 2 168 8 200 C14 260 2 330 8 420 C12 470 4 510 22 540"/><path class="o-cable c3" d="M24 118 C0 124 2 168 8 200 C14 260 2 330 8 420 C12 470 4 510 22 540"/><path class="o-cable" d="M58 122 C60 170 86 172 88 124"/><path class="o-cable c2" d="M58 122 C60 170 86 172 88 124"/><path class="o-cable c3" d="M58 122 C60 170 86 172 88 124"/><circle class="o-jack" cx="24" cy="118" r="3.5"/><circle class="o-jack" cx="58" cy="122" r="3.5"/><circle class="o-jack" cx="88" cy="124" r="3.5"/></svg>
+        <div class="o-synths" id="o-synths" aria-hidden="true"></div>
+        <button class="o-rem" data-find="remote" aria-label="The Contact synth: say hello"><i class="o-dot"></i></button>
+        <button class="o-syn" data-find="synth" aria-label="The synth: play it (turn your phone sideways)"><i class="o-dot"></i></button>
         <button class="o-lamp" data-find="lamp" aria-pressed="true" aria-label="The lamp: switch the light">${LAMP}<i class="o-dot"></i></button>
         <button class="o-play" aria-label="Play the synth">${SIGN}<span class="sg-txt">${PHONE_ICO}<b>Play me</b></span></button>
         ${snaps.map((p, i) => { const [x, y] = posterAt(i); return `<button class="o-snap" data-n="${i}" data-find="snap:${i}" style="left:${x}px;top:${y}px;--r:${[-3, 2.5, -1.5, 3, 2, -2.5, 1.5, -3][i]}deg" aria-label="Poster: ${p.cap}"><span class="o-pol"></span><i class="tp a"></i><i class="tp b"></i><i class="o-dot"></i></button>` }).join('')}
@@ -326,6 +314,6 @@ export function initPocket() {
 
 /* on twos: the ink lines on the wall are traced again 12 times a second (a new seed for the wobble), like the desk's boiling outlines */
 function boil() {
-  const n = $('p-boil-n'); if (reduce || !n) return; let k = 0;
-  setInterval(() => { if (document.hidden || at || html.dataset.view !== 'page') return; n.setAttribute('seed', 1 + (k = (k + 1) % 6)) }, 1000 / 12);
+  const n = $('p-boil-n'), sy = $('o-synths'); sy.style.backgroundImage = `url(${SYNTHS})`; if (reduce || !n) return; let k = 0;
+  setInterval(() => { if (document.hidden || at || html.dataset.view !== 'page') return; k = (k + 1) % 6; n.setAttribute('seed', 1 + k); sy.style.backgroundPositionY = `${(k % 3) * 50}%` }, 1000 / 12);
 }

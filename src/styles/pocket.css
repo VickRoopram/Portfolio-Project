@@ -27,11 +27,6 @@ html[data-dark] .o-stage{filter:brightness(.62) saturate(.8)}
 .o-stage{position:absolute;left:50%;top:var(--top);width:390px;height:700px;margin-left:-195px;transform:scale(var(--k));transform-origin:50% 0}
 .o-stage :where(button){all:unset;box-sizing:border-box;position:absolute;display:block;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .o-stage button:focus-visible{outline:3px dashed var(--red);outline-offset:4px}
-.o-lines{position:absolute;inset:0;width:390px;height:700px;overflow:visible;pointer-events:none}
-.o-cable{fill:none;stroke:var(--ink);stroke-width:7.5;stroke-linecap:round}
-.o-cable.c2{stroke:#f2e3c6;stroke-width:4.6}
-.o-cable.c3{stroke:var(--red);stroke-width:4.6;stroke-dasharray:7 7}
-.o-jack{fill:#2a1b12;stroke:#8c7a66;stroke-width:1.4}
 
 /* ── everything solid on the wall (pocket.js slabSVG): kraft or wood, a lit lid, a shaded and hatched side, ink round it all.
    The ink lines boil: #p-boil gets a new seed 12 times a second, so the line work is traced again on twos ── */
@@ -40,72 +35,30 @@ html[data-dark] .o-stage{filter:brightness(.62) saturate(.8)}
 .ob-hi{fill:none;stroke:rgba(255,242,214,.35);stroke-width:1.4;stroke-linecap:round}
 .hatch{fill:none;stroke:var(--ink);stroke-width:1.2;stroke-linecap:round;opacity:.55}
 .crease{fill:none;stroke:rgba(42,27,18,.55);stroke-width:1.2;stroke-linecap:round}
-.o-stage :is(.o-shelf,.o-rem,.o-syn,.o-plant,.o-lamp,.o-play,.o-snap,.ob,.o-lines){filter:url(#p-boil) drop-shadow(4px 6px 0 rgba(10,5,2,.42))}
-.o-stage .o-lines{filter:url(#p-boil)}
+.o-stage :is(.o-shelf,.o-plant,.o-lamp,.o-play,.o-snap,.ob){filter:url(#p-boil) drop-shadow(4px 6px 0 rgba(10,5,2,.42))}
 
 /* the shelf: a plank seen a little from above, on two brackets */
-.o-shelf{position:absolute;left:6px;top:124px;width:379px;height:28px}
-.o-shelf .br{position:absolute;top:27px;width:18px;height:20px;background:#4b3020;border-top:2.5px solid var(--ink);clip-path:polygon(0 0,100% 0,14% 100%,0 100%)}
+.o-shelf{position:absolute;left:4px;top:116px;width:379px;height:40px}
+.o-shelf .br{position:absolute;top:39px;width:18px;height:20px;background:#4b3020;border-top:2.5px solid var(--ink);clip-path:polygon(0 0,100% 0,14% 100%,0 100%)}
 .o-shelf .br.l{left:34px}.o-shelf .br.r{right:44px;scale:-1 1}
 
-/* the front panels of the two synths, set into their wood cases */
-.face{position:absolute;display:grid;min-height:0}
-
-/* ── the synth: the desktop one in miniature. Screen, four knobs, the speaker; the five section tags; the keys and the pads ── */
-.o-syn{left:70px;top:48px;width:226px;height:82px}
-.o-syn .face{grid-template-rows:25px 8px 1fr;gap:3px;padding:2px 3px 3px}
-.syn-top,.syn-tags,.syn-low{display:flex;gap:5px;min-height:0}
-.syn-top{align-items:center}
-.syn-scr{position:relative;display:grid;place-items:center;width:40px;height:23px;border:2px solid var(--ink);border-radius:3px;background:#22150e;box-shadow:inset 0 2px 0 rgba(0,0,0,.5),0 1.5px 0 rgba(255,240,210,.4)}
-.syn-scr svg{width:32px;height:16px}
-.syn-scr path{fill:none;stroke:#ff5a3c;stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:60;animation:wave 1.2s steps(6,end) infinite}
-@keyframes wave{0%{stroke-dashoffset:60}60%,100%{stroke-dashoffset:0}}
-.syn-scr .led{position:absolute;top:3px;right:3px;width:4px;height:4px;border-radius:50%;background:#ff6a4d;box-shadow:0 0 4px #ff6a4d;animation:blink 1.3s steps(1,end) infinite}
-@keyframes blink{50%{opacity:.15}}
-/* a knob: a cream cap on a turned side, lit from the top left, its pointer line in ink */
-.face .knob{--a:-40deg;position:relative;flex:none;width:20px;height:20px;border:2px solid var(--ink);border-radius:50%;
-  background:radial-gradient(circle at 34% 30%,#fffaf0 0 18%,transparent 52%),radial-gradient(circle at 50% 50%,transparent 62%,rgba(42,27,18,.28) 63% 70%,transparent 71%),var(--cream) var(--paper) 0 0/80px;
-  box-shadow:0 2.5px 0 #9c7a55,0 2.5px 0 2px var(--ink)}
-.face .knob i{position:absolute;inset:0;rotate:var(--a);transition:rotate .3s}
-.face .knob i::after{content:"";position:absolute;left:50%;top:1px;width:2.2px;height:7px;margin-left:-1.1px;border-radius:2px;background:var(--ink)}
-.face .knob:nth-of-type(2){--a:30deg}.face .knob:nth-of-type(3){--a:-10deg}.face .knob:nth-of-type(4){--a:70deg}
-.o-syn .knob:nth-of-type(3) i{animation:twitch 3.4s steps(1,end) infinite}
-@keyframes twitch{0%,70%{rotate:-10deg}74%,86%{rotate:24deg}90%{rotate:8deg}}
-.tap .knob{--a:200deg}
-.grille{flex:none;width:24px;height:24px;margin-left:auto;border:2px solid var(--ink);border-radius:50%;background:radial-gradient(circle,var(--ink) 1px,transparent 1.4px) 1px 1px/4.4px 4.4px,radial-gradient(circle at 35% 30%,#fff8e8,#d9c6a2);box-shadow:inset 0 -2px 0 rgba(42,27,18,.25)}
-.syn-tags{gap:3px}
-.syn-tags i{flex:1;border:1.5px solid var(--ink);border-radius:1.5px;background:linear-gradient(var(--ink),var(--ink)) center/44% 1.3px no-repeat,var(--cream);box-shadow:0 1.5px 0 rgba(42,27,18,.35)}
-.syn-low{gap:4px}
-/* keys: ivory, each with a shadowed front lip; the black keys raised over them */
-.keys{position:relative;flex:1;display:flex;border:2px solid var(--ink);border-radius:2px 2px 3px 3px;background:#fbf4e4;overflow:hidden;box-shadow:inset 0 3px 0 rgba(42,27,18,.22)}
-.keys i{flex:1;border-right:1.3px solid var(--ink);box-shadow:inset 0 -4px 0 #dccab0}
-.keys i:last-of-type{border:0}
-.keys b{position:absolute;top:0;left:calc(100% / 15 * (var(--k) + 1) - 100% / 15 * .3);width:calc(100% / 15 * .6);height:56%;border-radius:0 0 2px 2px;background:linear-gradient(90deg,#4a3528 0 30%,var(--ink) 31%);box-shadow:0 2px 0 #120a06}
-.pads{display:grid;grid-template-columns:repeat(3,10px);gap:2px}
-.pads i{border:1.5px solid var(--ink);border-radius:2px;background:linear-gradient(#6f9ad0,#3f6ca6);box-shadow:inset 0 -2px 0 rgba(0,0,0,.25)}
-.tap .keys i:nth-child(3n+2){animation:hit .35s steps(2,end)}
-.tap .pads i:nth-child(odd){animation:hit .35s steps(2,end)}
-@keyframes hit{0%,60%{background:var(--red);box-shadow:inset 0 -1px 0 rgba(0,0,0,.3)}}
-.o-syn:active,.o-rem:active{translate:0 2px}
-
-/* the Contact synth: CONTACT on its little screen, the volume knob, the red key and the four social keys */
-.o-rem{left:14px;top:34px;width:50px;height:96px}
-.face.rem{justify-items:center;align-content:start;gap:5px;padding:3px 2px}
-.rem-scr{width:100%;padding:3px 0 2px;border:1.5px solid var(--ink);border-radius:2px;background:#22150e;color:#ff7a5c;font:400 7.5px/1 var(--display);letter-spacing:.06em;text-align:center;box-shadow:inset 0 1.5px 0 rgba(0,0,0,.5)}
-.face .knob.big{width:20px;height:20px;background:radial-gradient(circle at 34% 30%,#ffd9a8 0 18%,transparent 52%),#e98a3a;box-shadow:0 2.5px 0 #9a5520,0 2.5px 0 2px var(--ink)}
-.rem-key{width:100%;height:10px;border:1.5px solid var(--ink);border-radius:2px;background:linear-gradient(#f05a40,#c8291a);box-shadow:0 2px 0 #7a1a10}
-.rem-keys{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:100%}
-.rem-keys i{height:9px;border:1.5px solid var(--ink);border-radius:2px;background:linear-gradient(#5b4535,#2e2018);box-shadow:0 2px 0 #120a06}
-.o-rem.tap .rem-key{animation:hit .3s steps(2,end)}
+/* ── the two synths: the desktop's 3D models rendered at a tilt (tools/phone-synth), standing on the shelf's lid. Three drawings stacked
+   in the picture; pocket.js steps through them 12 times a second so their outlines boil like the desk's. The Contact synth and the
+   synth are each a button over their part of the picture ── */
+.o-synths{position:absolute;left:8px;top:57px;width:296px;height:67px;background:0 0/100% 300% no-repeat;pointer-events:none;filter:drop-shadow(4px 6px 0 rgba(10,5,2,.42))}
+.o-rem{left:8px;top:52px;width:50px;height:74px}
+.o-syn{left:58px;top:52px;width:246px;height:74px}
+.o-stage :is(.o-rem,.o-syn){filter:none}
+.o-syn .o-dot{top:2px;right:2px}.o-rem .o-dot{top:2px;right:0}
 
 /* the sign left on the shelf, in front of the synths: a folded card tent that says Play me, the little phone tipping onto its side */
-.o-play{left:150px;top:112px;width:78px;height:40px;rotate:-2deg}
-.o-play svg{position:absolute;left:0;top:0;width:78px;height:40px;overflow:visible}
+.o-play{left:138px;top:108px;width:72px;height:37px;rotate:-2deg}
+.o-play svg{position:absolute;left:0;top:0;width:72px;height:37px;overflow:visible}
 .sg-back{fill:#9c7650;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
 .sg-face{fill:var(--cream)}
 .sg-side{fill:#b89870}
-.sg-txt{position:absolute;left:3px;top:9px;width:66px;height:28px;display:flex;align-items:center;justify-content:center;gap:5px;color:var(--red)}
-.sg-txt b{font:900 14px/1 var(--display);letter-spacing:.05em;text-transform:uppercase;padding-top:2px}
+.sg-txt{position:absolute;left:3px;top:8px;width:61px;height:26px;display:flex;align-items:center;justify-content:center;gap:5px;color:var(--red)}
+.sg-txt b{font:900 13px/1 var(--display);letter-spacing:.05em;text-transform:uppercase;padding-top:2px}
 .o-play .ph-ico{width:10px;height:16px;border-width:2px;border-radius:3px}
 .o-play .ph-ico::after{bottom:1px;width:3px;height:1.5px;margin-left:-1.5px}
 .o-play:active{translate:0 2px;rotate:1deg}
@@ -114,7 +67,7 @@ html[data-dark] .o-stage{filter:brightness(.62) saturate(.8)}
 @keyframes tipOver{0%,40%{rotate:0deg}48%{rotate:-30deg}56%,92%{rotate:-90deg}}
 
 /* the plant, behind the lamp: full, wilted or a sprout (the same life it has on the desk) */
-.o-plant{left:306px;top:24px;width:70px;height:104px}
+.o-plant{left:312px;top:26px;width:64px;height:96px}
 .o-plant svg{display:block;width:100%;height:100%;overflow:visible}
 .o-plant .lf{fill:#8db357;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
 .o-plant .lf.b{fill:#5f8a37}.o-plant .lf.d{fill:#b8955e}
@@ -161,7 +114,7 @@ html[data-dark] .o-stage{filter:brightness(.62) saturate(.8)}
 @keyframes hop{30%{translate:0 -8px;rotate:-2deg}60%{translate:0 0;rotate:1.2deg}}
 
 /* the lamp, on the shelf in front of the plant: on, it lights the room; off, the room goes dim */
-.o-lamp{left:298px;top:54px;width:60px;height:80px}
+.o-lamp{left:300px;top:62px;width:58px;height:78px}
 .o-lamp svg{display:block;width:100%;height:100%;overflow:visible}
 .lp-beam{fill:rgba(255,214,140,.22);transition:opacity .2s}
 .lp-base,.lp-top{fill:#7a5034;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
@@ -180,17 +133,13 @@ html[data-dark] .lp-bulb{fill:#9a8c70;animation:none}
 .o-dot{position:absolute;z-index:3;top:-6px;right:-6px;width:15px;height:15px;border:2.5px solid var(--cream);border-radius:50%;background:var(--red);opacity:0;scale:.3;pointer-events:none;transition:opacity .15s,scale .2s}
 .ob .o-dot{top:calc(var(--t) - 6px);right:calc(var(--d) - 6px)}
 .o-snap .o-dot{top:auto;bottom:-6px}
-.o-rem .o-dot{top:-4px;right:2px}
 .hinting [data-find]:not(.got) .o-dot{opacity:1;scale:1;animation:ping .7s infinite}
 @keyframes ping{50%{scale:1.4}}
 
 /* ── the bar: the logo with the count of what's been found, Contact (the one thing every visit should be able to reach), the burger ── */
 .p-bar{position:fixed;z-index:3;top:0;left:0;right:0;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 10px) 12px 10px 14px}
-.o-id{margin-right:auto;display:grid;gap:5px;justify-items:start}
+.o-id{margin-right:auto}
 .o-id img{display:block;width:98px;height:auto}
-.o-count{font:400 13px/1 var(--display);letter-spacing:.14em;text-transform:uppercase;color:var(--stage-ink);opacity:.82;transform-origin:0 50%}
-.o-count.bump{animation:bump .45s}
-@keyframes bump{35%{scale:1.22;opacity:1;color:#fff}}
 .p-cta{min-height:44px;padding:2px 14px 0;font-size:var(--t-md)}
 .p-cta span{display:inline!important} /* the desktop header hides the word on narrow screens; here it's the point */
 .p-mnu{width:48px;height:48px;padding:0;color:var(--ink);background:var(--cream) var(--paper) 0 0/160px;border:var(--edge);border-radius:var(--cut-s)}
@@ -304,6 +253,6 @@ html.p-navon .p-bar{background:#2a1b12}
 
 @media (prefers-reduced-motion:reduce){
   .o-pan.in,.o-pan.in *,.p-nav,.p-sheet,.p-turn-card,.o-hello .in-sheet,.pl-full,.pl-sprout,.syn-scr path,.syn-scr .led,.o-in,.hinting .o-dot{animation:none!important}
-  .snap-in,.o-hero>*,.face .knob{transition:none}
+  .snap-in,.o-hero>*{transition:none}
   .ph-ico{animation:none;rotate:-90deg}
 }
