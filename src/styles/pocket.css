@@ -9,11 +9,11 @@ html.phone[data-view="page"] #pocket{display:block}
 html.phone[data-view="play"] :is(#jamBack,#joy,#zoom,#reset,#help,#tour,#tour-dim,#legend,#menu,#card){display:none!important}
 html.phone[data-view="play"][data-locked] #p-unplay{display:inline-flex;position:fixed;z-index:9;left:max(14px,env(safe-area-inset-left,0px));bottom:14px;min-height:44px}
 
-#pocket{--k:1;--top:80px;position:fixed;inset:0;z-index:5;overflow:hidden;color:var(--stage-ink);background:#24160f;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+#pocket{--k:1;--top:80px;position:fixed;inset:0;z-index:5;overflow:hidden;overflow:clip;color:var(--stage-ink);background:#24160f;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
 .o-defs{position:absolute}
 
 /* ── the room: a dark wall, a wooden floor, and the lamp's warm pool of light ── */
-.o-room{position:absolute;inset:0}
+.o-room{position:absolute;inset:0;overflow:hidden;overflow:clip}
 .o-wall{position:absolute;inset:0;background:radial-gradient(120% 60% at 50% 0,rgba(255,226,180,.07),transparent 70%),linear-gradient(rgba(34,21,14,.86),rgba(52,34,23,.8) 70%),#2c1c13 var(--kraft-dk-tex) 0 0/320px}
 .o-floor{position:absolute;left:0;right:0;bottom:0;top:calc(var(--top) + 688px * var(--k));border-top:3px solid var(--ink);
   background:linear-gradient(rgba(20,11,7,.45),rgba(14,8,5,.8)),#3a2417 var(--wood-tex) center/640px;box-shadow:inset 0 7px 0 rgba(255,220,170,.08)}
