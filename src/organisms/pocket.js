@@ -101,9 +101,9 @@ function snapFront(p, i) {
 }
 
 /* ── what's been found: every box, every snapshot, the synth, the plant and the lamp. Kept between visits on this phone ── */
-let FINDS = [], found = new Set(store.get('vdc-found', []));
+let FINDS = [], found = new Set(store.get('vdc-office-found', []));
 function find(id) {
-  if (found.has(id) || !FINDS.includes(id)) return; found.add(id); store.set('vdc-found', [...found]);
+  if (found.has(id) || !FINDS.includes(id)) return; found.add(id); store.set('vdc-office-found', [...found]);
   $('o-count').textContent = `${found.size} of ${FINDS.length} found`; $('o-count').classList.remove('bump'); void $('o-count').offsetWidth; $('o-count').classList.add('bump');
   document.querySelector(`[data-find="${id}"]`)?.classList.add('got');
   if (found.size === FINDS.length) setTimeout(() => toast(`All ${FINDS.length} found. Thorough. Let’s talk: Contact’s up top.`), 700);
