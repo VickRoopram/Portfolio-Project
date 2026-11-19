@@ -4,7 +4,9 @@
   "type": "module",
   "description": "Vick Does Creative: a portfolio played as a 3D synthesizer. Static site; the only dependencies are for the content-admin functions on Netlify.",
   "scripts": {
-    "dev": "netlify dev --port 8888"
+    "dev": "netlify dev --port 8888",
+    "check": "node scripts/ci-check.mjs",
+    "setup": "git config core.hooksPath .githooks && echo 'Git hooks on: no commits or pushes straight to main.'"
   },
   "dependencies": {
     "@netlify/blobs": "^11.1.7",

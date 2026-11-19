@@ -1,0 +1,8 @@
+{
+  // Review pull requests and watch CI runs without leaving VS Code.
+  "recommendations": [
+    "GitHub.vscode-pull-request-github",
+    "github.vscode-github-actions",
+    "EditorConfig.EditorConfig"
+  ]
+}

@@ -60,10 +60,14 @@ Mouse, trackpad and touch work too: drag to orbit, scroll or pinch to zoom. The 
 │   ├── styles.css          # Imports the layers below (keep this path: /admin's preview loads it)
 │   └── styles/             # tokens.css, atoms.css, molecules.css, organisms.css
 ├── docs/HANDOFF.md        # Full project context for the next iteration
+├── docs/GIT-WORKFLOW.md   # Branches, environments, CI, release checklist (read before pushing)
 ├── assets/            # images, beats/ (audio + background videos for BEATS)
 │   ├── img/                # Project images (g* = portfolio PDF page no., cv* = CV pages)
+├── scripts/ci-check.mjs    # Repo checks (npm run check); scripts/smoke-check.mjs tests a deploy
+├── .githooks/              # pre-commit / pre-push: block commits and pushes to main (npm run setup)
+├── .vscode/                # Branch protection prompt, recommended extensions, tasks
 └── .github/workflows/
-    └── pages.yml           # Deploys to GitHub Pages on push to main
+    └── ci.yml              # Checks on every PR and push; smoke-tests Netlify after main / version-01 deploy
 ```
 
 ## Run locally
@@ -112,7 +116,14 @@ gd: { name: 'DESIGN', col: '#1fa957', items: [
 
 ## Deploy
 
-Push to `main`. The included workflow publishes the site to GitHub Pages. Enable it once under **Settings → Pages → Source: GitHub Actions**.
+Netlify hosts the site and deploys it from git (GitHub Pages is not used):
+
+| Branch | Environment | URL |
+| --- | --- | --- |
+| `main` | production | https://vick-does-creative.netlify.app |
+| `version-01` | staging | https://version-01--vick-does-creative.netlify.app |
+
+Work on a short branch off `version-01`, open a PR into `version-01`, check the staging site, then open a PR from `version-01` into `main`. `main` only changes through a merged pull request. The full process, checklists and sources are in [`docs/GIT-WORKFLOW.md`](docs/GIT-WORKFLOW.md).
 
 ## Credits
 
