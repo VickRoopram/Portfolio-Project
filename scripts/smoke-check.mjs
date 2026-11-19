@@ -16,7 +16,8 @@ const interval = Number(process.env.INTERVAL_S || 15) * 1000;
 const bust = `cb=${Date.now()}`;
 
 // Files Netlify serves as-is (publish = "."). Skip anything not served or rewritten.
-const NOT_SERVED = /^(\.github|docs|netlify|scripts|tools|node_modules)\/|^(README\.md|package(-lock)?\.json|netlify\.toml|\.[^/]+)$|\.md$/;
+// Anything inside a dot-folder or dot-file (.github, .githooks, .vscode, .gitignore…) is skipped too.
+const NOT_SERVED = /(^|\/)\.|^(docs|netlify|scripts|tools|node_modules)\/|^(package(-lock)?\.json|netlify\.toml)$|\.md$/;
 
 let changed = [];
 try {
