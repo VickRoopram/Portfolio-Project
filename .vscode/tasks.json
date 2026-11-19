@@ -1,0 +1,40 @@
+{
+  // Terminal → Run Task… (or Cmd+Shift+P → "Tasks: Run Task"). Process: docs/GIT-WORKFLOW.md
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "1. Start work: new branch from version-01",
+      "type": "shell",
+      "command": "git fetch origin && git switch -c ${input:branch} origin/version-01",
+      "problemMatcher": []
+    },
+    {
+      "label": "2. Preview locally (Netlify Dev, port 8888)",
+      "type": "npm",
+      "script": "dev",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "3. Check repo before pushing",
+      "type": "npm",
+      "script": "check",
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Turn on git hooks (once per clone)",
+      "type": "npm",
+      "script": "setup",
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "branch",
+      "type": "promptString",
+      "description": "Branch name: feat/…, fix/…, copy/… or chore/… (short, lowercase, hyphens)",
+      "default": "feat/"
+    }
+  ]
+}

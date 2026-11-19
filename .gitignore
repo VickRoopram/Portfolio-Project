@@ -1,7 +1,10 @@
 .DS_Store
 Thumbs.db
 node_modules/
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/tasks.json
 .idea/
 *.log
 .netlify/

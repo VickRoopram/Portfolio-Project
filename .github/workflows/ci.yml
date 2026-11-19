@@ -1,0 +1,58 @@
+# CI for the portfolio. Netlify hosts and deploys the site; GitHub doesn't.
+#   main       → production  https://vick-does-creative.netlify.app
+#   version-01 → staging     https://version-01--vick-does-creative.netlify.app
+# Rules, checklists and sources: docs/GIT-WORKFLOW.md
+name: CI
+
+on:
+  pull_request:
+    branches: [main, version-01]
+  push:
+    branches: [main, version-01]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # The required status check. Its name ("checks") is what the main ruleset requires: don't rename it.
+  checks:
+    name: checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: checks-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Repo checks (syntax, references, conflict markers, sizes, secrets, JSON)
+        run: node scripts/ci-check.mjs
+
+  # After a push lands on main or version-01, wait for Netlify to publish it and smoke-test the site.
+  # Records the deploy in the matching GitHub Environment (Settings → Environments, and the repo home page).
+  deploy:
+    name: ${{ github.ref_name == 'main' && 'production' || 'staging' }} smoke test
+    if: github.event_name == 'push'
+    needs: checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: deploy-${{ github.ref }}
+      cancel-in-progress: false
+    environment:
+      name: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+      url: ${{ github.ref_name == 'main' && 'https://vick-does-creative.netlify.app' || 'https://version-01--vick-does-creative.netlify.app' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Wait for Netlify, then smoke-test
+        env:
+          SITE_URL: ${{ github.ref_name == 'main' && 'https://vick-does-creative.netlify.app' || 'https://version-01--vick-does-creative.netlify.app' }}
+        run: node scripts/smoke-check.mjs

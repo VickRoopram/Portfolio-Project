@@ -1,0 +1,10 @@
+#!/bin/sh
+# Blocks commits made directly on main. Turn on once per clone: npm run setup
+# Emergency override (tell the team): git commit --no-verify
+branch="$(git symbolic-ref --short HEAD 2>/dev/null)"
+if [ "$branch" = "main" ]; then
+  echo "✗ main is production: don't commit on it."
+  echo "  Make a branch from version-01:  git switch -c feat/my-change origin/version-01"
+  echo "  Then open a PR into version-01. See docs/GIT-WORKFLOW.md"
+  exit 1
+fi

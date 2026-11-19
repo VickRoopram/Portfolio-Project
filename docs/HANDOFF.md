@@ -13,6 +13,7 @@
 - **Release:** when Vick approves what's on the preview, merge `version-01` into `main`. Netlify then publishes it. Don't push unapproved work to `main`.
 - **Pushing from Claude:** since 8 Nov 2026 the cloud session can push directly (`add_repo` with push access, then clone `https://github.com/VickRoopram/portfolio-project`). Work goes on a feature branch off `version-01` (e.g. `fix/menu-navigation`) for Vick to preview locally, then merges into `version-01` once he approves. Fallback if access breaks: push from Vick's Mac clone at `~/Projects/vick-does-creative/repo` through Desktop Commander.
 - Pull requests into `main` also get a Netlify deploy preview.
+- **From 19 Nov 2026 the rules are enforced** (ruleset on `main`, CI check `checks`, git hooks, VS Code prompt). Claude no longer pushes to `main`: it pushes a branch, merges into `version-01`, and opens a PR `version-01 → main` for Vick to merge. Full rules: `docs/GIT-WORKFLOW.md`.
 - **Content admin (`/admin`)**: Vick edits projects, images and copy there. *Update preview* writes the Blobs `cms/draft` (shown on `version-01`, deploy previews, localhost and any `?draft` URL); *Publish to live* copies it to `cms/live` and keeps the old live in `cms/history/*`. The live site falls back to `src/content.js` until the first publish. **Content edits now live in Blobs, not git**: before changing `src/content.js` by hand, check whether a published version exists, or the code edit won't show. Password: salted scrypt hash in Blobs `cms/auth` (the Netlify API refuses env-var writes from this account's CLI/MCP token, so it isn't an env var); `ADMIN_PASSWORD` env var overrides it and is what local `netlify dev` uses via `.env`.
 
 ---
@@ -120,7 +121,7 @@ src/styles.css        @imports styles/tokens → atoms → molecules → organis
 assets/img/           g<page>.jpg portfolio pages, cv1/cv2.jpg, vick.jpg (~3.1 MB)
 assets/cv/            vickhal-roopram-cv.pdf
 netlify.toml          publish=".", cache headers for /assets/*
-.github/workflows/pages.yml   GitHub Pages deploy (alternative host; optional)
+.github/workflows/ci.yml      Checks + Netlify smoke test (pages.yml removed 19 Nov 2026: Pages was never enabled, every run failed)
 README.md             User-facing docs (controls, structure, how to edit content)
 ```
 

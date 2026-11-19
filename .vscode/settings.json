@@ -1,0 +1,10 @@
+{
+  // main is production. VS Code asks before committing on it and offers a new branch instead.
+  // Rules: docs/GIT-WORKFLOW.md
+  "git.branchProtection": ["main"],
+  "git.branchProtectionPrompt": "alwaysPrompt",
+  "git.autofetch": true,
+  "git.pruneOnFetch": true,
+  "git.confirmSync": true,
+  "git.postCommitCommand": "none"
+}
