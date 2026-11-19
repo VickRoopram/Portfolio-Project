@@ -34,7 +34,7 @@ jobs:
   # After a push lands on main or version-01, wait for Netlify to publish it and smoke-test the site.
   # Records the deploy in the matching GitHub Environment (Settings → Environments, and the repo home page).
   deploy:
-    name: ${{ github.ref_name == 'main' && 'production' || 'staging' }} smoke test
+    name: deploy smoke test
     if: github.event_name == 'push'
     needs: checks
     runs-on: ubuntu-latest
