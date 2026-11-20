@@ -2,6 +2,10 @@
 #   main       → production  https://vick-does-creative.netlify.app
 #   version-01 → staging     https://version-01--vick-does-creative.netlify.app
 # Rules, checklists and sources: docs/GIT-WORKFLOW.md
+#
+# Security: every action is pinned to a full commit SHA (the comment shows its version; Dependabot keeps
+# them current), the token is read-only, checkout doesn't keep credentials, and no step interpolates
+# untrusted input (branch names, PR titles) into a shell script.
 name: CI
 
 on:
@@ -14,22 +18,59 @@ on:
 permissions:
   contents: read
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   # The required status check. Its name ("checks") is what the main ruleset requires: don't rename it.
+  # Every step after the first runs even if an earlier one failed, so one run shows every problem.
   checks:
     name: checks
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     concurrency:
       group: checks-${{ github.ref }}
       cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version: 22
+          persist-credentials: false
+
+      - name: Set up Node 24 (same as Netlify Functions)
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
       - name: Repo checks (syntax, references, conflict markers, sizes, secrets, JSON)
         run: node scripts/ci-check.mjs
+
+      - name: Install function dependencies (no install scripts)
+        if: ${{ !cancelled() }}
+        run: npm ci --ignore-scripts --no-fund
+
+      - name: Netlify Functions load and export a handler
+        if: ${{ !cancelled() }}
+        run: node scripts/ci-functions.mjs
+
+      - name: Dependency vulnerabilities (high or critical)
+        if: ${{ !cancelled() }}
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Register actionlint annotations
+        if: ${{ !cancelled() }}
+        run: echo "::add-matcher::.github/actionlint-matcher.json"
+
+      - name: Lint workflows (actionlint)
+        if: ${{ !cancelled() }}
+        uses: docker://rhysd/actionlint:1.7.12
+
+      - name: Workflow security audit (zizmor)
+        if: ${{ !cancelled() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: pipx run zizmor==1.32.0 --format=github --min-severity=low .github/
 
   # After a push lands on main or version-01, wait for Netlify to publish it and smoke-test the site.
   # Records the deploy in the matching GitHub Environment (Settings → Environments, and the repo home page).
@@ -46,12 +87,15 @@ jobs:
       name: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
       url: ${{ github.ref_name == 'main' && 'https://vick-does-creative.netlify.app' || 'https://version-01--vick-does-creative.netlify.app' }}
     steps:
-      - uses: actions/checkout@v5
+      - name: Check out (this commit and its parent)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 2
-      - uses: actions/setup-node@v5
+          persist-credentials: false
+      - name: Set up Node 24
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 22
+          node-version: 24
       - name: Wait for Netlify, then smoke-test
         env:
           SITE_URL: ${{ github.ref_name == 'main' && 'https://vick-does-creative.netlify.app' || 'https://version-01--vick-does-creative.netlify.app' }}
