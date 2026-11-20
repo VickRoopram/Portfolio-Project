@@ -10,7 +10,7 @@
     "setup": "git config core.hooksPath .githooks && echo 'Git hooks on: no commits or pushes straight to main.'"
   },
   "dependencies": {
-    "@netlify/blobs": "^11.1.7",
-    "@netlify/functions": "^6.0.3"
+    "@netlify/blobs": "^11.1.9",
+    "@netlify/functions": "^6.1.1"
   }
 }
