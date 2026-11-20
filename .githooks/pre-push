@@ -1,0 +1,9 @@
+#!/bin/sh
+# Blocks pushes to main and runs the repo checks before any push. Turn on once per clone: npm run setup
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [ "$remote_ref" = "refs/heads/main" ]; then
+    echo "✗ Don't push to main. Merge a pull request from version-01 on GitHub instead (docs/GIT-WORKFLOW.md)."
+    exit 1
+  fi
+done
+node scripts/ci-check.mjs || { echo "✗ Checks failed: fix them before pushing."; exit 1; }
