@@ -80,9 +80,14 @@ feat/my-change ──PR──▶ version-01 (staging) ──PR──▶ main (pr
 | --- | --- | --- | --- |
 | VS Code branch protection | `.vscode/settings.json` (`git.branchProtection: ["main"]`) | Asks before committing on `main` and offers a new branch [S10] | Click "Commit anyway" |
 | Git hooks | `.githooks/pre-commit`, `.githooks/pre-push` (`npm run setup` once per clone) | Commits on `main`, pushes to `main`, pushes that fail `npm run check` [S12] | `--no-verify` (emergencies only) |
-| CI `checks` | `.github/workflows/ci.yml` → `scripts/ci-check.mjs` | JS syntax errors, imports or `src`/`href` pointing at missing files (the "screens don't load" class of bug), conflict markers, files ≥ 50 MiB, committed secrets, bad JSON | None. Fix the problem. |
+| CI `checks`: repo checks | `ci.yml` → `scripts/ci-check.mjs` | JS syntax errors, imports or `src`/`href` pointing at missing files (the "screens don't load" class of bug), conflict markers, files ≥ 50 MiB, committed secrets, bad JSON | None. Fix the problem. |
+| CI `checks`: Netlify Functions | `ci.yml` → `scripts/ci-functions.mjs` | A function in `netlify/functions` that won't load on Node 24 (Netlify's runtime), a broken `netlify/lib` import, or a missing handler or route | None |
+| CI `checks`: dependencies | `npm audit --omit=dev --audit-level=high` | Known high or critical vulnerabilities in the Functions' npm packages | None |
+| CI `checks`: workflow lint | actionlint 1.7.12 [S15] | Mistakes in workflow files (bad expressions, unknown properties, shell bugs), shown on the line | None |
+| CI `checks`: workflow security | zizmor 1.32.0 [S16] | Unpinned actions, over-broad token permissions, script injection, credential leaks in workflows | None |
 | Ruleset "Main Branch" | GitHub → Settings → Rules | Direct pushes, force-pushes, deletion of `main`; merging with red checks [S7][S8] | Disable the ruleset temporarily (admin) |
 | Smoke test (`deploy` job) | `ci.yml` → `scripts/smoke-check.mjs` | A deploy Netlify didn't publish, or `/`, `/src/main.js`, `/src/styles.css`, `/admin/` not returning 200 | Not applicable. It reports after the fact. |
+| Dependabot | `.github/dependabot.yml` | Out-of-date or vulnerable actions and npm packages. Opens a weekly grouped PR into `version-01`, 7 days after a release [S14][S17] | Close the PR |
 | Environments | GitHub → Settings → Environments | Records each staging/production deploy with its URL. Only `main` can deploy to `production`, only `version-01` to `staging` [S6] | Not applicable |
 
 ---
@@ -126,7 +131,16 @@ git switch -c feat/short-name origin/version-01
    ```
 6. If content changed in `/admin`, also click **Publish to live** there.
 
-### 5.5 Something broke in production (rollback)
+### 5.5 A check failed: find the fault in under a minute
+1. On the PR, the failing check has a red ✗. Click **Details**.
+2. The run's **Summary** page shows a table of every check and every problem, with file and line. [S18]
+3. The PR's **Files changed** tab shows each problem as an annotation on the exact line. [S18]
+4. Every step runs even after one fails, so a single run lists everything to fix.
+5. Fix locally, run `npm run check` (and `npm run check:functions` after `npm ci` if you touched `netlify/`), then push again. The PR re-runs automatically.
+
+*Tested 20 Nov 2026 with a deliberate-fault PR (#6): a syntax error, a missing import and a workflow bug were each annotated at the right file and line in one run.*
+
+### 5.6 Something broke in production (rollback)
 - **Fastest (seconds):** Netlify → Deploys → pick the last good production deploy → **Publish deploy**. This publishes the old build without touching git. Then fix forward through the normal flow. [S3]
 - **In git:** on a branch from `version-01`, `git revert -m 1 <release-merge-sha>`, then PR → `version-01` → PR → `main`.
 - **Hotfix that can't wait for staging:** branch from `main`, PR straight into `main` (checks still required), then merge `main` back into `version-01`.
@@ -162,7 +176,14 @@ Restrict deletions **on** · Block force pushes **on**. Nothing else, so the des
 
 No required reviewers: they would only pause the smoke test, not Netlify (C1).
 
-### 6.4 Netlify (Project configuration → Build & deploy → Continuous deployment → Branches and deploy contexts) [S2][S3]
+### 6.4 Security and housekeeping (Settings → General, and Settings → Advanced Security)
+| Setting | Value | Why |
+| --- | --- | --- |
+| Automatically delete head branches (General → Pull Requests) | **on** | Merged work branches disappear, so the branch list shows only live work. Rulesets still protect `main` and `version-01`. [S19] |
+| Dependabot alerts and security updates | **on** | Currently off. Needed for Dependabot to raise vulnerability PRs. [S14] |
+| Secret scanning + push protection | **on** | Free on public repos. Blocks a push that contains a known secret type. [S20] |
+
+### 6.5 Netlify (Project configuration → Build & deploy → Continuous deployment → Branches and deploy contexts) [S2][S3]
 | Setting | Value |
 | --- | --- |
 | Production branch | `main` |
@@ -182,6 +203,9 @@ No required reviewers: they would only pause the smoke test, not Netlify (C1).
 ## 8. Rules for AI assistants working in this repo
 - Never push to `main`. Push a work branch, merge into `version-01` (or open a PR into it), then open a PR `version-01 → main` for Vick to merge. A request to "push to main" means: make sure it's on staging and open the release PR.
 - Run `node scripts/ci-check.mjs` before every push and report its result.
+- Keep every `uses:` pinned to a full commit SHA with its version as a comment. Never `@main`, `@latest` or a bare tag.
+- Keep `permissions: contents: read` at the top of workflows; grant more per job, only if a job needs it.
+- Never put `${{ github.event.* }}` or branch or PR names straight into a `run:` script. Pass them through `env:`. [S14]
 - Don't change rulesets, environments or Netlify settings without asking. Confirm before each save.
 - Back up any claim about GitHub, Netlify or VS Code behaviour with a link from §10, or check the live docs.
 - Ask when context is missing rather than guessing.
@@ -192,10 +216,11 @@ No required reviewers: they would only pause the smoke test, not Netlify (C1).
 | Date | Change |
 | --- | --- |
 | 19 Nov 2026 | Pages workflow removed; CI + smoke test + Environments added; ruleset and local guards defined; this document created. |
+| 20 Nov 2026 | CI hardened: actions pinned to SHAs, Node 24, Functions load test, npm audit, actionlint, zizmor, file/line annotations and run summaries; Dependabot; PR template; fault drill passed. |
 
 ---
 
-## 10. Sources (checked 19 Nov 2026)
+## 10. Sources (checked 19–20 Nov 2026)
 - **[S1]** GitHub Docs, *Configuring a publishing source for your GitHub Pages site*: https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
 - **[S2]** Netlify Docs, *Deploy overview* (production branch, branch deploys, Deploy Previews, deploy contexts): https://docs.netlify.com/deploy/deploy-overview
 - **[S3]** Netlify Docs, *Branch deploys* (URL format `branch--site.netlify.app`, Branches and deploy contexts settings): https://docs.netlify.com/site-deploys/branch-deploys/
@@ -209,3 +234,11 @@ No required reviewers: they would only pause the smoke test, not Netlify (C1).
 - **[S11]** GitHub Docs, *About large files on GitHub* (warning at 50 MiB, blocked at 100 MiB): https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-large-files-on-github
 - **[S12]** Git documentation, *githooks* (`pre-commit`, `pre-push`, `core.hooksPath`): https://git-scm.com/docs/githooks
 - **[S13]** GitHub Docs, *Workflow syntax*, `jobs.<job_id>.environment` (`name`, `url`): https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+- **[S14]** GitHub Docs, *Secure use reference* (pin actions to a full-length commit SHA; read-only `GITHUB_TOKEN` by default; pass untrusted input through an environment variable; Dependabot for actions): https://docs.github.com/en/actions/reference/security/secure-use
+- **[S15]** actionlint usage (running in GitHub Actions, problem matcher for annotations): https://github.com/rhysd/actionlint/blob/main/docs/usage.md
+- **[S16]** zizmor usage (`--format=github`, `--min-severity`, exit codes): https://docs.zizmor.sh/usage/
+- **[S17]** GitHub Docs, *Dependabot options reference* (`cooldown`, `groups`, `target-branch`): https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference
+- **[S18]** GitHub Docs, *Workflow commands* (`::error file=…,line=…` annotations; `GITHUB_STEP_SUMMARY` job summaries): https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands
+- **[S19]** GitHub Docs, *Managing the automatic deletion of branches*: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-the-automatic-deletion-of-branches
+- **[S20]** GitHub Changelog, *Secret scanning's push protection is available on public repositories, for free* (9 May 2023): https://github.blog/changelog/2023-05-09-secret-scannings-push-protection-is-available-on-public-repositories-for-free
+- **[S21]** Release notes for the pinned actions: https://github.com/actions/checkout/releases · https://github.com/actions/setup-node/releases
