@@ -28,7 +28,7 @@ jobs:
   checks:
     name: checks
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: ten
     concurrency:
       group: checks-${{ github.ref }}
       cancel-in-progress: true
@@ -79,7 +79,7 @@ jobs:
     if: github.event_name == 'push'
     needs: checks
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: ten
     concurrency:
       group: deploy-${{ github.ref }}
       cancel-in-progress: false
