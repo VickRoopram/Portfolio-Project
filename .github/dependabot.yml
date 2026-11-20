@@ -1,0 +1,38 @@
+# Keeps pinned GitHub Actions and the Netlify Functions' npm packages up to date.
+# PRs go to version-01 (staging) so updates are tested there before they reach main.
+# cooldown: wait a week after a release before proposing it, so a bad or compromised release has time to be caught.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: version-01
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Africa/Johannesburg
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "chore(actions)"
+    labels: [dependencies]
+
+  - package-ecosystem: npm
+    directory: /
+    target-branch: version-01
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Africa/Johannesburg
+    cooldown:
+      default-days: 7
+    groups:
+      netlify:
+        patterns: ["@netlify/*"]
+    commit-message:
+      prefix: "chore(deps)"
+    labels: [dependencies]

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "netlify dev --port 8888",
     "check": "node scripts/ci-check.mjs",
+    "check:functions": "node scripts/ci-functions.mjs",
     "setup": "git config core.hooksPath .githooks && echo 'Git hooks on: no commits or pushes straight to main.'"
   },
   "dependencies": {
