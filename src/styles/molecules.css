@@ -53,6 +53,8 @@
 .steps div{padding:10px;border:1px solid var(--line);border-radius:var(--r1);background:var(--card2);font-size:13px;line-height:1.4}
 .steps b{display:block;margin-bottom:4px;font:700 var(--t-xs)/1.2 var(--body);letter-spacing:.06em;color:var(--accent)}
 .gal{display:grid;grid-template-columns:1fr;gap:var(--s3)}
+.d .pic.fig{margin:var(--s3) 0}
+.d .pic.fig + .pic.fig{margin-top:0}
 /* the lamp's hover tip: a bulb icon, lit when the lamp is on, and On / Off */
 .lamp-tip{display:inline-flex;align-items:center;gap:6px}
 .lamp-tip .ic{opacity:.55;transition:color .2s,opacity .2s,filter .2s}

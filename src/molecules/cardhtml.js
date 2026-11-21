@@ -18,8 +18,12 @@ export function cardHTML(ch, i) {
   if (it.life) h += CH.life.items.map(x => `<div class="d"><h3>${x.t}</h3>${x.d}</div>`).join('');
   if (it.contact) h += `<div class="d"><p>A job, a project, or a long chat about design, faith or D&amp;D. All welcome:</p></div><div class="cta-row"><a class="cta" href="mailto:${EMAIL}">${icon('mail', 18)}<span>Email ${EMAIL}</span></a><button class="cta ghost" id="cp">${icon('copy', 18)}<span>Copy</span></button></div>`
     + `<p class="copy">${icon('phone', 16)}Cell <span class="num">+27 73 482 7221</span></p><div class="socials">${LINKS.map(([n, u]) => `<a class="soc" href="${u}" target="_blank" rel="noopener">${socialIcon(n)}<span>${n}<small>${u.replace(/^https:\/\/(www\.)?/, '').replace(/\/$/, '')}</small></span>${out(u)}</a>`).join('')}</div>`;
-  if (it.d) h += `<div class="d">${it.d}</div>`;
+  /* <div class="fig fig-N"></div> in a description places img[N] right there, between the sections (a class-only marker, so it survives
+     the admin's clean-up); images not placed that way still go in the gallery at the end */
+  const placed = new Set();
+  if (it.d) h += `<div class="d">${it.d.replace(/<div class="fig fig-(\d+)"><\/div>/g, (m, n) => { const g = it.img?.[+n]; if (!g || +n === 0) return ''; placed.add(+n); return pic(g, 'fig') })}</div>`;
   if (it.links) h += `<div class="cta-row">${it.links.map((l, k) => `<a class="cta${k ? ' ghost' : ''}" href="${l[1]}" target="_blank" rel="noopener"><span>${l[0]}</span>${out(l[1])}</a>`).join('')}</div>`;
-  if (it.img?.length > 1) h += `<div class="gal">${it.img.slice(1).map(g => pic(g)).join('')}</div>`;
+  const rest = (it.img || []).slice(1).filter((g, k) => !placed.has(k + 1));
+  if (rest.length) h += `<div class="gal">${rest.map(g => pic(g)).join('')}</div>`;
   return h;
 }
