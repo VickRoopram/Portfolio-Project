@@ -273,6 +273,8 @@ Only the words change. No facts have been added: every claim below is already on
 | Geek Punch | A personal product I'm designing and building, with the aim of taking it to market. It's still on the workbench. More soon. |
 | Training | No change (dates and courses). |
 
+**Update, 21 Nov 2026 (approved by Vick):** UX/UI is now nine case studies, led by Plug Our Potholes and Fleet Receiving (from Behance). Every UX/UI page follows the Plug Our Potholes layout: title first, no kicker line, the first image whole, wide card on desktop and tablet with images over 3/4 of the screen, centred copy, and body paragraphs of three lines or fewer with the rag set by hand (desktop-only line breaks, `<br class="dbr">`). The live wording is in `src/content.js`; it supersedes the table above for this section.
+
 ### 6.10 Motion & 3D
 
 | Item | Proposed |
