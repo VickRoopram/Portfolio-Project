@@ -426,6 +426,16 @@ body[data-play="on"] :is(#ctaContact,#mnu,#help,#jam){display:none}
 }
 
 /* About is one scrolling page (organisms/card.js): no page arrows, and a pencil rule between its sections */
-#card[data-one="true"] :is(#prev,#next){display:none}
+#card[data-one="true"] :is(#prev,#next,.nav-t){display:none}
+/* card header: Previous sits at the left edge (its project's name shows on hover), Next stays beside Close with its project's name always showing */
+#card .ch #prev{margin-right:0}
+#card .ch #prevT{margin-right:auto}
+.nav-t{min-width:0;max-width:34%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font:400 var(--t-md)/1.2 var(--body);color:var(--ink);cursor:var(--cur-point);transition:opacity .15s steps(2)}
+.nav-t small{display:block;font:600 var(--t-xs)/1.2 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+#nextT{text-align:right}
+#prevT{opacity:0}
+#prev:hover + #prevT,#prev:focus-visible + #prevT,#prevT:hover{opacity:1}
+.nav-t:hover{text-decoration:underline wavy var(--accent,var(--red));text-underline-offset:4px}
+@media (max-width:760px){.nav-t{display:none}}
 #card .sec{margin-top:var(--s5);padding-top:var(--s4);border-top:2px dashed color-mix(in srgb,var(--ink) 35%,transparent)}
 #card .sec .k{margin:2px 0 var(--s2)}
