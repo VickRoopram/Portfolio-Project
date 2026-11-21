@@ -67,6 +67,7 @@ html.phone .desk-only{display:none}
 /* a case study opens wide on desktop and tablet: images fill the sheet (over 3/4 of the screen), text stays a readable width */
 @media (min-width:761px){
   #card[data-wide="true"]{width:calc(100% - 32px)}
+  #card[data-wide="true"] .d{max-width:none}
   #card[data-wide="true"] .d>:not(.pic):not(.steps):not(.desk-only){max-width:78ch}
   #card[data-wide="true"] .hero-pic{margin-top:var(--s3)}
 }
