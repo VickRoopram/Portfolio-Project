@@ -27,7 +27,7 @@ export function openCard(ch, i, o = {}) {
     leaf.append(front, Object.assign(document.createElement('div'), { className: 'leaf-back' })); card.append(leaf); front.scrollTop = top; setTimeout(() => leaf.remove(), 600);
   }
   card.style.setProperty('--accent', CH[ch].col); const same = ch === ONE && was?.ch === ch && !card.hidden; // already on the About page: only scroll
-  if (!same) ct.innerHTML = cardHTML(ch, i); card.dataset.one = String(ch === ONE);
+  if (!same) ct.innerHTML = cardHTML(ch, i); card.dataset.one = String(ch === ONE); card.dataset.wide = String(!!CH[ch].items[i]?.case);
   if (!turn && !same) { card.hidden = true; void card.offsetWidth; card.hidden = false } // a new book: the sheet drops in
   const sec = ch === ONE && i ? ct.querySelector(`[data-sec="${i}"]`) : null;
   ct.scrollTo({ top: sec ? sec.getBoundingClientRect().top - ct.getBoundingClientRect().top + ct.scrollTop - 14 : 0, behavior: same && !reduceMotion ? 'smooth' : 'auto' });

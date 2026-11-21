@@ -55,6 +55,21 @@
 .gal{display:grid;grid-template-columns:1fr;gap:var(--s3)}
 .d .pic.fig{margin:var(--s3) 0}
 .d .pic.fig + .pic.fig{margin-top:0}
+/* parts of a description for one screen only: desk-only on the desktop/tablet card, mob-only on the phone page */
+.mob-only{display:none}
+html.phone .mob-only{display:block}
+html.phone .desk-only{display:none}
+/* step cards with an illustration beside the words (phone How it works) */
+.steps.ill-steps{grid-template-columns:1fr}
+.ill-steps>div{display:grid;grid-template-columns:108px minmax(0,1fr);column-gap:12px;align-items:center}
+.ill-steps>div>b{align-self:end}
+.ill-steps .ill{grid-row:span 2;display:block;width:100%;height:auto;border-radius:4px;background:#fff}
+/* a case study opens wide on desktop and tablet: images fill the sheet (over 3/4 of the screen), text stays a readable width */
+@media (min-width:761px){
+  #card[data-wide="true"]{width:calc(100% - 32px)}
+  #card[data-wide="true"] .d>:not(.pic):not(.steps):not(.desk-only){max-width:78ch}
+  #card[data-wide="true"] .hero-pic{margin-top:var(--s3)}
+}
 /* the lamp's hover tip: a bulb icon, lit when the lamp is on, and On / Off */
 .lamp-tip{display:inline-flex;align-items:center;gap:6px}
 .lamp-tip .ic{opacity:.55;transition:color .2s,opacity .2s,filter .2s}
