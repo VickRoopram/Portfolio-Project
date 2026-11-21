@@ -59,6 +59,8 @@
 .mob-only{display:none}
 html.phone .mob-only{display:block}
 html.phone .desk-only{display:none}
+/* <br class="dbr">: a line break for the centred desktop layout only (sets the rag); the phone lets the line wrap */
+html.phone .d br.dbr{display:none}
 /* step cards with an illustration beside the words (phone How it works) */
 .steps.ill-steps{grid-template-columns:1fr}
 .ill-steps>div{display:grid;grid-template-columns:108px minmax(0,1fr);column-gap:12px;align-items:center}
@@ -68,7 +70,13 @@ html.phone .desk-only{display:none}
 @media (min-width:761px){
   #card[data-wide="true"]{width:calc(100% - 32px)}
   #card[data-wide="true"] .d{max-width:none}
-  #card[data-wide="true"] .d>:not(.pic):not(.steps):not(.desk-only){max-width:78ch}
+  /* centred text, with even line lengths: headings balanced, short paragraphs balanced too, so the rag mirrors on both sides */
+  #card[data-wide="true"] .hd{justify-items:center;text-align:center}
+  #card[data-wide="true"] .hd h2{margin-left:0;text-wrap:balance}
+  #card[data-wide="true"] .d>:not(.pic):not(.steps):not(.desk-only){max-width:76ch;margin-inline:auto;text-align:center}
+  #card[data-wide="true"] .d h3{text-wrap:balance}
+  #card[data-wide="true"] .d p{font-size:20px;text-wrap:balance}
+  #card[data-wide="true"] .d .tags{justify-content:center}
   #card[data-wide="true"] .hero-pic{margin-top:var(--s3)}
 }
 /* the lamp's hover tip: a bulb icon, lit when the lamp is on, and On / Off */
