@@ -1,0 +1,1574 @@
+{
+  "tiers": [
+    {
+      "tier": "1 · PALETTE",
+      "tokens": [
+        {
+          "name": "--pal-espresso-950",
+          "value": "#1a100b",
+          "note": "the room: top of the gradient"
+        },
+        {
+          "name": "--pal-espresso-900",
+          "value": "#23150e",
+          "note": ""
+        },
+        {
+          "name": "--pal-espresso-850",
+          "value": "#24160f",
+          "note": "the floor"
+        },
+        {
+          "name": "--pal-espresso-800",
+          "value": "#2a1a13",
+          "note": ""
+        },
+        {
+          "name": "--pal-espresso-700",
+          "value": "#2e1d15",
+          "note": ""
+        },
+        {
+          "name": "--pal-ink",
+          "value": "#2a1b12",
+          "note": "pencil and felt-tip"
+        },
+        {
+          "name": "--pal-umber-600",
+          "value": "#5d4534",
+          "note": ""
+        },
+        {
+          "name": "--pal-umber-500",
+          "value": "#6f5846",
+          "note": ""
+        },
+        {
+          "name": "--pal-umber-400",
+          "value": "#7b5d45",
+          "note": ""
+        },
+        {
+          "name": "--pal-kraft",
+          "value": "#c9a06c",
+          "note": "brown card"
+        },
+        {
+          "name": "--pal-sand-200",
+          "value": "#e6d3ae",
+          "note": ""
+        },
+        {
+          "name": "--pal-sand-100",
+          "value": "#ecdcbd",
+          "note": ""
+        },
+        {
+          "name": "--pal-sand-50",
+          "value": "#f3e8d2",
+          "note": ""
+        },
+        {
+          "name": "--pal-parchment",
+          "value": "#f4e6cc",
+          "note": ""
+        },
+        {
+          "name": "--pal-cream",
+          "value": "#fbf1dd",
+          "note": ""
+        },
+        {
+          "name": "--pal-cream-hi",
+          "value": "#fff8ea",
+          "note": ""
+        },
+        {
+          "name": "--pal-photo",
+          "value": "#fffaf0",
+          "note": "photo paper and polaroid borders"
+        },
+        {
+          "name": "--pal-red",
+          "value": "#e0301a",
+          "note": "the one accent: hover and selectable markers"
+        }
+      ]
+    },
+    {
+      "tier": "2 · ROLES",
+      "tokens": [
+        {
+          "name": "--floor",
+          "value": "var(--pal-espresso-850)",
+          "note": ""
+        },
+        {
+          "name": "--stage-ink",
+          "value": "var(--pal-parchment)",
+          "note": "text straight on the room"
+        },
+        {
+          "name": "--ink",
+          "value": "var(--pal-ink)",
+          "note": "text and lines on paper and card"
+        },
+        {
+          "name": "--mute",
+          "value": "var(--pal-umber-500)",
+          "note": ""
+        },
+        {
+          "name": "--line",
+          "value": "rgba(42, 27, 18, 0.35)",
+          "note": ""
+        },
+        {
+          "name": "--cream",
+          "value": "var(--pal-cream)",
+          "note": ""
+        },
+        {
+          "name": "--kraft",
+          "value": "var(--pal-kraft)",
+          "note": ""
+        },
+        {
+          "name": "--kraft-dk",
+          "value": "var(--pal-umber-400)",
+          "note": ""
+        },
+        {
+          "name": "--card",
+          "value": "var(--pal-sand-50)",
+          "note": ""
+        },
+        {
+          "name": "--card2",
+          "value": "var(--pal-sand-100)",
+          "note": ""
+        },
+        {
+          "name": "--chip",
+          "value": "var(--pal-sand-200)",
+          "note": ""
+        },
+        {
+          "name": "--chip-ink",
+          "value": "var(--pal-ink)",
+          "note": ""
+        },
+        {
+          "name": "--track",
+          "value": "var(--pal-umber-600)",
+          "note": ""
+        },
+        {
+          "name": "--photo",
+          "value": "var(--pal-photo)",
+          "note": ""
+        },
+        {
+          "name": "--shadow",
+          "value": "rgba(12, 6, 3, 0.45)",
+          "note": ""
+        },
+        {
+          "name": "--brand-red",
+          "value": "var(--pal-red)",
+          "note": "fixed: never re-tinted per project"
+        },
+        {
+          "name": "--accent",
+          "value": "var(--pal-red)",
+          "note": "re-tinted per project inside the card (organisms/card.js)"
+        },
+        {
+          "name": "--accent-ui",
+          "value": "var(--pal-red)",
+          "note": ""
+        },
+        {
+          "name": "--on-accent",
+          "value": "var(--pal-cream-hi)",
+          "note": ""
+        },
+        {
+          "name": "--red",
+          "value": "var(--pal-red)",
+          "note": ""
+        },
+        {
+          "name": "--glow",
+          "value": "var(--pal-red)",
+          "note": ""
+        },
+        {
+          "name": "--blue",
+          "value": "var(--pal-red)",
+          "note": "legacy name: focus rings. One accent, so it's red too"
+        },
+        {
+          "name": "--sh-s",
+          "value": "0 0 0 transparent",
+          "note": ""
+        },
+        {
+          "name": "--sh-m",
+          "value": "0 0 0 transparent",
+          "note": ""
+        },
+        {
+          "name": "--sh-l",
+          "value": "0 0 0 transparent",
+          "note": ""
+        },
+        {
+          "name": "--drop",
+          "value": "var(--sh-m)",
+          "note": ""
+        },
+        {
+          "name": "--edge",
+          "value": "2.5px solid var(--ink)",
+          "note": "the ink outline round every piece"
+        }
+      ]
+    },
+    {
+      "tier": "3 · MATERIALS (photo textures from Vick's library, assets/tex)",
+      "tokens": [
+        {
+          "name": "--paper",
+          "value": "url('../../assets/tex/paper.jpg')",
+          "note": ""
+        },
+        {
+          "name": "--crumpled",
+          "value": "url('../../assets/tex/crumpled.jpg')",
+          "note": ""
+        },
+        {
+          "name": "--kraft-tex",
+          "value": "url('../../assets/tex/kraft.jpg')",
+          "note": ""
+        },
+        {
+          "name": "--kraft-dk-tex",
+          "value": "url('../../assets/tex/kraft-dark.jpg')",
+          "note": ""
+        },
+        {
+          "name": "--corr-tex",
+          "value": "url('../../assets/tex/corrugated.jpg')",
+          "note": ""
+        },
+        {
+          "name": "--wood-tex",
+          "value": "url('../../assets/tex/wood.jpg')",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "tier": "4 · TYPE (fonts are self-hosted: @font-face in skin.css, files in assets/fonts)",
+      "tokens": [
+        {
+          "name": "--display",
+          "value": "'Londrina Solid', 'Arial Narrow', 'Impact', sans-serif",
+          "note": "cut-paper capitals"
+        },
+        {
+          "name": "--body",
+          "value": "'Patrick Hand', 'Comic Sans MS', 'Segoe Print', cursive",
+          "note": "felt-tip hand"
+        },
+        {
+          "name": "--mono",
+          "value": "'Londrina Solid', 'Arial Narrow', sans-serif",
+          "note": "labels and numbers"
+        },
+        {
+          "name": "--t-xs",
+          "value": "13px",
+          "note": ""
+        },
+        {
+          "name": "--t-sm",
+          "value": "15px",
+          "note": ""
+        },
+        {
+          "name": "--t-md",
+          "value": "18px",
+          "note": ""
+        },
+        {
+          "name": "--t-lg",
+          "value": "23px",
+          "note": ""
+        },
+        {
+          "name": "--t-xl",
+          "value": "34px",
+          "note": ""
+        },
+        {
+          "name": "--t-2xl",
+          "value": "clamp(44px, 6.4vw, 84px)",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "tier": "5 · SPACE, SHAPE AND SIZE",
+      "tokens": [
+        {
+          "name": "--s1",
+          "value": "4px",
+          "note": ""
+        },
+        {
+          "name": "--s2",
+          "value": "8px",
+          "note": ""
+        },
+        {
+          "name": "--s3",
+          "value": "12px",
+          "note": ""
+        },
+        {
+          "name": "--s4",
+          "value": "16px",
+          "note": ""
+        },
+        {
+          "name": "--s5",
+          "value": "24px",
+          "note": ""
+        },
+        {
+          "name": "--s6",
+          "value": "32px",
+          "note": ""
+        },
+        {
+          "name": "--s7",
+          "value": "48px",
+          "note": ""
+        },
+        {
+          "name": "--r1",
+          "value": "6px",
+          "note": ""
+        },
+        {
+          "name": "--r2",
+          "value": "10px",
+          "note": ""
+        },
+        {
+          "name": "--r3",
+          "value": "16px",
+          "note": ""
+        },
+        {
+          "name": "--cut",
+          "value": "14px 9px 16px 8px / 9px 15px 8px 14px",
+          "note": "a hand-cut corner is never the same twice"
+        },
+        {
+          "name": "--cut-s",
+          "value": "7px 4px 8px 5px / 5px 8px 4px 7px",
+          "note": ""
+        },
+        {
+          "name": "--px",
+          "value": "clamp(0.36px, calc(100vw / 3840), 0.62px)",
+          "note": "1 px of the 4K Figma frame"
+        },
+        {
+          "name": "--hdr-h",
+          "value": "max(58px, calc(var(--px) * 170))",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "tier": "6 · MOTION: on twos",
+      "tokens": [
+        {
+          "name": "--step",
+          "value": "steps(3, end)",
+          "note": "transitions: a 250 ms move is three drawings"
+        },
+        {
+          "name": "--ease",
+          "value": "steps(4, end)",
+          "note": "animations"
+        }
+      ]
+    },
+    {
+      "tier": "7 · CURSOR (cardboard cut-outs, assets/ui/cursor)",
+      "tokens": [
+        {
+          "name": "--cur-arrow",
+          "value": "url('../../assets/ui/cursor/arrow.png') 3 2, auto",
+          "note": ""
+        },
+        {
+          "name": "--cur-point",
+          "value": "url('../../assets/ui/cursor/point.png') 12 2, pointer",
+          "note": ""
+        },
+        {
+          "name": "--cur-grab",
+          "value": "url('../../assets/ui/cursor/grab.png') 14 12, grab",
+          "note": ""
+        }
+      ]
+    }
+  ],
+  "components": [
+    {
+      "file": "src/atoms/craft.js",
+      "layer": "atoms",
+      "about": "Craft atoms: the cardboard-model look. Photo textures of card, paper and wood (assets/tex, from Vick's texture library), the ink outline every piece gets, and the frame rate the whole site is animated at.",
+      "exports": [
+        "FPS",
+        "BOIL_EVERY",
+        "PAPER",
+        "card",
+        "INK",
+        "outline",
+        "boil",
+        "rnd",
+        "wonk",
+        "tape",
+        "cutout",
+        "markerLoop"
+      ],
+      "lines": 296
+    },
+    {
+      "file": "src/atoms/geometry.js",
+      "layer": "atoms",
+      "about": "Geometry atoms: cached rounded boxes, cylinders and a rounded-rect path (canvas or THREE.Shape).",
+      "exports": ["rbox", "cyl", "dims", "rrPath", "flat"],
+      "lines": 74
+    },
+    {
+      "file": "src/atoms/icons.js",
+      "layer": "atoms",
+      "about": "Icon atoms: coolicons (Line · Round, 24 × 24, 2 px stroke), from the coolicons Figma library. One path per icon, drawn in currentColor, so every icon follows the theme. Used as inline SVG in the page and as Path2D on canvases (the remote's social keys).…",
+      "exports": ["PATHS", "icon", "socialIcon", "drawIcon"],
+      "lines": 75
+    },
+    {
+      "file": "src/atoms/labels.js",
+      "layer": "atoms",
+      "about": "Label atoms: printed legends (tinted, so the theme can recolour them) and engraved legends sunk into a cap.",
+      "exports": ["printed", "printedIcon", "engraved"],
+      "lines": 69
+    },
+    {
+      "file": "src/atoms/materials.js",
+      "layer": "atoms",
+      "about": "Material atoms. One look: a cardboard model (14 Nov 2026). Every surface is card or paper from atoms/craft.js.",
+      "exports": ["decal", "C", "M", "RUBBER"],
+      "lines": 31
+    },
+    {
+      "file": "src/atoms/sketch.js",
+      "layer": "atoms",
+      "about": "Pencil on a canvas: a line drawn twice, a little off each time, the way a hand would. And the placeholder doodles for the snapshots (one each, until Vick's photos arrive), used on the desk's polaroids and on the phone page. No 3D in here.",
+      "exports": ["sketch", "DOODLES"],
+      "lines": 172
+    },
+    {
+      "file": "src/atoms/textures.js",
+      "layer": "atoms",
+      "about": "Texture atoms drawn on canvases at load (labels, marker rings, pencil marks). The card, paper and wood photos are in atoms/craft.js.",
+      "exports": ["canvasTex", "radialTex", "haloTexture"],
+      "lines": 69
+    },
+    {
+      "file": "src/boot.js",
+      "layer": "app",
+      "about": "Which site to start. index.html decides before the first paint: the 3D desk (main.js) everywhere except a phone (html.phone). A phone held upright gets the office (organisms/pocket.js: one wall, the synth on a shelf, the menu as a stack of boxes); turned…",
+      "exports": [],
+      "lines": 18
+    },
+    {
+      "file": "src/cms.js",
+      "layer": "app",
+      "about": "Content from the admin (/admin), applied over the built-in defaults in content.js. Which version is shown: • the live site → \"live\" (what was last Published) • version-01 preview, deploy previews, local dev, or any URL with ?draft → \"draft\" (what was last…",
+      "exports": ["noCVDownload", "stale", "applyCMS"],
+      "lines": 73
+    },
+    {
+      "file": "src/content.js",
+      "layer": "app",
+      "about": "Portfolio content for Vick Does Creative. Edit text, links and images here; the 3D synth in main.js reads from CH. Each channel: { name, col, items:[{ t:title, k:kicker, sum:one-line summary, d:html, img:[], tags:[], links:[[label,url]] }] } sum is plain…",
+      "exports": ["im", "CH", "LINKS", "MENU", "DESK", "PROFILE"],
+      "lines": 634
+    },
+    {
+      "file": "src/core/audio.js",
+      "layer": "core",
+      "about": "Web Audio synth: two detuned oscillators + sub through a filter and an echo, synthesised drums, and the BEATS tracks (Vick's own audio files, with the synthesised patterns as a fallback).",
+      "exports": [
+        "P",
+        "VOICES",
+        "LIVE",
+        "PNAMES",
+        "ensureAudio",
+        "applyP",
+        "playNote",
+        "foley",
+        "beep",
+        "drum",
+        "scope",
+        "toggleMute",
+        "BEATS",
+        "demo",
+        "stopDemo",
+        "toggleDemo"
+      ],
+      "lines": 476
+    },
+    {
+      "file": "src/core/data.js",
+      "layer": "core",
+      "about": "Content + modes. Waits for /admin overrides first, so every module that imports this sees the final content.",
+      "exports": ["ACCENT", "MODES", "ORDER", "onKeys"],
+      "lines": 25
+    },
+    {
+      "file": "src/core/scene.js",
+      "layer": "core",
+      "about": "Renderer, camera, studio lights, shadow floor and orbit controls.",
+      "exports": ["stage", "renderer", "cv", "scene", "BG", "BACKDROP", "camera", "sun", "controls"],
+      "lines": 105
+    },
+    {
+      "file": "src/core/state.js",
+      "layer": "core",
+      "about": "Shared state and tiny helpers. Every layer reads and writes here, so no module has to import \"upward\".",
+      "exports": ["$", "lerp", "reduceMotion", "desktop", "flip", "S", "V", "hits", "CTRL", "ROWBTN", "realCh", "act"],
+      "lines": 32
+    },
+    {
+      "file": "src/main.js",
+      "layer": "app",
+      "about": "Vick Does Creative: a portfolio played as a 3D synthesizer. Built atomically: core (state, content, audio, renderer) → atoms (geometry, textures, materials, labels) → molecules (press FX, controls, cables) → organisms (synth, remote, desk, underlights,…",
+      "exports": [],
+      "lines": 136
+    },
+    {
+      "file": "src/molecules/cable.js",
+      "layer": "molecules",
+      "about": "Patch lead: a chain of taped card boxes that eases between a loose and a plugged-in route; plugs itself in while its condition holds.",
+      "exports": ["socket", "cable", "updateCables"],
+      "lines": 138
+    },
+    {
+      "file": "src/molecules/cardhtml.js",
+      "layer": "molecules",
+      "about": "A project, About or Contact page as markup: the work first, a tight headline group, then the story, links and gallery. Shared by the desktop card (organisms/card.js) and the phone page (organisms/pocket.js). No 3D in here, so the phone page stays light.",
+      "exports": ["EMAIL", "ONE", "cardHTML"],
+      "lines": 74
+    },
+    {
+      "file": "src/molecules/controls.js",
+      "layer": "molecules",
+      "about": "Control molecules: buttons that press down, item keys that hold a piece of the portfolio, knobs that shape the sound.",
+      "exports": ["press", "push", "pressable", "itemCtrl", "updateItemGlow", "screw", "cap", "knob", "boardCap"],
+      "lines": 338
+    },
+    {
+      "file": "src/molecules/eraser.js",
+      "layer": "molecules",
+      "about": "Eraser: a small block rubber made of card, like everything else on the bench: a cream block with one end worn round, in a red paper sleeve. It rubs a marker line out (organisms/underlights.js). Put the group where the line's end is and turn it (rotation.y)…",
+      "exports": ["eraser"],
+      "lines": 24
+    },
+    {
+      "file": "src/molecules/fx.js",
+      "layer": "molecules",
+      "about": "Press FX, hand-drawn: a marker ring round a cap + a marker stroke racing round the cap edge.",
+      "exports": ["FXMATS", "fxOf", "pulse", "updateFx"],
+      "lines": 208
+    },
+    {
+      "file": "src/molecules/toast.js",
+      "layer": "molecules",
+      "about": "Toast: a one-line status note that shows for a moment (#toast in index.html), e.g. \"Email copied\". Shared by the desk (organisms/card.js) and the phone page (organisms/pocket.js).",
+      "exports": ["toast"],
+      "lines": 15
+    },
+    {
+      "file": "src/organisms/card.js",
+      "layer": "organisms",
+      "about": "Detail card: the work first, a tight headline group, then the story, links and gallery. Plus the lightbox and HUD state.",
+      "exports": ["updateUI", "openCard", "closeCard"],
+      "lines": 146
+    },
+    {
+      "file": "src/organisms/cursor.js",
+      "layer": "organisms",
+      "about": "The pointer, animated on twos. The real pointer is hidden and a cardboard cut-out stands in for it, moved to where the mouse is 12 times a second (the same rate as everything else), so it travels in small jumps. Each jump it's put down at a slightly…",
+      "exports": [],
+      "lines": 89
+    },
+    {
+      "file": "src/organisms/desk.js",
+      "layer": "organisms",
+      "about": "The workbench the cardboard synths sit on (top surface at y = 0), a cut-paper snake plant in a folded card pot (click it: it wilts, sprouts and grows back) and a folded-paper lamp you can switch on and off.",
+      "exports": ["updateDesk"],
+      "lines": 304
+    },
+    {
+      "file": "src/organisms/intro.js",
+      "layer": "organisms",
+      "about": "Intro, in two parts, on one sheet of paper on the workbench. 1 The loader: only the sketch of the site, drawn in CSS while the scene loads. 2 The welcome: when the scene is ready, the name on one line, a line of copy and the red Enter button are written…",
+      "exports": ["initIntro"],
+      "lines": 58
+    },
+    {
+      "file": "src/organisms/jam.js",
+      "layer": "organisms",
+      "about": "Jam mode: the Play button clears the portfolio away and leaves the bench as an instrument. · the keys, sharps, pads and big knobs play as always; the keys hold no projects (molecules/controls.js) · the five section buttons pick the keys' sound…",
+      "exports": ["updateJam"],
+      "lines": 169
+    },
+    {
+      "file": "src/organisms/joystick.js",
+      "layer": "organisms",
+      "about": "Joystick, locked to the bottom right (the zoom guide sits beside it): - the stick pans: push it and the view slides across the table that way, faster the further you push (a rate control); let go and it springs back to centre with a little overshoot. A tap…",
+      "exports": ["updateJoystick"],
+      "lines": 218
+    },
+    {
+      "file": "src/organisms/keepsakes.js",
+      "layer": "organisms",
+      "about": "On the workbench around the synths: a light green rubber cutting mat under them, eight polaroids in a row along the back of the bench and a sticky-note to-do list. The polaroids are views into Vick's life, personality and faith: their images and captions…",
+      "exports": ["updateKeepsakes"],
+      "lines": 485
+    },
+    {
+      "file": "src/organisms/menu.js",
+      "layer": "organisms",
+      "about": "Menu behind the burger: a tray of cardboard boxes, in the same spot as the detail card, so the synth stays visible and reachable. Point at a box and its flaps lift; click and they fold open. A box with more inside (Projects, a section) opens onto the next…",
+      "exports": ["menuOpen", "openMenuFor", "closeMenu", "menuEsc"],
+      "lines": 361
+    },
+    {
+      "file": "src/organisms/party.js",
+      "layer": "organisms",
+      "about": "Beats party: while a BEATS track plays, Vick's motion backgrounds play with it (one per track, BEATS[i].bg, 720p loops in assets/beats/bg made from his 4K files; originals in Google Drive): - behind the desk: the video fills the background, cropped to…",
+      "exports": ["partyColours", "party", "updateParty"],
+      "lines": 154
+    },
+    {
+      "file": "src/organisms/pocket.js",
+      "layer": "organisms",
+      "about": "The phone page, held upright: Vick's office. One wall you look at, not a page you scroll (after juliamoresco.com.br): the synth sits on a shelf with the plant, eight snapshots hang on a string, and the menu is a stack of cardboard boxes on the floor. Tap…",
+      "exports": ["initPocket"],
+      "lines": 678
+    },
+    {
+      "file": "src/organisms/remote.js",
+      "layer": "organisms",
+      "about": "The remote: screen, master volume, Contact and four social keys. Its cable plugs into the synth while the remote is in focus. In jam mode (organisms/jam.js) it's the looper's transport: the same places hold REC and PLAY, STOP, UNDO, CLEAR, and the knob…",
+      "exports": ["RM", "casing", "rs", "RC"],
+      "lines": 125
+    },
+    {
+      "file": "src/organisms/screens.js",
+      "layer": "organisms",
+      "about": "The two \"screens\" are paper, written on by hand. The remote's is a taped note: CONTACT. The synth's is a little ring-bound notebook lying open: the page you're on is on the right, and the page before it has been turned over onto the left, where you can…",
+      "exports": ["note", "drawScreens"],
+      "lines": 558
+    },
+    {
+      "file": "src/organisms/synth.js",
+      "layer": "organisms",
+      "about": "The synth: a 17 × 6.5 grid of tiles on an aluminium body. Screen, four sound knobs (each with a lit ring and their names below), speaker, transport, mode buttons, drum pads, keys. The top section (rows 0–1) has an extra half row under it so the knob names…",
+      "exports": ["synth", "PARTS", "casing", "scr", "grille", "PADS", "wMidi", "keyMeshes", "updateSynth"],
+      "lines": 391
+    },
+    {
+      "file": "src/organisms/tour.js",
+      "layer": "organisms",
+      "about": "The tour. A cardboard question mark sits bottom left (#help, index.html). Click it and Bleep pops out: a small wooden TV that floats, with eyes and a mouth on his screen. He explains the site one thing at a time, in a cardboard speech bubble that comes…",
+      "exports": ["welcomeBack"],
+      "lines": 479
+    },
+    {
+      "file": "src/organisms/underlights.js",
+      "layer": "organisms",
+      "about": "Device marker lines (were underlights): a felt-tip line in the device's colour, drawn on the bench round its casing while you hover it in the overview; the keyboard's stays on (in its mode colour) while you're in a keyboard mode.",
+      "exports": ["boxOf", "GROUPS", "groupAt", "updateUnderlights"],
+      "lines": 89
+    },
+    {
+      "file": "src/organisms/zoom.js",
+      "layer": "organisms",
+      "about": "Zoom guide: a scroll-wheel icon that sits bottom right. As soon as the visitor zooms (wheel or pinch), it slides to the bottom middle and opens up: a short instruction plus a bar that fills as you zoom in, with its percentage (0% = the whole table, 100% =…",
+      "exports": ["updateZoom"],
+      "lines": 81
+    },
+    {
+      "file": "src/page/camera.js",
+      "layer": "page",
+      "about": "Camera: a near top-down overview, low cinematic angles per device, crane-shot swoops between them.",
+      "exports": [
+        "lookAt",
+        "panBy",
+        "spinBy",
+        "recentre",
+        "zoomTo",
+        "zoomOut",
+        "cancelJourney",
+        "journey",
+        "updateCamera",
+        "swoopIn"
+      ],
+      "lines": 424
+    },
+    {
+      "file": "src/page/input.js",
+      "layer": "page",
+      "about": "Input: pointer picking, drags on knobs, taps on bare casing, the floating hover tip, and the computer keyboard as a synth.",
+      "exports": ["ray", "updateHover"],
+      "lines": 171
+    },
+    {
+      "file": "src/styles.css",
+      "layer": "styles",
+      "about": "Vick Does Creative: styles, built up atomically. Keep this file at /src/styles.css: the /admin preview loads it.",
+      "exports": [],
+      "lines": 10
+    },
+    {
+      "file": "src/styles/atoms.css",
+      "layer": "styles",
+      "about": "── ATOMS: the smallest pieces. Icon button, primary/ghost button, kicker, chip, picture, spinner. ──",
+      "exports": [],
+      "lines": 181
+    },
+    {
+      "file": "src/styles/base.css",
+      "layer": "styles",
+      "about": "═══ BASE ═══════════════════════════════════════════════════════════════════════════════════════════════════ Resets and rules every page needs, plus the shared keyframes. No colours or sizes here: those are tokens (tokens.css).…",
+      "exports": [],
+      "lines": 111
+    },
+    {
+      "file": "src/styles/molecules.css",
+      "layer": "styles",
+      "about": "── MOLECULES: atoms grouped into one job. Icon pair, burger, hover tip, toast, card sections. ──",
+      "exports": [],
+      "lines": 581
+    },
+    {
+      "file": "src/styles/organisms.css",
+      "layer": "styles",
+      "about": "── ORGANISMS: whole regions of the page. Stage, header, menu, detail card, lightbox, intro, legend. ──",
+      "exports": [],
+      "lines": 814
+    },
+    {
+      "file": "src/styles/pocket.css",
+      "layer": "styles",
+      "about": "── Phones (html.phone, set in index.html). Upright: the office (organisms/pocket.js), one wall seen straight on, after juliamoresco.com.br: a shelf with the synth and the plant, snapshots on a string, the menu as a stack of boxes on the floor, a lamp.…",
+      "exports": [],
+      "lines": 1254
+    },
+    {
+      "file": "src/styles/skin.css",
+      "layer": "styles",
+      "about": "── SKIN: the cardboard model (14 Nov 2026). Loaded last, over tokens → atoms → molecules → organisms. Everything on the page is a piece of card or paper lying on the workbench: photo textures from Vick's texture library (assets/tex), ink outlines, hard…",
+      "exports": [],
+      "lines": 2171
+    },
+    {
+      "file": "src/styles/tokens.css",
+      "layer": "styles",
+      "about": "═══ DESIGN TOKENS ═════════════════════════════════════════════════════════════════════════════════════════════ The one place the site's look is set. Every stylesheet reads these; none should hard-code a value that's here. How it's layered (each tier only…",
+      "exports": [],
+      "lines": 129
+    },
+    {
+      "file": "src/styles/tour.css",
+      "layer": "styles",
+      "about": "── TOUR: the cardboard question mark, Bleep (a floating wooden TV) and his cardboard speech bubble (organisms/tour.js). Same rules as the rest of the skin: photo textures from the texture library, an ink line round every piece, no shadows, everything on…",
+      "exports": [],
+      "lines": 717
+    }
+  ],
+  "assets": [
+    {
+      "path": "assets/beats/audio/chill.mp3",
+      "kind": "beats",
+      "bytes": 2026141,
+      "usedBy": ["src/core/audio.js"]
+    },
+    {
+      "path": "assets/beats/audio/cute-little-microhouse.mp3",
+      "kind": "beats",
+      "bytes": 2471555,
+      "usedBy": ["src/core/audio.js"]
+    },
+    {
+      "path": "assets/beats/audio/interlaken.mp3",
+      "kind": "beats",
+      "bytes": 1792681,
+      "usedBy": ["src/core/audio.js"]
+    },
+    {
+      "path": "assets/beats/audio/little-music-studio.mp3",
+      "kind": "beats",
+      "bytes": 2508957,
+      "usedBy": ["src/core/audio.js"]
+    },
+    {
+      "path": "assets/beats/audio/matterhorn.mp3",
+      "kind": "beats",
+      "bytes": 1564959,
+      "usedBy": ["src/core/audio.js"]
+    },
+    {
+      "path": "assets/beats/audio/one-more-month.mp3",
+      "kind": "beats",
+      "bytes": 3212511,
+      "usedBy": ["src/core/audio.js"]
+    },
+    {
+      "path": "assets/beats/bg/mosaic.mp4",
+      "kind": "beats",
+      "bytes": 2327281,
+      "usedBy": ["src/core/audio.js"]
+    },
+    {
+      "path": "assets/beats/bg/party-strips.mp4",
+      "kind": "beats",
+      "bytes": 4970555,
+      "usedBy": ["src/core/audio.js"]
+    },
+    {
+      "path": "assets/beats/bg/retro-galaxy.mp4",
+      "kind": "beats",
+      "bytes": 3699057,
+      "usedBy": ["src/core/audio.js"]
+    },
+    {
+      "path": "assets/beats/bg/retrograde.mp4",
+      "kind": "beats",
+      "bytes": 291612,
+      "usedBy": ["src/core/audio.js"]
+    },
+    {
+      "path": "assets/beats/bg/square-tunnel.mp4",
+      "kind": "beats",
+      "bytes": 3357795,
+      "usedBy": ["src/core/audio.js"]
+    },
+    {
+      "path": "assets/fonts/LondrinaSolid-Black.ttf",
+      "kind": "fonts",
+      "bytes": 93408,
+      "usedBy": ["index.html", "src/styles/skin.css"]
+    },
+    {
+      "path": "assets/fonts/LondrinaSolid-Regular.ttf",
+      "kind": "fonts",
+      "bytes": 92132,
+      "usedBy": ["index.html", "src/styles/skin.css"]
+    },
+    {
+      "path": "assets/fonts/PatrickHand-Regular.ttf",
+      "kind": "fonts",
+      "bytes": 214772,
+      "usedBy": ["src/styles/skin.css"]
+    },
+    {
+      "path": "assets/img/cv1.jpg",
+      "kind": "img",
+      "bytes": 119120,
+      "w": 1011,
+      "h": 1388,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/cv2.jpg",
+      "kind": "img",
+      "bytes": 74945,
+      "w": 1011,
+      "h": 1388,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g10.jpg",
+      "kind": "img",
+      "bytes": 82023,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g11.jpg",
+      "kind": "img",
+      "bytes": 72915,
+      "w": 1111,
+      "h": 776,
+      "usedBy": []
+    },
+    {
+      "path": "assets/img/g12.jpg",
+      "kind": "img",
+      "bytes": 67502,
+      "w": 1111,
+      "h": 776,
+      "usedBy": []
+    },
+    {
+      "path": "assets/img/g15.jpg",
+      "kind": "img",
+      "bytes": 107362,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g16.jpg",
+      "kind": "img",
+      "bytes": 115966,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g18.jpg",
+      "kind": "img",
+      "bytes": 116354,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g21.jpg",
+      "kind": "img",
+      "bytes": 110220,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g22.jpg",
+      "kind": "img",
+      "bytes": 109561,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g26.jpg",
+      "kind": "img",
+      "bytes": 78647,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g27.jpg",
+      "kind": "img",
+      "bytes": 80232,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g30.jpg",
+      "kind": "img",
+      "bytes": 69847,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g31.jpg",
+      "kind": "img",
+      "bytes": 80606,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g33.jpg",
+      "kind": "img",
+      "bytes": 276429,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g35.jpg",
+      "kind": "img",
+      "bytes": 148233,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g39.jpg",
+      "kind": "img",
+      "bytes": 115133,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g40.jpg",
+      "kind": "img",
+      "bytes": 111642,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g43.jpg",
+      "kind": "img",
+      "bytes": 97603,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g44.jpg",
+      "kind": "img",
+      "bytes": 67592,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g47.jpg",
+      "kind": "img",
+      "bytes": 72237,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g48.jpg",
+      "kind": "img",
+      "bytes": 104983,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g5.jpg",
+      "kind": "img",
+      "bytes": 71601,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g51.jpg",
+      "kind": "img",
+      "bytes": 107069,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g52.jpg",
+      "kind": "img",
+      "bytes": 92971,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g53.jpg",
+      "kind": "img",
+      "bytes": 60100,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g58.jpg",
+      "kind": "img",
+      "bytes": 94894,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g60.jpg",
+      "kind": "img",
+      "bytes": 84057,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g7.jpg",
+      "kind": "img",
+      "bytes": 82838,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g8.jpg",
+      "kind": "img",
+      "bytes": 72079,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/g9.jpg",
+      "kind": "img",
+      "bytes": 74158,
+      "w": 1111,
+      "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-kal1.jpg",
+      "kind": "img",
+      "bytes": 49916,
+      "w": 1400,
+      "h": 1050,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-kal4.jpg",
+      "kind": "img",
+      "bytes": 91684,
+      "w": 1400,
+      "h": 1399,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-kal5.jpg",
+      "kind": "img",
+      "bytes": 132013,
+      "w": 1400,
+      "h": 1102,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-fleet-cover.jpg",
+      "kind": "img",
+      "bytes": 62539,
+      "w": 1600,
+      "h": 1251,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-fleet-d1.svg",
+      "kind": "img",
+      "bytes": 1017,
+      "w": 160,
+      "h": 120,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-fleet-d2.svg",
+      "kind": "img",
+      "bytes": 763,
+      "w": 160,
+      "h": 120,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-fleet-d3.svg",
+      "kind": "img",
+      "bytes": 887,
+      "w": 160,
+      "h": 120,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-fleet-process.jpg",
+      "kind": "img",
+      "bytes": 79433,
+      "w": 1600,
+      "h": 599,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-fleet-s1.png",
+      "kind": "img",
+      "bytes": 10661,
+      "w": 240,
+      "h": 240,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-fleet-s2.png",
+      "kind": "img",
+      "bytes": 16825,
+      "w": 240,
+      "h": 240,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-fleet-s3.png",
+      "kind": "img",
+      "bytes": 16398,
+      "w": 240,
+      "h": 240,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-fleet-s4.png",
+      "kind": "img",
+      "bytes": 22352,
+      "w": 240,
+      "h": 240,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-fleet-s5.png",
+      "kind": "img",
+      "bytes": 31920,
+      "w": 240,
+      "h": 240,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-fleet1.jpg",
+      "kind": "img",
+      "bytes": 137589,
+      "w": 1600,
+      "h": 910,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-fleet4.jpg",
+      "kind": "img",
+      "bytes": 96464,
+      "w": 1600,
+      "h": 910,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-fleet5.jpg",
+      "kind": "img",
+      "bytes": 107243,
+      "w": 1600,
+      "h": 910,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-fleet6.jpg",
+      "kind": "img",
+      "bytes": 67907,
+      "w": 1600,
+      "h": 865,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-fleet7.jpg",
+      "kind": "img",
+      "bytes": 90000,
+      "w": 1600,
+      "h": 760,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-pop-s1.jpg",
+      "kind": "img",
+      "bytes": 12322,
+      "w": 384,
+      "h": 264,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-pop-s2.jpg",
+      "kind": "img",
+      "bytes": 14195,
+      "w": 366,
+      "h": 288,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-pop-s3.jpg",
+      "kind": "img",
+      "bytes": 14094,
+      "w": 390,
+      "h": 255,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-pop-s4.jpg",
+      "kind": "img",
+      "bytes": 12516,
+      "w": 378,
+      "h": 264,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-pop-s5.jpg",
+      "kind": "img",
+      "bytes": 11591,
+      "w": 366,
+      "h": 230,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-pop1.jpg",
+      "kind": "img",
+      "bytes": 98396,
+      "w": 1600,
+      "h": 1111,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-pop2.jpg",
+      "kind": "img",
+      "bytes": 88166,
+      "w": 1600,
+      "h": 714,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-pop3.jpg",
+      "kind": "img",
+      "bytes": 72986,
+      "w": 1600,
+      "h": 714,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-pop4.jpg",
+      "kind": "img",
+      "bytes": 79639,
+      "w": 1600,
+      "h": 1322,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/ux-pop5.jpg",
+      "kind": "img",
+      "bytes": 213625,
+      "w": 1600,
+      "h": 1322,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/vick.jpg",
+      "kind": "img",
+      "bytes": 52183,
+      "w": 480,
+      "h": 640,
+      "usedBy": ["admin/app.js", "src/molecules/cardhtml.js"]
+    },
+    {
+      "path": "assets/tex/corrugated.jpg",
+      "kind": "tex",
+      "bytes": 304749,
+      "w": 1024,
+      "h": 1024,
+      "usedBy": ["src/atoms/craft.js", "src/organisms/pocket.js", "src/styles/tokens.css"]
+    },
+    {
+      "path": "assets/tex/crumpled-page.jpg",
+      "kind": "tex",
+      "bytes": 205116,
+      "w": 900,
+      "h": 2531,
+      "usedBy": ["src/styles/skin.css"]
+    },
+    {
+      "path": "assets/tex/crumpled.jpg",
+      "kind": "tex",
+      "bytes": 154409,
+      "w": 1024,
+      "h": 1440,
+      "usedBy": ["index.html", "src/styles/tokens.css"]
+    },
+    {
+      "path": "assets/tex/edge.jpg",
+      "kind": "tex",
+      "bytes": 161636,
+      "w": 1024,
+      "h": 512,
+      "usedBy": ["index.html", "src/atoms/craft.js", "src/atoms/materials.js", "src/organisms/desk.js"]
+    },
+    {
+      "path": "assets/tex/kraft-dark.jpg",
+      "kind": "tex",
+      "bytes": 123065,
+      "w": 1024,
+      "h": 1024,
+      "usedBy": ["src/atoms/craft.js", "src/styles/tokens.css"]
+    },
+    {
+      "path": "assets/tex/kraft.jpg",
+      "kind": "tex",
+      "bytes": 137148,
+      "w": 1024,
+      "h": 1024,
+      "usedBy": [
+        "index.html",
+        "src/atoms/craft.js",
+        "src/atoms/materials.js",
+        "src/organisms/desk.js",
+        "src/organisms/pocket.js",
+        "src/styles/tokens.css"
+      ]
+    },
+    {
+      "path": "assets/tex/paper.jpg",
+      "kind": "tex",
+      "bytes": 140594,
+      "w": 1024,
+      "h": 1024,
+      "usedBy": [
+        "src/atoms/craft.js",
+        "src/atoms/materials.js",
+        "src/molecules/cable.js",
+        "src/organisms/desk.js",
+        "src/organisms/keepsakes.js",
+        "src/organisms/screens.js",
+        "src/styles/tokens.css"
+      ]
+    },
+    {
+      "path": "assets/tex/wood.jpg",
+      "kind": "tex",
+      "bytes": 232632,
+      "w": 1024,
+      "h": 1024,
+      "usedBy": ["src/atoms/craft.js", "src/organisms/pocket.js", "src/organisms/tour.js", "src/styles/tokens.css"]
+    },
+    {
+      "path": "assets/ui/apple-touch-icon.png",
+      "kind": "ui",
+      "bytes": 3986,
+      "w": 180,
+      "h": 180,
+      "usedBy": ["index.html"]
+    },
+    {
+      "path": "assets/ui/cursor/arrow.png",
+      "kind": "ui",
+      "bytes": 1442,
+      "w": 32,
+      "h": 32,
+      "usedBy": ["src/organisms/cursor.js", "src/styles/skin.css", "src/styles/tokens.css"]
+    },
+    {
+      "path": "assets/ui/cursor/arrow@2x.png",
+      "kind": "ui",
+      "bytes": 3513,
+      "w": 64,
+      "h": 64,
+      "usedBy": ["src/organisms/cursor.js", "src/styles/skin.css", "src/styles/tokens.css"]
+    },
+    {
+      "path": "assets/ui/cursor/grab.png",
+      "kind": "ui",
+      "bytes": 1796,
+      "w": 32,
+      "h": 32,
+      "usedBy": ["src/organisms/cursor.js", "src/page/input.js", "src/styles/skin.css", "src/styles/tokens.css"]
+    },
+    {
+      "path": "assets/ui/cursor/grab@2x.png",
+      "kind": "ui",
+      "bytes": 4504,
+      "w": 64,
+      "h": 64,
+      "usedBy": ["src/organisms/cursor.js", "src/page/input.js", "src/styles/skin.css", "src/styles/tokens.css"]
+    },
+    {
+      "path": "assets/ui/cursor/point.png",
+      "kind": "ui",
+      "bytes": 1619,
+      "w": 32,
+      "h": 32,
+      "usedBy": ["src/organisms/cursor.js", "src/page/input.js", "src/styles/skin.css", "src/styles/tokens.css"]
+    },
+    {
+      "path": "assets/ui/cursor/point@2x.png",
+      "kind": "ui",
+      "bytes": 3891,
+      "w": 64,
+      "h": 64,
+      "usedBy": ["src/organisms/cursor.js", "src/page/input.js", "src/styles/skin.css", "src/styles/tokens.css"]
+    },
+    {
+      "path": "assets/ui/favicon.svg",
+      "kind": "ui",
+      "bytes": 578,
+      "w": 128,
+      "h": 128,
+      "usedBy": ["index.html"]
+    },
+    {
+      "path": "assets/ui/logo-on-dark.svg",
+      "kind": "ui",
+      "bytes": 8834,
+      "w": 290,
+      "h": 101,
+      "usedBy": ["index.html", "src/organisms/pocket.js", "src/organisms/screens.js"]
+    },
+    {
+      "path": "assets/ui/og-image.jpg",
+      "kind": "ui",
+      "bytes": 113937,
+      "w": 1200,
+      "h": 630,
+      "usedBy": ["index.html", "src/content.js"]
+    },
+    {
+      "path": "assets/ui/phone-synths.webp",
+      "kind": "ui",
+      "bytes": 96378,
+      "w": 720,
+      "h": 489,
+      "usedBy": ["src/organisms/pocket.js"]
+    },
+    {
+      "path": "assets/vid/gd-kal-smell.jpg",
+      "kind": "vid",
+      "bytes": 45834,
+      "w": 720,
+      "h": 720,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/vid/gd-kal-smell.mp4",
+      "kind": "vid",
+      "bytes": 1049433,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/vid/gd-kal-vertigo.jpg",
+      "kind": "vid",
+      "bytes": 37024,
+      "w": 720,
+      "h": 720,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/vid/gd-kal-vertigo.mp4",
+      "kind": "vid",
+      "bytes": 1088846,
+      "usedBy": ["src/content.js"]
+    }
+  ]
+}

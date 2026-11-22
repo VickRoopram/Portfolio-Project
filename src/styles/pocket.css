@@ -1,258 +1,1253 @@
 /* ── Phones (html.phone, set in index.html). Upright: the office (organisms/pocket.js), one wall seen straight on, after
    juliamoresco.com.br: a shelf with the synth and the plant, snapshots on a string, the menu as a stack of boxes on the floor, a lamp.
    Sideways: only the synth, in jam mode, filling the screen. Motion here is on twos like the rest (skin.css steps). ── */
-#pocket,#p-unplay{display:none}
+#pocket,
+#p-unplay {
+  display: none;
+}
 
 /* which half is showing */
-html.phone[data-view="page"] body>:not(#pocket):not(#lb):not(#toast):not(svg):not(#cur){display:none!important}
-html.phone[data-view="page"] #pocket{display:block}
-html.phone[data-view="play"] :is(#jamBack,#joy,#zoom,#reset,#help,#tour,#tour-dim,#legend,#menu,#card){display:none!important}
-html.phone[data-view="play"][data-locked] #p-unplay{display:inline-flex;position:fixed;z-index:9;left:max(14px,env(safe-area-inset-left,0px));bottom:14px;min-height:44px}
+html.phone[data-view='page'] body > :not(#pocket):not(#lb):not(#toast):not(svg):not(#cur) {
+  display: none !important;
+}
+html.phone[data-view='page'] #pocket {
+  display: block;
+}
+html.phone[data-view='play'] :is(#jamBack, #joy, #zoom, #reset, #help, #tour, #tour-dim, #legend, #menu, #card) {
+  display: none !important;
+}
+html.phone[data-view='play'][data-locked] #p-unplay {
+  display: inline-flex;
+  position: fixed;
+  z-index: 9;
+  left: max(14px, env(safe-area-inset-left, 0px));
+  bottom: 14px;
+  min-height: 44px;
+}
 
-#pocket{--k:1;--top:80px;position:fixed;inset:0;z-index:5;overflow:hidden;overflow:clip;color:var(--stage-ink);background:#24160f;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
-.o-defs{position:absolute}
+#pocket {
+  --k: 1;
+  --top: 80px;
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  overflow: clip;
+  color: var(--stage-ink);
+  background: var(--floor);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.o-defs {
+  position: absolute;
+}
 
 /* ── the room: a dark wall, a wooden floor, and the lamp's warm pool of light ── */
-.o-room{position:absolute;inset:0;overflow:hidden;overflow:clip}
-.o-wall{position:absolute;inset:0;background:radial-gradient(120% 60% at 50% 0,rgba(255,226,180,.07),transparent 70%),linear-gradient(rgba(34,21,14,.86),rgba(52,34,23,.8) 70%),#2c1c13 var(--kraft-dk-tex) 0 0/320px}
-.o-floor{position:absolute;left:0;right:0;bottom:0;top:calc(var(--top) + 688px * var(--k));border-top:3px solid var(--ink);
-  background:linear-gradient(rgba(20,11,7,.45),rgba(14,8,5,.8)),#3a2417 var(--wood-tex) center/640px;box-shadow:inset 0 7px 0 rgba(255,220,170,.08)}
-.o-glow{position:absolute;left:calc(50% + 135px * var(--k));top:calc(var(--top) + 92px * var(--k));width:calc(1250px * var(--k));aspect-ratio:1;translate:-50% -50%;pointer-events:none;
-  background:radial-gradient(circle,rgba(255,206,130,.3),rgba(255,190,110,.1) 34%,transparent 60%);mix-blend-mode:screen;transition:opacity .25s}
-html[data-dark] .o-glow{opacity:0}
-html[data-dark] :is(.o-wall,.o-floor){filter:brightness(.5)}
-html[data-dark] .o-stage{filter:brightness(.62) saturate(.8)}
+.o-room {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  overflow: clip;
+}
+.o-wall {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 60% at 50% 0, rgba(255, 226, 180, 0.07), transparent 70%),
+    linear-gradient(rgba(34, 21, 14, 0.86), rgba(52, 34, 23, 0.8) 70%),
+    #2c1c13 var(--kraft-dk-tex) 0 0/320px;
+}
+.o-floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: calc(var(--top) + 688px * var(--k));
+  border-top: 3px solid var(--ink);
+  background:
+    linear-gradient(rgba(20, 11, 7, 0.45), rgba(14, 8, 5, 0.8)),
+    #3a2417 var(--wood-tex) center/640px;
+  box-shadow: inset 0 7px 0 rgba(255, 220, 170, 0.08);
+}
+.o-glow {
+  position: absolute;
+  left: calc(50% + 135px * var(--k));
+  top: calc(var(--top) + 92px * var(--k));
+  width: calc(1250px * var(--k));
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 206, 130, 0.3), rgba(255, 190, 110, 0.1) 34%, transparent 60%);
+  mix-blend-mode: screen;
+  transition: opacity 0.25s;
+}
+html[data-dark] .o-glow {
+  opacity: 0;
+}
+html[data-dark] :is(.o-wall, .o-floor) {
+  filter: brightness(0.5);
+}
+html[data-dark] .o-stage {
+  filter: brightness(0.62) saturate(0.8);
+}
 
 /* the wall is drawn at 390 × 700 and scaled to fit (pocket.js fit()) */
-.o-stage{position:absolute;left:50%;top:var(--top);width:390px;height:700px;margin-left:-195px;transform:scale(var(--k));transform-origin:50% 0}
-.o-stage :where(button){all:unset;box-sizing:border-box;position:absolute;display:block;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.o-stage button:focus-visible{outline:3px dashed var(--red);outline-offset:4px}
+.o-stage {
+  position: absolute;
+  left: 50%;
+  top: var(--top);
+  width: 390px;
+  height: 700px;
+  margin-left: -195px;
+  transform: scale(var(--k));
+  transform-origin: 50% 0;
+}
+.o-stage :where(button) {
+  all: unset;
+  box-sizing: border-box;
+  position: absolute;
+  display: block;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.o-stage button:focus-visible {
+  outline: 3px dashed var(--red);
+  outline-offset: 4px;
+}
 
 /* ── everything solid on the wall (pocket.js slabSVG): kraft or wood, a lit lid, a shaded and hatched side, ink round it all.
    The ink lines boil: #p-boil gets a new seed 12 times a second, so the line work is traced again on twos ── */
-.slab{position:absolute;left:-2px;top:-2px;overflow:visible}
-.ob-ink{fill:none;stroke:var(--ink);stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round}
-.ob-hi{fill:none;stroke:rgba(255,242,214,.35);stroke-width:1.4;stroke-linecap:round}
-.hatch{fill:none;stroke:var(--ink);stroke-width:1.2;stroke-linecap:round;opacity:.55}
-.crease{fill:none;stroke:rgba(42,27,18,.55);stroke-width:1.2;stroke-linecap:round}
-.o-stage :is(.o-shelf,.o-plant,.o-lamp,.o-play,.o-snap,.ob){filter:url(#p-boil) drop-shadow(4px 6px 0 rgba(10,5,2,.42))}
+.slab {
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  overflow: visible;
+}
+.ob-ink {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.ob-hi {
+  fill: none;
+  stroke: rgba(255, 242, 214, 0.35);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+.hatch {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  opacity: 0.55;
+}
+.crease {
+  fill: none;
+  stroke: rgba(42, 27, 18, 0.55);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+.o-stage :is(.o-shelf, .o-plant, .o-lamp, .o-play, .o-snap, .ob) {
+  filter: url(#p-boil) drop-shadow(4px 6px 0 rgba(10, 5, 2, 0.42));
+}
 
 /* the shelf: a plank seen a little from above, on two brackets */
-.o-shelf{position:absolute;left:4px;top:116px;width:379px;height:40px}
-.o-shelf .br{position:absolute;top:39px;width:18px;height:20px;background:#4b3020;border-top:2.5px solid var(--ink);clip-path:polygon(0 0,100% 0,14% 100%,0 100%)}
-.o-shelf .br.l{left:34px}.o-shelf .br.r{right:44px;scale:-1 1}
+.o-shelf {
+  position: absolute;
+  left: 4px;
+  top: 116px;
+  width: 379px;
+  height: 40px;
+}
+.o-shelf .br {
+  position: absolute;
+  top: 39px;
+  width: 18px;
+  height: 20px;
+  background: #4b3020;
+  border-top: 2.5px solid var(--ink);
+  clip-path: polygon(0 0, 100% 0, 14% 100%, 0 100%);
+}
+.o-shelf .br.l {
+  left: 34px;
+}
+.o-shelf .br.r {
+  right: 44px;
+  scale: -1 1;
+}
 
 /* ── the two synths: the desktop's 3D models rendered at a tilt (tools/phone-synth), standing on the shelf's lid. Three drawings stacked
    in the picture; pocket.js steps through them 12 times a second so their outlines boil like the desk's. The Contact synth and the
    synth are each a button over their part of the picture ── */
-.o-synths{position:absolute;left:8px;top:57px;width:296px;height:67px;background:0 0/100% 300% no-repeat;pointer-events:none;filter:drop-shadow(4px 6px 0 rgba(10,5,2,.42))}
-.o-rem{left:8px;top:52px;width:50px;height:74px}
-.o-syn{left:58px;top:52px;width:246px;height:74px}
-.o-stage :is(.o-rem,.o-syn){filter:none}
-.o-syn .o-dot{top:2px;right:2px}.o-rem .o-dot{top:2px;right:0}
+.o-synths {
+  position: absolute;
+  left: 8px;
+  top: 57px;
+  width: 296px;
+  height: 67px;
+  background: 0 0/100% 300% no-repeat;
+  pointer-events: none;
+  filter: drop-shadow(4px 6px 0 rgba(10, 5, 2, 0.42));
+}
+.o-rem {
+  left: 8px;
+  top: 52px;
+  width: 50px;
+  height: 74px;
+}
+.o-syn {
+  left: 58px;
+  top: 52px;
+  width: 246px;
+  height: 74px;
+}
+.o-stage :is(.o-rem, .o-syn) {
+  filter: none;
+}
+.o-syn .o-dot {
+  top: 2px;
+  right: 2px;
+}
+.o-rem .o-dot {
+  top: 2px;
+  right: 0;
+}
 
 /* the sign left on the shelf, in front of the synths: a folded card tent that says Play me, the little phone tipping onto its side */
-.o-play{left:138px;top:108px;width:72px;height:37px;rotate:-2deg}
-.o-play svg{position:absolute;left:0;top:0;width:72px;height:37px;overflow:visible}
-.sg-back{fill:#9c7650;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
-.sg-face{fill:var(--cream)}
-.sg-side{fill:#b89870}
-.sg-txt{position:absolute;left:3px;top:8px;width:61px;height:26px;display:flex;align-items:center;justify-content:center;gap:5px;color:var(--red)}
-.sg-txt b{font:900 13px/1 var(--display);letter-spacing:.05em;text-transform:uppercase;padding-top:2px}
-.o-play .ph-ico{width:10px;height:16px;border-width:2px;border-radius:3px}
-.o-play .ph-ico::after{bottom:1px;width:3px;height:1.5px;margin-left:-1.5px}
-.o-play:active{translate:0 2px;rotate:1deg}
-.ph-ico{flex:none;position:relative;display:block;width:18px;height:28px;border:2.5px solid currentColor;border-radius:4px;animation:tipOver 3.2s steps(1,end) infinite}
-.ph-ico::after{content:"";position:absolute;left:50%;bottom:2px;width:4px;height:2px;margin-left:-2px;background:currentColor;border-radius:1px}
-@keyframes tipOver{0%,40%{rotate:0deg}48%{rotate:-30deg}56%,92%{rotate:-90deg}}
+.o-play {
+  left: 138px;
+  top: 108px;
+  width: 72px;
+  height: 37px;
+  rotate: -2deg;
+}
+.o-play svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 72px;
+  height: 37px;
+  overflow: visible;
+}
+.sg-back {
+  fill: #9c7650;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.sg-face {
+  fill: var(--cream);
+}
+.sg-side {
+  fill: #b89870;
+}
+.sg-txt {
+  position: absolute;
+  left: 3px;
+  top: 8px;
+  width: 61px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: var(--red);
+}
+.sg-txt b {
+  font: 900 13px/1 var(--display);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding-top: 2px;
+}
+.o-play .ph-ico {
+  width: 10px;
+  height: 16px;
+  border-width: 2px;
+  border-radius: 3px;
+}
+.o-play .ph-ico::after {
+  bottom: 1px;
+  width: 3px;
+  height: 1.5px;
+  margin-left: -1.5px;
+}
+.o-play:active {
+  translate: 0 2px;
+  rotate: 1deg;
+}
+.ph-ico {
+  flex: none;
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 28px;
+  border: 2.5px solid currentColor;
+  border-radius: 4px;
+  animation: tipOver 3.2s steps(1, end) infinite;
+}
+.ph-ico::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 4px;
+  height: 2px;
+  margin-left: -2px;
+  background: currentColor;
+  border-radius: 1px;
+}
+@keyframes tipOver {
+  0%,
+  40% {
+    rotate: 0deg;
+  }
+  48% {
+    rotate: -30deg;
+  }
+  56%,
+  92% {
+    rotate: -90deg;
+  }
+}
 
 /* the plant, behind the lamp: full, wilted or a sprout (the same life it has on the desk) */
-.o-plant{left:312px;top:26px;width:64px;height:96px}
-.o-plant svg{display:block;width:100%;height:100%;overflow:visible}
-.o-plant .lf{fill:#8db357;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
-.o-plant .lf.b{fill:#5f8a37}.o-plant .lf.d{fill:#b8955e}
-.o-plant .stem{fill:none;stroke:#5f8a37;stroke-width:3;stroke-linecap:round}
-.o-plant .pot{fill:#c8643a;stroke:var(--ink);stroke-width:2.2;stroke-linejoin:round}
-.o-plant .pot-rim{fill:#db7a4d;stroke:var(--ink);stroke-width:2.2;stroke-linejoin:round}
-.o-plant .soil{fill:#3a2418;stroke:var(--ink);stroke-width:1.5}
-.o-plant[data-life="full"] :is(.pl-dead,.pl-sprout),.o-plant[data-life="dead"] :is(.pl-full,.pl-sprout),.o-plant[data-life="sprout"] :is(.pl-full,.pl-dead){display:none}
-.pl-full,.pl-sprout{transform-origin:35px 66px;animation:sway 2.8s steps(8,end) infinite}
-@keyframes sway{0%,100%{rotate:-2deg}50%{rotate:2.5deg}}
-.o-plant:active{translate:0 2px}
+.o-plant {
+  left: 312px;
+  top: 26px;
+  width: 64px;
+  height: 96px;
+}
+.o-plant svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.o-plant .lf {
+  fill: #8db357;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.o-plant .lf.b {
+  fill: #5f8a37;
+}
+.o-plant .lf.d {
+  fill: #b8955e;
+}
+.o-plant .stem {
+  fill: none;
+  stroke: #5f8a37;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.o-plant .pot {
+  fill: #c8643a;
+  stroke: var(--ink);
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+}
+.o-plant .pot-rim {
+  fill: #db7a4d;
+  stroke: var(--ink);
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+}
+.o-plant .soil {
+  fill: #3a2418;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+.o-plant[data-life='full'] :is(.pl-dead, .pl-sprout),
+.o-plant[data-life='dead'] :is(.pl-full, .pl-sprout),
+.o-plant[data-life='sprout'] :is(.pl-full, .pl-dead) {
+  display: none;
+}
+.pl-full,
+.pl-sprout {
+  transform-origin: 35px 66px;
+  animation: sway 2.8s steps(8, end) infinite;
+}
+@keyframes sway {
+  0%,
+  100% {
+    rotate: -2deg;
+  }
+  50% {
+    rotate: 2.5deg;
+  }
+}
+.o-plant:active {
+  translate: 0 2px;
+}
 
 /* the snapshots: posters taped to the wall, two strips of masking tape each, the bottom corner curling off */
-.o-snap{width:70px;height:88px;rotate:var(--r);transform-origin:50% 0}
-.o-pol{position:absolute;inset:0;display:block;border:2px solid var(--ink);border-radius:1px;background:#f3e6c8;overflow:hidden}
-.o-pol canvas{display:block;width:100%;height:100%}
-.o-pol::after{content:"";position:absolute;right:-1px;bottom:-1px;width:11px;height:11px;background:linear-gradient(135deg,transparent 49%,#d8c6a2 50%,#efe0c0 70%,#c9b48c);border-left:2px solid var(--ink);border-top:2px solid var(--ink);border-radius:0 0 2px 0;clip-path:polygon(0 0,100% 0,0 100%)}
-.o-snap .tp{position:absolute;z-index:1;top:-7px;width:26px;height:13px;background:rgba(236,220,170,.92);box-shadow:0 1px 0 rgba(42,27,18,.3);
-  clip-path:polygon(0 10%,14% 0,46% 8%,72% 0,100% 6%,97% 52%,100% 94%,74% 100%,40% 92%,12% 100%,0 90%,3% 50%)}
-.o-snap .tp.a{left:-8px;rotate:-38deg}.o-snap .tp.b{right:-8px;rotate:36deg}
-.o-snap.hop{animation:lift .6s steps(4,end)}
-@keyframes lift{30%{rotate:calc(var(--r) + 3deg);translate:0 -3px}60%{rotate:calc(var(--r) - 1.5deg);translate:0 0}}
-.o-snap:active{scale:1.05}
+.o-snap {
+  width: 70px;
+  height: 88px;
+  rotate: var(--r);
+  transform-origin: 50% 0;
+}
+.o-pol {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border: 2px solid var(--ink);
+  border-radius: 1px;
+  background: #f3e6c8;
+  overflow: hidden;
+}
+.o-pol canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.o-pol::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 11px;
+  height: 11px;
+  background: linear-gradient(135deg, transparent 49%, #d8c6a2 50%, #efe0c0 70%, #c9b48c);
+  border-left: 2px solid var(--ink);
+  border-top: 2px solid var(--ink);
+  border-radius: 0 0 2px 0;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+.o-snap .tp {
+  position: absolute;
+  z-index: 1;
+  top: -7px;
+  width: 26px;
+  height: 13px;
+  background: rgba(236, 220, 170, 0.92);
+  box-shadow: 0 1px 0 rgba(42, 27, 18, 0.3);
+  clip-path: polygon(
+    0 10%,
+    14% 0,
+    46% 8%,
+    72% 0,
+    100% 6%,
+    97% 52%,
+    100% 94%,
+    74% 100%,
+    40% 92%,
+    12% 100%,
+    0 90%,
+    3% 50%
+  );
+}
+.o-snap .tp.a {
+  left: -8px;
+  rotate: -38deg;
+}
+.o-snap .tp.b {
+  right: -8px;
+  rotate: 36deg;
+}
+.o-snap.hop {
+  animation: lift 0.6s steps(4, end);
+}
+@keyframes lift {
+  30% {
+    rotate: calc(var(--r) + 3deg);
+    translate: 0 -3px;
+  }
+  60% {
+    rotate: calc(var(--r) - 1.5deg);
+    translate: 0 0;
+  }
+}
+.o-snap:active {
+  scale: 1.05;
+}
 
 /* ── the boxes: the menu, stacked on the floor. A cream label on each front says what's packed inside ── */
-.ob{transition:translate .2s,rotate .2s}
-.ob-seam{fill:none;stroke:rgba(42,27,18,.5);stroke-width:1.4}
-.ob-flap{fill:none;stroke:rgba(42,27,18,.4);stroke-width:1.3;stroke-dasharray:3 3}
-.ob-tape{fill:rgba(236,220,170,.92);stroke:rgba(42,27,18,.35);stroke-width:1}
-.ob-mark{font:400 9.5px/1 var(--display);letter-spacing:.08em;fill:rgba(42,27,18,.55)}
-.ob-lab{position:absolute;left:0;right:var(--d);top:calc(var(--t) + 14px);bottom:0;display:grid;place-items:center;padding:2px 7px 16px;pointer-events:none}
-.ob-tag{position:relative;display:grid;gap:1px;max-width:100%;padding:7px 9px 5px;border:2px solid var(--ink);border-radius:var(--cut-s);text-align:center;
-  background:var(--cream) var(--paper) 0 0/140px;color:var(--ink);rotate:-1.6deg;box-shadow:0 2px 0 rgba(42,27,18,.3)}
-.ob:nth-of-type(even) .ob-tag{rotate:1.3deg}
-.ob-tag b{font:900 19px/.95 var(--display);letter-spacing:.03em;text-transform:uppercase}
-.ob:is([data-box="mo"],[data-box="xp"]) .ob-tag b{font-size:16px}
-.ob[data-box="hello"] .ob-tag{padding:6px 6px 4px;background:var(--red);color:var(--on-accent)}
-.ob[data-box="hello"] .ob-tag b{font-size:15px}
+.ob {
+  transition:
+    translate 0.2s,
+    rotate 0.2s;
+}
+.ob-seam {
+  fill: none;
+  stroke: rgba(42, 27, 18, 0.5);
+  stroke-width: 1.4;
+}
+.ob-flap {
+  fill: none;
+  stroke: rgba(42, 27, 18, 0.4);
+  stroke-width: 1.3;
+  stroke-dasharray: 3 3;
+}
+.ob-tape {
+  fill: rgba(236, 220, 170, 0.92);
+  stroke: rgba(42, 27, 18, 0.35);
+  stroke-width: 1;
+}
+.ob-mark {
+  font: 400 9.5px/1 var(--display);
+  letter-spacing: 0.08em;
+  fill: rgba(42, 27, 18, 0.55);
+}
+.ob-lab {
+  position: absolute;
+  left: 0;
+  right: var(--d);
+  top: calc(var(--t) + 14px);
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  padding: 2px 7px 16px;
+  pointer-events: none;
+}
+.ob-tag {
+  position: relative;
+  display: grid;
+  gap: 1px;
+  max-width: 100%;
+  padding: 7px 9px 5px;
+  border: 2px solid var(--ink);
+  border-radius: var(--cut-s);
+  text-align: center;
+  background: var(--cream) var(--paper) 0 0/140px;
+  color: var(--ink);
+  rotate: -1.6deg;
+  box-shadow: 0 2px 0 rgba(42, 27, 18, 0.3);
+}
+.ob:nth-of-type(even) .ob-tag {
+  rotate: 1.3deg;
+}
+.ob-tag b {
+  font: 900 19px/0.95 var(--display);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.ob:is([data-box='mo'], [data-box='xp']) .ob-tag b {
+  font-size: 16px;
+}
+.ob[data-box='hello'] .ob-tag {
+  padding: 6px 6px 4px;
+  background: var(--red);
+  color: var(--on-accent);
+}
+.ob[data-box='hello'] .ob-tag b {
+  font-size: 15px;
+}
 /* a tick on the label once a box has been opened */
-.ob.got .ob-tag::after{content:"";position:absolute;top:-8px;right:-8px;width:17px;height:17px;border-radius:50%;
-  background:var(--ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23fbf1dd' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/13px no-repeat}
-.ob:active{translate:0 3px}
-.hop:not(.o-snap){animation:hop .5s}
-@keyframes hop{30%{translate:0 -8px;rotate:-2deg}60%{translate:0 0;rotate:1.2deg}}
+.ob.got .ob-tag::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: var(--ink)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23fbf1dd' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    center/13px no-repeat;
+}
+.ob:active {
+  translate: 0 3px;
+}
+.hop:not(.o-snap) {
+  animation: hop 0.5s;
+}
+@keyframes hop {
+  30% {
+    translate: 0 -8px;
+    rotate: -2deg;
+  }
+  60% {
+    translate: 0 0;
+    rotate: 1.2deg;
+  }
+}
 
 /* the lamp, on the shelf in front of the plant: on, it lights the room; off, the room goes dim */
-.o-lamp{left:300px;top:62px;width:58px;height:78px}
-.o-lamp svg{display:block;width:100%;height:100%;overflow:visible}
-.lp-beam{fill:rgba(255,214,140,.22);transition:opacity .2s}
-.lp-base,.lp-top{fill:#7a5034;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
-.lp-top{fill:#9a6a44}
-.lp-arm{fill:none;stroke:var(--ink);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
-.lp-joint{fill:#e0c49a;stroke:var(--ink);stroke-width:1.6}
-.lp-shade{fill:#e98a3a;stroke:var(--ink);stroke-width:2.2;stroke-linejoin:round}
-.lp-rim{fill:#c46a24;stroke:var(--ink);stroke-width:1.6}
-.lp-bulb{fill:#fff3c8;stroke:var(--ink);stroke-width:1.8;animation:flick 4.2s steps(1,end) infinite}
-@keyframes flick{0%,88%,94%,100%{fill:#fff3c8}91%{fill:#e8d39a}}
-html[data-dark] :is(.lp-beam){opacity:0}
-html[data-dark] .lp-bulb{fill:#9a8c70;animation:none}
-.o-lamp:active{translate:0 2px}
+.o-lamp {
+  left: 300px;
+  top: 62px;
+  width: 58px;
+  height: 78px;
+}
+.o-lamp svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.lp-beam {
+  fill: rgba(255, 214, 140, 0.22);
+  transition: opacity 0.2s;
+}
+.lp-base,
+.lp-top {
+  fill: #7a5034;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.lp-top {
+  fill: #9a6a44;
+}
+.lp-arm {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.lp-joint {
+  fill: #e0c49a;
+  stroke: var(--ink);
+  stroke-width: 1.6;
+}
+.lp-shade {
+  fill: #e98a3a;
+  stroke: var(--ink);
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+}
+.lp-rim {
+  fill: #c46a24;
+  stroke: var(--ink);
+  stroke-width: 1.6;
+}
+.lp-bulb {
+  fill: #fff3c8;
+  stroke: var(--ink);
+  stroke-width: 1.8;
+  animation: flick 4.2s steps(1, end) infinite;
+}
+@keyframes flick {
+  0%,
+  88%,
+  94%,
+  100% {
+    fill: #fff3c8;
+  }
+  91% {
+    fill: #e8d39a;
+  }
+}
+html[data-dark] :is(.lp-beam) {
+  opacity: 0;
+}
+html[data-dark] .lp-bulb {
+  fill: #9a8c70;
+  animation: none;
+}
+.o-lamp:active {
+  translate: 0 2px;
+}
 
 /* Hints: a red dot on everything not found yet (the site's one red marker for "you can press this") */
-.o-dot{position:absolute;z-index:3;top:-6px;right:-6px;width:15px;height:15px;border:2.5px solid var(--cream);border-radius:50%;background:var(--red);opacity:0;scale:.3;pointer-events:none;transition:opacity .15s,scale .2s}
-.ob .o-dot{top:calc(var(--t) - 6px);right:calc(var(--d) - 6px)}
-.o-snap .o-dot{top:auto;bottom:-6px}
-.hinting [data-find]:not(.got) .o-dot{opacity:1;scale:1;animation:ping .7s infinite}
-@keyframes ping{50%{scale:1.4}}
+.o-dot {
+  position: absolute;
+  z-index: 3;
+  top: -6px;
+  right: -6px;
+  width: 15px;
+  height: 15px;
+  border: 2.5px solid var(--cream);
+  border-radius: 50%;
+  background: var(--red);
+  opacity: 0;
+  scale: 0.3;
+  pointer-events: none;
+  transition:
+    opacity 0.15s,
+    scale 0.2s;
+}
+.ob .o-dot {
+  top: calc(var(--t) - 6px);
+  right: calc(var(--d) - 6px);
+}
+.o-snap .o-dot {
+  top: auto;
+  bottom: -6px;
+}
+.hinting [data-find]:not(.got) .o-dot {
+  opacity: 1;
+  scale: 1;
+  animation: ping 0.7s infinite;
+}
+@keyframes ping {
+  50% {
+    scale: 1.4;
+  }
+}
 
 /* ── the bar: the logo with the count of what's been found, Contact (the one thing every visit should be able to reach), the burger ── */
-.p-bar{position:fixed;z-index:3;top:0;left:0;right:0;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 10px) 12px 10px 14px}
-.o-id{margin-right:auto}
-.o-id img{display:block;width:98px;height:auto}
-.p-cta{min-height:44px;padding:2px 14px 0;font-size:var(--t-md)}
-.p-cta span{display:inline!important} /* the desktop header hides the word on narrow screens; here it's the point */
-.p-mnu{width:48px;height:48px;padding:0;color:var(--ink);background:var(--cream) var(--paper) 0 0/160px;border:var(--edge);border-radius:var(--cut-s)}
-.p-mnu .ic{width:24px;height:24px}
-html.p-navon .p-bar{background:#2a1b12}
+.p-bar {
+  position: fixed;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) 12px 10px 14px;
+}
+.o-id {
+  margin-right: auto;
+}
+.o-id img {
+  display: block;
+  width: 98px;
+  height: auto;
+}
+.p-cta {
+  min-height: 44px;
+  padding: 2px 14px 0;
+  font-size: var(--t-md);
+}
+.p-cta span {
+  display: inline !important;
+} /* the desktop header hides the word on narrow screens; here it's the point */
+.p-mnu {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  color: var(--ink);
+  background: var(--cream) var(--paper) 0 0/160px;
+  border: var(--edge);
+  border-radius: var(--cut-s);
+}
+.p-mnu .ic {
+  width: 24px;
+  height: 24px;
+}
+html.p-navon .p-bar {
+  background: var(--ink);
+}
 
 /* the line at the bottom, with Hints (the cardboard question mark from the desk) beside it */
-.o-foot{position:fixed;z-index:1;left:0;right:0;bottom:0;display:flex;align-items:center;gap:10px;padding:4px 16px calc(env(safe-area-inset-bottom,0px) + 10px) 14px}
-.o-foot p{flex:1;margin:0;padding-right:44px;text-align:center;font:400 15px/1.25 var(--body);color:var(--stage-ink);opacity:.86}
-.o-hint{all:unset;flex:none;box-sizing:border-box;width:40px;height:53px;cursor:pointer;rotate:-6deg;filter:url(#boil);-webkit-tap-highlight-color:transparent}
-.o-hint svg{display:block;width:100%;height:100%;overflow:visible}
-.o-hint path{fill:none;stroke-linecap:round;stroke-linejoin:round}
-.o-hint .p-q-edge{stroke:url(#p-qEdge)}.o-hint .p-q-edge-dot{fill:url(#p-qEdge)}
-.o-hint .p-q-face{stroke:url(#p-qKraft)}.o-hint .p-q-face-dot{fill:url(#p-qKraft)}
-.o-hint:active{rotate:4deg;scale:.94}
-.o-hint:focus-visible{outline:3px dashed var(--red);outline-offset:3px}
+.o-foot {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 16px calc(env(safe-area-inset-bottom, 0px) + 10px) 14px;
+}
+.o-foot p {
+  flex: 1;
+  margin: 0;
+  padding-right: 44px;
+  text-align: center;
+  font: 400 15px/1.25 var(--body);
+  color: var(--stage-ink);
+  opacity: 0.86;
+}
+.o-hint {
+  all: unset;
+  flex: none;
+  box-sizing: border-box;
+  width: 40px;
+  height: 53px;
+  cursor: pointer;
+  rotate: -6deg;
+  filter: url(#boil);
+  -webkit-tap-highlight-color: transparent;
+}
+.o-hint svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.o-hint path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.o-hint .p-q-edge {
+  stroke: url(#p-qEdge);
+}
+.o-hint .p-q-edge-dot {
+  fill: url(#p-qEdge);
+}
+.o-hint .p-q-face {
+  stroke: url(#p-qKraft);
+}
+.o-hint .p-q-face-dot {
+  fill: url(#p-qKraft);
+}
+.o-hint:active {
+  rotate: 4deg;
+  scale: 0.94;
+}
+.o-hint:focus-visible {
+  outline: 3px dashed var(--red);
+  outline-offset: 3px;
+}
 
 /* the menu: a sheet of card with the sections lettered big */
-.p-nav{position:fixed;z-index:2;inset:0;overflow-y:auto;padding:calc(env(safe-area-inset-top,0px) + 84px) 24px calc(env(safe-area-inset-bottom,0px) + 30px);
-  background:var(--kraft) var(--kraft-tex) 0 0/360px;color:var(--ink);animation:sheetIn .3s both}
-.p-nav ul{list-style:none;margin:0;padding:0}
-.p-nav>ul>li{border-bottom:2px dashed color-mix(in srgb,var(--ink) 40%,transparent)}
-.p-nav a,.p-grp>span{display:block;padding:14px 4px 10px;font:900 var(--t-xl)/1 var(--display);letter-spacing:.02em;text-transform:uppercase;color:var(--ink);text-decoration:none}
-.p-nav>ul>li:first-child a{color:var(--red)}
-.p-grp>span{padding-bottom:4px;color:var(--kraft-dk)}
-.p-grp ul{padding:0 0 10px 14px}
-.p-grp ul a{padding:9px 4px 7px;font-size:var(--t-lg)}
-.p-nav a:active,.p-nav a:focus-visible{color:var(--red)}
+.p-nav {
+  position: fixed;
+  z-index: 2;
+  inset: 0;
+  overflow-y: auto;
+  padding: calc(env(safe-area-inset-top, 0px) + 84px) 24px calc(env(safe-area-inset-bottom, 0px) + 30px);
+  background: var(--kraft) var(--kraft-tex) 0 0/360px;
+  color: var(--ink);
+  animation: sheetIn 0.3s both;
+}
+.p-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.p-nav > ul > li {
+  border-bottom: 2px dashed color-mix(in srgb, var(--ink) 40%, transparent);
+}
+.p-nav a,
+.p-grp > span {
+  display: block;
+  padding: 14px 4px 10px;
+  font: 900 var(--t-xl)/1 var(--display);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+}
+.p-nav > ul > li:first-child a {
+  color: var(--red);
+}
+.p-grp > span {
+  padding-bottom: 4px;
+  color: var(--kraft-dk);
+}
+.p-grp ul {
+  padding: 0 0 10px 14px;
+}
+.p-grp ul a {
+  padding: 9px 4px 7px;
+  font-size: var(--t-lg);
+}
+.p-nav a:active,
+.p-nav a:focus-visible {
+  color: var(--red);
+}
 
 /* ── a box, opened: the room dims, the box flies forward, its four flaps stand up and out and something peeks over the rim;
    what's packed inside is laid out on paper below it ── */
-.o-pan{position:fixed;z-index:6;inset:0;display:flex;flex-direction:column;align-items:center;padding:calc(env(safe-area-inset-top,0px) + 12px) 0 calc(env(safe-area-inset-bottom,0px) + 10px);background:rgba(16,9,5,.84)}
-.o-pan.in{animation:fade .2s}
-.o-x{all:unset;box-sizing:border-box;position:absolute;z-index:2;top:calc(env(safe-area-inset-top,0px) + 12px);right:14px;display:grid;place-items:center;width:46px;height:46px;cursor:pointer;
-  border:var(--edge);border-radius:50%;background:var(--cream) var(--paper) 0 0/120px;color:var(--ink);filter:url(#boil)}
-.o-x:focus-visible{outline:3px dashed var(--red);outline-offset:3px}
-.o-hero{flex:none;display:flex;align-items:center;justify-content:center;width:100%;height:min(27vh,200px);padding:24px 0 0}
-.o-hero>*{transition:transform .42s}
-.o-box{width:auto;height:100%;max-width:86%;overflow:visible;filter:drop-shadow(6px 8px 0 rgba(0,0,0,.4))}
-.o-box .fl{transform-box:fill-box}
-.fl-b{transform-origin:50% 100%}.fl-f{transform-origin:50% 0}.fl-l{transform-origin:100% 50%}.fl-r{transform-origin:0 50%}
-.o-pan.in :is(.fl-b,.fl-f){animation:flapY .42s backwards .3s}
-.o-pan.in :is(.fl-l,.fl-r){animation:flapX .42s backwards .3s}
-@keyframes flapY{from{scale:1 .05}}
-@keyframes flapX{from{scale:.05 1}}
-.pk rect,.pk path{stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
-.pk rect:not([fill]){fill:#4a3a30}
-.pk circle{fill:#f4ead6;stroke:var(--ink);stroke-width:1.6}
-.o-pan.in .pk{animation:peek .5s backwards .6s}
-@keyframes peek{from{translate:0 34px;opacity:0}}
-.o-head{flex:none;max-width:520px;padding:18px 22px 10px;text-align:center}
-.o-head h2{margin:0;font:900 var(--t-xl)/1 var(--display);letter-spacing:.03em;text-transform:uppercase;color:var(--stage-ink)}
-.o-body{flex:1;min-height:0;width:100%;max-width:520px;overflow-y:auto;overscroll-behavior:contain;padding:4px 12px 10px}
-.o-pan.in :is(.o-head,.o-body){animation:sheetIn .34s both .12s}
-.o-body>.content{flex:none;overflow:visible;margin:4px 2px 14px;rotate:.4deg}
-.o-body .cta{max-width:100%;height:auto;min-height:44px;padding-block:8px 6px;text-align:left}
-.o-body .cta-row .cta:first-child{font-size:16px}
-.o-body .m-list.tapes{grid-auto-rows:124px;gap:18px 14px;padding:8px 4px}
-.o-body .m-row.tape{height:124px}
-.o-body .tape .lbl b{font-size:14px}
-.o-body .m-row.tape:active,.o-body .m-row.tape:focus-visible{translate:0 -3px;rotate:calc(var(--tilt,0deg) * -1.4);filter:brightness(1.12)}
-.o-body .m-row.tape:active .win i{animation:reel .5s infinite linear}
-.o-pan[data-kind="box"] .o-body>.content+.m-list.tapes{grid-template-columns:minmax(0,.6fr);justify-content:center}
-.o-pan-foot{flex:none;display:flex;justify-content:center;padding:8px 12px 0}
-.o-pan-foot .pill{min-height:44px}
+.o-pan {
+  position: fixed;
+  z-index: 6;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: calc(env(safe-area-inset-top, 0px) + 12px) 0 calc(env(safe-area-inset-bottom, 0px) + 10px);
+  background: rgba(16, 9, 5, 0.84);
+}
+.o-pan.in {
+  animation: fade 0.2s;
+}
+.o-x {
+  all: unset;
+  box-sizing: border-box;
+  position: absolute;
+  z-index: 2;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  cursor: pointer;
+  border: var(--edge);
+  border-radius: 50%;
+  background: var(--cream) var(--paper) 0 0/120px;
+  color: var(--ink);
+  filter: url(#boil);
+}
+.o-x:focus-visible {
+  outline: 3px dashed var(--red);
+  outline-offset: 3px;
+}
+.o-hero {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: min(27vh, 200px);
+  padding: 24px 0 0;
+}
+.o-hero > * {
+  transition: transform 0.42s;
+}
+.o-box {
+  width: auto;
+  height: 100%;
+  max-width: 86%;
+  overflow: visible;
+  filter: drop-shadow(6px 8px 0 rgba(0, 0, 0, 0.4));
+}
+.o-box .fl {
+  transform-box: fill-box;
+}
+.fl-b {
+  transform-origin: 50% 100%;
+}
+.fl-f {
+  transform-origin: 50% 0;
+}
+.fl-l {
+  transform-origin: 100% 50%;
+}
+.fl-r {
+  transform-origin: 0 50%;
+}
+.o-pan.in :is(.fl-b, .fl-f) {
+  animation: flapY 0.42s backwards 0.3s;
+}
+.o-pan.in :is(.fl-l, .fl-r) {
+  animation: flapX 0.42s backwards 0.3s;
+}
+@keyframes flapY {
+  from {
+    scale: 1 0.05;
+  }
+}
+@keyframes flapX {
+  from {
+    scale: 0.05 1;
+  }
+}
+.pk rect,
+.pk path {
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.pk rect:not([fill]) {
+  fill: #4a3a30;
+}
+.pk circle {
+  fill: #f4ead6;
+  stroke: var(--ink);
+  stroke-width: 1.6;
+}
+.o-pan.in .pk {
+  animation: peek 0.5s backwards 0.6s;
+}
+@keyframes peek {
+  from {
+    translate: 0 34px;
+    opacity: 0;
+  }
+}
+.o-head {
+  flex: none;
+  max-width: 520px;
+  padding: 18px 22px 10px;
+  text-align: center;
+}
+.o-head h2 {
+  margin: 0;
+  font: 900 var(--t-xl)/1 var(--display);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--stage-ink);
+}
+.o-body {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-width: 520px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px 12px 10px;
+}
+.o-pan.in :is(.o-head, .o-body) {
+  animation: sheetIn 0.34s both 0.12s;
+}
+.o-body > .content {
+  flex: none;
+  overflow: visible;
+  margin: 4px 2px 14px;
+  rotate: 0.4deg;
+}
+.o-body .cta {
+  max-width: 100%;
+  height: auto;
+  min-height: 44px;
+  padding-block: 8px 6px;
+  text-align: left;
+}
+.o-body .cta-row .cta:first-child {
+  font-size: 16px;
+}
+.o-body .m-list.tapes {
+  grid-auto-rows: 124px;
+  gap: 18px 14px;
+  padding: 8px 4px;
+}
+.o-body .m-row.tape {
+  height: 124px;
+}
+.o-body .tape .lbl b {
+  font-size: 14px;
+}
+.o-body .m-row.tape:active,
+.o-body .m-row.tape:focus-visible {
+  translate: 0 -3px;
+  rotate: calc(var(--tilt, 0deg) * -1.4);
+  filter: brightness(1.12);
+}
+.o-body .m-row.tape:active .win i {
+  animation: reel 0.5s infinite linear;
+}
+.o-pan[data-kind='box'] .o-body > .content + .m-list.tapes {
+  grid-template-columns: minmax(0, 0.6fr);
+  justify-content: center;
+}
+.o-pan-foot {
+  flex: none;
+  display: flex;
+  justify-content: center;
+  padding: 8px 12px 0;
+}
+.o-pan-foot .pill {
+  min-height: 44px;
+}
 
 /* a snapshot, opened: the polaroid big, flipping over to the note on its back */
-.o-pan[data-kind="snap"] .o-hero{height:min(66vh,520px);padding:68px 0 10px}
-.o-pan[data-kind="snap"] .o-head{display:none}
-.o-pan[data-kind="snap"] .o-body{visibility:hidden}
-.snap{all:unset;box-sizing:border-box;display:block;aspect-ratio:280/350;height:100%;perspective:900px;cursor:pointer;rotate:-2deg;-webkit-tap-highlight-color:transparent}
-.snap-in{position:relative;display:block;height:100%;transform-style:preserve-3d;transition:transform .5s}
-.snap.flip .snap-in{transform:rotateY(180deg)}
-.snap-f,.snap-b{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:2px solid var(--ink);border-radius:2px;overflow:hidden;box-shadow:5px 7px 0 rgba(0,0,0,.4)}
-.snap-f canvas{display:block;width:100%;height:100%}
-.snap-b{display:grid;align-content:center;padding:16px;transform:rotateY(180deg);background:#fffaf0 var(--paper) 0 0/200px;background-blend-mode:multiply;color:var(--ink);font:400 17px/1.3 var(--body);overflow-y:auto}
-.snap-b p{margin:0}
-.snap:focus-visible{outline:3px dashed var(--red);outline-offset:4px}
-.o-note.content{font:400 var(--t-md)/1.35 var(--body)}
+.o-pan[data-kind='snap'] .o-hero {
+  height: min(66vh, 520px);
+  padding: 68px 0 10px;
+}
+.o-pan[data-kind='snap'] .o-head {
+  display: none;
+}
+.o-pan[data-kind='snap'] .o-body {
+  visibility: hidden;
+}
+.snap {
+  all: unset;
+  box-sizing: border-box;
+  display: block;
+  aspect-ratio: 280/350;
+  height: 100%;
+  perspective: 900px;
+  cursor: pointer;
+  rotate: -2deg;
+  -webkit-tap-highlight-color: transparent;
+}
+.snap-in {
+  position: relative;
+  display: block;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+}
+.snap.flip .snap-in {
+  transform: rotateY(180deg);
+}
+.snap-f,
+.snap-b {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border: 2px solid var(--ink);
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 5px 7px 0 rgba(0, 0, 0, 0.4);
+}
+.snap-f canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.snap-b {
+  display: grid;
+  align-content: center;
+  padding: 16px;
+  transform: rotateY(180deg);
+  background: var(--photo) var(--paper) 0 0/200px;
+  background-blend-mode: multiply;
+  color: var(--ink);
+  font: 400 17px/1.3 var(--body);
+  overflow-y: auto;
+}
+.snap-b p {
+  margin: 0;
+}
+.snap:focus-visible {
+  outline: 3px dashed var(--red);
+  outline-offset: 4px;
+}
+.o-note.content {
+  font: 400 var(--t-md)/1.35 var(--body);
+}
 
 /* ── the welcome: the drawn sheet pinned over the office while it sketches itself; any tap and it's gone ── */
-.o-hello{position:fixed;z-index:8;inset:0;display:grid;place-items:center;align-content:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 16px) 12px calc(env(safe-area-inset-bottom,0px) + 16px);
-  background:rgba(16,9,5,.86);cursor:pointer;transition:opacity .4s}
-.o-hello-in{width:100%;max-width:460px}
-.o-hello .in-sheet{margin:0 auto}
-.o-hello .in-draw{max-height:none}
-.o-hello .in-card h1{font-size:min(var(--t-2xl),11vw)}
-.o-hello .in-sub{font-size:var(--t-md)}
-.o-in{all:unset;padding:10px 14px;font:400 var(--t-lg)/1 var(--body);color:var(--stage-ink);animation:blink 1.6s infinite}
-.o-hello:focus{outline:0}
-.o-in:focus-visible{outline:3px dashed var(--red);outline-offset:3px}
-.o-hello.out{opacity:0;pointer-events:none}
-.o-hello.out .in-sheet{animation:sheetOff .42s forwards}
+.o-hello {
+  position: fixed;
+  z-index: 8;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  padding: calc(env(safe-area-inset-top, 0px) + 16px) 12px calc(env(safe-area-inset-bottom, 0px) + 16px);
+  background: rgba(16, 9, 5, 0.86);
+  cursor: pointer;
+  transition: opacity 0.4s;
+}
+.o-hello-in {
+  width: 100%;
+  max-width: 460px;
+}
+.o-hello .in-sheet {
+  margin: 0 auto;
+}
+.o-hello .in-draw {
+  max-height: none;
+}
+.o-hello .in-card h1 {
+  font-size: min(var(--t-2xl), 11vw);
+}
+.o-hello .in-sub {
+  font-size: var(--t-md);
+}
+.o-in {
+  all: unset;
+  padding: 10px 14px;
+  font: 400 var(--t-lg)/1 var(--body);
+  color: var(--stage-ink);
+  animation: blink 1.6s infinite;
+}
+.o-hello:focus {
+  outline: 0;
+}
+.o-in:focus-visible {
+  outline: 3px dashed var(--red);
+  outline-offset: 3px;
+}
+.o-hello.out {
+  opacity: 0;
+  pointer-events: none;
+}
+.o-hello.out .in-sheet {
+  animation: sheetOff 0.42s forwards;
+}
 
 /* "turn your phone": shown by Play when the phone can't be turned for you */
-.p-turn{position:fixed;z-index:9;inset:0;display:grid;place-items:center;padding:24px;background:rgba(18,10,6,.78)}
-.p-turn-card{display:grid;justify-items:center;gap:12px;max-width:320px;padding:26px 22px 22px;text-align:center;border:var(--edge);border-radius:var(--cut);
-  background:var(--cream) var(--paper) 0 0/200px;color:var(--ink);animation:sheetIn .3s both}
-.p-turn-card .ph-ico{width:34px;height:54px;border-width:3.5px;border-radius:7px;color:var(--red);margin:6px 0 4px}
-.p-turn-card h2{margin:0;font:900 var(--t-xl)/1 var(--display);text-transform:uppercase}
-.p-turn-card p{margin:0;font:400 var(--t-md)/1.3 var(--body)}
-.p-turn-card .pill{min-height:44px;margin-top:6px}
+.p-turn {
+  position: fixed;
+  z-index: 9;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(18, 10, 6, 0.78);
+}
+.p-turn-card {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  max-width: 320px;
+  padding: 26px 22px 22px;
+  text-align: center;
+  border: var(--edge);
+  border-radius: var(--cut);
+  background: var(--cream) var(--paper) 0 0/200px;
+  color: var(--ink);
+  animation: sheetIn 0.3s both;
+}
+.p-turn-card .ph-ico {
+  width: 34px;
+  height: 54px;
+  border-width: 3.5px;
+  border-radius: 7px;
+  color: var(--red);
+  margin: 6px 0 4px;
+}
+.p-turn-card h2 {
+  margin: 0;
+  font: 900 var(--t-xl)/1 var(--display);
+  text-transform: uppercase;
+}
+.p-turn-card p {
+  margin: 0;
+  font: 400 var(--t-md)/1.3 var(--body);
+}
+.p-turn-card .pill {
+  min-height: 44px;
+  margin-top: 6px;
+}
 
 /* ── a project's own page: paper filling the screen, Back at the top, Previous and Next at the bottom (over the open box) ── */
-.p-sheet{position:fixed;z-index:7;inset:0;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 8px) 0 calc(env(safe-area-inset-bottom,0px) + 8px);
-  background:var(--kraft) var(--kraft-tex) 0 0/360px;color:var(--ink);animation:sheetIn .34s both}
-.p-sh-top,.p-sh-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 12px}
-.p-sh-top b{font:400 var(--t-md)/1 var(--display);letter-spacing:.04em;text-transform:uppercase;color:#5a4033}
-.p-sheet .content{flex:1;min-height:0;overflow-y:auto;margin:4px 10px}
-.p-sheet .pill{min-height:44px}
+.p-sheet {
+  position: fixed;
+  z-index: 7;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: calc(env(safe-area-inset-top, 0px) + 8px) 0 calc(env(safe-area-inset-bottom, 0px) + 8px);
+  background: var(--kraft) var(--kraft-tex) 0 0/360px;
+  color: var(--ink);
+  animation: sheetIn 0.34s both;
+}
+.p-sh-top,
+.p-sh-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 12px;
+}
+.p-sh-top b {
+  font: 400 var(--t-md)/1 var(--display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #5a4033;
+}
+.p-sheet .content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin: 4px 10px;
+}
+.p-sheet .pill {
+  min-height: 44px;
+}
 
-@media (prefers-reduced-motion:reduce){
-  .o-pan.in,.o-pan.in *,.p-nav,.p-sheet,.p-turn-card,.o-hello .in-sheet,.pl-full,.pl-sprout,.syn-scr path,.syn-scr .led,.o-in,.hinting .o-dot{animation:none!important}
-  .snap-in,.o-hero>*{transition:none}
-  .ph-ico{animation:none;rotate:-90deg}
+@media (prefers-reduced-motion: reduce) {
+  .o-pan.in,
+  .o-pan.in *,
+  .p-nav,
+  .p-sheet,
+  .p-turn-card,
+  .o-hello .in-sheet,
+  .pl-full,
+  .pl-sprout,
+  .syn-scr path,
+  .syn-scr .led,
+  .o-in,
+  .hinting .o-dot {
+    animation: none !important;
+  }
+  .snap-in,
+  .o-hero > * {
+    transition: none;
+  }
+  .ph-ico {
+    animation: none;
+    rotate: -90deg;
+  }
 }

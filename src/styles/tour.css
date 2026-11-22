@@ -1,129 +1,716 @@
-/* ── TOUR: the cardboard question mark, Beep (a floating wooden TV) and his cardboard speech bubble (organisms/tour.js).
+/* ── TOUR: the cardboard question mark, Bleep (a floating wooden TV) and his cardboard speech bubble (organisms/tour.js).
    Same rules as the rest of the skin: photo textures from the texture library, an ink line round every piece, no shadows, everything on twos. ── */
 
 /* the question mark: cut from kraft card, its corrugated edge showing down one side. Cream under the pointer, like every utility button */
 /* it sits on the same line as the joystick and zoom guide, above the host's badge: its box is centred on theirs and then dropped 3px, because the hook makes it top-heavy; its inked edge (not its box) is as far from the left as the joystick is from the right */
-#help{position:fixed;z-index:5;left:max(15px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4) + var(--badge) + 27px);width:40px;height:53px;padding:0;border:0;background:none;rotate:-6deg;filter:url(#boil);transition:rotate .2s,translate .2s,scale .2s;transform-origin:50% 90%}
-#help svg{display:block;overflow:visible}
-#help>svg{width:100%;height:100%}
-#help>svg path{fill:none;stroke-linecap:round;stroke-linejoin:round}
-.q-ink{stroke:var(--ink);stroke-width:22}
-.q-ink-dot{fill:var(--ink)}
-.q-edge{stroke:url(#qEdge);stroke-width:17}
-.q-edge-dot{fill:url(#qEdge)}
-.q-face{stroke:url(#qKraft);stroke-width:17}
-.q-face-dot{fill:url(#qKraft)}
-.q-tint{stroke:var(--cream);stroke-width:17;opacity:0}
-.q-tint-dot{fill:var(--cream);opacity:0}
-#help:hover{rotate:5deg;translate:0 -4px;scale:1.06}
-#help:hover .q-tint,#help:hover .q-tint-dot,#help[aria-expanded="true"] .q-tint,#help[aria-expanded="true"] .q-tint-dot{opacity:.62}
-#help:active{translate:0 2px;scale:.96}
-#help[aria-expanded="true"]{rotate:8deg}
-#help.nudge{animation:qHop 4.2s 2.5s infinite}
-@keyframes qHop{0%,78%,100%{translate:0 0;rotate:-6deg}84%{translate:0 -12px;rotate:7deg}90%{translate:0 0;rotate:-10deg}95%{translate:0 -5px;rotate:3deg}}
-body[data-card="true"] #help{visibility:hidden}
-@media (min-width:761px){body[data-card="true"] #help{visibility:visible}}
+#help {
+  position: fixed;
+  z-index: 5;
+  left: max(15px, env(safe-area-inset-left, 0px));
+  bottom: calc(env(safe-area-inset-bottom, 0px) + var(--s4) + var(--badge) + 27px);
+  width: 40px;
+  height: 53px;
+  padding: 0;
+  border: 0;
+  background: none;
+  rotate: -6deg;
+  filter: url(#boil);
+  transition:
+    rotate 0.2s,
+    translate 0.2s,
+    scale 0.2s;
+  transform-origin: 50% 90%;
+}
+#help svg {
+  display: block;
+  overflow: visible;
+}
+#help > svg {
+  width: 100%;
+  height: 100%;
+}
+#help > svg path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.q-ink {
+  stroke: var(--ink);
+  stroke-width: 22;
+}
+.q-ink-dot {
+  fill: var(--ink);
+}
+.q-edge {
+  stroke: url(#qEdge);
+  stroke-width: 17;
+}
+.q-edge-dot {
+  fill: url(#qEdge);
+}
+.q-face {
+  stroke: url(#qKraft);
+  stroke-width: 17;
+}
+.q-face-dot {
+  fill: url(#qKraft);
+}
+.q-tint {
+  stroke: var(--cream);
+  stroke-width: 17;
+  opacity: 0;
+}
+.q-tint-dot {
+  fill: var(--cream);
+  opacity: 0;
+}
+#help:hover {
+  rotate: 5deg;
+  translate: 0 -4px;
+  scale: 1.06;
+}
+#help:hover .q-tint,
+#help:hover .q-tint-dot,
+#help[aria-expanded='true'] .q-tint,
+#help[aria-expanded='true'] .q-tint-dot {
+  opacity: 0.62;
+}
+#help:active {
+  translate: 0 2px;
+  scale: 0.96;
+}
+#help[aria-expanded='true'] {
+  rotate: 8deg;
+}
+#help.nudge {
+  animation: qHop 4.2s 2.5s infinite;
+}
+@keyframes qHop {
+  0%,
+  78%,
+  100% {
+    translate: 0 0;
+    rotate: -6deg;
+  }
+  84% {
+    translate: 0 -12px;
+    rotate: 7deg;
+  }
+  90% {
+    translate: 0 0;
+    rotate: -10deg;
+  }
+  95% {
+    translate: 0 -5px;
+    rotate: 3deg;
+  }
+}
+body[data-card='true'] #help {
+  visibility: hidden;
+}
+@media (min-width: 761px) {
+  body[data-card='true'] #help {
+    visibility: visible;
+  }
+}
 
-/* Beep peeping out from behind the question mark (tour.js peep): up and out to the side, a look left and right, and back in */
-#help .peep{position:absolute;z-index:-1;left:50%;top:22%;width:84px;translate:-50% 0;scale:.15;opacity:0;pointer-events:none;transform-origin:50% 100%}
-#help .peep svg{width:100%;height:auto}
-#help.peeping .peep{animation:peep 3.6s steps(3,end) both!important}
-#help.peeping .pe{animation:peepLook 3.6s steps(1,end) both!important}
-@keyframes peep{0%{translate:-50% 0;scale:.15;opacity:0;rotate:0deg}4%{opacity:1}12%{translate:-2% -112%;scale:1.12;opacity:1;rotate:18deg}18%{translate:-6% -96%;scale:1;rotate:6deg}26%{translate:-2% -104%;rotate:20deg}34%{rotate:2deg}42%{rotate:18deg}50%{rotate:4deg}58%,84%{translate:-4% -100%;scale:1;opacity:1;rotate:12deg}90%{translate:-2% -112%;scale:1.08;opacity:1;rotate:16deg}100%{translate:-50% 0;scale:.15;opacity:0;rotate:0deg}}
-@keyframes peepLook{0%{translate:0 0}34%{translate:-3px 0}50%{translate:3px 1px}64%{translate:0 0;scale:1 .15;transform-origin:50% 55%}70%{translate:0 0;scale:1}}
-@media (max-width:760px){#help .peep{width:66px}}
+/* Bleep peeping out from behind the question mark (tour.js peep): up and out to the side, a look left and right, and back in */
+#help .peep {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 22%;
+  width: 84px;
+  translate: -50% 0;
+  scale: 0.15;
+  opacity: 0;
+  pointer-events: none;
+  transform-origin: 50% 100%;
+}
+#help .peep svg {
+  width: 100%;
+  height: auto;
+}
+#help.peeping .peep {
+  animation: peep 3.6s steps(3, end) both !important;
+}
+#help.peeping .pe {
+  animation: peepLook 3.6s steps(1, end) both !important;
+}
+@keyframes peep {
+  0% {
+    translate: -50% 0;
+    scale: 0.15;
+    opacity: 0;
+    rotate: 0deg;
+  }
+  4% {
+    opacity: 1;
+  }
+  12% {
+    translate: -2% -112%;
+    scale: 1.12;
+    opacity: 1;
+    rotate: 18deg;
+  }
+  18% {
+    translate: -6% -96%;
+    scale: 1;
+    rotate: 6deg;
+  }
+  26% {
+    translate: -2% -104%;
+    rotate: 20deg;
+  }
+  34% {
+    rotate: 2deg;
+  }
+  42% {
+    rotate: 18deg;
+  }
+  50% {
+    rotate: 4deg;
+  }
+  58%,
+  84% {
+    translate: -4% -100%;
+    scale: 1;
+    opacity: 1;
+    rotate: 12deg;
+  }
+  90% {
+    translate: -2% -112%;
+    scale: 1.08;
+    opacity: 1;
+    rotate: 16deg;
+  }
+  100% {
+    translate: -50% 0;
+    scale: 0.15;
+    opacity: 0;
+    rotate: 0deg;
+  }
+}
+@keyframes peepLook {
+  0% {
+    translate: 0 0;
+  }
+  34% {
+    translate: -3px 0;
+  }
+  50% {
+    translate: 3px 1px;
+  }
+  64% {
+    translate: 0 0;
+    scale: 1 0.15;
+    transform-origin: 50% 55%;
+  }
+  70% {
+    translate: 0 0;
+    scale: 1;
+  }
+}
+@media (max-width: 760px) {
+  #help .peep {
+    width: 66px;
+  }
+}
 
 /* the lights down: one box the size of what he's explaining, with a shadow that covers everything else. With nothing to point at it has no size, so it's dark all over */
-#tour-dim{position:fixed;z-index:23;left:50%;top:50%;width:0;height:0;pointer-events:none;border-radius:26px 20px 28px 22px / 22px 28px 20px 26px;box-shadow:0 0 0 200vmax rgba(18,10,6,.68);opacity:0;transition:opacity .3s,left .25s,top .25s,width .25s,height .25s}
-body[data-tour="on"] #tour-dim{opacity:1}
+#tour-dim {
+  position: fixed;
+  z-index: 23;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  border-radius: 26px 20px 28px 22px / 22px 28px 20px 26px;
+  box-shadow: 0 0 0 200vmax rgba(18, 10, 6, 0.68);
+  opacity: 0;
+  transition:
+    opacity 0.3s,
+    left 0.25s,
+    top 0.25s,
+    width 0.25s,
+    height 0.25s;
+}
+body[data-tour='on'] #tour-dim {
+  opacity: 1;
+}
 
 /* the felt-tip ring round whatever he's talking about */
-#tour-ring{position:fixed;z-index:24;pointer-events:none;filter:url(#boil)}
-#tour-ring svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-#tour-ring path{fill:none;stroke:var(--red);stroke-width:4.5;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0}
-#tour-ring.pop path{animation:ringDraw .5s backwards}
-@keyframes ringDraw{from{stroke-dashoffset:1}}
+#tour-ring {
+  position: fixed;
+  z-index: 24;
+  pointer-events: none;
+  filter: url(#boil);
+}
+#tour-ring svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+#tour-ring path {
+  fill: none;
+  stroke: var(--red);
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+#tour-ring.pop path {
+  animation: ringDraw 0.5s backwards;
+}
+@keyframes ringDraw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
 
 /* while he's talking, only he, his bubble and the question mark answer the pointer: no hover effects anywhere else, on the bench or the buttons */
-body[data-tour="on"]>:not(#tour):not(#help){pointer-events:none}
+body[data-tour='on'] > :not(#tour):not(#help) {
+  pointer-events: none;
+}
 
-/* Beep and his bubble: one piece that floats together, so the bubble's tail stays at his mouth */
-#tour{--tv:186px;--ty:calc(var(--tv) * .6);position:fixed;z-index:25;left:0;top:0;display:flex;align-items:flex-start;pointer-events:none;animation:tourIn .42s backwards;transition:left .34s,top .34s}
-#tour.flip{flex-direction:row-reverse}
-#tour.out{animation:tourOut .3s forwards}
-#tour>*{pointer-events:auto}
-@keyframes tourIn{from{opacity:0;translate:-30vw 40vh;rotate:-24deg;scale:.3}}
-@keyframes tourOut{to{opacity:0;translate:-30vw 40vh;rotate:-24deg;scale:.3}}
-.tv-wrap{flex:none;width:var(--tv);animation:tvBob 2.6s infinite}
-@keyframes tvBob{0%,100%{translate:0 0;rotate:-2deg}50%{translate:0 -9px;rotate:2.5deg}}
-.tv{display:block;width:100%;height:auto;overflow:visible;filter:url(#boil)}
+/* Bleep and his bubble: one piece that floats together, so the bubble's tail stays at his mouth */
+#tour {
+  --tv: 186px;
+  --ty: calc(var(--tv) * 0.6);
+  position: fixed;
+  z-index: 25;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: flex-start;
+  pointer-events: none;
+  animation: tourIn 0.42s backwards;
+  transition:
+    left 0.34s,
+    top 0.34s;
+}
+#tour.flip {
+  flex-direction: row-reverse;
+}
+#tour.out {
+  animation: tourOut 0.3s forwards;
+}
+#tour > * {
+  pointer-events: auto;
+}
+@keyframes tourIn {
+  from {
+    opacity: 0;
+    translate: -30vw 40vh;
+    rotate: -24deg;
+    scale: 0.3;
+  }
+}
+@keyframes tourOut {
+  to {
+    opacity: 0;
+    translate: -30vw 40vh;
+    rotate: -24deg;
+    scale: 0.3;
+  }
+}
+.tv-wrap {
+  flex: none;
+  width: var(--tv);
+  animation: tvBob 2.6s infinite;
+}
+@keyframes tvBob {
+  0%,
+  100% {
+    translate: 0 0;
+    rotate: -2deg;
+  }
+  50% {
+    translate: 0 -9px;
+    rotate: 2.5deg;
+  }
+}
+.tv {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  filter: url(#boil);
+}
 /* eyes and mouths: only the one named on the svg is drawn */
-.tv .e-open,.tv .e-wow,.tv .e-happy,.tv .e-shut,.tv .e-wink,.tv .m-rest,.tv .m-a,.tv .m-b,.tv .m-c,.tv .m-o{display:none}
-.tv[data-eyes="open"] .e-open,.tv[data-eyes="wow"] .e-wow,.tv[data-eyes="happy"] .e-happy,.tv[data-eyes="shut"] .e-shut,.tv[data-eyes="wink"] .e-wink,
-.tv[data-m="rest"] .m-rest,.tv[data-m="a"] .m-a,.tv[data-m="b"] .m-b,.tv[data-m="c"] .m-c,.tv[data-m="o"] .m-o{display:inline}
-.tv-ant{transform-origin:97px 38px}
-.tv.pop .tv-ant{animation:antTwitch .5s}
-@keyframes antTwitch{0%{rotate:0deg}25%{rotate:-9deg}50%{rotate:8deg}75%{rotate:-4deg}100%{rotate:0deg}}
-.tv-cord{transform-origin:96px 167px;animation:cordSway 2.6s infinite}
-@keyframes cordSway{0%,100%{rotate:9deg}50%{rotate:-9deg}}
-.tv-led{animation:ledBlink 1.4s steps(1,end) infinite!important}
-@keyframes ledBlink{0%{opacity:1}50%{opacity:.25}}
-.tv-lines{animation:tubeRoll .9s steps(2,end) infinite!important}
-@keyframes tubeRoll{to{translate:0 4px}}
+.tv .e-open,
+.tv .e-wow,
+.tv .e-happy,
+.tv .e-shut,
+.tv .e-wink,
+.tv .m-rest,
+.tv .m-a,
+.tv .m-b,
+.tv .m-c,
+.tv .m-o {
+  display: none;
+}
+.tv[data-eyes='open'] .e-open,
+.tv[data-eyes='wow'] .e-wow,
+.tv[data-eyes='happy'] .e-happy,
+.tv[data-eyes='shut'] .e-shut,
+.tv[data-eyes='wink'] .e-wink,
+.tv[data-m='rest'] .m-rest,
+.tv[data-m='a'] .m-a,
+.tv[data-m='b'] .m-b,
+.tv[data-m='c'] .m-c,
+.tv[data-m='o'] .m-o {
+  display: inline;
+}
+.tv-ant {
+  transform-origin: 97px 38px;
+}
+.tv.pop .tv-ant {
+  animation: antTwitch 0.5s;
+}
+@keyframes antTwitch {
+  0% {
+    rotate: 0deg;
+  }
+  25% {
+    rotate: -9deg;
+  }
+  50% {
+    rotate: 8deg;
+  }
+  75% {
+    rotate: -4deg;
+  }
+  100% {
+    rotate: 0deg;
+  }
+}
+.tv-cord {
+  transform-origin: 96px 167px;
+  animation: cordSway 2.6s infinite;
+}
+@keyframes cordSway {
+  0%,
+  100% {
+    rotate: 9deg;
+  }
+  50% {
+    rotate: -9deg;
+  }
+}
+.tv-led {
+  animation: ledBlink 1.4s steps(1, end) infinite !important;
+}
+@keyframes ledBlink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+.tv-lines {
+  animation: tubeRoll 0.9s steps(2, end) infinite !important;
+}
+@keyframes tubeRoll {
+  to {
+    translate: 0 4px;
+  }
+}
 
 /* the speech bubble: the same piece of card as the zoom guide's "Scroll to zoom" (kraft, an ink line, the same hand-cut corners),
    with a tail (::before, a corner of the same card) pointing at his mouth */
-.tv-say{position:relative;flex:none;width:340px;min-height:calc(var(--ty) + 44px);margin:6px 0 0 10px;padding:13px 16px 9px 22px;display:flex;flex-direction:column;justify-content:space-between;gap:6px;border:var(--edge);border-radius:26px 22px 27px 21px / 22px 27px 21px 26px;background:var(--kraft) var(--kraft-tex);background-size:260px;box-shadow:var(--drop);color:var(--ink);filter:url(#boil);transform-origin:0 var(--ty)}
-.tv-say::before{content:"";position:absolute;left:-12px;top:calc(var(--ty) - 11px);width:20px;height:20px;rotate:45deg;border:var(--edge);border-top-color:transparent;border-right-color:transparent;border-radius:0 0 0 5px;background:var(--kraft) var(--kraft-tex);background-size:260px;background-clip:padding-box}
-#tour.flip .tv-say{margin:6px 10px 0 0;padding:13px 22px 9px 16px;transform-origin:100% var(--ty)}
-#tour.flip .tv-say::before{left:auto;right:-12px;border-color:transparent;border-top:var(--edge);border-right:var(--edge);border-radius:0 5px 0 0}
-.tv-say.pop{animation:sayPop .3s backwards}
-@keyframes sayPop{from{scale:.5;opacity:0;rotate:-5deg}}
-.say-top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s2)}
-#tour-h{margin:0;font:900 30px/1 var(--display);letter-spacing:.015em;text-transform:uppercase;color:var(--ink);white-space:nowrap}
-#tour-p{margin:5px 0 0;min-height:2.5em;font:400 var(--t-md)/1.25 var(--body);color:var(--ink)}
-#tour-p .rest{visibility:hidden}
+.tv-say {
+  position: relative;
+  flex: none;
+  width: 340px;
+  min-height: calc(var(--ty) + 44px);
+  margin: 6px 0 0 10px;
+  padding: 13px 16px 9px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+  border: var(--edge);
+  border-radius: 26px 22px 27px 21px / 22px 27px 21px 26px;
+  background: var(--kraft) var(--kraft-tex);
+  background-size: 260px;
+  box-shadow: var(--drop);
+  color: var(--ink);
+  filter: url(#boil);
+  transform-origin: 0 var(--ty);
+}
+.tv-say::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: calc(var(--ty) - 11px);
+  width: 20px;
+  height: 20px;
+  rotate: 45deg;
+  border: var(--edge);
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-radius: 0 0 0 5px;
+  background: var(--kraft) var(--kraft-tex);
+  background-size: 260px;
+  background-clip: padding-box;
+}
+#tour.flip .tv-say {
+  margin: 6px 10px 0 0;
+  padding: 13px 22px 9px 16px;
+  transform-origin: 100% var(--ty);
+}
+#tour.flip .tv-say::before {
+  left: auto;
+  right: -12px;
+  border-color: transparent;
+  border-top: var(--edge);
+  border-right: var(--edge);
+  border-radius: 0 5px 0 0;
+}
+.tv-say.pop {
+  animation: sayPop 0.3s backwards;
+}
+@keyframes sayPop {
+  from {
+    scale: 0.5;
+    opacity: 0;
+    rotate: -5deg;
+  }
+}
+.say-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+#tour-h {
+  margin: 0;
+  font: 900 30px/1 var(--display);
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+}
+#tour-p {
+  margin: 5px 0 0;
+  min-height: 2.5em;
+  font: 400 var(--t-md)/1.25 var(--body);
+  color: var(--ink);
+}
+#tour-p .rest {
+  visibility: hidden;
+}
 /* how far through: a bar that fills (no numbers), like the zoom guide's */
-.t-bar{flex:none;width:72px;height:9px;margin-top:10px;border:2px solid var(--ink);border-radius:3px;background:var(--track);overflow:hidden}
-.t-bar i{display:block;width:0;height:100%;background:var(--red);transition:width .3s}
+.t-bar {
+  flex: none;
+  width: 72px;
+  height: 9px;
+  margin-top: 10px;
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  background: var(--track);
+  overflow: hidden;
+}
+.t-bar i {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--red);
+  transition: width 0.3s;
+}
 /* the cross: a card disc on the bubble's far corner */
-.t-x{position:absolute;top:-13px;right:-13px;z-index:1;display:grid;place-items:center;width:32px;height:32px;padding:0;border:var(--edge);border-radius:50% 46% 52% 48% / 48% 52% 46% 50%;background:var(--cream) var(--paper);background-size:160px;color:var(--ink)}
-.t-x .ic{width:16px;height:16px;stroke-width:3}
-.t-x:hover{rotate:12deg;background-color:#fffaf0}
-.t-x:active{scale:.92}
-#tour.flip .t-x{right:auto;left:-13px}
-@media (max-width:760px){#tour.flip .t-x{left:auto;right:-13px}}
+.t-x {
+  position: absolute;
+  top: -13px;
+  right: -13px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: var(--edge);
+  border-radius: 50% 46% 52% 48% / 48% 52% 46% 50%;
+  background: var(--cream) var(--paper);
+  background-size: 160px;
+  color: var(--ink);
+}
+.t-x .ic {
+  width: 16px;
+  height: 16px;
+  stroke-width: 3;
+}
+.t-x:hover {
+  rotate: 12deg;
+  background-color: var(--photo);
+}
+.t-x:active {
+  scale: 0.92;
+}
+#tour.flip .t-x {
+  right: auto;
+  left: -13px;
+}
+@media (max-width: 760px) {
+  #tour.flip .t-x {
+    left: auto;
+    right: -13px;
+  }
+}
 /* back · skip · next */
-.say-nav{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;gap:var(--s2);padding-top:5px;border-top:2.5px dashed var(--line)}
-.t-nav{display:grid;place-items:center;width:40px;height:36px;padding:0;border:var(--edge);border-radius:13px 10px 14px 9px / 10px 14px 9px 13px;background:var(--cream) var(--paper);background-size:200px;color:var(--ink)}
-.t-nav .ic{width:22px;height:22px;stroke-width:2.8}
-.t-nav:hover{translate:-2px 0;background-color:#fffaf0}
-.t-next:hover{translate:2px 0}
-.t-nav:active{translate:0 1px}
-.t-nav:disabled{opacity:.3;pointer-events:none}
-.t-next{background:var(--red) var(--paper);background-blend-mode:multiply;background-size:200px;color:var(--on-accent)}
-.t-next:hover{background-color:var(--red)}
-.t-next .done,.t-next.last .ic:not(.done){display:none}
-.t-next.last .done{display:block}
-.t-skip{justify-self:center;padding:4px 8px 2px;border:0;background:none;font:400 var(--t-md)/1 var(--body);color:var(--ink);text-decoration:underline wavy var(--red) 1.5px;text-underline-offset:4px}
-.t-skip:hover{color:var(--red)}
+.say-nav {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  gap: var(--s2);
+  padding-top: 5px;
+  border-top: 2.5px dashed var(--line);
+}
+.t-nav {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 36px;
+  padding: 0;
+  border: var(--edge);
+  border-radius: 13px 10px 14px 9px / 10px 14px 9px 13px;
+  background: var(--cream) var(--paper);
+  background-size: 200px;
+  color: var(--ink);
+}
+.t-nav .ic {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.8;
+}
+.t-nav:hover {
+  translate: -2px 0;
+  background-color: var(--photo);
+}
+.t-next:hover {
+  translate: 2px 0;
+}
+.t-nav:active {
+  translate: 0 1px;
+}
+.t-nav:disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+.t-next {
+  background: var(--red) var(--paper);
+  background-blend-mode: multiply;
+  background-size: 200px;
+  color: var(--on-accent);
+}
+.t-next:hover {
+  background-color: var(--red);
+}
+.t-next .done,
+.t-next.last .ic:not(.done) {
+  display: none;
+}
+.t-next.last .done {
+  display: block;
+}
+.t-skip {
+  justify-self: center;
+  padding: 4px 8px 2px;
+  border: 0;
+  background: none;
+  font: 400 var(--t-md)/1 var(--body);
+  color: var(--ink);
+  text-decoration: underline wavy var(--red) 1.5px;
+  text-underline-offset: 4px;
+}
+.t-skip:hover {
+  color: var(--red);
+}
 
 /* phones: he sits on top of the bubble, and the tail is cut into its top edge */
-@media (max-width:760px){
-  #tour{--tv:104px;flex-direction:column;align-items:center}
-  .tv-say,#tour.flip .tv-say{width:min(340px,calc(100vw - 24px));min-height:0;margin:8px 0 0;padding:14px 16px 9px 18px;transform-origin:50% 0}
-  .tv-say::before,#tour.flip .tv-say::before{left:calc(50% - 10px);right:auto;top:-12px;border-color:transparent;border-top:var(--edge);border-left:var(--edge);border-radius:5px 0 0 0}
-  #tour-h{font-size:26px}
-  #help{width:36px;height:48px;bottom:calc(env(safe-area-inset-bottom,0px) + var(--s4) + var(--badge) + 22px)}
+@media (max-width: 760px) {
+  #tour {
+    --tv: 104px;
+    flex-direction: column;
+    align-items: center;
+  }
+  .tv-say,
+  #tour.flip .tv-say {
+    width: min(340px, calc(100vw - 24px));
+    min-height: 0;
+    margin: 8px 0 0;
+    padding: 14px 16px 9px 18px;
+    transform-origin: 50% 0;
+  }
+  .tv-say::before,
+  #tour.flip .tv-say::before {
+    left: calc(50% - 10px);
+    right: auto;
+    top: -12px;
+    border-color: transparent;
+    border-top: var(--edge);
+    border-left: var(--edge);
+    border-radius: 5px 0 0 0;
+  }
+  #tour-h {
+    font-size: 26px;
+  }
+  #help {
+    width: 36px;
+    height: 48px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + var(--s4) + var(--badge) + 22px);
+  }
 }
-@media (orientation:landscape) and (max-height:520px){
-  #tour{--tv:110px;flex-direction:row;align-items:flex-start}
-  .tv-say{width:300px;min-height:calc(var(--ty) + 40px);margin:0 0 0 10px;padding:10px 14px 7px 20px}
-  .tv-say::before{left:-12px;top:calc(var(--ty) - 11px);border-color:transparent;border-left:var(--edge);border-bottom:var(--edge);border-radius:0 0 0 5px}
-  #help{bottom:calc(env(safe-area-inset-bottom,0px) + 24px)}
+@media (orientation: landscape) and (max-height: 520px) {
+  #tour {
+    --tv: 110px;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .tv-say {
+    width: 300px;
+    min-height: calc(var(--ty) + 40px);
+    margin: 0 0 0 10px;
+    padding: 10px 14px 7px 20px;
+  }
+  .tv-say::before {
+    left: -12px;
+    top: calc(var(--ty) - 11px);
+    border-color: transparent;
+    border-left: var(--edge);
+    border-bottom: var(--edge);
+    border-radius: 0 0 0 5px;
+  }
+  #help {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+  }
 }
-@media (prefers-reduced-motion:reduce){
-  #help,#tour-ring,.tv,.tv-say{filter:none}
-  #help.nudge,#tour,#tour.out,.tv-wrap,.tv-cord,.tv-led,.tv-lines,.tv.pop .tv-ant,.tv-say.pop,#tour-ring.pop path{animation:none!important}
-  #tour,#tour-dim{transition:none}
+@media (prefers-reduced-motion: reduce) {
+  #help,
+  #tour-ring,
+  .tv,
+  .tv-say {
+    filter: none;
+  }
+  #help.nudge,
+  #tour,
+  #tour.out,
+  .tv-wrap,
+  .tv-cord,
+  .tv-led,
+  .tv-lines,
+  .tv.pop .tv-ant,
+  .tv-say.pop,
+  #tour-ring.pop path {
+    animation: none !important;
+  }
+  #tour,
+  #tour-dim {
+    transition: none;
+  }
 }

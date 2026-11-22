@@ -1,0 +1,8 @@
+# Vick Does Creative: everyone is welcome to read the portfolio, including search engines and AI assistants.
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /library/
+
+Sitemap: https://vick-does-creative.netlify.app/sitemap.xml

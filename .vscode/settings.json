@@ -6,5 +6,11 @@
   "git.autofetch": true,
   "git.pruneOnFetch": true,
   "git.confirmSync": true,
-  "git.postCommitCommand": "none"
+  "git.postCommitCommand": "none",
+
+  // Formatting: Prettier on save (.prettierrc.json), ESLint for bugs (eslint.config.js). Same rules as CI.
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "eslint.useFlatConfig": true,
+  "files.eol": "\n"
 }

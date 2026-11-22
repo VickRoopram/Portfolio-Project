@@ -1,0 +1,84 @@
+# Vickhal Roopram (Vick Does Creative)
+
+> Vickhal Roopram (Vick) is a UX/UI, illustration and motion designer in South Africa. UX/UI Designer at Floodlight Studios. Research like a nerd. Play like a kid. Use the box.
+
+The home page (https://vick-does-creative.netlify.app/) is a playable 3D cardboard synthesizer that needs JavaScript and WebGL. The same portfolio as plain HTML, with every project, is at https://vick-does-creative.netlify.app/portfolio/.
+
+- Contact: vickhal10@gmail.com (work, projects and collaborations welcome)
+- Location: South Africa
+- Skills: UX/UI design, Prototyping, Design systems, Motion design, 2D and 3D animation, Illustration, Graphic design, Branding, Packaging design, Design thinking, AI workflow automation, Figma, Adobe Creative Cloud, After Effects, Blender, Spline
+
+## Portfolio
+
+- [The whole portfolio on one page](https://vick-does-creative.netlify.app/portfolio/): every project, experience, awards, education and contact
+
+## UX/UI design
+
+- [Plug Our Potholes](https://vick-does-creative.netlify.app/portfolio/#ux-plug-our-potholes): UX/UI case study: a community app, developed with Floodlight Studios, where people report potholes, vote for the next area and donate to fix their own roads.
+- [Fleet Receiving](https://vick-does-creative.netlify.app/portfolio/#ux-fleet-receiving): UX/UI case study: Fleet, a stand-alone receiving system for a distribution centre that tracks every touch point of an offload, so bottlenecks show up.
+- [Floodlight Studios](https://vick-does-creative.netlify.app/portfolio/#ux-floodlight-studios): Sole UX/UI designer at Floodlight Studios since 2021, designing SaaS products for retail clients including SPAR, in two-week sprints with the developers.
+- [Designing at retail scale](https://vick-does-creative.netlify.app/portfolio/#ux-designing-at-retail-scale): How I design retail tools for SPAR: find out who uses each screen and where, design the flows in Figma, hand off in Zeplin with Jira, refine every sprint.
+- [Systems for Parliament](https://vick-does-creative.netlify.app/portfolio/#ux-systems-for-parliament): Systems for SASSA and Home Affairs presented to the South African Parliament (2020), and a prototype reviewed for a government initiative (2022).
+- [My method](https://vick-does-creative.netlify.app/portfolio/#ux-my-method): My UX method in four steps: constraint, context, expression and future. Research first, then the look that fits the project and its users.
+- [Workflow & AI stack](https://vick-does-creative.netlify.app/portfolio/#ux-workflow-ai-stack): My tools and AI workflow: Figma, Adobe CC, Zeplin and Jira, plus Claude, Figma Make, Canva AI, ChatGPT, Gemini, Vercel and Antigravity.
+- [Geek Punch](https://vick-does-creative.netlify.app/portfolio/#ux-geek-punch): A personal product I'm designing and building to take to market. In progress.
+- [Training](https://vick-does-creative.netlify.app/portfolio/#ux-training): UX/UI short course at the University of Cape Town (2021–2022) and a frontend developer bootcamp at Codecamp.org (2021).
+
+## Graphic design
+
+- [Self-Promo: Design OS](https://vick-does-creative.netlify.app/portfolio/#gd-self-promo-design-os): My own identity: a Design Operating System, with a logo built from Unicode emotes, business cards, a creative CV and promotional items.
+- [A Journey With Kal](https://vick-does-creative.netlify.app/portfolio/#gd-a-journey-with-kal): An illustrated, animated Instagram diary about living with Kallmann syndrome and acromegaly: informative, a bit funny, and shared by people around the world.
+- [A Noob’s Guide to Building a PC](https://vick-does-creative.netlify.app/portfolio/#gd-a-noobs-guide-to-building-a-pc): An 800 × 2000 px infographic of the basic parts of a gaming PC and what each one does.
+- [A Pandemic Together](https://vick-does-creative.netlify.app/portfolio/#gd-a-pandemic-together): An illustrated editorial spread about lockdown, written and designed for Frankie, an Australian magazine about design, art and interiors.
+- [iMvelo Care](https://vick-does-creative.netlify.app/portfolio/#gd-imvelo-care): Corporate identity for iMvelo, a mobile spa and wellness centre for women that specialises in care for the elderly.
+- [Takkie Wash & Squeaky Kleen](https://vick-does-creative.netlify.app/portfolio/#gd-takkie-wash-squeaky-kleen): Team lead on a rebrand of two cleaning brands for a new in-store partnership, so customers can tell which brand does what.
+- [Moving Type: “Yoh!”](https://vick-does-creative.netlify.app/portfolio/#gd-moving-type-yoh): Kinetic type: an animated GIF of the South African slang word “Yoh!” in a comic-texture style.
+- [Clover Festive Display](https://vick-does-creative.netlify.app/portfolio/#gd-clover-festive-display): In-store festive display for Clover and its Win-a-Car promotion, built on Clover's line “Way Better Shared”.
+- [Pulse Hybrid Inverter](https://vick-does-creative.netlify.app/portfolio/#gd-pulse-hybrid-inverter): Packaging for a backup power inverter that has to sell itself in store. Bronze at the 2020 SA Gold Pack Design Awards and a Top 100 international entry.
+- [Saddler Repositioning](https://vick-does-creative.netlify.app/portfolio/#gd-saddler-repositioning): Repositioning Saddler from a white-label business to an on-trend fashion accessory brand: “Your World. Your Way.”
+- [Retro Grade](https://vick-does-creative.netlify.app/portfolio/#gd-retro-grade): A T-shirt range I designed to celebrate 50-plus years of gaming and esports, and the two-page publication that presents it.
+- [Jonsson Workwear: Siyapusha](https://vick-does-creative.netlify.app/portfolio/#gd-jonsson-workwear-siyapusha): Group lead on the campaign strategy to launch Jonsson's lifestyle footwear, The Kalahari's, which drove the launch collateral and a packaging redesign.
+
+## Motion & 3D
+
+- [A Journey With Kal](https://vick-does-creative.netlify.app/portfolio/#mo-a-journey-with-kal): Short animations about life with two rare genetic disorders, made funny so they're easier to relate to.
+- [“Yoh!” in motion](https://vick-does-creative.netlify.app/portfolio/#mo-yoh-in-motion): A character GIF animated frame by frame in comic halftone, timed so the word lands like a punchline.
+- [3D & animation toolkit](https://vick-does-creative.netlify.app/portfolio/#mo-3d-animation-toolkit): 2D and 3D animation, from personal projects to freelance work. This playable 3D synth is one example.
+- [Genesis Printing](https://vick-does-creative.netlify.app/portfolio/#mo-genesis-printing): Graphic and motion designer, part time (2017–2019): animated promos alongside print-ready production.
+- [Church media & production](https://vick-does-creative.netlify.app/portfolio/#mo-church-media-production): Multimedia engineer and motion designer (2017–2019): live visuals, service graphics and video for Conquering Through Prayer Ministries International.
+- [@vicsdoesmotion](https://vick-does-creative.netlify.app/portfolio/#mo-vicsdoesmotion): My creative Instagram, where animation, illustration and motion experiments get tested in public.
+
+## Experimental
+
+- [VR-17 Portfolio Synth](https://vick-does-creative.netlify.app/portfolio/#xp-vr-17-portfolio-synth): This portfolio: a playable 3D synthesizer built with Three.js and the Web Audio API, designed in Figma and rebuilt in cardboard.
+- [Retro Grade pixel art](https://vick-does-creative.netlify.app/portfolio/#xp-retro-grade-pixel-art): Hand-placed pixel-art characters and scenes from the Retro Grade project.
+
+## Experience
+
+- UX/UI Designer, Floodlight Studios (2021–now)
+- Graphic & Motion Designer, Genesis Printing (2017–2019)
+- Graphic Designer, Katz Cakes (2017–2019)
+- Multimedia Engineer & Motion Designer, Conquering Through Prayer Ministries International (2017–2019)
+
+## Awards
+
+- Loeries Student Portfolio Bootcamp: Top 3 finalist in Africa (2020)
+- SA Gold Pack Design Awards: Bronze, and a Top 100 international entry at WorldStar Student (2020)
+- Systems for SASSA and Home Affairs presented to the South African Parliament (2020)
+- Prototype reviewed for a South African government initiative (2022)
+
+## Education
+
+- National Diploma in Visual Communication, Durban University of Technology (2018–2020)
+- UX/UI short course, University of Cape Town (2021–2022)
+- Frontend developer bootcamp, Codecamp.org (2021)
+- Theology degree, Doxa Deo & SATS (2023–2026)
+
+## Elsewhere
+
+- [Behance](https://www.behance.net/vickhalroopram)
+- [Instagram (creative)](https://www.instagram.com/vicsdoesmotion/)
+- [LinkedIn](https://www.linkedin.com/in/vickhal-roopram/)
+- [Instagram (personal)](https://www.instagram.com/vickroopram/)
+- [Threads](https://www.threads.com/@vickroopram)
+- [X](https://x.com/RoopramVickhal)

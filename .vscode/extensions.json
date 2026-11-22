@@ -1,8 +1,10 @@
 {
-  // Review pull requests and watch CI runs without leaving VS Code.
+  // Review pull requests and watch CI runs without leaving VS Code; format and lint like CI does.
   "recommendations": [
     "GitHub.vscode-pull-request-github",
     "github.vscode-github-actions",
-    "EditorConfig.EditorConfig"
+    "EditorConfig.EditorConfig",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint"
   ]
 }

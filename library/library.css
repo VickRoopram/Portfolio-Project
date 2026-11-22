@@ -1,0 +1,203 @@
+/* The design library page. It loads the site's own stylesheets (../src/styles.css), so this file only lays the page out. */
+html,
+body {
+  height: auto;
+  overflow: auto;
+}
+body {
+  background: var(--card);
+  color: var(--ink);
+  font-size: var(--t-md);
+}
+code {
+  font:
+    13px/1.3 ui-monospace,
+    Menlo,
+    Consolas,
+    monospace;
+}
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  font-weight: 900;
+  line-height: 1;
+  margin: var(--s6) 0 var(--s3);
+}
+h1 {
+  font-size: var(--t-2xl);
+  margin-top: 0;
+  text-transform: uppercase;
+}
+h2 {
+  font-size: var(--t-xl);
+  text-transform: uppercase;
+  border-top: var(--edge);
+  padding-top: var(--s5);
+}
+.lib-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s5);
+  padding: var(--s6);
+  background: var(--room);
+  color: var(--stage-ink);
+}
+.lib-top p {
+  max-width: 70ch;
+}
+.lib-top nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: var(--s4);
+}
+.lib-top a {
+  color: var(--stage-ink);
+}
+.lib-eyebrow {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 var(--s2);
+}
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--s6) var(--s7);
+}
+.lib-tokens {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--s3);
+}
+.tok {
+  display: flex;
+  gap: var(--s3);
+  align-items: center;
+  padding: var(--s2);
+  background: var(--cream);
+  border: 1.5px solid var(--line);
+}
+.tok div {
+  display: grid;
+  min-width: 0;
+}
+.tok small {
+  color: var(--mute);
+  overflow-wrap: anywhere;
+}
+.tok .note {
+  font-style: italic;
+}
+.sw {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border: 1.5px solid var(--line);
+}
+.sw.tex {
+  background-size: cover;
+}
+.type {
+  flex: none;
+  min-width: 48px;
+  line-height: 1;
+}
+.bar {
+  flex: none;
+  height: 16px;
+  background: var(--brand-red);
+}
+.lib-motion {
+  display: grid;
+  gap: var(--s4);
+}
+.dot {
+  display: block;
+  width: 28px;
+  height: 28px;
+  background: var(--brand-red);
+  border-radius: 50%;
+  animation: lib-slide 2s infinite alternate;
+}
+.dot.smooth {
+  animation-timing-function: linear !important;
+  background: var(--mute);
+}
+@keyframes lib-slide {
+  to {
+    translate: min(60vw, 600px) 0;
+  }
+}
+.lib-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s4);
+  padding: var(--s5);
+  background: var(--room);
+}
+.lib-cap {
+  color: var(--mute);
+}
+#toast {
+  position: fixed;
+}
+.lib-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: var(--s3);
+}
+.lib-grid figure {
+  display: grid;
+  justify-items: center;
+  gap: var(--s1);
+  margin: 0;
+  padding: var(--s3);
+  background: var(--cream);
+  border: 1.5px solid var(--line);
+  text-align: center;
+}
+.lib-grid figcaption {
+  display: grid;
+  font-size: var(--t-xs);
+  overflow-wrap: anywhere;
+}
+.lib-grid.assets {
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+.assets img {
+  width: 100%;
+  height: 110px;
+  object-fit: contain;
+  background: var(--chip);
+}
+.assets .file {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 110px;
+  background: var(--chip);
+  font-family: var(--display);
+  text-transform: uppercase;
+}
+.assets .unused {
+  outline: 3px dashed var(--brand-red);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-sm);
+}
+th,
+td {
+  text-align: left;
+  vertical-align: top;
+  padding: var(--s2);
+  border-bottom: 1.5px solid var(--line);
+}
+td:first-child {
+  white-space: nowrap;
+}
