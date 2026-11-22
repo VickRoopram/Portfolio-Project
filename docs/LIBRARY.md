@@ -2,7 +2,7 @@
 
 > **Who this is for:** anyone changing how the site looks or adding a piece to it.
 > **See it live:** `/library/` on any deploy (e.g. <https://version-01--vick-does-creative.netlify.app/library/>). It reads the tokens and the code directly, so it can't drift.
-> **Figma:** the design library file (variables, styles, components, references) is linked from the top of `/library/` once it exists (§6).
+> **Figma:** [Vick Does Creative · Design Library](https://www.figma.com/design/fkSiHQ1XH6c9lsLi6ECp9E) (variables, styles, components, icons, art, references). §6.
 > Added 22 Nov 2026.
 
 ---
@@ -78,6 +78,18 @@ Every file needs alt text where it's shown. `/library/` shows each asset's size,
 
 ## 6. Figma
 
-The Figma design library mirrors this file: tier 1 and 2 tokens as variables, type styles, the UI pieces as components, the icon set, textures, and a references page with every visual source and where it was used. Code is the source of truth for values: when they differ, update Figma from `tokens.css`.
+File: [Vick Does Creative · Design Library](https://www.figma.com/design/fkSiHQ1XH6c9lsLi6ECp9E), in Vick's own team (not Floodlight Studios), built from the code on 22 Nov 2026.
 
-Visual sources (also in HANDOFF.md §6): the original synth design in Figma (`gXh33LpoadWI0B76ofjD56`), pradiplabs.dev (desk set-up), portfolio-zxc.com (playful redesign), juliamoresco.com.br (phone office), Pinterest industrial-design references (press effects), Teenage Engineering (materials), coolicons (icons).
+| Page                       | What's on it                                                                                                                                                                           |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Read me & foundations      | How to use the file; colour swatches bound to the variables; the eight text styles; space and radius                                                                                   |
+| Components & icons         | `Button` (Style: Primary, Ghost × Size: Default, Small; Label, Show icon, Icon props), `Pill` and `Icon button` (State: Default, Hover), `Tag`, and 38 icon components (`Icon/<name>`) |
+| Art, textures & references | The `[:]` mark, texture previews with their token and use, and every visual reference and source with its link                                                                         |
+
+Variables, in three collections, each with one mode, _Cardboard_: **Palette** (19 raw colours, hidden from pickers), **Roles** (17 colours aliased to the palette, scoped, with their CSS names as code syntax), **Space & type** (spacing, radius, type sizes, the ink stroke). A re-skin is a new mode on Palette.
+
+Limits of the Starter plan the file lives on: three pages, one mode per collection. Upgrade, or duplicate the file, to try a second skin side by side.
+
+Code is the source of truth for values: when they differ, update Figma from `tokens.css`. To add art or references, drop them on the third page with a label saying where they're used.
+
+Visual sources (also in HANDOFF.md §6): the original synth design in Figma (`gXh33LpoadWI0B76ofjD56`), pradiplabs.dev (desk set-up), portfolio-zxc.com (playful redesign), juliamoresco.com.br (phone office), Teenage Engineering (materials), coolicons (icons).
