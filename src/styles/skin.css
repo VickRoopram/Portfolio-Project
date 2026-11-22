@@ -439,3 +439,12 @@ body[data-play="on"] :is(#ctaContact,#mnu,#help,#jam){display:none}
 @media (max-width:760px){.nav-t{display:none}}
 #card .sec{margin-top:var(--s5);padding-top:var(--s4);border-top:2px dashed color-mix(in srgb,var(--ink) 35%,transparent)}
 #card .sec .k{margin:2px 0 var(--s2)}
+
+/* Project windows (every section but About and CV & contact), desktop and tablet: anchored right, three quarters of the screen wide
+   (never narrower than 640px while there's room), the close button outside the board's top-left corner, and the desk's
+   navigation and Bleep's help out of sight while a project is open. Contact stays in the header. */
+@media (min-width:761px){
+  #card[data-proj="true"]{width:max(75%,min(640px,100% - 32px))}
+  #card[data-proj="true"] #cls{position:absolute;top:6px;left:-60px;width:46px;height:46px}
+}
+body[data-card="true"] :is(#joy,#zoom,#reset,#legend,#help){opacity:0;visibility:hidden;pointer-events:none}

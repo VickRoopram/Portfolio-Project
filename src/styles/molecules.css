@@ -111,9 +111,6 @@ html.phone .beats .ill{width:120px}
 .d .tools span:nth-child(even) b{rotate:2deg}
 /* a case study opens wide on desktop and tablet: images fill the sheet (over 3/4 of the screen), text stays a readable width */
 @media (min-width:761px){
-  #card[data-wide="true"]{width:calc(100% - 32px)}
-  /* cw:75 → a centred window three quarters of the screen wide (Graphic design) */
-  #card[data-wide="true"][data-cw="75"]{width:75%;right:12.5%}
   #card[data-wide="true"] .d{max-width:none}
   #card[data-wide="true"] .d>:not(.pic):not(.desk-only){max-width:76ch}
   #card[data-wide="true"] .d .steps{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
