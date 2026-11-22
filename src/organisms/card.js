@@ -47,7 +47,8 @@ export function closeCard() { S.card = null; card.hidden = true; cf.hidden = tru
 $('tomenu').onclick = () => { const c = S.card; drum('blip'); closeCard(); if (c) act.openMenuFor(c.ch, c.i) };
 $('cancel').onclick = () => { drum('blip'); closeCard() };
 const step = d => { if (!S.card) return; ensureAudio(); openCard(S.card.ch, S.card.i + d); playNote(60 + [0, 4, 7, 12, 7, 4, 2, 5, 9, 11, 14, 16][S.card.i % 12]) };
-$('prev').innerHTML = icon('chevron-left', 20); $('next').innerHTML = icon('chevron-right', 20); $('cls').innerHTML = icon('close', 20);
+$('prev').innerHTML = icon('chevron-left', 20); $('next').innerHTML = icon('chevron-right', 20); /* close: the menu button's own cross (the burger's lines folded into an X), so both closes look and behave the same */
+$('cls').className = 'ico burger x'; $('cls').innerHTML = '<svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7H19"/><path d="M5 12H19"/><path d="M5 17H19"/></svg>';
 $('prev').onclick = $('prevT').onclick = () => step(-1); $('next').onclick = $('nextT').onclick = () => step(1); $('cls').onclick = closeCard;
 const lb = $('lb');
 ct.onclick = e => { const b = e.target.closest('.pic'); if (b) { lb.querySelector('img').src = b.dataset.src; lb.hidden = false } };
