@@ -92,7 +92,8 @@ html.phone .beats .ill{grid-row:span 3;width:96px;align-self:center}
   #card[data-wide="true"] .d h3{text-wrap:balance}
   #card[data-wide="true"] .d p{font-size:20px;text-wrap:balance}
   #card[data-wide="true"] .d .tags{justify-content:center}
-  #card[data-wide="true"] .d .beats{max-width:1180px}
+  #card[data-wide="true"] .d>.beats:not(.pic){max-width:1180px;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--s7)}
+  #card[data-wide="true"] .beats .ill{width:180px}
   #card[data-wide="true"] .d .tags.end{max-width:none;justify-content:flex-end}
   #card[data-wide="true"] .hero-pic{margin-top:var(--s3)}
 }
