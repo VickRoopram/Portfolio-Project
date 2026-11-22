@@ -440,11 +440,15 @@ body[data-play="on"] :is(#ctaContact,#mnu,#help,#jam){display:none}
 #card .sec{margin-top:var(--s5);padding-top:var(--s4);border-top:2px dashed color-mix(in srgb,var(--ink) 35%,transparent)}
 #card .sec .k{margin:2px 0 var(--s2)}
 
-/* Project windows (every section but About and CV & contact), desktop and tablet: anchored right, three quarters of the screen wide
-   (never narrower than 640px while there's room), the close button outside the board's top-left corner, and the desk's
-   navigation and Bleep's help out of sight while a project is open. Contact stays in the header. */
+/* Project windows (every section but About and CV & contact), desktop and tablet: a centred window three quarters of the screen
+   wide (never narrower than 640px while there's room), the close button just outside its top-right corner, a soft scrim behind
+   that closes it on click (Esc closes it too), and the desk's navigation and Bleep's help out of sight while it's open.
+   The header, with Contact, stays above everything. */
+#scrim{display:none}
 @media (min-width:761px){
-  #card[data-proj="true"]{width:max(75%,min(640px,100% - 32px))}
-  #card[data-proj="true"] #cls{position:absolute;top:6px;left:-60px;width:46px;height:46px}
+  #card[data-proj="true"]{width:max(75%,min(640px,100% - 32px));left:0;right:0;margin-inline:auto}
+  #card[data-proj="true"] #cls{position:absolute;top:6px;right:-56px;width:46px;height:46px}
+  body[data-card="true"]:has(#card[data-proj="true"]:not([hidden])) #scrim{display:block;position:fixed;inset:0;z-index:5;background:color-mix(in srgb,#120b06 45%,transparent);animation:scrimIn .2s steps(2) both}
 }
+@keyframes scrimIn{from{opacity:0}}
 body[data-card="true"] :is(#joy,#zoom,#reset,#legend,#help){opacity:0!important;visibility:hidden!important;pointer-events:none!important}

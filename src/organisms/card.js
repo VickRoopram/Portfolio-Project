@@ -39,6 +39,9 @@ export function openCard(ch, i, o = {}) {
   const cp = $('cp'); if (cp) cp.onclick = () => navigator.clipboard?.writeText(EMAIL).then(() => {
     cp.classList.add('done'); cp.innerHTML = icon('check', 18, 'tick') + '<span>Copied</span>'; toast('Email copied to your clipboard'); drum('blip') }, () => toast(`Copy blocked: the address is ${EMAIL}`));
 }
+/* a soft scrim behind an open project: it keeps the eye on the window, and a click on it closes the project, like any dialog */
+const scrim = document.createElement('div'); scrim.id = 'scrim'; scrim.setAttribute('aria-hidden', 'true'); card.before(scrim);
+scrim.onclick = () => { drum('blip'); closeCard() };
 export function closeCard() { S.card = null; card.hidden = true; cf.hidden = true; updateUI() }
 /* footer CTAs (secondary): back to the menu level this card came from, or just close and stay on the synth */
 $('tomenu').onclick = () => { const c = S.card; drum('blip'); closeCard(); if (c) act.openMenuFor(c.ch, c.i) };
