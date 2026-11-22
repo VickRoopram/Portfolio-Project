@@ -1,0 +1,102 @@
+<!doctype html>
+<!-- The design library: every token, component and asset of the site, read live from the code (tokens.css, the modules)
+     and from library/manifest.json (written by scripts/generate.mjs). Not linked from the site and kept out of search. -->
+<html lang="en-ZA">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Design library · Vick Does Creative</title>
+    <link rel="icon" href="../assets/ui/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../src/styles.css" />
+    <link rel="stylesheet" href="library.css" />
+  </head>
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <defs>
+        <filter id="boil" x="-4%" y="-8%" width="108%" height="116%" color-interpolation-filters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="2" seed="1" result="n" />
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="3.2" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </defs>
+    </svg>
+    <header class="lib-top">
+      <div>
+        <p class="lib-eyebrow">Vick Does Creative</p>
+        <h1>Design library</h1>
+        <p>
+          Every token, component and asset on the site, read live from the code. Change a token in
+          <code>src/styles/tokens.css</code> and this page changes with it. How the layers fit:
+          <code>docs/LIBRARY.md</code>.
+        </p>
+      </div>
+      <nav aria-label="Sections">
+        <a href="#tokens">Tokens</a><a href="#motion">Motion</a><a href="#ui">UI pieces</a><a href="#icons">Icons</a
+        ><a href="#code">Code</a><a href="#assets">Assets</a
+        ><a id="figma" href="https://www.figma.com/design/fkSiHQ1XH6c9lsLi6ECp9E">Figma</a>
+      </nav>
+    </header>
+    <main>
+      <section id="tokens">
+        <h2>Tokens</h2>
+        <div id="tiers"></div>
+      </section>
+      <section id="motion">
+        <h2>Motion: on twos</h2>
+        <p>
+          The site moves in drawings, not in a smooth slide: transitions step through <code>--step</code> (3 drawings)
+          and animations through <code>--ease</code> (4), about 12 pictures a second, like the 3D scene (<code
+            >atoms/craft.js</code
+          >
+          FPS). Compare:
+        </p>
+        <div class="lib-motion">
+          <div><span class="dot twos"></span><small>on twos (<code>var(--ease)</code>)</small></div>
+          <div><span class="dot smooth"></span><small>smooth (for comparison only)</small></div>
+        </div>
+      </section>
+      <section id="ui">
+        <h2>UI pieces</h2>
+        <p>The real classes from the site's stylesheets. Point at them: hover and press states are live.</p>
+        <div class="lib-row">
+          <button class="cta">Enter</button>
+          <button class="cta ghost">Back to menu</button>
+          <button class="cta sm"><i data-icon="mail" data-size="18"></i><span>Contact</span></button>
+          <button class="pill"><i data-icon="home" data-size="18"></i><span>Reset view</span></button>
+          <button class="ico" aria-label="Sound"><i data-icon="volume-high"></i></button>
+          <button class="ico" id="lib-toast"><i data-icon="copy"></i></button>
+        </div>
+        <p class="lib-cap">
+          <code>.cta</code> call to action (red card; steps towards you) · <code>.cta.ghost</code> ·
+          <code>.cta.sm</code> · <code>.pill</code> (kraft tag) · <code>.ico</code> (icon button; the last one shows a
+          <code>toast</code>)
+        </p>
+        <div class="tags lib-row"><span>Figma</span><span>Zeplin</span><span>Jira</span></div>
+        <p class="lib-cap"><code>.tags span</code> skill and tool chips</p>
+        <div id="toast" role="status" hidden></div>
+      </section>
+      <section id="icons">
+        <h2>Icons</h2>
+        <p>
+          coolicons, Line · Round, 24 px, 2 px stroke (<code>src/atoms/icons.js</code>). Use one with
+          <code>&lt;i data-icon="name"&gt;</code> or <code>icon(name)</code>.
+        </p>
+        <div id="icon-grid" class="lib-grid"></div>
+      </section>
+      <section id="code">
+        <h2>Code components</h2>
+        <p>
+          Each layer only imports from the layers above it: core → atoms → molecules → organisms → page, run from
+          <code>main.js</code>. Styles load in the same order (<code>src/styles.css</code>).
+        </p>
+        <div id="layers"></div>
+      </section>
+      <section id="assets">
+        <h2>Assets</h2>
+        <p id="asset-sum"></p>
+        <div id="asset-groups"></div>
+      </section>
+    </main>
+    <script type="module" src="library.js"></script>
+  </body>
+</html>

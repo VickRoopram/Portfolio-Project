@@ -9,7 +9,9 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const dir = 'netlify/functions';
-const files = readdirSync(dir).filter((f) => /\.(m?[jt]s)$/.test(f)).sort();
+const files = readdirSync(dir)
+  .filter((f) => /\.(m?[jt]s)$/.test(f))
+  .sort();
 const rows = [];
 let failed = 0;
 const esc = (s) => String(s).replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
@@ -27,7 +29,11 @@ for (const f of files) {
   const route = problem ? '' : [].concat((await import(pathToFileURL(resolve(path)).href)).config.path).join(', ');
   if (problem) {
     failed++;
-    console.log(process.env.GITHUB_ACTIONS ? `::error file=${path},title=Netlify Function::${esc(problem)}` : `✗ ${path}  ${problem}`);
+    console.log(
+      process.env.GITHUB_ACTIONS
+        ? `::error file=${path},title=Netlify Function::${esc(problem)}`
+        : `✗ ${path}  ${problem}`,
+    );
   } else {
     console.log(`✓ ${path} → ${route}`);
   }
@@ -35,9 +41,16 @@ for (const f of files) {
 }
 
 if (process.env.GITHUB_STEP_SUMMARY) {
-  appendFileSync(process.env.GITHUB_STEP_SUMMARY, [
-    `### Netlify Functions: ${failed ? `${failed} failed` : `all ${files.length} load`}`, '',
-    '| | Function | Route / problem |', '| --- | --- | --- |', ...rows, '',
-  ].join('\n') + '\n');
+  appendFileSync(
+    process.env.GITHUB_STEP_SUMMARY,
+    [
+      `### Netlify Functions: ${failed ? `${failed} failed` : `all ${files.length} load`}`,
+      '',
+      '| | Function | Route / problem |',
+      '| --- | --- | --- |',
+      ...rows,
+      '',
+    ].join('\n') + '\n',
+  );
 }
 process.exit(failed ? 1 : 0);

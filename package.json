@@ -7,10 +7,18 @@
     "dev": "netlify dev --port 8888",
     "check": "node scripts/ci-check.mjs",
     "check:functions": "node scripts/ci-functions.mjs",
+    "format": "npx --yes prettier@3.8.1 --write .",
+    "format:check": "npx --yes prettier@3.8.1 --check .",
+    "lint": "npx --yes eslint@10.1.0 .",
+    "generate": "node scripts/generate.mjs",
+    "generate:check": "node scripts/generate.mjs --check",
     "setup": "git config core.hooksPath .githooks && echo 'Git hooks on: no commits or pushes straight to main.'"
   },
   "dependencies": {
     "@netlify/blobs": "^11.1.9",
     "@netlify/functions": "^6.1.1"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

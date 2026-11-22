@@ -4,8 +4,14 @@
 const html = document.documentElement;
 if (!html.classList.contains('phone')) await import('./main.js');
 else {
-  const wide = matchMedia('(orientation: landscape)'), { initPocket } = await import('./organisms/pocket.js'); let synth;
+  const wide = matchMedia('(orientation: landscape)'),
+    { initPocket } = await import('./organisms/pocket.js');
+  let synth;
   initPocket();
-  const view = () => { html.dataset.view = wide.matches ? 'play' : 'page'; if (wide.matches) synth ||= import('./main.js') };
-  wide.addEventListener('change', view); view();
+  const view = () => {
+    html.dataset.view = wide.matches ? 'play' : 'page';
+    if (wide.matches) synth ||= import('./main.js');
+  };
+  wide.addEventListener('change', view);
+  view();
 }

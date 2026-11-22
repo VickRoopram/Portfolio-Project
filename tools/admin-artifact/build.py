@@ -8,7 +8,7 @@ icons = open(P + 'atoms/icons.js').read()
 obj = icons[icons.index('export const PATHS = ') + len('export const PATHS = '):icons.index('};') + 1]
 paths = subprocess.run(['node', '-e', 'process.stdout.write(JSON.stringify(' + obj + '))'], capture_output=True, text=True, check=True).stdout
 menu = node("import { MENU } from './src/content.js'; process.stdout.write(JSON.stringify(MENU))")
-site = ''.join(open(P + 'styles/' + f).read() for f in ['tokens.css', 'atoms.css', 'molecules.css', 'organisms.css'])
+site = ''.join(open(P + 'styles/' + f).read() for f in ['tokens.css', 'base.css', 'atoms.css', 'molecules.css', 'organisms.css'])
 app = re.sub(r'^export (const|function) ', r'\1 ', open(ROOT + '/admin/app.js').read(), flags=re.M)
 page = open(HERE + '/page.html').read()
 for k, v in {'ADMIN_CSS': open(ROOT + '/admin/admin.css').read(), 'PATHS': paths, 'SITECSS': json.dumps(site), 'MENU': menu, 'APP': app, 'STORE': open(HERE + '/store-artifact.js').read()}.items():

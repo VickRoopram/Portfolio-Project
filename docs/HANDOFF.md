@@ -2,7 +2,9 @@
 
 > **For the next Claude session.** This file is the full context for the "VR-17 portfolio synth" project built for **Vickhal (Vick) Roopram**. Read it fully before touching anything. It records what exists, where it lives, how the code works, which connectors worked or failed (and why), the decisions Vick made through feedback, and a concrete plan for v2.
 >
-> Last updated: 8 November 2026 · v1 status: **live on Netlify** (manual deploys) · Owner: Vick (vickhal@floodlightstudios.co.za)
+> Last updated: 22 November 2026 · **live on Netlify, deployed from git** (`main` = production, `version-01` = staging) · Owner: Vick (vickhal@floodlightstudios.co.za)
+>
+> **Start here, in this order:** `README.md` (what's where, scripts) → `docs/GIT-WORKFLOW.md` (how changes ship) → `docs/BRAND.md` (words) → `docs/LIBRARY.md` (tokens, components, assets, re-skins) → `docs/SEO.md` (search and AI) → this file (history and decisions). Sections 3 and 4 were rewritten on 22 Nov 2026; older entries in §6 describe the site as it was then.
 
 ---
 
@@ -14,30 +16,31 @@
 - **Pushing from Claude:** since 8 Nov 2026 the cloud session can push directly (`add_repo` with push access, then clone `https://github.com/VickRoopram/portfolio-project`). Work goes on a feature branch off `version-01` (e.g. `fix/menu-navigation`) for Vick to preview locally, then merges into `version-01` once he approves. Fallback if access breaks: push from Vick's Mac clone at `~/Projects/vick-does-creative/repo` through Desktop Commander.
 - Pull requests into `main` also get a Netlify deploy preview.
 - **From 19 Nov 2026 the rules are enforced** (ruleset on `main`, CI check `checks`, git hooks, VS Code prompt). Claude no longer pushes to `main`: it pushes a branch, merges into `version-01`, and opens a PR `version-01 → main` for Vick to merge. Full rules: `docs/GIT-WORKFLOW.md`.
-- **Content admin (`/admin`)**: Vick edits projects, images and copy there. *Update preview* writes the Blobs `cms/draft` (shown on `version-01`, deploy previews, localhost and any `?draft` URL); *Publish to live* copies it to `cms/live` and keeps the old live in `cms/history/*`. The live site falls back to `src/content.js` until the first publish. **Content edits now live in Blobs, not git**: before changing `src/content.js` by hand, check whether a published version exists, or the code edit won't show. Password: salted scrypt hash in Blobs `cms/auth` (the Netlify API refuses env-var writes from this account's CLI/MCP token, so it isn't an env var); `ADMIN_PASSWORD` env var overrides it and is what local `netlify dev` uses via `.env`.
+- **Content admin (`/admin`)**: Vick edits projects, images and copy there. _Update preview_ writes the Blobs `cms/draft` (shown on `version-01`, deploy previews, localhost and any `?draft` URL); _Publish to live_ copies it to `cms/live` and keeps the old live in `cms/history/*`. The live site falls back to `src/content.js` until the first publish. **Content edits now live in Blobs, not git**: before changing `src/content.js` by hand, check whether a published version exists, or the code edit won't show. Password: salted scrypt hash in Blobs `cms/auth` (the Netlify API refuses env-var writes from this account's CLI/MCP token, so it isn't an env var); `ADMIN_PASSWORD` env var overrides it and is what local `netlify dev` uses via `.env`.
 
 ---
 
 ## 1. What this project is
 
-A personal portfolio presented as a **playable 3D synthesizer**. The synth *is* the navigation: each physical part of the instrument holds a side of Vick's work. People hover to read labels, click a part to fly the camera in, press keys to open project cards, and can make music the whole time.
+A personal portfolio presented as a **playable 3D synthesizer**. The synth _is_ the navigation: each physical part of the instrument holds a side of Vick's work. People hover to read labels, click a part to fly the camera in, press keys to open project cards, and can make music the whole time.
 
 The idea behind it, in Vick's own framing: he is "a creative software clients use to express ideas they didn't know they had yet", an instrument that adapts to whatever the project needs. The portfolio name is **Vick Does Creative** and his tagline is **"I am creative."**
 
-| | |
-|---|---|
-| **Live site (production)** | https://vick-does-creative.netlify.app (auto-deploys from `main`) |
-| **Preview site (`version-01`)** | https://version-01--vick-does-creative.netlify.app (auto-deploys from `version-01`) |
-| **Claude artifact (single-file original)** | https://claude.ai/artifact/6QxmesfccrDMV55jaknhdK (shared "anyone with the link") |
-| **GitHub repo** | https://github.com/VickRoopram/Portfolio-Project (`main` = live, `version-01` = work in progress). The older repo `VickRoopram/vick-does-creative` is no longer connected. |
-| **Figma synth design (visual source)** | https://www.figma.com/design/gXh33LpoadWI0B76ofjD56/Synth?node-id=1-2 |
-| **Netlify project** | `vick-does-creative` (renamed from `vick-does-creative-ztpv`; the old URL now 404s) · site ID `6b83ad40-bd2a-4ad8-b794-27ec134997ef` · team "Floodlight Studios" (slug `vickroopram`, Free plan, Vick is Owner) |
+|                                            |                                                                                                                                                                                                                 |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Live site (production)**                 | https://vick-does-creative.netlify.app (auto-deploys from `main`)                                                                                                                                               |
+| **Preview site (`version-01`)**            | https://version-01--vick-does-creative.netlify.app (auto-deploys from `version-01`)                                                                                                                             |
+| **Claude artifact (single-file original)** | https://claude.ai/artifact/6QxmesfccrDMV55jaknhdK (shared "anyone with the link")                                                                                                                               |
+| **GitHub repo**                            | https://github.com/VickRoopram/Portfolio-Project (`main` = live, `version-01` = work in progress). The older repo `VickRoopram/vick-does-creative` is no longer connected.                                      |
+| **Figma synth design (visual source)**     | https://www.figma.com/design/gXh33LpoadWI0B76ofjD56/Synth?node-id=1-2                                                                                                                                           |
+| **Netlify project**                        | `vick-does-creative` (renamed from `vick-does-creative-ztpv`; the old URL now 404s) · site ID `6b83ad40-bd2a-4ad8-b794-27ec134997ef` · team "Floodlight Studios" (slug `vickroopram`, Free plan, Vick is Owner) |
 
 ---
 
 ## 2. Source material and content rules
 
 ### Inputs Vick supplied
+
 - `1-Vickhal-Portfolio.pdf`: 61-page graphic design portfolio (DUT 2020) with 12 projects. Page images were exported to `assets/img/g<page>.jpg` at 68 dpi.
 - `Living_Creative.pdf`: a 23-slide faith/creativity talk. **Vick later asked for it to be dropped from the synth.** Its slide images were removed from the repo.
 - `CV.pdf` (2 pages): exported as `assets/img/cv1.jpg` and `cv2.jpg`, with the PDF itself at `assets/cv/vickhal-roopram-cv.pdf`.
@@ -45,12 +48,14 @@ The idea behind it, in Vick's own framing: he is "a creative software clients us
 - A portrait photo, now `assets/img/vick.jpg`.
 
 ### Privacy decisions (keep these)
+
 - **Left out on purpose:** salary and salary goals, debt, weight, shoe size, and money support to parents.
 - **Included:** age (27), height (198 cm), heritage (Indian South African), faith (non-denominational Christian, theology degree), partner Lindy, family (parents and three brothers), Jiu-Jitsu, D&D, hiking, dogs and drawing.
 - **Contact:** personal email `vickhal10@gmail.com` and cell `+27 73 482 7221` (from his CV, which he asked to be viewable).
 - **Copyright:** all content is © Vickhal Roopram. The README says "All rights reserved". Do not add an open-source licence covering the content.
 
 ### Brand
+
 - Logo: a Unicode-emote inspired `[:]` mark.
 - Colours: red `#d71920` and blue `#009fda`.
 - Fonts: **Bungee** (display) and **Noto Sans** (body). The site adds **IBM Plex Mono** for labels.
@@ -60,43 +65,46 @@ The idea behind it, in Vick's own framing: he is "a creative software clients us
 
 ## 3. Where everything lives
 
-| Location | What | Status |
-|---|---|---|
-| `~/Projects/vick-does-creative/site/` on **Vick's Mac** | Deployable copy of the repo. **Not a git repo** (copied from a zip without `.git`). Has the base-reset fix. | Used for the Netlify CLI deploys |
-| Claude cloud container `/home/claude/vick-does-creative/` | The git repo (2 commits on `main`) | **Ephemeral**: lost when the session ends. Re-create from the Mac copy or the zip. |
-| Claude cloud container `/home/claude/w/site/index.html` | Single-file artifact source (everything inline) | Ephemeral. Get it back with the Artifact tool's `read` action on the artifact URL. |
-| `vick-does-creative.zip` (sent in chat) | Repo snapshot before the base-reset fix | Superseded by the Mac copy |
-| `portfolio-setup-plan.xlsx` (sent in chat) | Netlify setup plan with a status tracker | Reference |
-| This file | `docs/HANDOFF.md` in the repo and on the Mac | Source of truth for the next session |
-
-**First job for the next session:** turn the Mac copy into the canonical git repo and push it to GitHub (see §9, Phase 0).
+| Location                                        | What                                                                                                                                                             |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GitHub `VickRoopram/Portfolio-Project`          | **The only source.** `main` = production, `version-01` = staging, short work branches cut from `version-01`                                                      |
+| Netlify project `vick-does-creative`            | Deploys from git: `main` → https://vick-does-creative.netlify.app, `version-01` → https://version-01--vick-does-creative.netlify.app, PRs → Deploy Previews      |
+| Netlify Blobs (stores `cms`, `media`)           | Content saved in `/admin`: `draft`, `live`, `history/*`, uploaded images. This is the site's database; its schema is `cleanContent` in `netlify/lib/cms.mts`     |
+| Vick's Mac `~/Projects/vick-does-creative/repo` | A clone, for local preview (`npm run dev`)                                                                                                                       |
+| Google Drive, _Synth Elementa_                  | Original audio and video (web copies are in `assets/beats`, `assets/vid`)                                                                                        |
+| Figma                                           | Synth design `gXh33LpoadWI0B76ofjD56`; the design library [`fkSiHQ1XH6c9lsLi6ECp9E`](https://www.figma.com/design/fkSiHQ1XH6c9lsLi6ECp9E) (`docs/LIBRARY.md` §6) |
+| Claude Project "Vick Portfolio"                 | Project instructions, and copies of `BRAND.md` and `GIT-WORKFLOW.md` (`claude/brand.md`, `claude/git-workflow.md`)                                               |
+| Claude artifact                                 | The content admin artifact (`tools/admin-artifact/`). The v1 single-file artifact is retired: the repo is the only code                                          |
 
 ---
 
 ## 4. Connectors and tools: status and lessons
 
-| Connector / tool | Status | What worked | What failed, and the fix |
-|---|---|---|---|
-| **Figma MCP (cloud)** | ✅ Connected | `create_session` → `get_screenshot` with `enableBase64Response: true` | Asset URLs (`figma.com/api/mcp/asset/...`) are **blocked by the container proxy (403)**. Always use base64 responses, or run Figma calls through the Mac. |
-| **Figma (desktop, via the Mac)** | ⚠️ Comes and goes | `mcp__remote-devices__Figma__*` (get_design_context, get_variable_defs, etc.) appears while the Figma desktop app is open | It disconnected mid-session. Ask Vick to open Figma desktop if you need it. |
-| **Netlify MCP** | ✅ Connected | `get-teams`, `create-new-project`, `manage-env-vars`, `update-forms`, `get-netlify-coding-context` | `deploy-site` gives an `npx @netlify/mcp …` command. In the container npm is unreachable; on the Mac it **returned HTTP 500 twice**. **Fix used:** `npx netlify-cli deploy --prod` on the Mac (CLI already logged in; see §10). |
-| **Netlify CLI on the Mac** | ✅ Logged in | `netlify-cli deploy --prod --dir . --site <id>` | Needs Desktop Commander (`start_process`). Login was done once with a browser "Authorize" click by Vick. |
-| **GitHub** | ❌ Blocked | `list_repos` shows Vick's other repos | **Portfolio-Project is not visible to the Claude GitHub App**: it was installed with "selected repositories". Vick must add the repo under GitHub → Settings → Applications → Claude → Configure. `gh` in the container also has no valid token. |
-| **Framer MCP** | ✅ Available, unused | `list_projects`, `open_project`, `exec`, `create_upload_url` | Nothing built yet. Planned for v2 (§9, Phase 3). |
-| **Blender MCP (via the Mac)** | ✅ Available, unused | `mcp__remote-devices__Blender__execute_blender_code`, `render_viewport_to_path`, `get_objects_summary`, etc. | Needs Blender running on the Mac with its MCP add-on. Planned for v2 (§9, Phase 4). |
-| **Spline MCP (via the Mac)** | ✅ Newly available | `3d_create_file`, `3d_run_code`, `3d_generate_3d_model`, `3d_publish_export`, `3d_take_screenshot` | Unused. A faster alternative to Blender for web-ready 3D (§9, Phase 4b). |
-| **Unicorn Studio MCP** | ⚠️ Not connected | `list_designs` works | The editor tab never connected: the browser pane showed a login page. Vick must open a design link in a browser where he's signed in and turn on **Allow agents**. Newer tools (`create_design`, `upload_media`, `export_project_json`) now exist. |
-| **Built-in browser (Claude app pane on the Mac)** | ✅ Works | Used to test the artifact and the Netlify site; `request_access` per site | It renders WebGL at a **very low frame rate**, so animations lag in screenshots. Wait 3–8 s after an action before you screenshot. Approved sites: claude.ai, the artifact frame host, unicorn.studio (one-off), vick-does-creative.netlify.app, app.netlify.com, pin.it, za.pinterest.com. |
-| **Desktop Commander (Mac shell)** | ✅ Works | `start_process` and `read_process_output` | The Mac has Homebrew, Node v25.2.1, npx, git and curl. Home is `/Users/vick`. |
-| **remote-devices file bridge** | ✅ Works | `device_request_folder_access` granted `/Users/vick/Projects/vick-does-creative`; `device_commit_files` copies container files to the Mac | Only stages from `/mnt/user-data/outputs/`. |
-| **Local render test (container)** | ✅ Works | Sparse-clone three.js r160 from GitHub (`git clone --depth 1 --branch r160 --filter=blob:none --sparse`), then Playwright routes `cdn.jsdelivr.net/npm/three@0.160.0/*` to it. SwiftShader runs ~1 fps, so use `page.clock.install()` + `pauseAt()` + `runFor()` to step animations. | npm and jsDelivr stay blocked. |
-| **Container network** | ⚠️ Restricted | pypi | **Blocked:** npm registry, jsDelivr, api.netlify.com, figma asset host, netlify-mcp.netlify.app. So you **can't run the site in a headless browser in the container**: three.js can't load. Test through the built-in browser instead. |
+> **22 Nov 2026:** the table below is the 8 Nov picture. Since then GitHub works from the cloud session (`add_repo` with push access; `gh` has no token, so pull requests are opened in the browser, or by Vick from the compare link), and Netlify deploys from git, so the Mac CLI isn't needed to deploy. The local render test still works: sparse-clone three.js r160 from GitHub and route jsDelivr to it in Playwright. That's how the 22 Nov refactor was checked (computed styles of every sampled element in 10 states, before and after).
+
+| Connector / tool                                  | Status               | What worked                                                                                                                                                                                                                                                                          | What failed, and the fix                                                                                                                                                                                                                                                                    |
+| ------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Figma MCP (cloud)**                             | ✅ Connected         | `create_session` → `get_screenshot` with `enableBase64Response: true`                                                                                                                                                                                                                | Asset URLs (`figma.com/api/mcp/asset/...`) are **blocked by the container proxy (403)**. Always use base64 responses, or run Figma calls through the Mac.                                                                                                                                   |
+| **Figma (desktop, via the Mac)**                  | ⚠️ Comes and goes    | `mcp__remote-devices__Figma__*` (get_design_context, get_variable_defs, etc.) appears while the Figma desktop app is open                                                                                                                                                            | It disconnected mid-session. Ask Vick to open Figma desktop if you need it.                                                                                                                                                                                                                 |
+| **Netlify MCP**                                   | ✅ Connected         | `get-teams`, `create-new-project`, `manage-env-vars`, `update-forms`, `get-netlify-coding-context`                                                                                                                                                                                   | `deploy-site` gives an `npx @netlify/mcp …` command. In the container npm is unreachable; on the Mac it **returned HTTP 500 twice**. **Fix used:** `npx netlify-cli deploy --prod` on the Mac (CLI already logged in; see §10).                                                             |
+| **Netlify CLI on the Mac**                        | ✅ Logged in         | `netlify-cli deploy --prod --dir . --site <id>`                                                                                                                                                                                                                                      | Needs Desktop Commander (`start_process`). Login was done once with a browser "Authorize" click by Vick.                                                                                                                                                                                    |
+| **GitHub**                                        | ❌ Blocked           | `list_repos` shows Vick's other repos                                                                                                                                                                                                                                                | **Portfolio-Project is not visible to the Claude GitHub App**: it was installed with "selected repositories". Vick must add the repo under GitHub → Settings → Applications → Claude → Configure. `gh` in the container also has no valid token.                                            |
+| **Framer MCP**                                    | ✅ Available, unused | `list_projects`, `open_project`, `exec`, `create_upload_url`                                                                                                                                                                                                                         | Nothing built yet. Planned for v2 (§9, Phase 3).                                                                                                                                                                                                                                            |
+| **Blender MCP (via the Mac)**                     | ✅ Available, unused | `mcp__remote-devices__Blender__execute_blender_code`, `render_viewport_to_path`, `get_objects_summary`, etc.                                                                                                                                                                         | Needs Blender running on the Mac with its MCP add-on. Planned for v2 (§9, Phase 4).                                                                                                                                                                                                         |
+| **Spline MCP (via the Mac)**                      | ✅ Newly available   | `3d_create_file`, `3d_run_code`, `3d_generate_3d_model`, `3d_publish_export`, `3d_take_screenshot`                                                                                                                                                                                   | Unused. A faster alternative to Blender for web-ready 3D (§9, Phase 4b).                                                                                                                                                                                                                    |
+| **Unicorn Studio MCP**                            | ⚠️ Not connected     | `list_designs` works                                                                                                                                                                                                                                                                 | The editor tab never connected: the browser pane showed a login page. Vick must open a design link in a browser where he's signed in and turn on **Allow agents**. Newer tools (`create_design`, `upload_media`, `export_project_json`) now exist.                                          |
+| **Built-in browser (Claude app pane on the Mac)** | ✅ Works             | Used to test the artifact and the Netlify site; `request_access` per site                                                                                                                                                                                                            | It renders WebGL at a **very low frame rate**, so animations lag in screenshots. Wait 3–8 s after an action before you screenshot. Approved sites: claude.ai, the artifact frame host, unicorn.studio (one-off), vick-does-creative.netlify.app, app.netlify.com, pin.it, za.pinterest.com. |
+| **Desktop Commander (Mac shell)**                 | ✅ Works             | `start_process` and `read_process_output`                                                                                                                                                                                                                                            | The Mac has Homebrew, Node v25.2.1, npx, git and curl. Home is `/Users/vick`.                                                                                                                                                                                                               |
+| **remote-devices file bridge**                    | ✅ Works             | `device_request_folder_access` granted `/Users/vick/Projects/vick-does-creative`; `device_commit_files` copies container files to the Mac                                                                                                                                            | Only stages from `/mnt/user-data/outputs/`.                                                                                                                                                                                                                                                 |
+| **Local render test (container)**                 | ✅ Works             | Sparse-clone three.js r160 from GitHub (`git clone --depth 1 --branch r160 --filter=blob:none --sparse`), then Playwright routes `cdn.jsdelivr.net/npm/three@0.160.0/*` to it. SwiftShader runs ~1 fps, so use `page.clock.install()` + `pauseAt()` + `runFor()` to step animations. | npm and jsDelivr stay blocked.                                                                                                                                                                                                                                                              |
+| **Container network**                             | ⚠️ Restricted        | pypi                                                                                                                                                                                                                                                                                 | **Blocked:** npm registry, jsDelivr, api.netlify.com, figma asset host, netlify-mcp.netlify.app. So you **can't run the site in a headless browser in the container**: three.js can't load. Test through the built-in browser instead.                                                      |
 
 ---
 
 ## 5. Architecture (v1)
 
 ### Stack
+
 - Static site with no build step. Native ES modules plus an import map.
 - **three.js r160** from jsDelivr, using `OrbitControls` and `RoundedBoxGeometry`.
 - **Web Audio API** synth and drums, generated in code with no audio files.
@@ -104,6 +112,7 @@ The idea behind it, in Vick's own framing: he is "a creative software clients us
 - Google Fonts: Bungee, IBM Plex Mono and Noto Sans.
 
 ### Files
+
 ```
 index.html            Page shell: header (logo, theme, sound, menu #menu), section titles (#groups), hover label (#lbl),
                       detail card (#card), lightbox (#lb), import map, <script type=module src=src/main.js>
@@ -117,7 +126,9 @@ src/atoms/            geometry (rbox, cyl, flat, rrPath) · textures (canvasTex,
 src/molecules/        fx (gap halo + comet stroke) · controls (pressable, itemCtrl, knob, cap, screw) · cable
 src/organisms/        synth · remote · desk (plant, lamp) · underlights · screens · card · menu · zoom (guide) · joystick · party (beats backdrop) · intro
 src/page/             camera (frameFor, flyTo, zoomTo) · input (pick, drags, hover tip, keys)   (theme.js removed: one dark look, set in core/scene.js)
-src/styles.css        @imports styles/tokens → atoms → molecules → organisms ([hidden]{display:none!important} is REQUIRED)
+src/styles.css        @imports styles/tokens → base → atoms → molecules → organisms → skin → tour → pocket ([hidden]{display:none!important}, in base.css, is REQUIRED)
+portfolio/, llms.txt, robots.txt, sitemap.xml   Generated by scripts/generate.mjs for search and AI (docs/SEO.md)
+library/              /library/: the design library page (docs/LIBRARY.md)
 assets/img/           g<page>.jpg portfolio pages, cv1/cv2.jpg, vick.jpg (~3.1 MB)
 assets/cv/            vickhal-roopram-cv.pdf
 netlify.toml          publish=".", cache headers for /assets/*
@@ -128,6 +139,7 @@ README.md             User-facing docs (controls, structure, how to edit content
 > ⚠️ **There are two copies of the code.** The Claude artifact is one inline HTML file. The repo is the same code split into modules. Changes made since the split have been made in **both**. In v2, **retire the artifact** and treat the repo as the only source; the Netlify site is the share link.
 
 ### Data model (`src/content.js`)
+
 ```js
 CH[channelKey] = { name, col /* accent */, knob? /* knob colour override */, items: [
   { t /*title*/, k /*kicker*/, d /*HTML body*/, img:[{s,a}], tags:[], links:[[label,url]],
@@ -138,39 +150,41 @@ im('g5','alt') → { s:'assets/img/g5.jpg', a:'alt' }
 
 **Channels:**
 
-| Key | Name | Used by | Items |
-|---|---|---|---|
-| `gd` | DESIGN (graphic) | Filter button | 12 portfolio projects |
-| `ux` | UX / UI DESIGN | Filter button | 7 (Floodlight, retail SaaS, Parliament systems, method, workflow, Geek Punch, training) |
-| `mo` | MOTION & 3D | Filter button | 6 |
-| `tl` | TOOLS | Filter button | 12 |
-| `xp` | EXPERIMENTAL | Filter button | 2 real + 2 "Open slot" |
-| `ds` / `st` / `ar` / `te` | Designer / Strategist / Artist / Teacher | Big knobs | Reuse items from `gd`/`ux`/`mo` plus "Open slot"s |
-| `fm` / `fi` / `ex` | Family Man / The Fighter / The Explorer | Life strip pads | 3 / 1 / 4 |
-| `cv` | CV & CONTACT | Remote | Full CV, Contact, Behance, Instagram, LinkedIn, More socials |
-| `ab` | ABOUT | Synth screen click | 5 (hello hero, name, since age 12, background, forever student) |
-| `sk` `aw` `wk` `sd` | Skills / Awards / Work / Study | **No longer on the synth** (removed by Vick) | Still in data. Can be resurfaced in v2 (e.g. on the CV remote). |
-| `info`, `life` | Legacy | `info.items[0]` feeds `ab`; `life` feeds a combined card | Clean these up in v2 |
+| Key                           | Name                                     | Used by                                                                | Items                                                                                   |
+| ----------------------------- | ---------------------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `gd`                          | DESIGN (graphic)                         | Filter button                                                          | 12 portfolio projects                                                                   |
+| `ux`                          | UX / UI DESIGN                           | Filter button                                                          | 7 (Floodlight, retail SaaS, Parliament systems, method, workflow, Geek Punch, training) |
+| `mo`                          | MOTION & 3D                              | Filter button                                                          | 6                                                                                       |
+| `tl`                          | TOOLS                                    | Filter button                                                          | 12                                                                                      |
+| `xp`                          | EXPERIMENTAL                             | Filter button                                                          | 2 real + 2 "Open slot"                                                                  |
+| ~~`ds` / `st` / `ar` / `te`~~ | Designer / Strategist / Artist / Teacher | **Removed 22 Nov 2026** (no control since entry 20)                    |                                                                                         |
+| ~~`fm` / `fi` / `ex`~~        | Family Man / The Fighter / The Explorer  | **Folded into `life`, 22 Nov 2026**                                    |                                                                                         |
+| `cv`                          | CV & CONTACT                             | Remote                                                                 | Full CV, Contact, Behance, Instagram, LinkedIn, More socials                            |
+| `ab`                          | ABOUT                                    | Synth screen click                                                     | 5 (hello hero, name, since age 12, background, forever student)                         |
+| ~~`sk` `aw` `wk` `sd`~~       | Skills / Awards / Work / Study           | **Removed 22 Nov 2026.** The facts are in `info` (About) and `PROFILE` |                                                                                         |
+| `info`, `life`                | Legacy                                   | `info.items[0]` feeds `ab`; `life` feeds a combined card               | Clean these up in v2                                                                    |
 
 ### Synth layout → interactions (v1 final)
+
 Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) = -8 + c` and `GZ(r) = -2.5 + r`. The deck top sits at `TOP = 0.9`.
 
-| Part | Position | Behaviour |
-|---|---|---|
-| Screen | cols 0–3, rows 0–1 | Live canvas: mode name, hovered title, oscilloscope. Clicking it opens About. |
-| 4 big knobs (blue / green / white / orange) | cols 4–11 | **Role filters**: Designer, Strategist, Artist, Teacher. Clicking or dragging one zooms to the keys, lit in that knob's colour. |
-| Speaker grille | cols 12–13 | Pulses with the audio level |
-| Tone knob · WAVE · BEATS | cols 14–15 | Tone = filter cutoff (drag). WAVE cycles triangle/square/saw. **BEATS** cycles 5 sequenced tracks. |
-| STOP · MUTE | col 16 | STOP stops the music (red square icon). STOP and BEATS **glow orange and pulse at the track's BPM** while music plays. |
-| Filter row | row 2, 5 wide buttons | **DESIGN · UI/UX · MOTION · TOOLS · EXPERIMENTAL**. Each loads its channel onto the keys. The active button pulses, hovering one previews its colour on the keys, and opening a key presses its button. |
-| 14 long keys (+ 10 black sharps) | cols 0–13, rows 3–5 | Key *i* = item *i* of the active keyboard channel (`S.kb`). Keys beyond the item count only play notes. The whole tile is clickable (proxy hit area). |
-| 3×3 drum pads | cols 14–16, rows 3–5 | kick, snare, hat, clap, tom, rim, shaker, crash, blip |
-| **Black life strip** (group `TU`, behind) | pixel screen + 8 pads + 4 sound knobs + shuffle dongle | Clicking a figure (screen thirds via `lastHit.uv.x`) selects Family Man / Fighter / Explorer. Pads hold that persona's items. Its cable **plugs into a jack on the main synth's back** when active. |
-| **CV remote** (group `RM`, left) | screen, orange knob, CONTACT pill, 4 squares | Full CV, Contact, Behance, Instagram, LinkedIn, More socials. Its orange cable **plugs into a jack on the main synth's left side** when active (click sound and LED). |
+| Part                                        | Position                                               | Behaviour                                                                                                                                                                                               |
+| ------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Screen                                      | cols 0–3, rows 0–1                                     | Live canvas: mode name, hovered title, oscilloscope. Clicking it opens About.                                                                                                                           |
+| 4 big knobs (blue / green / white / orange) | cols 4–11                                              | **Role filters**: Designer, Strategist, Artist, Teacher. Clicking or dragging one zooms to the keys, lit in that knob's colour.                                                                         |
+| Speaker grille                              | cols 12–13                                             | Pulses with the audio level                                                                                                                                                                             |
+| Tone knob · WAVE · BEATS                    | cols 14–15                                             | Tone = filter cutoff (drag). WAVE cycles triangle/square/saw. **BEATS** cycles 5 sequenced tracks.                                                                                                      |
+| STOP · MUTE                                 | col 16                                                 | STOP stops the music (red square icon). STOP and BEATS **glow orange and pulse at the track's BPM** while music plays.                                                                                  |
+| Filter row                                  | row 2, 5 wide buttons                                  | **DESIGN · UI/UX · MOTION · TOOLS · EXPERIMENTAL**. Each loads its channel onto the keys. The active button pulses, hovering one previews its colour on the keys, and opening a key presses its button. |
+| 14 long keys (+ 10 black sharps)            | cols 0–13, rows 3–5                                    | Key _i_ = item _i_ of the active keyboard channel (`S.kb`). Keys beyond the item count only play notes. The whole tile is clickable (proxy hit area).                                                   |
+| 3×3 drum pads                               | cols 14–16, rows 3–5                                   | kick, snare, hat, clap, tom, rim, shaker, crash, blip                                                                                                                                                   |
+| **Black life strip** (group `TU`, behind)   | pixel screen + 8 pads + 4 sound knobs + shuffle dongle | Clicking a figure (screen thirds via `lastHit.uv.x`) selects Family Man / Fighter / Explorer. Pads hold that persona's items. Its cable **plugs into a jack on the main synth's back** when active.     |
+| **CV remote** (group `RM`, left)            | screen, orange knob, CONTACT pill, 4 squares           | Full CV, Contact, Behance, Instagram, LinkedIn, More socials. Its orange cable **plugs into a jack on the main synth's left side** when active (click sound and LED).                                   |
 
 **Layout rule from Vick:** content and CV controls on the **left**, music-only controls on the **right**.
 
 ### Key runtime concepts
+
 - **`MODES[key]`** (core/data.js): `{part, n, glow, box}`. `box` names the camera framing: `all | kb | cv`. Modes: gd, ux, mo, tl, xp, ab (keyboard) and cv (remote). `onKeys(ch)` says whether a mode lives on the keys.
 - **State** (core/state.js): `S = {mode, card, kb, hover, hoverUntil, grp, menu}`; `V = {themeK, themeT, fly, drag, side, zoom}`. `S.card = {ch, i, from}` (`from: 'menu'` shows the card footer). Lower layers call app actions through `act` instead of importing upward.
 - **`itemCtrl(mesh, ch, i, sound)`**: a control that holds content. `ch` is `'kb'` (follows `S.kb`) or `'cv'`. **The item opens on `pointerdown`**: the up/click path was unreliable in the Claude browser pane.
@@ -187,9 +201,9 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 
 ## 6. Decision log (Vick's feedback, in order)
 
-1. v1 had a side panel. Vick: *"the synth should be the main mode of navigating … zoom into modes … hover shows titles."* So the side panel was removed and replaced with camera zoom per part, floating cards, and labels both at the control and on the synth screen.
+1. v1 had a side panel. Vick: _"the synth should be the main mode of navigating … zoom into modes … hover shows titles."_ So the side panel was removed and replaced with camera zoom per part, floating cards, and labels both at the control and on the synth screen.
 2. The remote became **CV & Contact**, with the full CV, contact details and social handles.
-3. The big knobs went from Theology to **Designer / Strategist / Artist / Teacher**. *"Ignore the Living Creative PDF."*
+3. The big knobs went from Theology to **Designer / Strategist / Artist / Teacher**. _"Ignore the Living Creative PDF."_
 4. The black strip became **personal life**: Family Man / Fighter / Explorer, reduced to touch pads.
 5. Music controls moved to the **right**, CV and project details to the **left**.
 6. Button row: first only "about me" items, then filters for the keys with linked glow, then **finally only Design, UI/UX, Motion, Tools, Experimental**.
@@ -207,10 +221,10 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - **Camera controls (`#nav`, section `NAV` in main.js):** joystick = rate control (stick sets target orbit speed; `vAz`/`vPol` ease toward it with τ≈0.22 s, so the camera accelerates and glides), knob is a damped spring (k 260, c 20) so it overshoots back to centre; tap (<6 px, <400 ms) = `resetView()` → `flyTo(current box)`. Zoom slider = position control on a log scale between `controls.minDistance`/`maxDistance`; radius follows a slightly under-damped spring (k 34, ζ 0.8). Any input cancels a running `fly`. Sits bottom right at every size (desktop card ends 140 px above the bottom to clear it; on phones it hides while a card sheet is open). Vick: users must still be able to use mouse, trackpad or touch instead, so OrbitControls rotate/zoom are now on for phones too (one-finger orbit, pinch zoom; they start top-down and the joystick tap resets).
     - HUD: CSS tokens for both themes; `.btn`/card nav get a `zap` glow + conic-gradient stroke (`@property --sw`) on press; the card traces its outline in the project colour on open. `--glow` follows the active mode.
 
-13. **Nov 2026: Figma header, section titles and underlights** (Figma file *Other Designs* → page *Portfolio-Project*: Empty State, 1) Home-Hover, 2) About Me-Hover, 3) Contact-Hover).
+13. **Nov 2026: Figma header, section titles and underlights** (Figma file _Other Designs_ → page _Portfolio-Project_: Empty State, 1) Home-Hover, 2) About Me-Hover, 3) Contact-Hover).
     - **Header:** solid bar (`--hdr`, 170 px at 4K), logo + sun/moon + sound + hamburger SVGs from Figma in `assets/ui/` (`*-on-dark` / `*-on-light`, swapped by CSS per theme). Menu `#menu` (Home, About Me, My Projects, Contact, Download CV); burger bars morph to a cross. Sizes scale with `--px` = 100vw/3840 (clamped).
     - **Section titles** `.grp` (About Me = life strip, Contact = remote, My Projects = main synth) are projected each frame from the top-back edge of each device's box in `updateGroups()`; they grow Medium 28.7 → Ultra 90 (`.on`). Font stack `--ui`: Gotham, then Montserrat (Gotham is licensed, not loaded).
-    - **Underlights:** one white soft-edged plane per device under it on the floor, tinted through `material.color`; fades in on hover in the overview. Vick asked for it subtle, *"almost like a bottom light under the synths"*, then a smaller area with the brightest part right on the device edge and the colour falling off immediately (`underlightTexture()`: exp falloff, λ = 0.09 world units, 56 px per unit; opacity .48 dark / .3 light), traced around each device's casing only (`foot` box: body mesh, plus the lip on the main synth) so knobs, the strip's cable dock and cables don't widen it. Titles anchor to the casing's top-back edge, baseline ~0.08em above it. The My Projects light follows `MODES[S.kb].glow` and stays on (.75) while a keyboard mode or card is open.
+    - **Underlights:** one white soft-edged plane per device under it on the floor, tinted through `material.color`; fades in on hover in the overview. Vick asked for it subtle, _"almost like a bottom light under the synths"_, then a smaller area with the brightest part right on the device edge and the colour falling off immediately (`underlightTexture()`: exp falloff, λ = 0.09 world units, 56 px per unit; opacity .48 dark / .3 light), traced around each device's casing only (`foot` box: body mesh, plus the lip on the main synth) so knobs, the strip's cable dock and cables don't widen it. Titles anchor to the casing's top-back edge, baseline ~0.08em above it. The My Projects light follows `MODES[S.kb].glow` and stays on (.75) while a keyboard mode or card is open.
     - Clicking a title or a device body (not a control) zooms into that part.
 
 14. **Nov 2026: office set-up** (ref: pradiplabs.dev; Vick: only a desktop based on his laptop, a plant and a lamp).
@@ -240,9 +254,9 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 
 22. **Nov 2026: atomic restructure + clipping pass.** `main.js` split into `core/ → atoms/ → molecules/ → organisms/ → page/` (each layer imports only the layers below; upward calls go through `act`), and `styles.css` into tokens/atoms/molecules/organisms. Removed dead code: the life strip (`PADM`, `S.pad`, `S.persona`), role modes (ds/st/ar/te, sk/aw/wk/sd), `DOCK`, `BIGCAPS`, `FIG/FCOL/FN`, `A()`, `BOX.th/info`, the HUD zap pulse, `#frame`, `#eb`, `.btn/#dock/#hint/.logo/.eyebrow/.links/.gal button` CSS and all override-on-override rules. Fixes: WAVE threw on `setSwitch()` (undefined), so it never played its note; long words (EXPERIMENTAL) ran off their label canvas (engraved labels now size the canvas to the plane); decals (labels, screens, halos, core glows, underlights, lamp pool) use polygon offset (`decal()`) so they no longer z-fight at a distance; the big-knob legends were half under the mode row (knobs set back .08); the hover tip wraps and stays inside the window instead of cutting text off; number keys 1–7 now include the remote; the remote screen's CV heading was cut off at the top edge. The /admin preview renders the same card markup as the site.
 
-23. **Nov 2026: coolicons.** Every icon comes from the coolicons Figma library (file `TBfZkoz8tYOH4Pz3eAf2p1`, style *Line · Round*, 24 px, 2 px stroke), stored as path data in `src/atoms/icons.js` and drawn in `currentColor` so it follows the theme. Placed: header theme (sun/moon), sound (volume-high/volume-off), menu (the menu icon's lines fold into its close cross), card prev/next/close, CTAs (mail, copy, check when copied, external-link, download for PDFs), phone on the cell line, brand marks on the social links (Behance, Instagram, LinkedIn, Threads, X; globe fallback), menu CV link (download), intro Enter (arrow-right) and Enter without sound (volume-off), a lightbox close button, and the remote's social keys in 3D (behance, instagram, linkedin, more-horizontal via `printedIcon`). The old `assets/ui/sun|moon|sound-*.svg` files are gone; the logo stays. To add one: copy the path `d` from Figma (export SVG of the *Style=Line, Radius=Round* variant) into `PATHS`.
+23. **Nov 2026: coolicons.** Every icon comes from the coolicons Figma library (file `TBfZkoz8tYOH4Pz3eAf2p1`, style _Line · Round_, 24 px, 2 px stroke), stored as path data in `src/atoms/icons.js` and drawn in `currentColor` so it follows the theme. Placed: header theme (sun/moon), sound (volume-high/volume-off), menu (the menu icon's lines fold into its close cross), card prev/next/close, CTAs (mail, copy, check when copied, external-link, download for PDFs), phone on the cell line, brand marks on the social links (Behance, Instagram, LinkedIn, Threads, X; globe fallback), menu CV link (download), intro Enter (arrow-right) and Enter without sound (volume-off), a lightbox close button, and the remote's social keys in 3D (behance, instagram, linkedin, more-horizontal via `printedIcon`). The old `assets/ui/sun|moon|sound-*.svg` files are gone; the logo stays. To add one: copy the path `d` from Figma (export SVG of the _Style=Line, Radius=Round_ variant) into `PATHS`.
 
-24. **8 Nov 2026: menu bug fix + menu navigation rebuild** (Vick: *"when using the menu to navigate the camera does not move or become accessible"*).
+24. **8 Nov 2026: menu bug fix + menu navigation rebuild** (Vick: _"when using the menu to navigate the camera does not move or become accessible"_).
     - **Bug (root cause):** `#menu.out` reused the same `fade` keyframes, only reversed. The browser doesn't restart an animation whose name hasn't changed, so `animationend` never fired and `closeMenu()` never set `hidden`. The menu sat at opacity 0 over the whole screen (`inset:0`, z 6) and swallowed every click and drag on the synth, and clicking it again just re-ran the broken close. Reproduced headless (`elementFromPoint` on the canvas returned `#menu` after a menu click).
     - **Fix:** `closeMenu()` no longer waits on `animationend`. `.out` sets `pointer-events:none` at once, plays its own `panelOut` keyframes and a 240 ms timer hides the panel (a token cancels it if the menu reopens). `menuOpen()` ignores a closing panel. Tested: after every menu action the canvas is the top element again.
     - **Menu is now a side panel** (`#card,#menu` share one geometry: right on desktop, bottom sheet ≤760 px) instead of a full-screen overlay, so the camera moves in view and the synth stays usable. Rendered by `organisms/menu.js` from `CH`: root (Home, About, Projects ›, Contact, Download CV) → Projects (the five modes `PROJECT_MODES`: Graphic design, UI/UX design, Motion & 3D, Tools, Experimental, with colour dot and project count) → a mode (its projects: key number, thumbnail, title, kicker; "Open slot" placeholders hidden). A back button steps up; `Esc` steps up, then closes. Opening the menu closes an open card (same side).
@@ -253,14 +267,14 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 25. **8 Nov 2026: menu hover previews + zoom guide with locked zoom** (Vick's follow-up to 24).
     - **Menu:** no thumbnails in the rows and no project counts on the modes (mode rows are colour dot + name; project rows are key number + title + kicker). Instead, pointing at a project shows its lead image (`#m-peek`, 260×163, fixed to the page so the panel never clips it, z 8) hanging just under the row, over the names below, following the pointer sideways and flipping above the row near the bottom of the screen. Keyboard focus (`:focus-visible`) shows it too; no preview on touch or for items without images; hidden on scroll, leave, level change and close.
     - **Zoom lock:** `lockZoom()` in `page/camera.js` sets `V.zoom = {min, max}` and the OrbitControls distance limits: **min** = the closest device framing (`min(frameFor('kb').d, frameFor('cv').d) × .97`, one synth fills the view), **max** = `frameFor('desk').d × 1.02` (new `BOX.desk`, the whole table top). Flights open the limits (0…∞) so the intro and swoops can start outside them, and lock again on landing; resize re-locks. At 1440×900: min 9.4, overview 31.6, max 38.2.
-    - **Zoom guide** `#zoom` (`organisms/zoom.js`, run from the loop as `updateZoom(now)`): a mouse/scroll-wheel icon (coolicons-style path drawn in the HTML so its wheel line can animate) sits bottom right at all times. Any change in camera-to-target distance outside a flight (wheel, pinch, the bar) wakes it: it slides to the bottom middle and opens to *Scroll to zoom* (*Pinch to zoom* on phones) + a **Table ↔ Synth** bar (`#zr`, a range input on a log scale between the limits, filled in `--accent-ui`); 2.2 s after the zooming stops it folds back to the icon. Dragging the bar or using arrow keys on it zooms along the current line of sight (and cancels a flight or menu journey). Clicking the icon shows the instructions for 4 s. The legend drops "Scroll to zoom" and fades while the guide is centred (`body[data-zoom="on"]`); on phones the guide hides while the card or menu sheet is open.
+    - **Zoom guide** `#zoom` (`organisms/zoom.js`, run from the loop as `updateZoom(now)`): a mouse/scroll-wheel icon (coolicons-style path drawn in the HTML so its wheel line can animate) sits bottom right at all times. Any change in camera-to-target distance outside a flight (wheel, pinch, the bar) wakes it: it slides to the bottom middle and opens to _Scroll to zoom_ (_Pinch to zoom_ on phones) + a **Table ↔ Synth** bar (`#zr`, a range input on a log scale between the limits, filled in `--accent-ui`); 2.2 s after the zooming stops it folds back to the icon. Dragging the bar or using arrow keys on it zooms along the current line of sight (and cancels a flight or menu journey). Clicking the icon shows the instructions for 4 s. The legend drops "Scroll to zoom" and fades while the guide is centred (`body[data-zoom="on"]`); on phones the guide hides while the card or menu sheet is open.
     - Also fixed in the README: the stale joystick/zoom-slider paragraph (removed in entry 15) is replaced by the zoom guide.
     - **Menu labels removed** (Vick, same night): no kicker line under project titles and no helper text under the Projects/mode headings. Rows are now just colour dot + mode name, or the project title.
     - **9 Nov 2026:** project rows lose their key numbers too, and project titles drop to weight 500 (mode and root rows stay bold) for better contrast.
     - Files: `index.html`, `organisms/menu.js`, `organisms/zoom.js` (new), `page/camera.js`, `core/state.js`, `main.js`, `styles/organisms.css`, README.
 
 26. **9 Nov 2026: zoom bar becomes a plain meter; the icon reacts at the limits** (Vick).
-    - The bar is no longer a slider (no thumb, no dragging): `#zr` is an empty track (`.z-track`, `role="meter"`, `aria-valuenow` 0–100) whose `.z-fill` grows as you zoom in: empty = the whole table, full = one synth. *Scroll to zoom* stays.
+    - The bar is no longer a slider (no thumb, no dragging): `#zr` is an empty track (`.z-track`, `role="meter"`, `aria-valuenow` 0–100) whose `.z-fill` grows as you zoom in: empty = the whole table, full = one synth. _Scroll to zoom_ stays.
     - Same day, Vick: no labels on the bar, just a live **0–100%** readout after it (`#zpct`, tabular mono, red at 100%). The Table / Synth end labels are gone. The bar is now small (64×4 px, 56 px on phones) so it reads as a short, limited range; the zoom limits from entry 25 are unchanged and were re-checked on the preview (in stops at one synth, out stops at the table).
     - **Full (fully zoomed in):** `#zoom[data-edge="max"]`: the icon turns accent red and shakes (`.z-ico.shake`, 0.5 s), its wheel line spins fast, and the full bar glows softly. Scrolling in again at the limit replays the shake.
     - **Empty (fully zoomed out):** `data-edge="min"`: the icon settles (`.z-ico.settle`, a small lift and drop) then relaxes: wheel line still, icon scaled to .9 and softened. Scrolling out again at the limit replays the settle.
@@ -300,22 +314,22 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - **Beats party** (`organisms/party.js`, `updateParty(t)` in the loop): while a BEATS track plays it eases in (and out when it stops): 4 coloured stage-light pools drifting over the table top and swelling with the level (`FXMATS`, so additive in dark mode), a canvas backdrop beyond the desk (drifting colour blobs, tumbling confetti, a flash on loud hits) swapped in for `scene.background`, and the synth screen's unlit matrix twinkling in the track's colours. A palette per track (`PAL`). The themed background colour is now `BG` (exported from `core/scene.js`; `theme.js` mixes `BG`, not `scene.background`). Off under reduced motion.
     - Files: `index.html`, `atoms/pixelfont.js`, `organisms/screens.js`, `organisms/party.js` (new), `organisms/joystick.js`, `organisms/synth.js`, `organisms/menu.js`, `page/camera.js`, `page/theme.js`, `core/scene.js`, `main.js`, `styles/organisms.css`, README.
 
-31. **10 Nov 2026: the desk keeps one colour in light and dark mode** (Vick: *"The desk should stay the exact same colour whether dark mode or not"*). The desk top (oak) and its steel legs and rail are no longer `themed()` (they used to go walnut / dark steel at night). The dark look dims the room's lights, so `updateDesk` lifts the desk's material colour per channel as the theme eases: `DESK.lift = [1.3, 1.36, 1.39]`, calibrated from renders of both modes (three patches of desk away from the lamp match the light-mode desk within 1/255). Near the lamp, its warm light still shows at night. Files: `organisms/desk.js`.
+31. **10 Nov 2026: the desk keeps one colour in light and dark mode** (Vick: _"The desk should stay the exact same colour whether dark mode or not"_). The desk top (oak) and its steel legs and rail are no longer `themed()` (they used to go walnut / dark steel at night). The dark look dims the room's lights, so `updateDesk` lifts the desk's material colour per channel as the theme eases: `DESK.lift = [1.3, 1.36, 1.39]`, calibrated from renders of both modes (three patches of desk away from the lamp match the light-mode desk within 1/255). Near the lamp, its warm light still shows at night. Files: `organisms/desk.js`.
 
 32. **10 Nov 2026: BEATS plays Vick's own tracks with his motion backgrounds** (Vick supplied 6 WAVs and 5 4K MP4s, from `Synth Elementa/Beats: Audio` and `Synth Elementa/BG` on his Mac).
     - **Media in the repo:** `assets/beats/audio/*.mp3` (from the WAVs: 44.1 kHz stereo, LAME VBR `-q:a 4`; 13.6 MB total for ~10.5 min, from 158 MB) and `assets/beats/bg/*.mp4` (1280×720, 24 fps, H.264 CRF 28 veryfast, no audio, `+faststart`, full loops kept; 14.6 MB from 272 MB). Encoded on Vick's Mac; the web copies also sit in a `web/` folder next to his originals. `netlify.toml` caches `/assets/*` for a week, so a replaced file with the same name can take up to a week to reach repeat visitors: give replacements a new name.
-    - **Google Drive:** folder **Synth Elementa – Beats assets** (`1EFrcj-eCRyGfb3vN0mUNBMFExRpkSMWi`) with *Audio – originals (WAV)*, *Backgrounds – originals (4K MP4)* and *Web versions (used on the site)*, plus an index doc. The Drive connector couldn't take file uploads from the cloud session (file references are refused), so the media itself has to be dragged in from the Mac.
+    - **Google Drive:** folder **Synth Elementa – Beats assets** (`1EFrcj-eCRyGfb3vN0mUNBMFExRpkSMWi`) with _Audio – originals (WAV)_, _Backgrounds – originals (4K MP4)_ and _Web versions (used on the site)_, plus an index doc. The Drive connector couldn't take file uploads from the cloud session (file references are refused), so the media itself has to be dragged in from the Mac.
     - **Audio** (`core/audio.js`): `BEATS = [{ n, src, bpm, bg }]`: Chill (81, retro-galaxy) · Cute little microhouse (129, party-strips) · Interlaken (152, square-tunnel) · Little music studio (76, mosaic) · Matterhorn (118, retrograde) · One more month (152, party-strips). BPM estimated from the audio (spectral-flux autocorrelation), used for the light pulse. One `<audio>` element, wired once through `createMediaElementSource → master`, so volume, mute, the analyser (screen waveform, speaker, rings, lights) all follow it; loops until the next click or STOP. `demo` is now `{ el }` (file) or `{ iv }` (fallback). If a file errors or won't play, that slot's synthesised pattern runs instead (`TRACKS`, kept as the fallback; `synthLoop()`). The BEATS tip counts `BEATS.length`.
     - **Backgrounds** (`organisms/party.js`, replaces the blobs/confetti/light pools of entry 30): one muted, looping `<video>` (loaded only when a track starts) playing the track's `bg`. Behind the desk it's drawn into a 640×360 canvas over `BG`, cover-cropped to the window's shape and faded with `p`, and set as `scene.background`. On the table top a `VideoTexture` plane (32.5×18.5, soft-edged alpha map) projects it under the synths like a projector: its alpha follows the video's brightness (shader patch), so dark footage doesn't smudge the oak; additive in dark mode via `FXMATS`. The screen twinkle now uses colours sampled from the video twice a second (`partyColours()`, lifted so dark footage still shows).
     - Files: `assets/beats/**` (new), `core/audio.js`, `organisms/party.js`, `organisms/screens.js`, `organisms/synth.js`, README.
 
 33. **12 Nov 2026: the Vickhal Roopram logo appears on the synth screen every 25–60 s; clicking it opens the About summary** (Vick).
     - `organisms/screens.js`: the header logo (`assets/ui/logo-on-dark.svg`) is rasterised once into a dot mask on a 5 px pitch (finer than the title's dots so the wordmark reads), each dot with a random reveal order. On a random gap of 25–60 s (new each time) it dissolves in dot by dot (0.9 s), holds 8 s and dissolves out (0.9 s); the title and waveform fade under it, so it shows over the music too. Warm white dots with an orange glow and a light shimmer. `V.logo` (0..1) says how much it's showing. Reduced motion: no dissolve.
-    - `organisms/synth.js`: while the logo is up, the screen's hover tip reads *Vickhal Roopram · Click to meet me*, and a click runs `act.journey('ab', 0, 'logo')`: fly to the About key, press it, open the first About card ("Vickhal Roopram, UX & motion designer"). The rest of the time the screen still opens that page directly, as before.
+    - `organisms/synth.js`: while the logo is up, the screen's hover tip reads _Vickhal Roopram · Click to meet me_, and a click runs `act.journey('ab', 0, 'logo')`: fly to the About key, press it, open the first About card ("Vickhal Roopram, UX & motion designer"). The rest of the time the screen still opens that page directly, as before.
     - Tested with the gap forced to 3 s (throwaway copy): logo renders, tip changes, click lands on the About summary.
 
-34. **13 Nov 2026: no CV download on the site** (Vick: *"Remove the download CV from my website"*).
-    - Removed: the menu's **Download CV** row, the **Open CV (PDF)** button on the remote's *Full CV* card (and its "Open the PDF for a copy you can save or print" line), and the file itself (`assets/cv/vickhal-roopram-cv.pdf`, deleted from the repo, so its old address stops working once deployed). The *Full CV* card still shows the two CV page images; say if those should go too.
+34. **13 Nov 2026: no CV download on the site** (Vick: _"Remove the download CV from my website"_).
+    - Removed: the menu's **Download CV** row, the **Open CV (PDF)** button on the remote's _Full CV_ card (and its "Open the PDF for a copy you can save or print" line), and the file itself (`assets/cv/vickhal-roopram-cv.pdf`, deleted from the repo, so its old address stops working once deployed). The _Full CV_ card still shows the two CV page images; say if those should go too.
     - The published /admin content also carried that link, and published content replaces each group's items wholesale, so `src/cms.js` now has `noCVDownload(CH, LINKS)`: it drops any link to `assets/cv/…`/`vickhal-roopram-cv.pdf` and that sentence, and runs after the published content is applied. The admin runs the same rule when it loads, so the next **Publish** stores the content without it.
     - Tested with a mock of published content that still had the link: no CV link left anywhere, the card shows no button, the menu shows Home · About · Projects · Contact.
 
@@ -327,7 +341,7 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
     - Menu: `MENU` in `src/content.js` (`items` = top level, go = home | about | projects | contact | mode:<key> | link; `projects` = the sections under Projects with their menu names). `cms.js applyMenu` applies a published menu, `cms.mts cleanMenu` validates it, `organisms/menu.js` renders from it (a `mode:<key>` entry opens that section's projects straight from the top level).
     - New coolicons in `icons.js` for the admin: edit, plus, drag, link, arrow-up, menu, image, trash, upload, undo.
 
-35. **13 Nov 2026: light mode removed; one dark look matched to Vick's reference; dark brown desk** (Vick: *"I want the desk to be a dark brown, There is no need for a light mode anymore, completely erase it and lets change the colour scheme to match this background of this image provided"*; reference: an earlier dark render, *vick-does-creative-home-4k-dark.png*).
+37. **13 Nov 2026: light mode removed; one dark look matched to Vick's reference; dark brown desk** (Vick: _"I want the desk to be a dark brown, There is no need for a light mode anymore, completely erase it and lets change the colour scheme to match this background of this image provided"_; reference: an earlier dark render, _vick-does-creative-home-4k-dark.png_).
     - **Erased:** `src/page/theme.js` (the theme engine: LOOK pairs, easing, sun/moon toggle, saved choice, system-setting listener), the header **sun/moon button** `#thm` and its CSS, the pre-paint theme script in `index.html` (only the "skip the intro on return" part stays), `themed()` and every light/dark colour pair in `atoms/materials.js` (the hardware palette is now the old night values set once), `labels.js` (legends print in their night colour), the light logo (`assets/ui/logo-on-light.svg`) and the `.on-d`/`.on-l` swap, `V.themeK`/`V.themeT` and every light branch (`fx.js`, `synth.js`, `underlights.js`, `party.js`, `desk.js`), the light CSS tokens and `[data-theme]` rules, and the admin preview's theme flag. `FXMATS` is now `{ push }`, which makes those materials additive when they're registered (there's no switch any more).
     - **Colours from the reference:** the room is a cool charcoal: `BACKDROP` (new, `core/scene.js`) is a vertical gradient #0f1013 → #111317 → #16191f → #14171c behind the desk; `BG` #14171c is its mid colour (the beats party fades over it, and returns to `BACKDROP`). Page tokens: `--floor #14171c`, `--card #1a1d23`, `--card2 #20242b`, `--ink #eef0f4`, `--mute #a3a9b4`, `--chip #252930`, `--track #272b33`, line `rgba(238,240,244,.14)`, accent `#ec7a5f`; `theme-color` #14171c. Lights are the old dark values with a cooler sky (#7f8899 over #0d0f13, .22) and a cool rim (#9fb2ff, 1.2) to sit in the charcoal room; sun #ffe2c4 .75; shadows .55; exposure 1.05. The lamp always burns at its night strength.
     - **Desk:** dark brown: the oak grain texture tinted `#3a2a20`, clearcoat kept; legs and rail dark steel `#3b3e45` (replaces entry 31's light/dark lift).
@@ -423,24 +437,32 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 
 52. **15 Nov 2026: foley** (Vick: subtle, detailed noises). `foley(kind, vol)` in `core/audio.js` makes four small sounds from filtered noise and clicks, wired straight to the speakers (not through the synth's filter/echo/analyser, so they don't echo, don't follow the volume knob and don't make the notebook draw a waveform); they obey mute and are rate-limited (`FOLEY_GAP`). `marker`: a felt-tip squeak in two strokes when the marker line starts round a synth (`organisms/underlights.js`). `slide`: card on card while the project page or menu scrolls and when you wheel-zoom the bench (`main.js`). `page`: a page turning when paging between projects (`organisms/card.js`), moving between menu levels (`organisms/menu.js`) and when the notebook turns (`organisms/screens.js`; quieter for sound pages). `tap`: two plastic clicks as the pointer passes from one cassette to the next (`organisms/menu.js`). Volumes are set in the `shape()` envelopes and the `.5` master in `foley`.
 
+53. **22 Nov 2026: formatting, design library, search and AI, data integrity** (Vick: best practice for code formatting, search engines and AI, clear components, a theme that's easy to re-skin, professional copy, updated docs, a Figma library).
+    - **Formatting:** Prettier (`.prettierrc.json`, width 120, single quotes) formatted the whole repo; ESLint with built-in rules only (`eslint.config.js`) runs clean. Both run in CI with pinned `npx` versions (no `package-lock` change) and on save in VS Code. Checked in headless Chromium: computed styles of every sampled element in 10 desktop and phone states are identical before and after.
+    - **Tokens:** one tiered `tokens.css` (palette → roles → materials → type → space → motion → cursor). The skin's token block and the old dark values it overrode are merged into it; `base.css` holds the resets. Hard-coded photo-white, brand red and the room gradient now read tokens. Re-skin guide: `docs/LIBRARY.md` §3.
+    - **Less code:** one shared `molecules/toast.js` (there were two copies); the phone page reuses `$` and `reduceMotion` from `core/state.js`; 7 unused variables, an unused helper and the unused content channels (`ds st ar te`, `sk aw wk sd`; `fm fi ex` folded into `life`) removed; 14 module-internal symbols no longer exported.
+    - **Search and AI:** `scripts/generate.mjs` writes the `<head>` SEO block, `/portfolio/` (the whole portfolio as one page), `llms.txt`, `robots.txt`, `sitemap.xml` and `library/manifest.json` from `content.js`. `PROFILE` holds the CV facts; each project has a one-line `sum`. Favicon, share image, `lang="en-ZA"`, skip link, `<noscript>`. Guide: `docs/SEO.md`.
+    - **Design library:** `/library/` shows every token, UI piece, icon, module and asset, read live from the code (noindex). The Figma file [Vick Does Creative · Design Library](https://www.figma.com/design/fkSiHQ1XH6c9lsLi6ECp9E) mirrors it: 53 variables, 8 text styles, Button / Pill / Icon button / Tag, 38 icons, art and references.
+    - **Data integrity:** the `/admin` store (`cleanContent`) used to drop `case`, `introFirst`, `acc` and `vid`, so a publish from `/admin` would have broken the case-study layouts, accents and videos. It now keeps them, and `sum`.
+    - **Copy:** the welcome line names the role and country ("UX/UI and motion designer in South Africa"). The search title and description and the `sum` lines follow `docs/SEO.md` §2. Everything else is the approved copy from 16 Nov.
 
 ---
 
 ## 7. Known issues and tech debt
 
-| # | Issue | Suggested fix |
-|---|---|---|
-| 1 | ~~`main.js` is one large file with legacy leftovers~~ Done in entry 22 (atomic modules, dead code removed). `CH.sk/aw/wk/sd/info` still exist in content.js but no control shows them | Split it into `scene/`, `audio/`, `ui/`, `modes/` modules and delete the dead code |
-| 2 | Content is in JS. Not editable by non-developers. | Move it to `content/*.json`, or a CMS (Netlify Blobs/DB, or the Framer CMS) |
-| 3 | Geometry is procedural boxes and cylinders, not a real modelled synth | Model it in Blender or Spline and load it as GLB (§8) |
-| 4 | Images are JPEG page renders at 68 dpi, ~3.1 MB total, no `srcset` | Re-export the real project images as WebP/AVIF in two sizes; use the Netlify Image CDN |
-| 5 | No SEO or crawler content (everything is in WebGL) | Add `<noscript>` and a hidden semantic HTML list of projects, Open Graph image, sitemap |
-| 6 | Accessibility: content is only reachable through 3D clicks or number keys | Add a DOM "list view" toggle, focusable controls and `aria-live` on the card |
-| 7 | `three` loads from a CDN at runtime, so there's no offline use and a version risk | Optional Vite build to bundle and minify |
-| 8 | Netlify deploys are manual from the Mac | Connect Git continuous deployment (Phase 0) |
-| 9 | The "Powered by Netlify" badge shows on the site | Free-plan behaviour (or a drawer badge): check the project settings |
-| 10 | Untested on real phones and Safari iOS audio unlock | Test on an Honor 400 Pro and an iPad. The audio context starts on the first pointerdown. |
-| 11 | No contact form, admin or analytics yet (planned in `portfolio-setup-plan.xlsx`) | Phase 1 |
+| #   | Issue                                                                                                                                     | Suggested fix                                                                            |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| 1   | ~~`main.js` is one large file with legacy leftovers~~ Done in entries 22 and 53                                                           |                                                                                          |
+| 2   | ~~Content is in JS~~ `/admin` edits it (Blobs). Still: Blobs content isn't in git, so `/portfolio/` and `llms.txt` only know `content.js` | Copy `/admin` changes into `content.js`, then `npm run generate`                         |
+| 3   | Geometry is procedural boxes and cylinders, not a real modelled synth                                                                     | Model it in Blender or Spline and load it as GLB (§8)                                    |
+| 4   | Images are JPEG page renders at 68 dpi, ~3.1 MB total, no `srcset`                                                                        | Re-export the real project images as WebP/AVIF in two sizes; use the Netlify Image CDN   |
+| 5   | ~~No SEO or crawler content~~ Done in entry 53 (`docs/SEO.md`)                                                                            | Search Console needs Vick's sign-in (`docs/SEO.md` §4)                                   |
+| 6   | Accessibility: content is only reachable through 3D clicks or number keys                                                                 | Add a DOM "list view" toggle, focusable controls and `aria-live` on the card             |
+| 7   | `three` loads from a CDN at runtime, so there's no offline use and a version risk                                                         | Optional Vite build to bundle and minify                                                 |
+| 8   | ~~Netlify deploys are manual from the Mac~~ Deploys from git since 1 Nov 2026                                                             |                                                                                          |
+| 9   | The "Powered by Netlify" badge shows on the site                                                                                          | Free-plan behaviour (or a drawer badge): check the project settings                      |
+| 10  | Untested on real phones and Safari iOS audio unlock                                                                                       | Test on an Honor 400 Pro and an iPad. The audio context starts on the first pointerdown. |
+| 11  | No contact form, admin or analytics yet (planned in `portfolio-setup-plan.xlsx`)                                                          | Phase 1                                                                                  |
 
 ---
 
@@ -453,6 +475,7 @@ Use this contract so a modelled synth drops into the existing interaction code.
 **Materials:** PBR Metallic-Roughness. Bake AO and light into one 2K texture atlas for the body. Use separate small materials for anything that glows (keys, pads, buttons, knob caps, LEDs) so the code can drive `emissive` on each.
 
 **Object naming (code maps these by name):**
+
 ```
 synth_body, synth_deck
 screen_main            (plane; UVs 0..1 for the canvas texture)
@@ -470,13 +493,15 @@ cable_remote_start, cable_strip_start (empties)
 **Animations (optional, in the GLB):** `key_press`, `knob_turn`, and a camera rig as named actions. The code currently animates in JS, so baked actions are a bonus and not required. Cables should stay procedural (`TubeGeometry`) so they can plug in dynamically. Export only the start empties.
 
 **Loading in the code (v2):**
+
 ```js
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 const gltf = await loader.loadAsync('assets/3d/vr17.glb');
-const get = n => gltf.scene.getObjectByName(n);
+const get = (n) => gltf.scene.getObjectByName(n);
 // e.g. key i → itemCtrl(get(`key_${pad(i)}`), 'kb', i, () => playNote(wMidi(i)));
 ```
+
 Keep a **procedural fallback** (the current code) if the GLB fails to load.
 
 ---
@@ -484,6 +509,7 @@ Keep a **procedural fallback** (the current code) if the GLB fails to load.
 ## 9. v2 roadmap: step by step
 
 ### Phase 0: foundations (do first, about 30 min)
+
 1. **GitHub:** confirm Vick has added `Portfolio-Project` to the Claude GitHub App. Then call `mcp__claude-code-remote__add_repo` (owner `VickRoopram`, repo `Portfolio-Project`, access `push`).
 2. Re-create the repo from the Mac copy (`~/Projects/vick-does-creative/site`). Run `git init` there through Desktop Commander, or stage the files to the container. Make sure `docs/HANDOFF.md`, `netlify.toml` and `.gitignore` (with `.netlify/`) are included. Commit and push `main`.
 3. **Netlify Git CD:** Vick links the repo in the Netlify UI (Project → Site configuration → Build & deploy → Link repository; the publish dir is `.`). Then create a `staging` branch and enable branch deploys (`staging--vick-does-creative-ztpv.netlify.app`). Deploy previews per pull request come automatically.
@@ -491,27 +517,34 @@ Keep a **procedural fallback** (the current code) if the GLB fails to load.
 5. Delete `.github/workflows/pages.yml` if Netlify is the only host. Running both hosts is confusing.
 
 ### Phase 1: Netlify features (data and backend)
+
 Call `mcp__Netlify__get-netlify-coding-context` for `forms`, `functions`, `blobs` and `db` **before writing code**. That's required by the Netlify server instructions.
+
 - **Contact form:** use Netlify Forms. Add a hidden static `<form name="contact" netlify netlify-honeypot="bot-field">` in `index.html` so the build bot detects it. Submit with `fetch('/', {method:'POST', body:new URLSearchParams(...)})` from the CV remote's Contact card. Enable forms with `update-forms`. Set up email notifications in the UI (Forms → Notifications).
 - **Editable content:** add `/admin` (a static page) and `netlify/functions/content.mjs` (GET public, PUT behind a password). Store `content.json` overrides in **Netlify Blobs** (simplest, no schema needed) or **Netlify DB**/Postgres (if relational data is wanted). The site fetches `/api/content` and merges it over `content.js` defaults. Set the `ADMIN_PASSWORD` env var with `manage-env-vars` (secret, functions scope, production context).
 - **Visitor stats:** add `netlify/functions/track.mjs` to increment counters in Blobs, keyed by `mode`, `channel:item` and day. Use no cookies and no IPs, which keeps it privacy-safe. Show a small table on `/admin`.
 - **Environments:** set `[context.production]` and `[context.branch-deploy]` in `netlify.toml` with separate Blob store names (`content-prod` vs `content-staging`) so staging edits don't touch production.
 
 ### Phase 2: Figma as the design source of truth
+
 - Use `create_session` (fileKey `gXh33LpoadWI0B76ofjD56`), then `get_variable_defs` and `get_design_context` on node `1:2`. Extract the exact colours, radii and proportions of the synth into `src/tokens.js` (or CSS variables) and use those instead of the hand-picked values.
 - Ask Vick to add **frames in Figma** for the HUD (top bar, card, mobile sheet) so the UI chrome matches his design system. Consider the Design System artifact type for documenting tokens.
 - Keep a frame showing the **control map** (which control = which content). It's the shared spec between Vick and Claude.
 - Remember: use base64 screenshots, because the asset URLs are proxy-blocked in the container.
 
 ### Phase 3: Framer (marketing site and CMS)
+
 Recommended split: **Framer = the 2D website** (landing page, about, case studies, SEO, CMS), and **the synth = the immersive experience**, embedded or linked.
+
 - `open_project` (or `create_project`) → read the project instructions it returns (the Framer server says to follow them).
 - Build the pages: Home (hero, "I am creative", a "Play the synth" CTA), Work (CMS collection mirroring `CH.gd/ux/mo/tl/xp`), CV and Contact.
 - Embed the synth with a Framer **Embed/Code component** using an iframe of the Netlify URL, or link out to it.
 - Optional later: the Framer CMS becomes the content source and the synth fetches a JSON export. Decide this against the Netlify Blobs admin in Phase 1. **Don't build both CMSs:** ask Vick which one he wants to edit in.
 
 ### Phase 4: real 3D model and texturing (Blender, or Spline)
+
 **4a. Blender (most control, best texturing and animation):**
+
 1. Check Blender is open with its MCP add-on (`get_objects_summary`). If not, ask Vick to open it.
 2. Use `execute_blender_code` to build the synth from the Figma proportions, following the naming spec in §8. Bevelled body, inset deck, keys with rounded caps, knobs with knurling, the cables' start empties.
 3. Materials: a soft-touch plastic body (roughness about 0.55), glossy knob caps in the four role colours, a matte black strip, and emissive-ready key materials. Bake AO and lighting to a 2K atlas.
@@ -524,6 +557,7 @@ Recommended split: **Framer = the 2D website** (landing page, about, case studie
 **4c. Unicorn Studio (2D/WebGL hero effects):** once a tab connects (Allow agents on), create a design for a landing hero: Bungee "VICK DOES CREATIVE", grain and glow, and a portfolio image grid effect. Embed it in Framer. Upload images with `upload_media`.
 
 ### Phase 5: polish
+
 - A11y list view, SEO fallback HTML, OG image (render from Blender), performance budget (LCP under 2.5 s on 4G, under 5 MB total), real-device testing, optional Vite build.
 
 ---
@@ -531,15 +565,18 @@ Recommended split: **Framer = the 2D website** (landing page, about, case studie
 ## 10. Runbooks
 
 **Run locally (Mac):**
+
 ```bash
 cd ~/Projects/vick-does-creative/site && python3 -m http.server 8080   # open http://localhost:8080
 ```
 
 **Deploy to production from the Mac (until Git CD is linked):**
+
 ```bash
 cd ~/Projects/vick-does-creative/site
 npx -y netlify-cli@latest deploy --prod --dir . --site 6b83ad40-bd2a-4ad8-b794-27ec134997ef --message "<what changed>"
 ```
+
 Run it through Desktop Commander `start_process` (timeout about 170 s). If it reports `Unauthorized`, run `npx -y netlify-cli@latest login` and ask Vick to click **Authorize** in the browser. Once Git CD is linked, **stop** manual `--prod` deploys: the next push overwrites them.
 
 **Move a file from the container to the Mac:** write it to `/mnt/user-data/outputs/`, then `device_commit_files` to `/Users/vick/Projects/vick-does-creative/site/...` (that folder is granted; use `force:true` to overwrite).
@@ -556,7 +593,7 @@ Run it through Desktop Commander `start_process` (timeout about 170 s). If it re
 
 - [ ] Read this file. Ask Vick which phase to start with if he doesn't say.
 - [ ] Phase 0: GitHub access → push the repo → Netlify Git CD → `staging` branch.
-- [ ] Confirm with Vick: **one CMS** (Netlify admin *or* Framer CMS)?
+- [ ] Confirm with Vick: **one CMS** (Netlify admin _or_ Framer CMS)?
 - [ ] Confirm: is a custom domain wanted? Which one?
 - [ ] Confirm: is Blender installed with its MCP add-on, or should we use Spline?
 - [ ] Get real project images, Figma screens for the UX projects (there are no UX visuals yet), and Geek Punch details.
@@ -564,7 +601,10 @@ Run it through Desktop Commander `start_process` (timeout about 170 s). If it re
 - [ ] After every change: deploy to staging, test in the browser pane, then promote to production.
 
 ### Open questions for Vick
-1. Should Skills, Awards, Work and Study come back somewhere (e.g. on the CV remote) now that they're off the button row?
-2. What goes in the Teacher role and the Experimental slots?
+
+1. ~~Skills, Awards, Work and Study~~ Their channels were removed on 22 Nov 2026; the facts are in About and `PROFILE`.
+2. What goes in the Experimental slots? (The Teacher role went with the role channels.)
 3. Should the Netlify team be renamed from "Floodlight Studios" (his employer's name) to keep the personal and work brands separate?
 4. Is Geek Punch public yet, or should it stay "in development"?
+5. Should `/portfolio/` (the plain page) get a visible link on the site, e.g. in the menu, for scouts in a hurry? Today only the skip link, `<noscript>` and the sitemap lead to it.
+6. Are `assets/img/g11.jpg` and `g12.jpg` used in `/admin` content? Nothing in the code uses them.

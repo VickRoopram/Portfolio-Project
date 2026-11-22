@@ -46,6 +46,18 @@ jobs:
       - name: Repo checks (syntax, references, conflict markers, sizes, secrets, JSON)
         run: node scripts/ci-check.mjs
 
+      - name: Formatting (Prettier, same version as npm run format)
+        if: ${{ !cancelled() }}
+        run: npx --yes prettier@3.8.1 --check .
+
+      - name: Lint (ESLint, built-in rules only)
+        if: ${{ !cancelled() }}
+        run: npx --yes eslint@10.1.0 --format=stylish .
+
+      - name: Search and AI files are up to date with src/content.js (npm run generate)
+        if: ${{ !cancelled() }}
+        run: node scripts/generate.mjs --check
+
       - name: Install function dependencies (no install scripts)
         if: ${{ !cancelled() }}
         run: npm ci --ignore-scripts --no-fund
