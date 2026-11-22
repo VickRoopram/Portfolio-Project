@@ -216,7 +216,7 @@ No required reviewers: they would only pause the smoke test, not Netlify (C1).
 
 ## 7. VS Code setup (once per machine)
 
-1. Open the repo folder. Accept the recommended extensions: **GitHub Pull Requests**, **GitHub Actions**, **EditorConfig** (`.vscode/extensions.json`).
+1. Open the repo folder. Accept the recommended extensions: **GitHub Pull Requests**, **GitHub Actions**, **EditorConfig**, **Prettier** and **ESLint** (`.vscode/extensions.json`). Files format on save with the repo's Prettier settings.
 2. Run Task → **"Turn on git hooks (once per clone)"**, or `npm run setup`.
 3. Status bar, bottom left: check the branch name before you commit. On `main`, VS Code asks first.
 4. Review PRs and watch CI from the GitHub sidebar. No need to leave the editor.

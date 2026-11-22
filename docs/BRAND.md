@@ -2,7 +2,7 @@
 
 Status: approved by Vick on 16 Nov 2026. The copy in section 6 is on the site (src/content.js and the organisms that hold interface copy). Section 8 (22 Nov 2026) adds the copy for search engines and AI assistants; it goes live once Vick approves it on staging.
 
-This file does three jobs. Sections 1 to 5 describe the brand, so anyone (or any AI) writing for the site knows who is talking. Section 6 is the full set of copy changes proposed for the site. Section 7 is the prompt to give an AI before it writes or edits copy.
+This file does three jobs. Sections 1 to 5 describe the brand, so anyone (or any AI) writing for the site knows who is talking. Section 6 is the full set of copy changes proposed for the site. Section 7 is the prompt to give an AI before it writes or edits copy. Section 8 covers the copy search engines, AI assistants and scouts read first.
 
 ---
 
@@ -331,6 +331,7 @@ FORMATS:
 - Bleep: a heading of 3 words or fewer, and a body of 1 or 2 lines.
 - Buttons: say what happens, in 1 or 2 words.
 - Project cards: 2 to 4 sentences.
+- Search and AI lines (page title, description, a project's one-line summary): plain and direct, no jokes. Title under 60 characters, description under 160.
 
 CHECK BEFORE YOU FINISH: remove the adjectives. Is the line still true and still interesting? If not, find the detail and say that instead.
 ```
