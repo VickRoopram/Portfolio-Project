@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" fill="none" stroke="#2a1b12" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+<!-- phone -->
+<rect x="44" y="8" width="54" height="100" rx="9"/>
+<path d="M52 20 L90 20 L90 90 L52 90 Z" fill="#cfe0f7" stroke-width="2.4"/>
+<path d="M64 99 L78 99"/>
+<!-- bars on screen -->
+<path d="M58 80 L58 66 M66 80 L66 58 M74 80 L74 70 M82 80 L82 52" stroke="#1f6ed4" stroke-width="4"/>
+<path d="M58 34 L72 34 M58 42 L80 42" stroke-width="2.4"/>
+<!-- tick badge -->
+<circle cx="112" cy="30" r="15" fill="#1f6ed4" stroke="#1f6ed4"/>
+<path d="M105 30 L110 35 L120 24" stroke="#fff" stroke-width="3.6"/>
+<!-- pin -->
+<path d="M24 58 Q24 46 34 46 Q44 46 44 58 Q44 66 34 78 Q24 66 24 58 Z" fill="#fff"/>
+<circle cx="34" cy="57" r="4" fill="#1f6ed4" stroke="#1f6ed4"/>
+<path d="M18 86 Q34 92 50 86" stroke-width="2.4"/>
+</svg>

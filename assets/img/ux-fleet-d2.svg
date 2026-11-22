@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" fill="none" stroke="#2a1b12" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+<!-- dashed route with stops -->
+<path d="M10 92 Q34 70 52 84 T92 70 T132 48" stroke-dasharray="7 8"/>
+<circle cx="10" cy="92" r="5" fill="#2a1b12"/>
+<path d="M126 40 L138 40 L132 50 Z" fill="#2a1b12"/>
+<!-- magnifier -->
+<circle cx="70" cy="46" r="26" fill="#cfe0f7"/>
+<circle cx="70" cy="46" r="26"/>
+<path d="M89 65 L110 88" stroke-width="7"/>
+<path d="M56 32 Q60 26 68 25" stroke="#fff" stroke-width="4"/>
+<!-- question mark -->
+<path d="M63 40 Q63 32 71 32 Q79 32 79 39 Q79 45 72 47 L71 53" stroke="#1f6ed4" stroke-width="4"/>
+<circle cx="71" cy="60" r="2.4" fill="#1f6ed4" stroke="#1f6ed4"/>
+</svg>
