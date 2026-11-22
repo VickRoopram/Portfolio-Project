@@ -1,133 +1,101 @@
 # Vick Does Creative
 
-The portfolio of **Vickhal Roopram**, a UX/UI, graphic and motion designer from South Africa, built as a 3D synthesizer you can play.
+The portfolio of **Vickhal Roopram**, a UX/UI, illustration and motion designer from South Africa, built as a cardboard synthesizer you can play.
 
-The synth is the interface. Each part of the instrument holds a different side of Vick's work. Hover to read titles, click to zoom in, and press keys to open projects.
+Live: <https://vick-does-creative.netlify.app> · Staging: <https://version-01--vick-does-creative.netlify.app> · Plain version: [`/portfolio/`](https://vick-does-creative.netlify.app/portfolio/)
 
-![Three.js](https://img.shields.io/badge/three.js-r160-black) ![No build step](https://img.shields.io/badge/build-none-lightgrey)
+![Three.js](https://img.shields.io/badge/three.js-r160-black) ![No build step](https://img.shields.io/badge/build-none-lightgrey) ![Netlify](https://img.shields.io/badge/host-Netlify-00ad9f)
 
 ## How it plays
 
-| Synth part                                                         | What it holds                                                                                      |
-| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| **Filter buttons**: Design · UI/UX · Motion · Tools · Experimental | Choose what the keyboard shows. The active button glows and the keys light up in its colour.       |
-| **Keyboard** (14 keys)                                             | One project, tool or experiment per key. Click a key to open its card.                             |
-| **Four big knobs**                                                 | Sound: Filter, Resonance, Decay, Echo. Drag up or down; click to hear a note.                      |
-| **CV remote** (left)                                               | Full CV (page images, no download), contact details and social links. Also plugs in when selected. |
-| **Music side** (right): drum pads, Tone, Wave, BEATS, STOP, MUTE   | Pure play. BEATS cycles five original tracks; STOP and BEATS glow while music runs.                |
+| Part                                                             | What it does                                                                                     |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| **Welcome sheet**                                                | The loader: the site is sketched in pencil while it loads. Press **Enter** or scroll.            |
+| **Mode buttons**: Design · UI/UX · Motion · Tools · Experimental | Choose what the keys hold. Each key opens one project card.                                      |
+| **Four big knobs**                                               | Sound: Filter, Resonance, Decay, Echo.                                                           |
+| **Remote** (left)                                                | Contact, CV and social links. The header's **Contact** button flies here.                        |
+| **Music side**: pads, BEATS, STOP, MUTE                          | BEATS plays Vick's tracks with his motion backgrounds.                                           |
+| **Play** (header)                                                | Clears the portfolio away: loop, record and jam. **Back** returns.                               |
+| **Around the desk**                                              | Polaroids, a to-do note, a plant with a life cycle, a lamp.                                      |
+| **?** (bottom left)                                              | Bleep, a wooden TV, gives the tour.                                                              |
+| **Menu**                                                         | A tray of boxes: Home, About, Projects, Contact.                                                 |
+| **Phone**                                                        | Upright: Vick's office as one wall, with boxes as the menu. Turned sideways: the playable synth. |
 
-**The desk:** the synths sit on a desk next to a lamp (click it to switch it on or off; its hover tip is a bulb with On / Off) and a plant in a white pot with dark soil. The look is warm and plain: cream and warm-grey hardware, with one design system for the overlays. The camera starts almost top-down; click a part and it swoops down to a low, close view. Left drag rotates, right drag pans, scroll zooms. Project cards open with the work itself, then the story and a clear link to the full project.
+Mouse, trackpad and touch: drag to turn, right-drag to pan, scroll or pinch to zoom; the joystick does the same. Keys: `A`–`;` notes, `W E T Y U O P` sharps, `Z`–`.` drums, `1`–`6` modes, `←`/`→` page cards, `Esc` back.
 
-**Header & section titles (from the Figma hover states):** the top bar carries the Vickhal Roopram logo (click to go home), the Contact button, the sound icon and a hamburger menu that morphs into a cross. Hover a device and a subtle underlight fades in beneath it, like an LED strip under the hardware: red for Contact. The My Projects underlight takes the colour of the keyboard's current mode (green Design, blue UI/UX, orange Motion, purple Tools, pink Experimental, and the role knob colours) and stays on while you're in a keyboard mode. Click the device body to zoom in.
+## Run it
 
-**Menu:** the burger opens a side panel in the same spot as the project card (a bottom sheet on phones), so the synth stays visible and you can still use it. **Home** flies back to the full desk; **About** and **Contact** fly to their part of the synth, push its key and open the card. **Projects** opens the five modes (Graphic design, UI/UX design, Motion & 3D, Tools, Experimental). Choosing a mode flies the camera to the keyboard and lights that mode's keys while the panel lists its projects by title. Point at a project and its lead image appears just under it, over the names below. Choosing a project starts a short sequence: the camera pans out to the desk, swoops into the synth, the project's key goes down (you see it sink and hear the note, and its name appears), then the card opens where the menu was. Cards opened from the menu end with two secondary buttons: **Back to menu** returns to that mode's list with the project marked, and **Cancel** closes the card and leaves you on the synth. `Esc` steps back a level, then closes the menu.
+No build step: native ES modules, three.js from jsDelivr (`three@0.160.0`).
 
-**Zoom guide (bottom right):** a scroll-wheel icon sits in the corner. As soon as you zoom (scroll or pinch), it slides to the bottom middle and opens up with a short instruction (_Scroll to zoom_, _Pinch to zoom_ on phones) and a bar that fills as you zoom in, with its percentage (0% is the whole table, 100% is as close as you can go). It drops back to the icon a couple of seconds after you stop. When the bar is full (as close as you can go) the icon turns red and shakes; when it's empty (the whole table) the icon relaxes. Zoom is locked: in as far as one synth filling the view, out as far as the whole table. Click the icon to see the instructions on their own.
+```bash
+npm install        # only the admin's functions need packages
+npm run setup      # once per clone: git hooks that stop commits and pushes to main
+npm run dev        # Netlify Dev with the admin functions: http://localhost:8888
+```
 
-**Look:** a cardboard model (14 Nov 2026). Every part is card or paper from photo textures (`assets/tex/`), with an ink outline that boils; labels are hand-lettered; the room is dark and warm, the workbench dark wood. The whole site is animated on twos: `FPS = 12` in `src/atoms/craft.js` sets how many pictures a second the 3D scene draws, and `src/styles/skin.css` steps every CSS transition to match. The menu is a tray of boxes that fold open; picking a project runs a cable from it to its key on the synth. The intro is a sheet of paper on which the site is sketched while it loads. There is no light mode.
+## Scripts
 
-**Press feedback:** every control glows and traces a stroke of light around its edge when pressed. When you switch modes, the gaps around the keys that hold that mode's projects light up in its colour, in a wave from left to right. The HUD buttons and the project card use the same glow and stroke.
+| Command                   | What it does                                                                                                |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `npm run check`           | Repo checks: JS syntax, broken imports and links, conflict markers, file sizes, secrets, JSON               |
+| `npm run format`          | Formats everything with Prettier (`.prettierrc.json`). `format:check` checks only                           |
+| `npm run lint`            | ESLint, built-in rules only (`eslint.config.js`): undefined names, unused variables, common bugs            |
+| `npm run generate`        | Writes the search and AI files from `src/content.js`, and the library manifest ([docs/SEO.md](docs/SEO.md)) |
+| `npm run generate:check`  | Fails if those files are stale                                                                              |
+| `npm run check:functions` | Loads every Netlify Function (after `npm install`)                                                          |
 
-**Keyboard shortcuts:** `A`–`;` play notes, `W E T Y U O P` play sharps, `Z`–`.` play drums, `1`–`6` jump to modes, `←`/`→` page through open cards, `0` or `Esc` go home (`Esc` first closes the menu one level at a time, the lightbox or the card).
+CI runs all of these on every pull request ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 
-Mouse, trackpad and touch work too: drag to orbit, scroll or pinch to zoom. The view always centres on the table and its synths: zoom heads for the middle of the view, and zooming all the way out (0%) shows the whole table from above. You can turn all the way round the table; the low side angles open up as you zoom in.
+## Where to change what
 
-**Contact (header):** the Contact button flies you to the Contact synth, presses its CONTACT key and opens the contact card.
-
-**Beats:** press BEATS on the synth to play Vick's tracks (each press plays the next of 6; STOP stops). Each track comes with one of his motion backgrounds: it fills the background behind the desk and projects onto the table top under the synths, and the screen twinkles in its colours. The files live in `assets/beats/` (web-sized copies; the originals are kept in Google Drive, _Synth Elementa – Beats assets_).
-
-**Big knobs:** while you turn one, a lit ring shows its range and a light dot follows the knob; it fades away when you let go.
-
-**Joystick (bottom right, always there; the zoom guide sits beside it):** push the stick to slide the view across the table (to the CV synth, say); it springs back when you let go, and a tap recentres. Drag the ring round the stick to rotate: it turns with the view like a compass (the red tick points the way the view started), and its two arrows turn a step, or keep turning while held. Panning stays where you leave it, always over the table. When you pan or rotate with the mouse or trackpad, the joystick mirrors it: the stick leans the way the view moves and the ring turns.
+| To change…                         | Edit                                                                       | Then                                        |
+| ---------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------- |
+| Projects, copy, images             | `src/content.js`, or `/admin` (no code)                                    | `npm run generate` if you edited content.js |
+| Who Vick is (search, AI, CV facts) | `PROFILE` in `src/content.js`                                              | `npm run generate`                          |
+| Colours, fonts, spacing, motion    | `src/styles/tokens.css` (the only place for values)                        | Check `/library/`                           |
+| A whole new skin                   | tokens.css plus `src/styles/skin.css` ([docs/LIBRARY.md](docs/LIBRARY.md)) | Check `/library/` and staging               |
+| The words and voice                | [docs/BRAND.md](docs/BRAND.md) first                                       |                                             |
 
 ## Project structure
 
 ```
 .
-├── index.html              # Page shell: HUD, detail card, lightbox, import map
-├── admin/                  # Content admin (/admin): index.html, admin.css, admin.js
-├── netlify/functions/      # Admin API: login, content (draft/live), publish, media
-├── netlify/lib/cms.mts     # Shared: Blobs stores, login tokens, HTML cleaning
-├── src/                    # Built atomically: each layer only imports the layers below it
-│   ├── main.js             # Page: wires the layers together and runs the render loop
-│   ├── content.js          # Built-in default content (used until something is published in /admin)
-│   ├── cms.js              # Loads draft/live content from the admin over the defaults
-│   ├── core/               # Engine: state, data (content + modes), audio (synth, drums, beats), scene (renderer, lights)
-│   ├── atoms/              # geometry, textures, materials, labels, icons (coolicons)
-│   ├── molecules/          # fx (press glow + stroke), controls (keys, buttons, knobs), cable
-│   ├── organisms/          # synth, remote, desk, underlights, screens, card, menu, zoom guide, joystick, intro
-│   ├── page/               # camera (framing, swoops), input (pointer, keyboard, hover tip)
-│   ├── styles.css          # Imports the layers below (keep this path: /admin's preview loads it)
-│   └── styles/             # tokens.css, atoms.css, molecules.css, organisms.css
-├── docs/HANDOFF.md        # Full project context for the next iteration
-├── docs/GIT-WORKFLOW.md   # Branches, environments, CI, release checklist (read before pushing)
-├── assets/            # images, beats/ (audio + background videos for BEATS)
-│   ├── img/                # Project images (g* = portfolio PDF page no., cv* = CV pages)
-├── scripts/ci-check.mjs    # Repo checks (npm run check); scripts/smoke-check.mjs tests a deploy
-├── .githooks/              # pre-commit / pre-push: block commits and pushes to main (npm run setup)
-├── .vscode/                # Branch protection prompt, recommended extensions, tasks
-└── .github/workflows/
-    └── ci.yml              # Checks on every PR and push; smoke-tests Netlify after main / version-01 deploy
+├── index.html               Page shell: header, card, menu, tour, welcome sheet. <head> SEO block is generated
+├── src/                     Built atomically: each layer only imports the ones above it
+│   ├── boot.js              Desk (main.js) or phone page (organisms/pocket.js)
+│   ├── main.js              Wires the layers and runs the render loop (on twos: 12 pictures a second)
+│   ├── content.js           Content: CH (projects by mode), LINKS, MENU, DESK, PROFILE
+│   ├── cms.js               Applies /admin content over content.js
+│   ├── core/                state, data, audio, scene
+│   ├── atoms/               geometry, textures, materials, labels, icons, craft (card, paper, ink), sketch
+│   ├── molecules/           controls, cable, fx, card markup, toast, eraser
+│   ├── organisms/           synth, remote, desk, keepsakes, screens, card, menu, tour, jam, pocket, …
+│   ├── page/                camera, input
+│   ├── styles.css           Imports the stylesheets in order (keep this path: /admin loads it)
+│   └── styles/              tokens → base → atoms → molecules → organisms → skin → tour → pocket
+├── portfolio/               /portfolio/: the whole portfolio as one plain page (generated) + its CSS
+├── library/                 /library/: the design library, read live from the code (noindex)
+├── llms.txt · robots.txt · sitemap.xml    Generated for search engines and AI assistants
+├── admin/                   Content admin (/admin)
+├── netlify/                 functions/ (admin API) and lib/cms.mts (Blobs storage, auth, cleaning)
+├── assets/                  img, tex (textures), ui (logo, icons, cursor), fonts, beats, vid
+├── scripts/                 ci-check, ci-functions, smoke-check, generate, set-admin-password
+├── tools/                   admin-artifact (Claude artifact admin), phone-synth (sprite renderer)
+├── docs/                    HANDOFF, BRAND, GIT-WORKFLOW, LIBRARY, SEO
+└── .github/                 CI, Dependabot, PR template
 ```
-
-## Run locally
-
-There's no build step. The page uses native ES modules, so serve the folder over HTTP rather than opening the file directly:
-
-```bash
-python3 -m http.server 8080
-# or: npx serve .
-```
-
-Then open <http://localhost:8080>. Three.js loads from jsDelivr, pinned to `three@0.160.0`.
 
 ## Content admin (`/admin`)
 
-Projects, images and copy can be managed without touching code at **`/admin`** (password protected).
-
-- Groups follow the synth: **filter buttons** and **role knobs** fill the 14 keys, the **CV remote** has 6 buttons, and the **screen** holds the About pages. A map shows which key, pad or button each item lands on. Drag to reorder.
-- Edit titles, kicker lines, descriptions (bold, italic, headings, bullets, links, or raw HTML), images (shrunk to WebP on upload, with alt text), tags, links and skill bars, and see the card exactly as the site renders it.
-- **Update preview** saves a draft that the `version-01` preview shows (https://version-01--vick-does-creative.netlify.app). **Publish to live** copies the draft to the live site. Every replaced live version is kept and can be restored from **Live versions**.
-- Content is stored in Netlify Blobs (store `cms`: `draft`, `live`, `history/*`; store `media`: uploaded images, served at `/media/img/…`). If nothing has been published, the live site uses the defaults in `src/content.js`.
-- **Password:** stored only as a salted scrypt hash in Blobs (`cms/auth`); change it from the admin menu (**Change password**). To reset it without the old one: `ADMIN_PASSWORD_NEW='…' node scripts/set-admin-password.mjs > /tmp/a.json && npx netlify-cli blobs:set cms auth --input /tmp/a.json && rm /tmp/a.json`. An `ADMIN_PASSWORD` environment variable, if set, takes priority.
-- **Local preview:** put `ADMIN_PASSWORD=…` in a `.env` file (gitignored), run `npm install`, then `npm run dev` (Netlify Dev on port 8888). It uses a local sandbox store that never touches the real content.
-
-## Editing content in code
-
-All text, links and images live in **`src/content.js`**. Each channel looks like this:
-
-```js
-gd: { name: 'DESIGN', col: '#1fa957', items: [
-  { t: 'Project title', k: 'Kicker line', d: '<p>Description</p>',
-    img: [im('g5', 'Alt text')], tags: ['Figma'], links: [['Label', 'https://…']] },
-]}
-```
-
-- **Add a project:** append an item to a channel. The next free key picks it up automatically, up to 14 per filter.
-- **Add an image:** drop a `.jpg` into `assets/img/` and reference it with `im('file-name', 'alt text')`.
-- **Fill an "Open slot":** replace that item in `ds`, `st`, `ar`, `te` (roles) or `xp` (experimental).
-
-## Tech
-
-- **Three.js r160** for the scene, with `RoundedBoxGeometry` and `OrbitControls` (desktop only)
-- **Web Audio API** for a two-oscillator synth with sub-oscillator, low-pass filter, echo, synthesized drums and a 16-step sequencer for BEATS
-- **Canvas textures** for the screens: a dot-matrix pixel font (`atoms/pixelfont.js`) reading MY PROJECTS on the synth and CONTACT on the remote. When sound plays, MY PROJECTS shrinks to the top and a live waveform fills the screen, changing style every few seconds (line, pixel bars, broken dashes, dots). Every 25–60 seconds the Vickhal Roopram logo appears on it for a few seconds; click it to open the About summary
-- Fonts: Londrina Solid and Patrick Hand, self-hosted in `assets/fonts/` (SIL Open Font Licence)
+Projects, images and copy can be edited at `/admin` (password protected). **Update preview** saves a draft that staging shows; **Publish to live** sends it to production and keeps the old version in **Live versions**. Content is stored in Netlify Blobs (`cms`: `draft`, `live`, `history/*`; `media`: uploaded images at `/media/img/…`); until something is published the site uses `src/content.js`. Full guide: `docs/HANDOFF.md` §0 and §10.
 
 ## Deploy
 
-Netlify hosts the site and deploys it from git (GitHub Pages is not used):
-
-| Branch       | Environment | URL                                                |
-| ------------ | ----------- | -------------------------------------------------- |
-| `main`       | production  | https://vick-does-creative.netlify.app             |
-| `version-01` | staging     | https://version-01--vick-does-creative.netlify.app |
-
-Work on a short branch off `version-01`, open a PR into `version-01`, check the staging site, then open a PR from `version-01` into `main`. `main` only changes through a merged pull request. The full process, checklists and sources are in [`docs/GIT-WORKFLOW.md`](docs/GIT-WORKFLOW.md).
+Netlify deploys from git: `main` is production, `version-01` is staging. Work on a branch from `version-01`, open a PR into it, review staging, then open a PR from `version-01` into `main`. Rules and checklists: [docs/GIT-WORKFLOW.md](docs/GIT-WORKFLOW.md).
 
 ## Credits
 
-- Design and content: Vickhal Roopram, [Behance](https://www.behance.net/vickhalroopram) · [Instagram](https://www.instagram.com/vicsdoesmotion/) · [LinkedIn](https://www.linkedin.com/in/vickhal-roopram/)
-- Synth form based on Vick's Figma synth design
+- Design and content: Vickhal Roopram · [Behance](https://www.behance.net/vickhalroopram) · [Instagram](https://www.instagram.com/vicsdoesmotion/) · [LinkedIn](https://www.linkedin.com/in/vickhal-roopram/)
+- Fonts: Londrina Solid and Patrick Hand (SIL Open Font Licence, `assets/fonts/`) · Icons: coolicons
 
 © Vickhal Roopram. All rights reserved. Portfolio images, CV and written content may not be reused without permission.

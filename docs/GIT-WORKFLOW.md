@@ -87,6 +87,9 @@ feat/my-change ──PR──▶ version-01 (staging) ──PR──▶ main (pr
 | Git hooks                      | `.githooks/pre-commit`, `.githooks/pre-push` (`npm run setup` once per clone) | Commits on `main`, pushes to `main`, pushes that fail `npm run check` [S12]                                                                                                | `--no-verify` (emergencies only)           |
 | CI `checks`: repo checks       | `ci.yml` → `scripts/ci-check.mjs`                                             | JS syntax errors, imports or `src`/`href` pointing at missing files (the "screens don't load" class of bug), conflict markers, files ≥ 50 MiB, committed secrets, bad JSON | None. Fix the problem.                     |
 | CI `checks`: Netlify Functions | `ci.yml` → `scripts/ci-functions.mjs`                                         | A function in `netlify/functions` that won't load on Node 24 (Netlify's runtime), a broken `netlify/lib` import, or a missing handler or route                             | None                                       |
+| CI `checks`: formatting        | `npx prettier@3.8.1 --check .` (`.prettierrc.json`)                           | Files not formatted like the rest of the repo. Fix: `npm run format`                                                                                                       | None                                       |
+| CI `checks`: lint              | `npx eslint@10.1.0 .` (`eslint.config.js`, built-in rules only)               | Undefined names, unused variables, unreachable code, `==` slips                                                                                                            | None                                       |
+| CI `checks`: generated files   | `node scripts/generate.mjs --check`                                           | Search and AI files (`index.html` head, `/portfolio/`, `llms.txt`, `robots.txt`, `sitemap.xml`) out of date with `src/content.js`. Fix: `npm run generate` (docs/SEO.md)   | None                                       |
 | CI `checks`: dependencies      | `npm audit --omit=dev --audit-level=high`                                     | Known high or critical vulnerabilities in the Functions' npm packages                                                                                                      | None                                       |
 | CI `checks`: workflow lint     | actionlint 1.7.12 [S15]                                                       | Mistakes in workflow files (bad expressions, unknown properties, shell bugs), shown on the line                                                                            | None                                       |
 | CI `checks`: workflow security | zizmor 1.32.0 [S16]                                                           | Unpinned actions, over-broad token permissions, script injection, credential leaks in workflows                                                                            | None                                       |
@@ -114,7 +117,8 @@ git switch -c feat/short-name origin/version-01
 ### 5.2 Before you push (author)
 
 - [ ] `npm run dev` and check the change at http://localhost:8888 (desktop and phone width)
-- [ ] `npm run check` passes (the pre-push hook runs it too)
+- [ ] `npm run format`, then `npm run lint` and `npm run check` pass (the pre-push hook runs `check`)
+- [ ] Changed `src/content.js`? Run `npm run generate` and commit the generated files
 - [ ] Commit messages say _what changed and why_, one change per commit [S9]
 - [ ] No files ≥ 10 MiB unless they're intended web media; no `.env`
 - [ ] Push the branch, open a PR **into `version-01`**, wait for `checks` ✓, merge
@@ -238,6 +242,7 @@ No required reviewers: they would only pause the smoke test, not Netlify (C1).
 | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 19 Nov 2026 | Pages workflow removed; CI + smoke test + Environments added; ruleset and local guards defined; this document created.                                                                  |
 | 20 Nov 2026 | CI hardened: actions pinned to SHAs, Node 24, Functions load test, npm audit, actionlint, zizmor, file/line annotations and run summaries; Dependabot; PR template; fault drill passed. |
+| 22 Nov 2026 | Prettier, ESLint and generated-file checks added to `checks`; formatting, lint and generate steps added to §5.2.                                                                        |
 
 ---
 

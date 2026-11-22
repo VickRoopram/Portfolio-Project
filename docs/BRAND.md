@@ -1,8 +1,8 @@
 # Vick Does Creative: brand description and copy prompt
 
-Status: approved by Vick on 16 Nov 2026. The copy in section 6 is on the site (src/content.js and the organisms that hold interface copy).
+Status: approved by Vick on 16 Nov 2026. The copy in section 6 is on the site (src/content.js and the organisms that hold interface copy). Section 8 (22 Nov 2026) adds the copy for search engines and AI assistants; it goes live once Vick approves it on staging.
 
-This file does two jobs. Sections 1 to 5 describe the brand, so anyone (or any AI) writing for the site knows who is talking. Section 6 is the full set of copy changes proposed for the site. Section 7 is the prompt to give an AI before it writes or edits copy.
+This file does three jobs. Sections 1 to 5 describe the brand, so anyone (or any AI) writing for the site knows who is talking. Section 6 is the full set of copy changes proposed for the site. Section 7 is the prompt to give an AI before it writes or edits copy.
 
 ---
 
@@ -334,3 +334,35 @@ FORMATS:
 
 CHECK BEFORE YOU FINISH: remove the adjectives. Is the line still true and still interesting? If not, find the detail and say that instead.
 ```
+
+---
+
+## 8. Copy for search engines, AI assistants and scouts (22 Nov 2026)
+
+Most people meet the site first as a search result, a link preview or an AI assistant's answer, before they ever see the synth. That copy has one job: say plainly who Vick is and what's here, so a studio lead or scout clicks. It keeps the voice (first person, plain words, no em dashes, no banned words) but drops the jokes: the site carries the personality.
+
+### 8.1 Where it lives
+
+All of it is in `src/content.js` and is turned into the page head, `/portfolio/` and `llms.txt` by `npm run generate` (`docs/SEO.md`).
+
+| Field                                       | Rule                                                              | Now                                                                                                                                                                                                                                                                                                                               |
+| ------------------------------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PROFILE.title` (the search result's title) | Under 60 characters: name, role, place                            | Vickhal Roopram · UX/UI & Motion Designer, South Africa                                                                                                                                                                                                                                                                           |
+| `PROFILE.description` (under the title)     | Under 160 characters, first person, what's here                   | I'm Vickhal Roopram, a UX/UI and motion designer in South Africa. UX case studies, branding, packaging and animation, in a portfolio you can play.                                                                                                                                                                                |
+| `PROFILE.intro` (top of `/portfolio/`)      | Who, where, what, how, in four sentences                          | I'm Vickhal Roopram (Vick), a UX/UI, illustration and motion designer from South Africa. I'm the UX/UI designer at Floodlight Studios, a studio that builds SaaS products, and I've been designing since I was 12. Every project starts with research, because research is what opens up better ideas. Then I make it fun to use. |
+| `sum` on every project                      | One line: what it is, my role, a result if there is one. No jokes | e.g. Pulse: _Packaging for a backup power inverter that has to sell itself in store. Bronze at the 2020 SA Gold Pack Design Awards and a Top 100 international entry._                                                                                                                                                            |
+| Image alt text                              | What the picture shows                                            | _Logo, business cards and creative CV_                                                                                                                                                                                                                                                                                            |
+
+### 8.2 One change on the site itself
+
+| Where                         | Was                                                                                                            | Now                                                                                                                                |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Welcome sheet, under the name | UX & motion designer. I research like a nerd and play like a kid. I also use the box. This one became a synth. | UX/UI and motion designer in South Africa. I research like a nerd and play like a kid, and I use the box. This one became a synth. |
+
+Why: the welcome sheet is the first thing a scout reads and the share image shows it. "UX/UI" and "South Africa" are what people search for.
+
+### 8.3 Check before it ships
+
+- Every fact is in the CV, `content.js` or something Vick said. Nothing added.
+- Title under 60, description under 160 (the generator warns).
+- The nerd test still applies: remove the adjectives. Still true and useful?

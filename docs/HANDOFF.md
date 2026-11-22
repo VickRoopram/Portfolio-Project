@@ -2,7 +2,9 @@
 
 > **For the next Claude session.** This file is the full context for the "VR-17 portfolio synth" project built for **Vickhal (Vick) Roopram**. Read it fully before touching anything. It records what exists, where it lives, how the code works, which connectors worked or failed (and why), the decisions Vick made through feedback, and a concrete plan for v2.
 >
-> Last updated: 8 November 2026 · v1 status: **live on Netlify** (manual deploys) · Owner: Vick (vickhal@floodlightstudios.co.za)
+> Last updated: 22 November 2026 · **live on Netlify, deployed from git** (`main` = production, `version-01` = staging) · Owner: Vick (vickhal@floodlightstudios.co.za)
+>
+> **Start here, in this order:** `README.md` (what's where, scripts) → `docs/GIT-WORKFLOW.md` (how changes ship) → `docs/BRAND.md` (words) → `docs/LIBRARY.md` (tokens, components, assets, re-skins) → `docs/SEO.md` (search and AI) → this file (history and decisions). Sections 3 and 4 were rewritten on 22 Nov 2026; older entries in §6 describe the site as it was then.
 
 ---
 
@@ -63,20 +65,22 @@ The idea behind it, in Vick's own framing: he is "a creative software clients us
 
 ## 3. Where everything lives
 
-| Location                                                  | What                                                                                                        | Status                                                                             |
-| --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `~/Projects/vick-does-creative/site/` on **Vick's Mac**   | Deployable copy of the repo. **Not a git repo** (copied from a zip without `.git`). Has the base-reset fix. | Used for the Netlify CLI deploys                                                   |
-| Claude cloud container `/home/claude/vick-does-creative/` | The git repo (2 commits on `main`)                                                                          | **Ephemeral**: lost when the session ends. Re-create from the Mac copy or the zip. |
-| Claude cloud container `/home/claude/w/site/index.html`   | Single-file artifact source (everything inline)                                                             | Ephemeral. Get it back with the Artifact tool's `read` action on the artifact URL. |
-| `vick-does-creative.zip` (sent in chat)                   | Repo snapshot before the base-reset fix                                                                     | Superseded by the Mac copy                                                         |
-| `portfolio-setup-plan.xlsx` (sent in chat)                | Netlify setup plan with a status tracker                                                                    | Reference                                                                          |
-| This file                                                 | `docs/HANDOFF.md` in the repo and on the Mac                                                                | Source of truth for the next session                                               |
-
-**First job for the next session:** turn the Mac copy into the canonical git repo and push it to GitHub (see §9, Phase 0).
+| Location                                        | What                                                                                                                                                         |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| GitHub `VickRoopram/Portfolio-Project`          | **The only source.** `main` = production, `version-01` = staging, short work branches cut from `version-01`                                                  |
+| Netlify project `vick-does-creative`            | Deploys from git: `main` → https://vick-does-creative.netlify.app, `version-01` → https://version-01--vick-does-creative.netlify.app, PRs → Deploy Previews  |
+| Netlify Blobs (stores `cms`, `media`)           | Content saved in `/admin`: `draft`, `live`, `history/*`, uploaded images. This is the site's database; its schema is `cleanContent` in `netlify/lib/cms.mts` |
+| Vick's Mac `~/Projects/vick-does-creative/repo` | A clone, for local preview (`npm run dev`)                                                                                                                   |
+| Google Drive, _Synth Elementa_                  | Original audio and video (web copies are in `assets/beats`, `assets/vid`)                                                                                    |
+| Figma                                           | Synth design `gXh33LpoadWI0B76ofjD56`; the design library file (`docs/LIBRARY.md` §6)                                                                        |
+| Claude Project "Vick Portfolio"                 | Project instructions, and copies of `BRAND.md` and `GIT-WORKFLOW.md` (`claude/brand.md`, `claude/git-workflow.md`)                                           |
+| Claude artifact                                 | The content admin artifact (`tools/admin-artifact/`). The v1 single-file artifact is retired: the repo is the only code                                      |
 
 ---
 
 ## 4. Connectors and tools: status and lessons
+
+> **22 Nov 2026:** the table below is the 8 Nov picture. Since then GitHub works from the cloud session (`add_repo` with push access; `gh` has no token, so pull requests are opened in the browser, or by Vick from the compare link), and Netlify deploys from git, so the Mac CLI isn't needed to deploy. The local render test still works: sparse-clone three.js r160 from GitHub and route jsDelivr to it in Playwright. That's how the 22 Nov refactor was checked (computed styles of every sampled element in 10 states, before and after).
 
 | Connector / tool                                  | Status               | What worked                                                                                                                                                                                                                                                                          | What failed, and the fix                                                                                                                                                                                                                                                                    |
 | ------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -122,7 +126,9 @@ src/atoms/            geometry (rbox, cyl, flat, rrPath) · textures (canvasTex,
 src/molecules/        fx (gap halo + comet stroke) · controls (pressable, itemCtrl, knob, cap, screw) · cable
 src/organisms/        synth · remote · desk (plant, lamp) · underlights · screens · card · menu · zoom (guide) · joystick · party (beats backdrop) · intro
 src/page/             camera (frameFor, flyTo, zoomTo) · input (pick, drags, hover tip, keys)   (theme.js removed: one dark look, set in core/scene.js)
-src/styles.css        @imports styles/tokens → atoms → molecules → organisms ([hidden]{display:none!important} is REQUIRED)
+src/styles.css        @imports styles/tokens → base → atoms → molecules → organisms → skin → tour → pocket ([hidden]{display:none!important}, in base.css, is REQUIRED)
+portfolio/, llms.txt, robots.txt, sitemap.xml   Generated by scripts/generate.mjs for search and AI (docs/SEO.md)
+library/              /library/: the design library page (docs/LIBRARY.md)
 assets/img/           g<page>.jpg portfolio pages, cv1/cv2.jpg, vick.jpg (~3.1 MB)
 assets/cv/            vickhal-roopram-cv.pdf
 netlify.toml          publish=".", cache headers for /assets/*
@@ -144,19 +150,19 @@ im('g5','alt') → { s:'assets/img/g5.jpg', a:'alt' }
 
 **Channels:**
 
-| Key                       | Name                                     | Used by                                                  | Items                                                                                   |
-| ------------------------- | ---------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `gd`                      | DESIGN (graphic)                         | Filter button                                            | 12 portfolio projects                                                                   |
-| `ux`                      | UX / UI DESIGN                           | Filter button                                            | 7 (Floodlight, retail SaaS, Parliament systems, method, workflow, Geek Punch, training) |
-| `mo`                      | MOTION & 3D                              | Filter button                                            | 6                                                                                       |
-| `tl`                      | TOOLS                                    | Filter button                                            | 12                                                                                      |
-| `xp`                      | EXPERIMENTAL                             | Filter button                                            | 2 real + 2 "Open slot"                                                                  |
-| `ds` / `st` / `ar` / `te` | Designer / Strategist / Artist / Teacher | Big knobs                                                | Reuse items from `gd`/`ux`/`mo` plus "Open slot"s                                       |
-| `fm` / `fi` / `ex`        | Family Man / The Fighter / The Explorer  | Life strip pads                                          | 3 / 1 / 4                                                                               |
-| `cv`                      | CV & CONTACT                             | Remote                                                   | Full CV, Contact, Behance, Instagram, LinkedIn, More socials                            |
-| `ab`                      | ABOUT                                    | Synth screen click                                       | 5 (hello hero, name, since age 12, background, forever student)                         |
-| `sk` `aw` `wk` `sd`       | Skills / Awards / Work / Study           | **No longer on the synth** (removed by Vick)             | Still in data. Can be resurfaced in v2 (e.g. on the CV remote).                         |
-| `info`, `life`            | Legacy                                   | `info.items[0]` feeds `ab`; `life` feeds a combined card | Clean these up in v2                                                                    |
+| Key                           | Name                                     | Used by                                                                | Items                                                                                   |
+| ----------------------------- | ---------------------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `gd`                          | DESIGN (graphic)                         | Filter button                                                          | 12 portfolio projects                                                                   |
+| `ux`                          | UX / UI DESIGN                           | Filter button                                                          | 7 (Floodlight, retail SaaS, Parliament systems, method, workflow, Geek Punch, training) |
+| `mo`                          | MOTION & 3D                              | Filter button                                                          | 6                                                                                       |
+| `tl`                          | TOOLS                                    | Filter button                                                          | 12                                                                                      |
+| `xp`                          | EXPERIMENTAL                             | Filter button                                                          | 2 real + 2 "Open slot"                                                                  |
+| ~~`ds` / `st` / `ar` / `te`~~ | Designer / Strategist / Artist / Teacher | **Removed 22 Nov 2026** (no control since entry 20)                    |                                                                                         |
+| ~~`fm` / `fi` / `ex`~~        | Family Man / The Fighter / The Explorer  | **Folded into `life`, 22 Nov 2026**                                    |                                                                                         |
+| `cv`                          | CV & CONTACT                             | Remote                                                                 | Full CV, Contact, Behance, Instagram, LinkedIn, More socials                            |
+| `ab`                          | ABOUT                                    | Synth screen click                                                     | 5 (hello hero, name, since age 12, background, forever student)                         |
+| ~~`sk` `aw` `wk` `sd`~~       | Skills / Awards / Work / Study           | **Removed 22 Nov 2026.** The facts are in `info` (About) and `PROFILE` |                                                                                         |
+| `info`, `life`                | Legacy                                   | `info.items[0]` feeds `ab`; `life` feeds a combined card               | Clean these up in v2                                                                    |
 
 ### Synth layout → interactions (v1 final)
 
@@ -431,23 +437,32 @@ Main synth grid is 17 columns × 6 rows, mapped to world coordinates by `GX(c) =
 
 52. **15 Nov 2026: foley** (Vick: subtle, detailed noises). `foley(kind, vol)` in `core/audio.js` makes four small sounds from filtered noise and clicks, wired straight to the speakers (not through the synth's filter/echo/analyser, so they don't echo, don't follow the volume knob and don't make the notebook draw a waveform); they obey mute and are rate-limited (`FOLEY_GAP`). `marker`: a felt-tip squeak in two strokes when the marker line starts round a synth (`organisms/underlights.js`). `slide`: card on card while the project page or menu scrolls and when you wheel-zoom the bench (`main.js`). `page`: a page turning when paging between projects (`organisms/card.js`), moving between menu levels (`organisms/menu.js`) and when the notebook turns (`organisms/screens.js`; quieter for sound pages). `tap`: two plastic clicks as the pointer passes from one cassette to the next (`organisms/menu.js`). Volumes are set in the `shape()` envelopes and the `.5` master in `foley`.
 
+53. **22 Nov 2026: formatting, design library, search and AI, data integrity** (Vick: best practice for code formatting, search engines and AI, clear components, a theme that's easy to re-skin, professional copy, updated docs, a Figma library).
+    - **Formatting:** Prettier (`.prettierrc.json`, width 120, single quotes) formatted the whole repo; ESLint with built-in rules only (`eslint.config.js`) runs clean. Both run in CI with pinned `npx` versions (no `package-lock` change) and on save in VS Code. Checked in headless Chromium: computed styles of every sampled element in 10 desktop and phone states are identical before and after.
+    - **Tokens:** one tiered `tokens.css` (palette → roles → materials → type → space → motion → cursor). The skin's token block and the old dark values it overrode are merged into it; `base.css` holds the resets. Hard-coded photo-white, brand red and the room gradient now read tokens. Re-skin guide: `docs/LIBRARY.md` §3.
+    - **Less code:** one shared `molecules/toast.js` (there were two copies); the phone page reuses `$` and `reduceMotion` from `core/state.js`; 7 unused variables, an unused helper and the unused content channels (`ds st ar te`, `sk aw wk sd`; `fm fi ex` folded into `life`) removed; 14 module-internal symbols no longer exported.
+    - **Search and AI:** `scripts/generate.mjs` writes the `<head>` SEO block, `/portfolio/` (the whole portfolio as one page), `llms.txt`, `robots.txt`, `sitemap.xml` and `library/manifest.json` from `content.js`. `PROFILE` holds the CV facts; each project has a one-line `sum`. Favicon, share image, `lang="en-ZA"`, skip link, `<noscript>`. Guide: `docs/SEO.md`.
+    - **Design library:** `/library/` shows every token, UI piece, icon, module and asset, read live from the code (noindex).
+    - **Data integrity:** the `/admin` store (`cleanContent`) used to drop `case`, `introFirst`, `acc` and `vid`, so a publish from `/admin` would have broken the case-study layouts, accents and videos. It now keeps them, and `sum`.
+    - **Copy:** the welcome line names the role and country ("UX/UI and motion designer in South Africa"). The search title and description and the `sum` lines follow `docs/SEO.md` §2. Everything else is the approved copy from 16 Nov.
+
 ---
 
 ## 7. Known issues and tech debt
 
-| #   | Issue                                                                                                                                                                                 | Suggested fix                                                                            |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| 1   | ~~`main.js` is one large file with legacy leftovers~~ Done in entry 22 (atomic modules, dead code removed). `CH.sk/aw/wk/sd/info` still exist in content.js but no control shows them | Split it into `scene/`, `audio/`, `ui/`, `modes/` modules and delete the dead code       |
-| 2   | Content is in JS. Not editable by non-developers.                                                                                                                                     | Move it to `content/*.json`, or a CMS (Netlify Blobs/DB, or the Framer CMS)              |
-| 3   | Geometry is procedural boxes and cylinders, not a real modelled synth                                                                                                                 | Model it in Blender or Spline and load it as GLB (§8)                                    |
-| 4   | Images are JPEG page renders at 68 dpi, ~3.1 MB total, no `srcset`                                                                                                                    | Re-export the real project images as WebP/AVIF in two sizes; use the Netlify Image CDN   |
-| 5   | No SEO or crawler content (everything is in WebGL)                                                                                                                                    | Add `<noscript>` and a hidden semantic HTML list of projects, Open Graph image, sitemap  |
-| 6   | Accessibility: content is only reachable through 3D clicks or number keys                                                                                                             | Add a DOM "list view" toggle, focusable controls and `aria-live` on the card             |
-| 7   | `three` loads from a CDN at runtime, so there's no offline use and a version risk                                                                                                     | Optional Vite build to bundle and minify                                                 |
-| 8   | Netlify deploys are manual from the Mac                                                                                                                                               | Connect Git continuous deployment (Phase 0)                                              |
-| 9   | The "Powered by Netlify" badge shows on the site                                                                                                                                      | Free-plan behaviour (or a drawer badge): check the project settings                      |
-| 10  | Untested on real phones and Safari iOS audio unlock                                                                                                                                   | Test on an Honor 400 Pro and an iPad. The audio context starts on the first pointerdown. |
-| 11  | No contact form, admin or analytics yet (planned in `portfolio-setup-plan.xlsx`)                                                                                                      | Phase 1                                                                                  |
+| #   | Issue                                                                                                                                     | Suggested fix                                                                            |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| 1   | ~~`main.js` is one large file with legacy leftovers~~ Done in entries 22 and 53                                                           |                                                                                          |
+| 2   | ~~Content is in JS~~ `/admin` edits it (Blobs). Still: Blobs content isn't in git, so `/portfolio/` and `llms.txt` only know `content.js` | Copy `/admin` changes into `content.js`, then `npm run generate`                         |
+| 3   | Geometry is procedural boxes and cylinders, not a real modelled synth                                                                     | Model it in Blender or Spline and load it as GLB (§8)                                    |
+| 4   | Images are JPEG page renders at 68 dpi, ~3.1 MB total, no `srcset`                                                                        | Re-export the real project images as WebP/AVIF in two sizes; use the Netlify Image CDN   |
+| 5   | ~~No SEO or crawler content~~ Done in entry 53 (`docs/SEO.md`)                                                                            | Search Console needs Vick's sign-in (`docs/SEO.md` §4)                                   |
+| 6   | Accessibility: content is only reachable through 3D clicks or number keys                                                                 | Add a DOM "list view" toggle, focusable controls and `aria-live` on the card             |
+| 7   | `three` loads from a CDN at runtime, so there's no offline use and a version risk                                                         | Optional Vite build to bundle and minify                                                 |
+| 8   | ~~Netlify deploys are manual from the Mac~~ Deploys from git since 1 Nov 2026                                                             |                                                                                          |
+| 9   | The "Powered by Netlify" badge shows on the site                                                                                          | Free-plan behaviour (or a drawer badge): check the project settings                      |
+| 10  | Untested on real phones and Safari iOS audio unlock                                                                                       | Test on an Honor 400 Pro and an iPad. The audio context starts on the first pointerdown. |
+| 11  | No contact form, admin or analytics yet (planned in `portfolio-setup-plan.xlsx`)                                                          | Phase 1                                                                                  |
 
 ---
 
@@ -587,7 +602,9 @@ Run it through Desktop Commander `start_process` (timeout about 170 s). If it re
 
 ### Open questions for Vick
 
-1. Should Skills, Awards, Work and Study come back somewhere (e.g. on the CV remote) now that they're off the button row?
-2. What goes in the Teacher role and the Experimental slots?
+1. ~~Skills, Awards, Work and Study~~ Their channels were removed on 22 Nov 2026; the facts are in About and `PROFILE`.
+2. What goes in the Experimental slots? (The Teacher role went with the role channels.)
 3. Should the Netlify team be renamed from "Floodlight Studios" (his employer's name) to keep the personal and work brands separate?
 4. Is Geek Punch public yet, or should it stay "in development"?
+5. Should `/portfolio/` (the plain page) get a visible link on the site, e.g. in the menu, for scouts in a hurry? Today only the skip link, `<noscript>` and the sitemap lead to it.
+6. Are `assets/img/g11.jpg` and `g12.jpg` used in `/admin` content? Nothing in the code uses them.

@@ -9,10 +9,12 @@
 
 ## Checked
 
-- [ ] `npm run check` passes locally, and the **checks** job is green here
+- [ ] `npm run format`, `npm run lint` and `npm run check` pass locally, and the **checks** job is green here
+- [ ] Changed `src/content.js`? Ran `npm run generate` (search and AI files, docs/SEO.md)
 - [ ] Looked at it on the Netlify Deploy Preview (link in the Netlify comment below): desktop and phone
 - [ ] No new red errors in the browser console
 - [ ] Copy matches `docs/BRAND.md` (if copy changed)
+- [ ] New colours, sizes or timings are tokens in `src/styles/tokens.css` (docs/LIBRARY.md)
 - [ ] Release only: staging checklist in `docs/GIT-WORKFLOW.md` §5.3 done on https://version-01--vick-does-creative.netlify.app
 
 ## If something breaks after merge
