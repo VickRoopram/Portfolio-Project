@@ -11,7 +11,7 @@ const pic = (g, cls = '') => `<button class="pic ${cls}" data-src="${g.s}" aria-
 export const ONE = 'ab';
 export function cardHTML(ch, i) {
   if (ch === ONE && i !== -1) return cardHTML(ch, -1) + CH[ch].items.slice(1).map((x, n) => `<section class="d sec" data-sec="${n + 1}"><h3>${x.t}</h3><p class="k">${x.k}</p>${x.d || ''}</section>`).join('');
-  const it = CH[ch].items[Math.max(0, i)], acc = it.acc ? ` style="--accent:${it.acc}"` : '', hd = `<header class="hd"${acc}><h2>${it.t}</h2>${it.k ? `<p class="k">${it.k}</p>` : ''}</header>`;
+  const it = CH[ch].items[Math.max(0, i)], acc = it.acc ? ` style="--accent:${it.acc}"` : '', hd = `<header class="hd${it.case ? ' case' : ''}"${acc}><h2>${it.t}</h2>${it.k ? `<p class="k">${it.k}</p>` : ''}</header>`;
   /* a case study (case:1) leads with its title, then the first image whole; everything else leads with a cropped image */
   let h = it.case ? hd + (it.img?.length ? pic(it.img[0], 'fig hero-pic') : '') : (it.img?.length ? pic(it.img[0], 'lead') : '') + hd;
   if (it.hero) h += `<div class="hero"><img src="assets/img/vick.jpg" alt="Portrait of Vickhal Roopram"><div class="d"><p><b>Vickhal Roopram</b><br>UX & Motion Designer<br>27 · South Africa</p></div></div>`;
@@ -22,7 +22,7 @@ export function cardHTML(ch, i) {
   /* <div class="fig fig-N"></div> in a description places img[N] right there, between the sections (a class-only marker, so it survives
      the admin's clean-up); images not placed that way still go in the gallery at the end */
   const placed = new Set();
-  if (it.d) h += `<div class="d"${acc}>${it.d.replace(/<div class="(fig|ill) \1-(\d+)"><\/div>/g, (m, kind, n) => { const g = it.img?.[+n]; if (!g || +n === 0) return ''; placed.add(+n);
+  if (it.d) h += `<div class="d${it.case ? ' case' : ''}"${acc}>${it.d.replace(/<div class="(fig|ill) \1-(\d+)"><\/div>/g, (m, kind, n) => { const g = it.img?.[+n]; if (!g || +n === 0) return ''; placed.add(+n);
     return kind === 'fig' ? pic(g, 'fig') : `<img class="ill" src="${g.s}" alt="${g.a}" loading="lazy">` })}</div>`;
   if (it.links) h += `<div class="cta-row">${it.links.map((l, k) => `<a class="cta${k ? ' ghost' : ''}" href="${l[1]}" target="_blank" rel="noopener"><span>${l[0]}</span>${out(l[1])}</a>`).join('')}</div>`;
   const rest = (it.img || []).slice(1).filter((g, k) => !placed.has(k + 1));

@@ -66,6 +66,7 @@ html.phone .d br.dbr{display:none}
 .ill-steps>div{display:grid;grid-template-columns:108px minmax(0,1fr);column-gap:12px;align-items:center}
 .ill-steps>div>b{align-self:end}
 .ill-steps .ill{grid-row:span 2;display:block;width:100%;height:auto;border-radius:4px;background:#fff}
+.ill-steps .ill[src$=".png"]{width:64px;justify-self:center;background:none} /* line icons sit straight on the card */
 /* story beats: a doodle, a small label, a headline and two or three lines (Fleet's challenge, problem and solution) */
 .beats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:var(--s4);margin:var(--s3) 0 var(--s4)}
 .beats>div{display:grid;justify-items:center;align-content:start;gap:6px;text-align:center}
@@ -73,28 +74,36 @@ html.phone .d br.dbr{display:none}
 .beats small{font:400 var(--t-sm)/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
 .beats h4{margin:0;font:400 var(--t-lg)/1.05 var(--display);letter-spacing:.02em;color:var(--ink);text-wrap:balance}
 .beats p{margin:0;text-wrap:balance}
-html.phone .beats{grid-template-columns:1fr;gap:var(--s3)}
-html.phone .beats>div{grid-template-columns:96px minmax(0,1fr);justify-items:start;column-gap:12px;row-gap:2px;text-align:left}
-html.phone .beats .ill{grid-row:span 3;width:96px;align-self:center}
+html.phone .beats{grid-template-columns:1fr;gap:var(--s5)}
+html.phone .beats .ill{width:120px}
 /* tags that sign off the page: under the last image, on its right */
 .d .tags.end{justify-content:flex-end;margin-top:var(--s2)}
-.ill-steps .ill[src$=".png"]{width:64px;justify-self:center;background:none} /* line icons sit straight on the card */
+
+/* UX/UI case studies (case:1): everything centred, on every screen; headings and short paragraphs balanced so the rag mirrors */
+.hd.case{justify-items:center;text-align:center}
+.hd.case h2{margin-left:0;text-wrap:balance}
+.d.case>:not(.pic):not(.desk-only){margin-inline:auto;text-align:center}
+.d.case h3,.d.case p{text-wrap:balance}
+.d.case .tags{justify-content:center}
+.d.case .tags.end{justify-content:flex-end}
+.d.case .tl li{grid-template-columns:1fr;gap:2px;text-align:center}
+.d.case .ill-steps>div{grid-template-columns:1fr;justify-items:center;text-align:center;row-gap:6px}
+.d.case .ill-steps>div>b{align-self:auto}
+.d.case .ill-steps .ill{grid-row:auto;width:min(100%,220px)}
+.d.case .ill-steps .ill[src$=".png"]{width:64px}
+
 /* a case study opens wide on desktop and tablet: images fill the sheet (over 3/4 of the screen), text stays a readable width */
 @media (min-width:761px){
   #card[data-wide="true"]{width:calc(100% - 32px)}
   #card[data-wide="true"] .d{max-width:none}
-  /* centred text, with even line lengths: headings balanced, short paragraphs balanced too, so the rag mirrors on both sides */
-  #card[data-wide="true"] .hd{justify-items:center;text-align:center}
-  #card[data-wide="true"] .hd h2{margin-left:0;text-wrap:balance}
-  #card[data-wide="true"] .d>:not(.pic):not(.desk-only){max-width:76ch;margin-inline:auto;text-align:center}
+  #card[data-wide="true"] .d>:not(.pic):not(.desk-only){max-width:76ch}
   #card[data-wide="true"] .d .steps{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
-  #card[data-wide="true"] .d .tl li{grid-template-columns:1fr;gap:2px;text-align:center}
-  #card[data-wide="true"] .d h3{text-wrap:balance}
-  #card[data-wide="true"] .d p{font-size:20px;text-wrap:balance}
-  #card[data-wide="true"] .d .tags{justify-content:center}
+  #card[data-wide="true"] .d p{font-size:20px}
   #card[data-wide="true"] .d>.beats:not(.pic){max-width:1180px;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--s7)}
   #card[data-wide="true"] .beats .ill{width:180px}
-  #card[data-wide="true"] .d .tags.end{max-width:none;justify-content:flex-end}
+  /* a feature row: every card side by side in one line, as wide as the images */
+  #card[data-wide="true"] .d>.steps.feat:not(.pic){max-width:none;grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);margin-block:var(--s3) var(--s4)}
+  #card[data-wide="true"] .d .tags.end{max-width:none}
   #card[data-wide="true"] .hero-pic{margin-top:var(--s3)}
 }
 /* the lamp's hover tip: a bulb icon, lit when the lamp is on, and On / Off */
