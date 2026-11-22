@@ -6,7 +6,18 @@ import { rbox } from '../atoms/geometry.js';
 import { M } from '../atoms/materials.js';
 
 export function eraser() {
-  const g = new THREE.Group(), block = new THREE.Group(), body = rbox(.92, .26, .44, .09, M('#fbf1dd')), sleeve = rbox(.46, .3, .48, .04, M('#e0301a'));
-  sleeve.position.x = -.14; block.add(body, sleeve); block.rotation.z = -.3; block.position.y = .24; // nose down on its leading end
-  g.add(block); g.visible = false; g.traverse(o => { o.raycast = () => {} }); return g;
+  const g = new THREE.Group(),
+    block = new THREE.Group(),
+    body = rbox(0.92, 0.26, 0.44, 0.09, M('#fbf1dd')),
+    sleeve = rbox(0.46, 0.3, 0.48, 0.04, M('#e0301a'));
+  sleeve.position.x = -0.14;
+  block.add(body, sleeve);
+  block.rotation.z = -0.3;
+  block.position.y = 0.24; // nose down on its leading end
+  g.add(block);
+  g.visible = false;
+  g.traverse((o) => {
+    o.raycast = () => {};
+  });
+  return g;
 }

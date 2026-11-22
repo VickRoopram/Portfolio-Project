@@ -10,24 +10,35 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, existsSync, appendFileSync } from 'node:fs';
 
 const site = (process.env.SITE_URL || '').replace(/\/$/, '');
-if (!site) { console.log('::error::SITE_URL is not set'); process.exit(1); }
+if (!site) {
+  console.log('::error::SITE_URL is not set');
+  process.exit(1);
+}
 const timeout = Number(process.env.TIMEOUT_S || 420) * 1000;
 const interval = Number(process.env.INTERVAL_S || 15) * 1000;
 const bust = `cb=${Date.now()}`;
 
 // Files Netlify serves as-is (publish = "."). Skip anything not served or rewritten.
 // Anything inside a dot-folder or dot-file (.github, .githooks, .vscode, .gitignore…) is skipped too.
-const NOT_SERVED = /(^|\/)\.|^(docs|netlify|scripts|tools|node_modules)\/|^(package(-lock)?\.json|netlify\.toml)$|\.md$/;
+const NOT_SERVED =
+  /(^|\/)\.|^(docs|netlify|scripts|tools|node_modules)\/|^(package(-lock)?\.json|netlify\.toml)$|\.md$/;
 
 let changed = [];
 try {
   changed = execFileSync('git', ['diff', '--name-only', '--diff-filter=AM', 'HEAD~1', 'HEAD'], { encoding: 'utf8' })
-    .split('\n').filter(Boolean).filter((f) => !NOT_SERVED.test(f) && existsSync(f) && f !== 'index.html');
-} catch { /* first commit or shallow history: fall back to the always-load checks */ }
+    .split('\n')
+    .filter(Boolean)
+    .filter((f) => !NOT_SERVED.test(f) && existsSync(f) && f !== 'index.html');
+} catch {
+  /* first commit or shallow history: fall back to the always-load checks */
+}
 changed = changed.slice(0, 6);
 
 const get = async (path) => {
-  const res = await fetch(`${site}/${path}${path.includes('?') ? '&' : '?'}${bust}`, { redirect: 'follow', cache: 'no-store' });
+  const res = await fetch(`${site}/${path}${path.includes('?') ? '&' : '?'}${bust}`, {
+    redirect: 'follow',
+    cache: 'no-store',
+  });
   return { status: res.status, body: Buffer.from(await res.arrayBuffer()) };
 };
 
@@ -46,17 +57,25 @@ if (changed.length) {
       try {
         const { status, body } = await get(f);
         if (status !== 200 || !body.equals(readFileSync(f))) pending.push(`${f} (${status})`);
-      } catch (e) { pending.push(`${f} (${e.message})`); }
+      } catch (e) {
+        pending.push(`${f} (${e.message})`);
+      }
     }
     if (!pending.length) {
       const secs = Math.round((Date.now() - started) / 1000);
       console.log(`✓ Live after ${secs}s.`);
-      summary.push(`✅ This commit's ${changed.length} changed file(s) were live after ${secs}s: ${changed.map((f) => `\`${f}\``).join(', ')}`);
+      summary.push(
+        `✅ This commit's ${changed.length} changed file(s) were live after ${secs}s: ${changed.map((f) => `\`${f}\``).join(', ')}`,
+      );
       break;
     }
     if (Date.now() - started > timeout) {
-      console.log(`::error title=Netlify didn't publish this commit::After ${timeout / 1000}s these were still old or missing: ${pending.join(', ')}. Check the deploy log at app.netlify.com.`);
-      summary.push(`❌ Netlify hadn't published this commit after ${timeout / 1000}s. Still old or missing: ${pending.join(', ')}`);
+      console.log(
+        `::error title=Netlify didn't publish this commit::After ${timeout / 1000}s these were still old or missing: ${pending.join(', ')}. Check the deploy log at app.netlify.com.`,
+      );
+      summary.push(
+        `❌ Netlify hadn't published this commit after ${timeout / 1000}s. Still old or missing: ${pending.join(', ')}`,
+      );
       writeSummary('failed');
       process.exit(1);
     }
@@ -74,7 +93,10 @@ for (const path of ['', 'src/main.js', 'src/styles.css', 'admin/']) {
   const { status } = await get(path);
   console.log(`${status === 200 ? '✓' : '✗'} /${path} → ${status}`);
   summary.push(`| ${status === 200 ? '✅' : '❌'} | \`/${path}\` | ${status} |`);
-  if (status !== 200) { bad++; console.log(`::error title=Page didn't load::/${path} returned ${status} on ${site}`); }
+  if (status !== 200) {
+    bad++;
+    console.log(`::error title=Page didn't load::/${path} returned ${status} on ${site}`);
+  }
 }
 writeSummary(bad ? 'failed' : 'passed');
 process.exit(bad ? 1 : 0);

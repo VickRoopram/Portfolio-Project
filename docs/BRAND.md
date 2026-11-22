@@ -14,12 +14,12 @@ This file does two jobs. Sections 1 to 5 describe the brand, so anyone (or any A
 
 ### What Vick told us about the brand
 
-| Question | Answer |
-|---|---|
-| Who does the copy speak to first? | Studios and hiring leads |
-| What kind of humour? | Nerdy and curious: jokes that come from loving the detail |
-| How present is faith? | A light touch: in About and the personal parts, not in headlines or taglines |
-| What should a visitor do next? | Open to all of it: a job, a project, a chat |
+| Question                          | Answer                                                                       |
+| --------------------------------- | ---------------------------------------------------------------------------- |
+| Who does the copy speak to first? | Studios and hiring leads                                                     |
+| What kind of humour?              | Nerdy and curious: jokes that come from loving the detail                    |
+| How present is faith?             | A light touch: in About and the personal parts, not in headlines or taglines |
+| What should a visitor do next?    | Open to all of it: a job, a project, a chat                                  |
 
 ### What the sentence is really saying
 
@@ -37,15 +37,15 @@ Every piece of copy should carry at least one of these three moves.
 
 ### One-word values
 
-| Value | What it means here | From the core statement |
-|---|---|---|
-| **Play** | Fun is the reason the work exists | "Fun creative expression" |
-| **Curiosity** | Asking how it works before deciding how it looks | "exploration" |
-| **Rigour** | Methodical, detailed, done properly | "methodical detailed research" |
-| **Perspective** | Research exists to find more than one way in | "opens paths for perspectives" |
-| **Resourcefulness** | Working with what is there | "I would use the box" |
-| **Expression** | The result should feel like somebody made it | "creative expression" |
-| **Craft** | Detail you can see in the finish | "detailed" |
+| Value               | What it means here                               | From the core statement        |
+| ------------------- | ------------------------------------------------ | ------------------------------ |
+| **Play**            | Fun is the reason the work exists                | "Fun creative expression"      |
+| **Curiosity**       | Asking how it works before deciding how it looks | "exploration"                  |
+| **Rigour**          | Methodical, detailed, done properly              | "methodical detailed research" |
+| **Perspective**     | Research exists to find more than one way in     | "opens paths for perspectives" |
+| **Resourcefulness** | Working with what is there                       | "I would use the box"          |
+| **Expression**      | The result should feel like somebody made it     | "creative expression"          |
+| **Craft**           | Detail you can see in the finish                 | "detailed"                     |
 
 ### Brand nouns (the things the brand talks about)
 
@@ -88,11 +88,11 @@ Why this one: it is the core statement in three beats and the same order (rigour
 
 ### Alternatives considered
 
-| Tagline | Strength | Why it is not the lead |
-|---|---|---|
-| Homework first. Then play. | Very simple, very Vick | Loses the box |
-| Not outside the box. Not inside it. I use the box. | The full thought | Long; works better as a pull quote (it is the About quote) |
-| Serious research. Serious fun. | Clean and balanced | Could be anyone's |
+| Tagline                                            | Strength               | Why it is not the lead                                     |
+| -------------------------------------------------- | ---------------------- | ---------------------------------------------------------- |
+| Homework first. Then play.                         | Very simple, very Vick | Loses the box                                              |
+| Not outside the box. Not inside it. I use the box. | The full thought       | Long; works better as a pull quote (it is the About quote) |
+| Serious research. Serious fun.                     | Clean and balanced     | Could be anyone's                                          |
 
 ---
 
@@ -100,16 +100,16 @@ Why this one: it is the core statement in three beats and the same order (rigour
 
 **Vick sounds like a curious, well-read nerd who is good company.** He explains how a thing works because he finds it interesting, and he assumes you might too.
 
-| Do | Don't |
-|---|---|
-| Write in first person: "I", "my" | Third person ("Vick is a…") except where Bleep is talking |
-| Use short, plain sentences | Stack adjectives or clauses |
-| Be specific: name the tool, the size, the year, the client | Say "various", "a range of", "many" |
-| Let the joke come from the detail (D&D, tools, cardboard, being 198 cm) | Add a joke that could be pasted onto anyone's site |
-| Show the research before the result | Lead with how beautiful it is |
-| State facts flatly, including awards | Hype, or humble-brag |
-| Mention faith simply where it belongs (About, Life) | Put faith in headlines, taglines or project copy |
-| Use South African English and words where natural ("Yoh!", "takkie") | Explain or italicise them unless the project is about the word |
+| Do                                                                      | Don't                                                          |
+| ----------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Write in first person: "I", "my"                                        | Third person ("Vick is a…") except where Bleep is talking      |
+| Use short, plain sentences                                              | Stack adjectives or clauses                                    |
+| Be specific: name the tool, the size, the year, the client              | Say "various", "a range of", "many"                            |
+| Let the joke come from the detail (D&D, tools, cardboard, being 198 cm) | Add a joke that could be pasted onto anyone's site             |
+| Show the research before the result                                     | Lead with how beautiful it is                                  |
+| State facts flatly, including awards                                    | Hype, or humble-brag                                           |
+| Mention faith simply where it belongs (About, Life)                     | Put faith in headlines, taglines or project copy               |
+| Use South African English and words where natural ("Yoh!", "takkie")    | Explain or italicise them unless the project is about the word |
 
 ### The nerd test
 
@@ -143,21 +143,21 @@ Only the words change. No facts have been added: every claim below is already on
 
 ### 6.1 Welcome
 
-| Where | Now | Proposed |
-|---|---|---|
-| Body line | UX & motion designer. I don't think outside the box, or inside it. I use the box. This one became a synth. | UX & motion designer. I research like a nerd and play like a kid. I also use the box. This one became a synth. |
-| Button | Enter | Enter (no change) |
-| Under the button | or scroll to continue | or scroll to continue (no change) |
+| Where            | Now                                                                                                        | Proposed                                                                                                       |
+| ---------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Body line        | UX & motion designer. I don't think outside the box, or inside it. I use the box. This one became a synth. | UX & motion designer. I research like a nerd and play like a kid. I also use the box. This one became a synth. |
+| Button           | Enter                                                                                                      | Enter (no change)                                                                                              |
+| Under the button | or scroll to continue                                                                                      | or scroll to continue (no change)                                                                              |
 
 ### 6.2 The notebook on the synth and the remote's note
 
-| Where | Now | Proposed |
-|---|---|---|
-| Left page at rest | I AM CREATIVE. (signed Vick) | I USE THE BOX. (signed Vick) |
-| Title page hint | play a key to draw the sound → | play a key. I'll draw the sound → |
-| Logo page hint | click to meet me → | click to meet the nerd → |
-| Remote note | CONTACT / say hello ↓ | CONTACT / say hello ↓ (no change) |
-| Jam page | Jam Session / ← hit REC, then play | Jam Session / ← hit REC. No homework this time |
+| Where             | Now                                | Proposed                                       |
+| ----------------- | ---------------------------------- | ---------------------------------------------- |
+| Left page at rest | I AM CREATIVE. (signed Vick)       | I USE THE BOX. (signed Vick)                   |
+| Title page hint   | play a key to draw the sound →     | play a key. I'll draw the sound →              |
+| Logo page hint    | click to meet me →                 | click to meet the nerd →                       |
+| Remote note       | CONTACT / say hello ↓              | CONTACT / say hello ↓ (no change)              |
+| Jam page          | Jam Session / ← hit REC, then play | Jam Session / ← hit REC. No homework this time |
 
 ### 6.3 About (one scrolling page)
 
@@ -194,105 +194,105 @@ Only the words change. No facts have been added: every claim below is already on
 
 ### 6.4 Bleep, the tour guide
 
-| Step | Now | Proposed |
-|---|---|---|
-| Hi, I'm Bleep! | I live on Vick's desk. Let me show you round his portfolio. | I live on Vick's desk. He built me from a box. Let me show you round. |
-| Play the synth | Click the synth to fly in. Every key opens one of Vick's projects. | Click the synth to fly in. Every key opens one of Vick's projects. (no change) |
-| A real instrument | It really plays! Click the keys, or type on your keyboard, to make music. | Yes, it really plays. Click the keys, or type on your keyboard. He checked. |
-| Drop a beat | Press BEATS for one of Vick's own tracks. Press again for the next. | Press BEATS for one of Vick's own tracks. Press again for the next. (no change) |
-| Bang the drums | Nine blue pads: kick, snare, hat and more. Tap out your own rhythm. | Nine blue pads: kick, snare, hat and six more. Vick counted. Twice. |
-| Twist the knobs | Drag the four big knobs up or down to bend and shape the sound. | Drag the four big knobs up or down. Nothing breaks. Try all of them. |
-| Just jam | Hit the play button to clear the desk and loop your own beats. No projects, only noise. | Hit play to clear the desk and loop your own beats. No projects. No homework. |
-| Around the desk | Polaroids and notes show the person behind the work. Click one! | The polaroids and notes are the person behind the work. Click one. |
-| Look around | Drag to turn the desk, or steer with this dial. | Drag to turn the desk, or steer with this dial. Every side is finished. |
-| Zoom right in | Scroll to go from the whole desk to one synth. | Scroll to zoom from the whole desk to one key. The tape is worth a look. |
-| Open the menu | Everything is boxed up in here if you'd rather pick from a list. | Rather pick from a list? Everything is boxed up in here. Literally. |
-| Sound on, off | Too loud? Click here whenever you need some quiet. | Too loud? Click here for quiet. Vick won't take it personally. |
-| Say hello | Contact flies you straight to Vick's details. He'd love to chat. | Contact flies you to Vick's details. He likes a good brief, or a good chat. |
-| Welcome back! | Lovely noise. The projects you were avoiding are still right here. | Lovely noise. The projects you were avoiding are still right here. (no change) |
+| Step              | Now                                                                                     | Proposed                                                                        |
+| ----------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Hi, I'm Bleep!    | I live on Vick's desk. Let me show you round his portfolio.                             | I live on Vick's desk. He built me from a box. Let me show you round.           |
+| Play the synth    | Click the synth to fly in. Every key opens one of Vick's projects.                      | Click the synth to fly in. Every key opens one of Vick's projects. (no change)  |
+| A real instrument | It really plays! Click the keys, or type on your keyboard, to make music.               | Yes, it really plays. Click the keys, or type on your keyboard. He checked.     |
+| Drop a beat       | Press BEATS for one of Vick's own tracks. Press again for the next.                     | Press BEATS for one of Vick's own tracks. Press again for the next. (no change) |
+| Bang the drums    | Nine blue pads: kick, snare, hat and more. Tap out your own rhythm.                     | Nine blue pads: kick, snare, hat and six more. Vick counted. Twice.             |
+| Twist the knobs   | Drag the four big knobs up or down to bend and shape the sound.                         | Drag the four big knobs up or down. Nothing breaks. Try all of them.            |
+| Just jam          | Hit the play button to clear the desk and loop your own beats. No projects, only noise. | Hit play to clear the desk and loop your own beats. No projects. No homework.   |
+| Around the desk   | Polaroids and notes show the person behind the work. Click one!                         | The polaroids and notes are the person behind the work. Click one.              |
+| Look around       | Drag to turn the desk, or steer with this dial.                                         | Drag to turn the desk, or steer with this dial. Every side is finished.         |
+| Zoom right in     | Scroll to go from the whole desk to one synth.                                          | Scroll to zoom from the whole desk to one key. The tape is worth a look.        |
+| Open the menu     | Everything is boxed up in here if you'd rather pick from a list.                        | Rather pick from a list? Everything is boxed up in here. Literally.             |
+| Sound on, off     | Too loud? Click here whenever you need some quiet.                                      | Too loud? Click here for quiet. Vick won't take it personally.                  |
+| Say hello         | Contact flies you straight to Vick's details. He'd love to chat.                        | Contact flies you to Vick's details. He likes a good brief, or a good chat.     |
+| Welcome back!     | Lovely noise. The projects you were avoiding are still right here.                      | Lovely noise. The projects you were avoiding are still right here. (no change)  |
 
 ### 6.5 Contact
 
-| Where | Now | Proposed |
-|---|---|---|
-| Contact card title | Hire me or say hello | Hire me, brief me or say hello |
-| Line above the email button | For work, collaborations or a chat about design and faith: | A job, a project, or a long chat about design, faith or D&D. All welcome: |
-| Full CV | Both pages of my CV: experience, awards, education, skills and references. | Both pages of my CV: experience, awards, education, skills and references. The short version of the homework. |
-| Behance | Full case studies plus illustration and motion projects. | The full case studies, with the working shown. Plus illustration and motion. |
-| Instagram | The creative account for animation and illustration, and a personal account for everything else. | One account for animation and illustration. One for everything else, mostly dogs and hikes. |
-| LinkedIn | Work history and professional updates. | Work history, in a sensible font. |
+| Where                       | Now                                                                                              | Proposed                                                                                                      |
+| --------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| Contact card title          | Hire me or say hello                                                                             | Hire me, brief me or say hello                                                                                |
+| Line above the email button | For work, collaborations or a chat about design and faith:                                       | A job, a project, or a long chat about design, faith or D&D. All welcome:                                     |
+| Full CV                     | Both pages of my CV: experience, awards, education, skills and references.                       | Both pages of my CV: experience, awards, education, skills and references. The short version of the homework. |
+| Behance                     | Full case studies plus illustration and motion projects.                                         | The full case studies, with the working shown. Plus illustration and motion.                                  |
+| Instagram                   | The creative account for animation and illustration, and a personal account for everything else. | One account for animation and illustration. One for everything else, mostly dogs and hikes.                   |
+| LinkedIn                    | Work history and professional updates.                                                           | Work history, in a sensible font.                                                                             |
 
 ### 6.6 Around the desk
 
-| Where | Now | Proposed |
-|---|---|---|
-| To-do note tip | To do / One day. Probably. | To do / Researching it first. |
-| Polaroid tip | Click to look closer | Click to look closer (no change) |
+| Where          | Now                        | Proposed                         |
+| -------------- | -------------------------- | -------------------------------- |
+| To-do note tip | To do / One day. Probably. | To do / Researching it first.    |
+| Polaroid tip   | Click to look closer       | Click to look closer (no change) |
 
 ### 6.7 Life (shown under "Off the clock")
 
-| Item | Proposed |
-|---|---|
-| Family | I come from a close family: both my parents and three brothers. My dad runs a full-scale branding company, which is where my design life started at 12. |
-| Lindy | My partner, and a big part of my world. She has heard every idea on this site at least twice. |
-| Faith | I'm a non-denominational Protestant Christian, finishing a theology degree at Doxa Deo & SATS (2023–2026). Faith shapes why I create, not only what I create. |
-| Jiu-Jitsu | I train and compete. On the mat, as in design, technique and patience beat brute force. |
-| Hiking & nature | Long walks uphill, for fun. It's research with better views. |
-| Dungeons & Dragons | Worlds, characters and stories built together around a table. It's also where I learned to plan for players who ignore the plan. |
-| Dogs | I love dogs. No further research needed. |
-| Drawing | I'm always sketching. Everything on this site started in pencil. |
+| Item               | Proposed                                                                                                                                                      |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Family             | I come from a close family: both my parents and three brothers. My dad runs a full-scale branding company, which is where my design life started at 12.       |
+| Lindy              | My partner, and a big part of my world. She has heard every idea on this site at least twice.                                                                 |
+| Faith              | I'm a non-denominational Protestant Christian, finishing a theology degree at Doxa Deo & SATS (2023–2026). Faith shapes why I create, not only what I create. |
+| Jiu-Jitsu          | I train and compete. On the mat, as in design, technique and patience beat brute force.                                                                       |
+| Hiking & nature    | Long walks uphill, for fun. It's research with better views.                                                                                                  |
+| Dungeons & Dragons | Worlds, characters and stories built together around a table. It's also where I learned to plan for players who ignore the plan.                              |
+| Dogs               | I love dogs. No further research needed.                                                                                                                      |
+| Drawing            | I'm always sketching. Everything on this site started in pencil.                                                                                              |
 
 > Note for Vick: the Lindy line adds a small joke about her hearing every idea. Say if you'd rather keep it as it was.
 
 ### 6.8 Design projects
 
-| Project | Proposed |
-|---|---|
-| Self-Promo: Design OS | **Brief:** build my own identity: a logo and the stationery to go with it. **What I found:** I think in systems, and I like both modern and retro design. **What I made:** a Design Operating System. The logo is built from Unicode emotes, the first digital emoticons, because they're simple, a bit nerdy and optimistic. So am I. |
-| A Journey With Kal | An illustrated, animated Instagram series about my own life with two rare genetic disorders. It explains the symptoms, the daily living and the treatment. I made it funny on purpose, so it's easier to relate to, for viewers and for others living with the same conditions. |
-| A Noob's Guide to Building a PC | A digital infographic of the basic parts you need to build a gaming PC and what each one does. It's 800 × 2000 px, so it reads properly on most devices. I built the PC first. That was the research. |
-| A Pandemic Together | An illustrated editorial spread about the lockdown experience, written and designed for Frankie, an Australian bi-monthly magazine about design, art and interiors. The illustrations carry the article instead of decorating it. |
-| iMvelo Care | A corporate identity for iMvelo, a mobile spa and wellness centre for women that specialises in care for the elderly. Calm, clear and easy to trust. |
-| Takkie Wash & Squeaky Kleen | I led a team rebranding two cleaning brands. The problem: a new in-store partnership, and customers who couldn't tell which brand did what. We kept the brands separate, made each cleaning process obvious, and used simple, punchy copy. |
-| Moving Type: "Yoh!" | An animated GIF of the South African slang word Yoh!, which you say in shock, severity or irritation. A man in comic-texture style is irritated by chatter, so you see the word exactly where you'd say it. |
-| Clover Festive Display | **Brief:** bring Clover's festive season to life in store and dramatise the Win-a-Car promotion. **Solution:** built on Clover's line "Way Better Shared": visuals of the things mothers make to share with family. |
-| Pulse Hybrid Inverter | Packaging for a backup power inverter that has to sell itself in store, with no sales rep and no manual, and show it's part of a bigger system. Bronze at the 2020 SA Gold Pack awards and a Top 100 international entry. Yes, I used the box. |
-| Saddler Repositioning | Repositioning Saddler from a white-label business to an on-trend fashion accessory brand. The line: "Your World. Your Way." |
-| Retro Grade | A two-page publication for a product I designed: T-shirts celebrating 50-plus years of gaming and esports, based on the games that defined their genres. The research was extremely enjoyable. |
-| Jonsson Workwear: Siyapusha | I led the group that wrote the campaign strategy to launch Jonsson's new lifestyle footwear, The Kalahari's. The strategy drove the launch collateral and a packaging redesign. "Siyapusha: built for the pressure." |
+| Project                         | Proposed                                                                                                                                                                                                                                                                                                                               |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Self-Promo: Design OS           | **Brief:** build my own identity: a logo and the stationery to go with it. **What I found:** I think in systems, and I like both modern and retro design. **What I made:** a Design Operating System. The logo is built from Unicode emotes, the first digital emoticons, because they're simple, a bit nerdy and optimistic. So am I. |
+| A Journey With Kal              | An illustrated, animated Instagram series about my own life with two rare genetic disorders. It explains the symptoms, the daily living and the treatment. I made it funny on purpose, so it's easier to relate to, for viewers and for others living with the same conditions.                                                        |
+| A Noob's Guide to Building a PC | A digital infographic of the basic parts you need to build a gaming PC and what each one does. It's 800 × 2000 px, so it reads properly on most devices. I built the PC first. That was the research.                                                                                                                                  |
+| A Pandemic Together             | An illustrated editorial spread about the lockdown experience, written and designed for Frankie, an Australian bi-monthly magazine about design, art and interiors. The illustrations carry the article instead of decorating it.                                                                                                      |
+| iMvelo Care                     | A corporate identity for iMvelo, a mobile spa and wellness centre for women that specialises in care for the elderly. Calm, clear and easy to trust.                                                                                                                                                                                   |
+| Takkie Wash & Squeaky Kleen     | I led a team rebranding two cleaning brands. The problem: a new in-store partnership, and customers who couldn't tell which brand did what. We kept the brands separate, made each cleaning process obvious, and used simple, punchy copy.                                                                                             |
+| Moving Type: "Yoh!"             | An animated GIF of the South African slang word Yoh!, which you say in shock, severity or irritation. A man in comic-texture style is irritated by chatter, so you see the word exactly where you'd say it.                                                                                                                            |
+| Clover Festive Display          | **Brief:** bring Clover's festive season to life in store and dramatise the Win-a-Car promotion. **Solution:** built on Clover's line "Way Better Shared": visuals of the things mothers make to share with family.                                                                                                                    |
+| Pulse Hybrid Inverter           | Packaging for a backup power inverter that has to sell itself in store, with no sales rep and no manual, and show it's part of a bigger system. Bronze at the 2020 SA Gold Pack awards and a Top 100 international entry. Yes, I used the box.                                                                                         |
+| Saddler Repositioning           | Repositioning Saddler from a white-label business to an on-trend fashion accessory brand. The line: "Your World. Your Way."                                                                                                                                                                                                            |
+| Retro Grade                     | A two-page publication for a product I designed: T-shirts celebrating 50-plus years of gaming and esports, based on the games that defined their genres. The research was extremely enjoyable.                                                                                                                                         |
+| Jonsson Workwear: Siyapusha     | I led the group that wrote the campaign strategy to launch Jonsson's new lifestyle footwear, The Kalahari's. The strategy drove the launch collateral and a packaging redesign. "Siyapusha: built for the pressure."                                                                                                                   |
 
 ### 6.9 UX / UI
 
-| Item | Proposed |
-|---|---|
-| Floodlight Studios | I'm the only UX/UI designer at Floodlight Studios, a studio that builds SaaS products. Our biggest client is SPAR, one of the largest supermarket and retail chains in the region. The studio also gives us room to pitch and build our own product ideas, which I take full advantage of. (Role, domain and team details unchanged.) |
-| Designing at retail scale | Retail tools get used by a lot of people, in a hurry. So I start with the box: who uses this screen, where, and what has to happen next. Then I design the flows and screens in Figma, hand them off in Zeplin linked to Jira tickets, and refine them with the developers every sprint. |
-| Systems for Parliament | Systems I designed for SASSA and Home Affairs were presented to the South African Parliament in 2020 for possible national use. In 2022 another prototype was reviewed for a government initiative. Designing for public services means designing for everyone: different literacy levels, different devices, and a lot of waiting in queues. |
-| My method | Homework first. I do the deep, analytical work early to set the constraints, the context and the big picture. Only then do I choose the taste: what kind of expression fits this project and these users. Everything sits on clear logic, for the person using it and for whoever improves it next. (Steps unchanged: Constraint, Context, Taste.) |
-| Workflow & AI stack | Figma is home base, with the full Adobe suite beside it. Handoff runs through Zeplin, tracked against Jira tickets. On top of that I use AI tools every day: Claude Design and Code, Figma Make, Canva AI, ChatGPT and Gemini image generation, and Vercel and Antigravity to build and ship. I test the tools the way I test designs: properly. |
-| Geek Punch | A personal product I'm designing and building, with the aim of taking it to market. It's still on the workbench. More soon. |
-| Training | No change (dates and courses). |
+| Item                      | Proposed                                                                                                                                                                                                                                                                                                                                           |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Floodlight Studios        | I'm the only UX/UI designer at Floodlight Studios, a studio that builds SaaS products. Our biggest client is SPAR, one of the largest supermarket and retail chains in the region. The studio also gives us room to pitch and build our own product ideas, which I take full advantage of. (Role, domain and team details unchanged.)              |
+| Designing at retail scale | Retail tools get used by a lot of people, in a hurry. So I start with the box: who uses this screen, where, and what has to happen next. Then I design the flows and screens in Figma, hand them off in Zeplin linked to Jira tickets, and refine them with the developers every sprint.                                                           |
+| Systems for Parliament    | Systems I designed for SASSA and Home Affairs were presented to the South African Parliament in 2020 for possible national use. In 2022 another prototype was reviewed for a government initiative. Designing for public services means designing for everyone: different literacy levels, different devices, and a lot of waiting in queues.      |
+| My method                 | Homework first. I do the deep, analytical work early to set the constraints, the context and the big picture. Only then do I choose the taste: what kind of expression fits this project and these users. Everything sits on clear logic, for the person using it and for whoever improves it next. (Steps unchanged: Constraint, Context, Taste.) |
+| Workflow & AI stack       | Figma is home base, with the full Adobe suite beside it. Handoff runs through Zeplin, tracked against Jira tickets. On top of that I use AI tools every day: Claude Design and Code, Figma Make, Canva AI, ChatGPT and Gemini image generation, and Vercel and Antigravity to build and ship. I test the tools the way I test designs: properly.   |
+| Geek Punch                | A personal product I'm designing and building, with the aim of taking it to market. It's still on the workbench. More soon.                                                                                                                                                                                                                        |
+| Training                  | No change (dates and courses).                                                                                                                                                                                                                                                                                                                     |
 
 **Update, 21 Nov 2026 (approved by Vick):** UX/UI is now nine case studies, led by Plug Our Potholes and Fleet Receiving (from Behance). Every UX/UI page follows the Plug Our Potholes layout: title first, no kicker line, the first image whole, wide card on desktop and tablet with images over 3/4 of the screen, centred copy, and body paragraphs of three lines or fewer with the rag set by hand (desktop-only line breaks, `<br class="dbr">`). The live wording is in `src/content.js`; it supersedes the table above for this section.
 
 ### 6.10 Motion & 3D
 
-| Item | Proposed |
-|---|---|
-| A Journey With Kal | Short animations about life with two rare genetic disorders, made funny so they're easier to relate to. The full series is on my creative Instagram and on Behance. |
-| "Yoh!" in motion | A character GIF built frame by frame in comic halftone, timed so the word lands like a punchline. Timing took longer than drawing. It usually does. |
-| 3D & animation toolkit | I've animated for most of my life, from personal illustration projects to freelance work, in 2D and 3D. This synth is a small example: a 3D instrument you can play, drawn on twos. |
-| Genesis Printing | Part-time motion and graphic work for a print business: animated promos alongside print-ready production. |
+| Item                      | Proposed                                                                                                                                                                                                               |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A Journey With Kal        | Short animations about life with two rare genetic disorders, made funny so they're easier to relate to. The full series is on my creative Instagram and on Behance.                                                    |
+| "Yoh!" in motion          | A character GIF built frame by frame in comic halftone, timed so the word lands like a punchline. Timing took longer than drawing. It usually does.                                                                    |
+| 3D & animation toolkit    | I've animated for most of my life, from personal illustration projects to freelance work, in 2D and 3D. This synth is a small example: a 3D instrument you can play, drawn on twos.                                    |
+| Genesis Printing          | Part-time motion and graphic work for a print business: animated promos alongside print-ready production.                                                                                                              |
 | Church media & production | Multimedia engineering and motion design for Conquering Through Prayer Ministries International: live visuals, service graphics and video. I've also worked with Olive Tree Church's production team across its sites. |
-| @vicsdoesmotion | My creative account. It's where the animation, illustration and motion experiments go to be tested in public. |
+| @vicsdoesmotion           | My creative account. It's where the animation, illustration and motion experiments go to be tested in public.                                                                                                          |
 
 ### 6.11 Experimental
 
-| Item | Proposed |
-|---|---|
+| Item                  | Proposed                                                                                                                                                                                     |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | VR-17 Portfolio Synth | This portfolio: a playable 3D synthesizer built with Three.js and the Web Audio API, designed from a Figma synth, then rebuilt in cardboard. I was told to think outside the box. I used it. |
-| Retro Grade pixel art | Pixel-art characters and scenes from the Retro Grade project. Every pixel placed by hand, like a very patient mosaic. |
-| Open slot | Reserved for the next experiment. I'm doing the homework. |
+| Retro Grade pixel art | Pixel-art characters and scenes from the Retro Grade project. Every pixel placed by hand, like a very patient mosaic.                                                                        |
+| Open slot             | Reserved for the next experiment. I'm doing the homework.                                                                                                                                    |
 
 ---
 

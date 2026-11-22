@@ -13,125 +13,378 @@ import { fxOf, FXMATS } from '../molecules/fx.js';
 import { wonk, tape, rnd } from '../atoms/craft.js';
 import { pressable, itemCtrl, knob, screw, cap, boardCap } from '../molecules/controls.js';
 
-export const synth = new THREE.Group(); scene.add(synth);
+export const synth = new THREE.Group();
+scene.add(synth);
 export const PARTS = { knobs: [], pads: [], beats: [] }; // the fun bits, for the tour guide to point at (main.js spot)
-const TOP = .9, GX = c => -8 + c, GZ = r => -2.75 + r + (r >= 2 ? .5 : 0) /* rows 2+ sit half a row further forward */, at = (o, x, y, z) => { o.position.set(x, y, z); synth.add(o); return o };
-export const casing = [at(rbox(18.9, .9, 7.8, .09, M(C.body, .55)), 0, .45, 0), at(rbox(18.9, .4, 7.8, .05, M(C.black, .5)), 0, .2, .14)];
-at(rbox(17.25, .12, 6.75, .05, M(C.recess, .8)), 0, TOP, 0);
-[[-9.2, -3.65], [9.2, -3.65], [-9.2, 3.65], [9.2, 3.65]].forEach(([x, z]) => screw(synth, x, .905, z));
+const TOP = 0.9,
+  GX = (c) => -8 + c,
+  GZ = (r) => -2.75 + r + (r >= 2 ? 0.5 : 0) /* rows 2+ sit half a row further forward */,
+  at = (o, x, y, z) => {
+    o.position.set(x, y, z);
+    synth.add(o);
+    return o;
+  };
+export const casing = [
+  at(rbox(18.9, 0.9, 7.8, 0.09, M(C.body, 0.55)), 0, 0.45, 0),
+  at(rbox(18.9, 0.4, 7.8, 0.05, M(C.black, 0.5)), 0, 0.2, 0.14),
+];
+at(rbox(17.25, 0.12, 6.75, 0.05, M(C.recess, 0.8)), 0, TOP, 0);
+[
+  [-9.2, -3.65],
+  [9.2, -3.65],
+  [-9.2, 3.65],
+  [9.2, 3.65],
+].forEach(([x, z]) => screw(synth, x, 0.905, z));
 /* the panel is taped into the box at its corners and along its edges */
-[[-8.62, -3.37, .8], [8.62, -3.37, -.8], [-8.62, 3.37, -.8], [8.62, 3.37, .8], [-2.6, -3.42, 0], [3.4, 3.42, 0], [8.66, .3, 1.57]].forEach(([x, z, r]) => tape(synth, x, TOP + .068, z, 1.15, .36, r));
+[
+  [-8.62, -3.37, 0.8],
+  [8.62, -3.37, -0.8],
+  [-8.62, 3.37, -0.8],
+  [8.62, 3.37, 0.8],
+  [-2.6, -3.42, 0],
+  [3.4, 3.42, 0],
+  [8.66, 0.3, 1.57],
+].forEach(([x, z, r]) => tape(synth, x, TOP + 0.068, z, 1.15, 0.36, r));
 /* a tile spanning w × h grid cells from column c, row r */
-const tile = (c, r, w = 1, h = 1, mat = M(C.tile, .6)) => wonk(at(rbox(w - .07, .3, h - .07, .03, mat), GX(c) + (w - 1) / 2, TOP + .15, GZ(r) + (h - 1) / 2), .007, .007); // panels of card, glued down by eye
-const capBtn = (c, r, label, onPress, tip, o) => { tile(c, r); const k = wonk(at(cap(.72, .72, .16, label, o), GX(c), TOP + .36, GZ(r)), .075, .03); pressable(k, onPress, tip); return k };
-const onTile = (o, c, r, y = .305) => at(o, GX(c), TOP + y, GZ(r));
+const tile = (c, r, w = 1, h = 1, mat = M(C.tile, 0.6)) =>
+  wonk(
+    at(rbox(w - 0.07, 0.3, h - 0.07, 0.03, mat), GX(c) + (w - 1) / 2, TOP + 0.15, GZ(r) + (h - 1) / 2),
+    0.007,
+    0.007,
+  ); // panels of card, glued down by eye
+const capBtn = (c, r, label, onPress, tip, o) => {
+  tile(c, r);
+  const k = wonk(at(cap(0.72, 0.72, 0.16, label, o), GX(c), TOP + 0.36, GZ(r)), 0.075, 0.03);
+  pressable(k, onPress, tip);
+  return k;
+};
+const onTile = (o, c, r, y = 0.305) => at(o, GX(c), TOP + y, GZ(r));
 
 /* the top section is 2.5 rows deep; the right-hand column (detune, wave, beats, stop, mute) gets a blank half tile under it */
-const UPPER = 2.5, upperZ = GZ(0) + (UPPER - 1) / 2;
-at(rbox(3 - .07, .3, .5 - .07, .03, M(C.tile, .6)), GX(15), TOP + .15, GZ(1) + .75);
+const UPPER = 2.5,
+  upperZ = GZ(0) + (UPPER - 1) / 2;
+at(rbox(3 - 0.07, 0.3, 0.5 - 0.07, 0.03, M(C.tile, 0.6)), GX(15), TOP + 0.15, GZ(1) + 0.75);
 
 /* screen (clicks through to About) */
-tile(0, 0, 4, UPPER, M(C.recess, .4));
+tile(0, 0, 4, UPPER, M(C.recess, 0.4));
 export const scr = canvasTex(800, 476);
-const scrP = at(flat(3.78, 2.25, decal(new THREE.MeshBasicMaterial({ map: scr.t, toneMapped: false, transparent: true }))), GX(1.5), TOP + .305, upperZ);
+const scrP = at(
+  flat(3.78, 2.25, decal(new THREE.MeshBasicMaterial({ map: scr.t, toneMapped: false, transparent: true }))),
+  GX(1.5),
+  TOP + 0.305,
+  upperZ,
+);
 /* the screen opens the About page; while the Vickhal Roopram logo is up on it (screens.js, every 25–60 s) its tip invites the click
    and the click flies to the About key, presses it and opens the "about me" summary (the first About card) */
-scrP.userData = { tip: 'Screen · click for the About page', tipHTML: () => S.play ? 'The sound, as you play it' : V.logo > .5 ? 'Vickhal Roopram<small>Click to meet me</small>' : 'Screen · click for the About page',
-  down() { if (S.play) return; if (V.logo > .3) act.journey('ab', 0, 'logo'); else { act.zoomTo('ab'); act.openCard('ab', 0) } } };
+scrP.userData = {
+  tip: 'Screen · click for the About page',
+  tipHTML: () =>
+    S.play
+      ? 'The sound, as you play it'
+      : V.logo > 0.5
+        ? 'Vickhal Roopram<small>Click to meet me</small>'
+        : 'Screen · click for the About page',
+  down() {
+    if (S.play) return;
+    if (V.logo > 0.3) act.journey('ab', 0, 'logo');
+    else {
+      act.zoomTo('ab');
+      act.openCard('ab', 0);
+    }
+  },
+};
 
 /* the four big sound knobs (drag up/down; click for a note), each in a 2 × 2.5 tile with its name underneath.
    While you adjust a knob, a lit ring fades in on its bezel, round the cap (where the press stroke runs): a dim track over the knob's travel, a brighter arc up to its value, and a light dot that
    follows the knob as it turns (updateSynth). It fades out about a second after you let go */
-const RING_R = .92, RING_Y = .014, TRAVEL = 2.2, LED = '#e0301a'; // on the top of the knob's brass bezel, round the cap
-const dotTex = radialTex([[0, 1], [.3, .55], [1, 0]], 128, 128);
-const ringMat = o => decal(new THREE.MeshBasicMaterial({ color: LED, transparent: true, depthWrite: false, toneMapped: false, ...o }));
+const RING_R = 0.92,
+  RING_Y = 0.014,
+  TRAVEL = 2.2,
+  LED = '#e0301a'; // on the top of the knob's brass bezel, round the cap
+const dotTex = radialTex(
+  [
+    [0, 1],
+    [0.3, 0.55],
+    [1, 0],
+  ],
+  128,
+  128,
+);
+const ringMat = (o) =>
+  decal(new THREE.MeshBasicMaterial({ color: LED, transparent: true, depthWrite: false, toneMapped: false, ...o }));
 export const KNOB_RINGS = [];
-[['cutoff', 'FILTER'], ['q', 'RESONANCE'], ['decay', 'DECAY'], ['wet', 'ECHO']].forEach(([key, label], i) => {
-  const c = 4 + i * 2; tile(c, 0, 2, UPPER);
-  const { g, rot, cp } = knob(synth, new THREE.Vector3(GX(c + .5), TOP + .3, GZ(0) + .42), .5, key, 'lg', [[48, 52, 55, 60][i], 1.2]); PARTS.knobs.push(g);
-  const L = printed(label, 1.6, .32, '#7b7e86', 58); L.position.set(0, .01, 1.42); g.add(L);
+[
+  ['cutoff', 'FILTER'],
+  ['q', 'RESONANCE'],
+  ['decay', 'DECAY'],
+  ['wet', 'ECHO'],
+].forEach(([key, label], i) => {
+  const c = 4 + i * 2;
+  tile(c, 0, 2, UPPER);
+  const { g, rot, cp } = knob(synth, new THREE.Vector3(GX(c + 0.5), TOP + 0.3, GZ(0) + 0.42), 0.5, key, 'lg', [
+    [48, 52, 55, 60][i],
+    1.2,
+  ]);
+  PARTS.knobs.push(g);
+  const L = printed(label, 1.6, 0.32, '#7b7e86', 58);
+  L.position.set(0, 0.01, 1.42);
+  g.add(L);
   // arcs lie flat on the tile; angle t on the ring = knob turn a + π/2 (a = 0 points straight back, like the knob's indicator)
-  const track = new THREE.Mesh(new THREE.RingGeometry(RING_R - .022, RING_R + .022, 72, 1, Math.PI / 2 - TRAVEL, TRAVEL * 2), ringMat({ opacity: .35 }));
-  const value = new THREE.Mesh(new THREE.BufferGeometry(), ringMat({ opacity: .85 }));
-  const dot = new THREE.Mesh(new THREE.CircleGeometry(.055, 20), ringMat({ color: '#fff3e6' }));
-  const glow = flat(.42, .42, ringMat({ map: dotTex, opacity: .9 }));
-  [track, value].forEach(m => { m.rotation.x = -Math.PI / 2; m.position.y = RING_Y; m.renderOrder = 2; g.add(m) });
-  dot.rotation.x = -Math.PI / 2; dot.position.y = RING_Y + .004; dot.renderOrder = 3; glow.position.y = RING_Y + .002; glow.renderOrder = 2; g.add(dot, glow);
+  const track = new THREE.Mesh(
+    new THREE.RingGeometry(RING_R - 0.022, RING_R + 0.022, 72, 1, Math.PI / 2 - TRAVEL, TRAVEL * 2),
+    ringMat({ opacity: 0.35 }),
+  );
+  const value = new THREE.Mesh(new THREE.BufferGeometry(), ringMat({ opacity: 0.85 }));
+  const dot = new THREE.Mesh(new THREE.CircleGeometry(0.055, 20), ringMat({ color: '#fff3e6' }));
+  const glow = flat(0.42, 0.42, ringMat({ map: dotTex, opacity: 0.9 }));
+  [track, value].forEach((m) => {
+    m.rotation.x = -Math.PI / 2;
+    m.position.y = RING_Y;
+    m.renderOrder = 2;
+    g.add(m);
+  });
+  dot.rotation.x = -Math.PI / 2;
+  dot.position.y = RING_Y + 0.004;
+  dot.renderOrder = 3;
+  glow.position.y = RING_Y + 0.002;
+  glow.renderOrder = 2;
+  g.add(dot, glow);
   FXMATS.push(track.material, value.material, glow.material);
-  [track, value, dot, glow].forEach(m => { m.material.userData.op = m.material.opacity; m.visible = false });
+  [track, value, dot, glow].forEach((m) => {
+    m.material.userData.op = m.material.opacity;
+    m.visible = false;
+  });
   KNOB_RINGS.push({ rot, cp, value, dot, glow, parts: [track, value, dot, glow], a: null, last: -1e9, k: 0 });
 });
 
 /* speaker grille, pulsing with the music */
 tile(12, 0, 2, UPPER);
-export const grille = at(flat(1.7, 1.7, decal(new THREE.MeshBasicMaterial({ transparent: true, color: '#2a1b12', map: canvasTex(256, 256, x => { x.fillStyle = '#fff';
-  for (let i = 0; i < 11; i++) for (let j = 0; j < 11; j++) if ((i - 5) ** 2 + (j - 5) ** 2 <= 27) { x.beginPath(); x.arc(28 + i * 20, 28 + j * 20, 5.2, 0, 7); x.fill() } }).t }))), GX(12.5), TOP + .305, upperZ);
+export const grille = at(
+  flat(
+    1.7,
+    1.7,
+    decal(
+      new THREE.MeshBasicMaterial({
+        transparent: true,
+        color: '#2a1b12',
+        map: canvasTex(256, 256, (x) => {
+          x.fillStyle = '#fff';
+          for (let i = 0; i < 11; i++)
+            for (let j = 0; j < 11; j++)
+              if ((i - 5) ** 2 + (j - 5) ** 2 <= 27) {
+                x.beginPath();
+                x.arc(28 + i * 20, 28 + j * 20, 5.2, 0, 7);
+                x.fill();
+              }
+        }).t,
+      }),
+    ),
+  ),
+  GX(12.5),
+  TOP + 0.305,
+  upperZ,
+);
 
 /* detune knob, waveform, beats, stop, mute */
-tile(14, 0, 2, 1); knob(synth, new THREE.Vector3(GX(14), TOP + .3, GZ(0)), .3, 'detune', 'sm', [60, .6]);
-onTile(printed('DETUNE', .6, .29), 15, 0, .31);
-capBtn(14, 1, 'WAVE', () => { P.wave = (P.wave + 1) % 3; playNote(67, .4) }, 'Waveform: triangle / square / saw');
+tile(14, 0, 2, 1);
+knob(synth, new THREE.Vector3(GX(14), TOP + 0.3, GZ(0)), 0.3, 'detune', 'sm', [60, 0.6]);
+onTile(printed('DETUNE', 0.6, 0.29), 15, 0, 0.31);
+capBtn(
+  14,
+  1,
+  'WAVE',
+  () => {
+    P.wave = (P.wave + 1) % 3;
+    playNote(67, 0.4);
+  },
+  'Waveform: triangle / square / saw',
+);
 const beatsBtn = capBtn(15, 1, 'BEATS', toggleDemo, `Beats · each click plays the next of ${BEATS.length} tracks`);
-const stopBtn = capBtn(16, 0, 'STOP', () => { stopDemo(); drum('rim') }, 'Stop the music');
-{ const sq = flat(.11, .11, decal(new THREE.MeshBasicMaterial({ color: '#d71920' }))); sq.position.set(0, .082, -.27); stopBtn.add(sq) }
+const stopBtn = capBtn(
+  16,
+  0,
+  'STOP',
+  () => {
+    stopDemo();
+    drum('rim');
+  },
+  'Stop the music',
+);
+{
+  const sq = flat(0.11, 0.11, decal(new THREE.MeshBasicMaterial({ color: '#d71920' })));
+  sq.position.set(0, 0.082, -0.27);
+  stopBtn.add(sq);
+}
 PARTS.beats.push(stopBtn, beatsBtn);
-[stopBtn, beatsBtn].forEach(m => { m.material.emissive = new THREE.Color('#e0301a'); fxOf(m).managed = true });
+[stopBtn, beatsBtn].forEach((m) => {
+  m.material.emissive = new THREE.Color('#e0301a');
+  fxOf(m).managed = true;
+});
 capBtn(16, 1, 'MUTE', toggleMute, 'Sound on / off');
 
 /* mode buttons: solid rubber caps with engraved white legends; light leaks from the gap, plus a dim core under a translucent top */
-const coreTex = radialTex([[0, .9], [.45, .4], [1, 0]], 256, 64);
-[['gd', 'DESIGN'], ['ux', 'UI/UX'], ['mo', 'MOTION'], ['tl', 'TOOLS'], ['xp', 'EXPERIMENTAL']].forEach(([f, label], j) => {
-  const W = 17 / 5, x = -8.5 + W * (j + .5), glow = MODES[f].glow;
-  const t = at(rbox(W - .07, .3, .93, .03, M(C.tile, .6)), x, TOP + .15, GZ(2));
-  const k = wonk(at(rbox(W - .3, .1, .72, .035, RUBBER()), x, TOP + .36, GZ(2)), .022, .025);
-  k.core = flat(W - .62, .5, decal(new THREE.MeshBasicMaterial({ map: coreTex, color: glow, transparent: true, opacity: 0, depthWrite: false, toneMapped: false })), .052); k.core.visible = false; k.coreK = 0;
+const coreTex = radialTex(
+  [
+    [0, 0.9],
+    [0.45, 0.4],
+    [1, 0],
+  ],
+  256,
+  64,
+);
+[
+  ['gd', 'DESIGN'],
+  ['ux', 'UI/UX'],
+  ['mo', 'MOTION'],
+  ['tl', 'TOOLS'],
+  ['xp', 'EXPERIMENTAL'],
+].forEach(([f, label], j) => {
+  const W = 17 / 5,
+    x = -8.5 + W * (j + 0.5),
+    glow = MODES[f].glow;
+  const t = at(rbox(W - 0.07, 0.3, 0.93, 0.03, M(C.tile, 0.6)), x, TOP + 0.15, GZ(2));
+  const k = wonk(at(rbox(W - 0.3, 0.1, 0.72, 0.035, RUBBER()), x, TOP + 0.36, GZ(2)), 0.022, 0.025);
+  k.core = flat(
+    W - 0.62,
+    0.5,
+    decal(
+      new THREE.MeshBasicMaterial({
+        map: coreTex,
+        color: glow,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+        toneMapped: false,
+      }),
+    ),
+    0.052,
+  );
+  k.core.visible = false;
+  k.coreK = 0;
   /* two legends: its section of the portfolio, and (jam mode) the sound it gives the keys */
-  k.legend = [label, VOICES[j].n].map((txt, n) => { const l = engraved(txt, W - .5, .5, 30); l.position.y = .054; l.renderOrder = 1; l.visible = !n; return l }); k.add(k.core, ...k.legend); FXMATS.push(k.core.material);
-  pressable(k, () => { if (S.play) return act.voice(j); playNote(72 + [0, 4, 7, 11, 14][j], .5); act.zoomTo(f) }, `${CH[f].name} · ${MODES[f].n}`); // after the core: pressable replaces userData
-  k.userData.tipHTML = () => S.play ? `Sound · ${VOICES[j].n.toLowerCase()}` : k.userData.tip; k.userData.filter = f; k.userData.j = j; t.userData.proxy = k; hits.push(t); k.material.emissive = new THREE.Color(glow); fxOf(k).managed = true; ROWBTN.push([k, f]);
+  k.legend = [label, VOICES[j].n].map((txt, n) => {
+    const l = engraved(txt, W - 0.5, 0.5, 30);
+    l.position.y = 0.054;
+    l.renderOrder = 1;
+    l.visible = !n;
+    return l;
+  });
+  k.add(k.core, ...k.legend);
+  FXMATS.push(k.core.material);
+  pressable(
+    k,
+    () => {
+      if (S.play) return act.voice(j);
+      playNote(72 + [0, 4, 7, 11, 14][j], 0.5);
+      act.zoomTo(f);
+    },
+    `${CH[f].name} · ${MODES[f].n}`,
+  ); // after the core: pressable replaces userData
+  k.userData.tipHTML = () => (S.play ? `Sound · ${VOICES[j].n.toLowerCase()}` : k.userData.tip);
+  k.userData.filter = f;
+  k.userData.j = j;
+  t.userData.proxy = k;
+  hits.push(t);
+  k.material.emissive = new THREE.Color(glow);
+  fxOf(k).managed = true;
+  ROWBTN.push([k, f]);
 });
 
 /* drum pads (graphite caps, light print) */
 export const PADS = ['kick', 'snare', 'hat', 'clap', 'tom', 'rim', 'shaker', 'crash', 'blip'];
 /* the beats pads are squares of thick grey board, roughly painted blue */
-PADS.forEach((p, i) => { const c = 14 + i % 3, r = 3 + Math.floor(i / 3); tile(c, r);
-  const pad = wonk(at(boardCap(.74, .74, p.toUpperCase(), { paint: '#2f7fd6' }), GX(c), TOP + .39, GZ(r)), .09, .035); PARTS.pads.push(pad); pressable(pad, () => drum(p), `Drum pad · ${p}`) });
+PADS.forEach((p, i) => {
+  const c = 14 + (i % 3),
+    r = 3 + Math.floor(i / 3);
+  tile(c, r);
+  const pad = wonk(
+    at(boardCap(0.74, 0.74, p.toUpperCase(), { paint: '#2f7fd6' }), GX(c), TOP + 0.39, GZ(r)),
+    0.09,
+    0.035,
+  );
+  PARTS.pads.push(pad);
+  pressable(pad, () => drum(p), `Drum pad · ${p}`);
+});
 
 /* the keyboard: 14 white keys hold the current mode's projects; sharps just play */
-const WHITE = [0, 2, 4, 5, 7, 9, 11], SHARP = { 0: 1, 1: 3, 3: 6, 4: 8, 5: 10 };
-export const wMidi = i => 60 + 12 * Math.floor(i / 7) + WHITE[i % 7];
-export const keyMeshes = [], sharpMeshes = [];
+const WHITE = [0, 2, 4, 5, 7, 9, 11],
+  SHARP = { 0: 1, 1: 3, 3: 6, 4: 8, 5: 10 };
+export const wMidi = (i) => 60 + 12 * Math.floor(i / 7) + WHITE[i % 7];
+export const keyMeshes = [],
+  sharpMeshes = [];
 for (let i = 0; i < 14; i++) {
-  tile(i, 3); const kt = tile(i, 4, 1, 2), k = wonk(at(rbox(.76, .1, 1.62, .04, M(C.cap, .5)), GX(i), TOP + .36, GZ(4.5)), .028, .022);
-  tape(kt, rnd(.08, -.04), .265, -.84, .52, .2, 0); // each key is hinged to the panel with a strip of tape
-  kt.userData.proxy = k; hits.push(kt); keyMeshes.push(k); itemCtrl(k, 'kb', i, () => playNote(wMidi(i)));
-  if (i < 13 && SHARP[i % 7] !== undefined) { const m = 60 + 12 * Math.floor(i / 7) + SHARP[i % 7], s = wonk(at(cyl(.3, .3, .1, M('#5a4033'), 9), GX(i) + .5, TOP + .36, GZ(3)), 1, .03);
-    pressable(s, () => playNote(m), 'Sharp key'); sharpMeshes.push(s) }
+  tile(i, 3);
+  const kt = tile(i, 4, 1, 2),
+    k = wonk(at(rbox(0.76, 0.1, 1.62, 0.04, M(C.cap, 0.5)), GX(i), TOP + 0.36, GZ(4.5)), 0.028, 0.022);
+  tape(kt, rnd(0.08, -0.04), 0.265, -0.84, 0.52, 0.2, 0); // each key is hinged to the panel with a strip of tape
+  kt.userData.proxy = k;
+  hits.push(kt);
+  keyMeshes.push(k);
+  itemCtrl(k, 'kb', i, () => playNote(wMidi(i)));
+  if (i < 13 && SHARP[i % 7] !== undefined) {
+    const m = 60 + 12 * Math.floor(i / 7) + SHARP[i % 7],
+      s = wonk(at(cyl(0.3, 0.3, 0.1, M('#5a4033'), 9), GX(i) + 0.5, TOP + 0.36, GZ(3)), 1, 0.03);
+    pressable(s, () => playNote(m), 'Sharp key');
+    sharpMeshes.push(s);
+  }
 }
 hits.push(scrP);
 
 /* lights: the transport pulses on the beat; a mode button lights its gap when hovered or active, with its soft core easing in */
 export function updateSynth(t) {
   /* knob rings: the dot rides the knob's (eased) turn; the value arc is rebuilt only when the turn changes */
-  const now = performance.now(), dt = Math.min(.05, (now - (updateSynth.last ?? now)) / 1000); updateSynth.last = now;
+  const now = performance.now(),
+    dt = Math.min(0.05, (now - (updateSynth.last ?? now)) / 1000);
+  updateSynth.last = now;
   for (const R of KNOB_RINGS) {
-    const a = R.rot.rotation.y, x = -Math.sin(a) * RING_R, z = -Math.cos(a) * RING_R;
+    const a = R.rot.rotation.y,
+      x = -Math.sin(a) * RING_R,
+      z = -Math.cos(a) * RING_R;
     /* shown while it's being dragged or still turning, then a fade out */
-    if (V.drag?.o === R.cp || (R.a !== null && Math.abs(R.a - a) > .004)) R.last = now;
-    const want = now - R.last < 900 ? 1 : 0; R.k += (want - R.k) * Math.min(1, dt * (want ? 9 : 2.5));
-    const on = R.k > .01; R.parts.forEach(m => { m.visible = on; m.material.opacity = m.material.userData.op * R.k });
-    if (!on) { R.a = a; continue }
-    R.dot.position.x = R.glow.position.x = x; R.dot.position.z = R.glow.position.z = z;
-    R.glow.material.opacity = (.75 + .2 * Math.sin(t * 2.4)) * R.k; // a slow breathe so it reads as lit
-    if (R.a === null || Math.abs(R.a - a) > .004) { R.a = a; R.value.geometry.dispose(); R.value.geometry = new THREE.RingGeometry(RING_R - .028, RING_R + .028, 64, 1, a + Math.PI / 2, Math.max(.001, TRAVEL - a)) }
+    if (V.drag?.o === R.cp || (R.a !== null && Math.abs(R.a - a) > 0.004)) R.last = now;
+    const want = now - R.last < 900 ? 1 : 0;
+    R.k += (want - R.k) * Math.min(1, dt * (want ? 9 : 2.5));
+    const on = R.k > 0.01;
+    R.parts.forEach((m) => {
+      m.visible = on;
+      m.material.opacity = m.material.userData.op * R.k;
+    });
+    if (!on) {
+      R.a = a;
+      continue;
+    }
+    R.dot.position.x = R.glow.position.x = x;
+    R.dot.position.z = R.glow.position.z = z;
+    R.glow.material.opacity = (0.75 + 0.2 * Math.sin(t * 2.4)) * R.k; // a slow breathe so it reads as lit
+    if (R.a === null || Math.abs(R.a - a) > 0.004) {
+      R.a = a;
+      R.value.geometry.dispose();
+      R.value.geometry = new THREE.RingGeometry(
+        RING_R - 0.028,
+        RING_R + 0.028,
+        64,
+        1,
+        a + Math.PI / 2,
+        Math.max(0.001, TRAVEL - a),
+      );
+    }
   }
-  const beat = demo ? .4 + .25 * Math.max(0, Math.sin(t * Math.PI * 2 * (BEATS[track]?.bpm || 120) / 60)) : 0;
+  const beat = demo ? 0.4 + 0.25 * Math.max(0, Math.sin((t * Math.PI * 2 * (BEATS[track]?.bpm || 120)) / 60)) : 0;
   stopBtn.material.emissiveIntensity = beatsBtn.material.emissiveIntensity = beat;
   for (const [m, k] of ROWBTN) {
-    m.legend[0].visible = !S.play; m.legend[1].visible = S.play;
-    let edge = (S.play ? S.voice === m.userData.j : S.mode === k) ? .85 + .08 * Math.sin(t * 3) : 0;
-    if (S.play ? S.hover === m : S.card?.ch === k || S.hover === m || S.mode === k && S.hover?.userData?.item && S.hover.userData.ch === k) edge = 1;
-    m.userData.edge = edge; m.material.emissiveIntensity = edge ? .035 : 0; // the solid cap itself only shows a faint glow
-    m.coreK += ((edge ? 1 : 0) - m.coreK) * .12; m.core.material.opacity = m.coreK * edge * .32; m.core.visible = m.core.material.opacity > .003;
+    m.legend[0].visible = !S.play;
+    m.legend[1].visible = S.play;
+    let edge = (S.play ? S.voice === m.userData.j : S.mode === k) ? 0.85 + 0.08 * Math.sin(t * 3) : 0;
+    if (
+      S.play
+        ? S.hover === m
+        : S.card?.ch === k || S.hover === m || (S.mode === k && S.hover?.userData?.item && S.hover.userData.ch === k)
+    )
+      edge = 1;
+    m.userData.edge = edge;
+    m.material.emissiveIntensity = edge ? 0.035 : 0; // the solid cap itself only shows a faint glow
+    m.coreK += ((edge ? 1 : 0) - m.coreK) * 0.12;
+    m.core.material.opacity = m.coreK * edge * 0.32;
+    m.core.visible = m.core.material.opacity > 0.003;
   }
 }

@@ -8,13 +8,13 @@ The synth is the interface. Each part of the instrument holds a different side o
 
 ## How it plays
 
-| Synth part | What it holds |
-| --- | --- |
-| **Filter buttons**: Design · UI/UX · Motion · Tools · Experimental | Choose what the keyboard shows. The active button glows and the keys light up in its colour. |
-| **Keyboard** (14 keys) | One project, tool or experiment per key. Click a key to open its card. |
-| **Four big knobs** | Sound: Filter, Resonance, Decay, Echo. Drag up or down; click to hear a note. |
-| **CV remote** (left) | Full CV (page images, no download), contact details and social links. Also plugs in when selected. |
-| **Music side** (right): drum pads, Tone, Wave, BEATS, STOP, MUTE | Pure play. BEATS cycles five original tracks; STOP and BEATS glow while music runs. |
+| Synth part                                                         | What it holds                                                                                      |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| **Filter buttons**: Design · UI/UX · Motion · Tools · Experimental | Choose what the keyboard shows. The active button glows and the keys light up in its colour.       |
+| **Keyboard** (14 keys)                                             | One project, tool or experiment per key. Click a key to open its card.                             |
+| **Four big knobs**                                                 | Sound: Filter, Resonance, Decay, Echo. Drag up or down; click to hear a note.                      |
+| **CV remote** (left)                                               | Full CV (page images, no download), contact details and social links. Also plugs in when selected. |
+| **Music side** (right): drum pads, Tone, Wave, BEATS, STOP, MUTE   | Pure play. BEATS cycles five original tracks; STOP and BEATS glow while music runs.                |
 
 **The desk:** the synths sit on a desk next to a lamp (click it to switch it on or off; its hover tip is a bulb with On / Off) and a plant in a white pot with dark soil. The look is warm and plain: cream and warm-grey hardware, with one design system for the overlays. The camera starts almost top-down; click a part and it swoops down to a low, close view. Left drag rotates, right drag pans, scroll zooms. Project cards open with the work itself, then the story and a clear link to the full project.
 
@@ -22,7 +22,7 @@ The synth is the interface. Each part of the instrument holds a different side o
 
 **Menu:** the burger opens a side panel in the same spot as the project card (a bottom sheet on phones), so the synth stays visible and you can still use it. **Home** flies back to the full desk; **About** and **Contact** fly to their part of the synth, push its key and open the card. **Projects** opens the five modes (Graphic design, UI/UX design, Motion & 3D, Tools, Experimental). Choosing a mode flies the camera to the keyboard and lights that mode's keys while the panel lists its projects by title. Point at a project and its lead image appears just under it, over the names below. Choosing a project starts a short sequence: the camera pans out to the desk, swoops into the synth, the project's key goes down (you see it sink and hear the note, and its name appears), then the card opens where the menu was. Cards opened from the menu end with two secondary buttons: **Back to menu** returns to that mode's list with the project marked, and **Cancel** closes the card and leaves you on the synth. `Esc` steps back a level, then closes the menu.
 
-**Zoom guide (bottom right):** a scroll-wheel icon sits in the corner. As soon as you zoom (scroll or pinch), it slides to the bottom middle and opens up with a short instruction (*Scroll to zoom*, *Pinch to zoom* on phones) and a bar that fills as you zoom in, with its percentage (0% is the whole table, 100% is as close as you can go). It drops back to the icon a couple of seconds after you stop. When the bar is full (as close as you can go) the icon turns red and shakes; when it's empty (the whole table) the icon relaxes. Zoom is locked: in as far as one synth filling the view, out as far as the whole table. Click the icon to see the instructions on their own.
+**Zoom guide (bottom right):** a scroll-wheel icon sits in the corner. As soon as you zoom (scroll or pinch), it slides to the bottom middle and opens up with a short instruction (_Scroll to zoom_, _Pinch to zoom_ on phones) and a bar that fills as you zoom in, with its percentage (0% is the whole table, 100% is as close as you can go). It drops back to the icon a couple of seconds after you stop. When the bar is full (as close as you can go) the icon turns red and shakes; when it's empty (the whole table) the icon relaxes. Zoom is locked: in as far as one synth filling the view, out as far as the whole table. Click the icon to see the instructions on their own.
 
 **Look:** a cardboard model (14 Nov 2026). Every part is card or paper from photo textures (`assets/tex/`), with an ink outline that boils; labels are hand-lettered; the room is dark and warm, the workbench dark wood. The whole site is animated on twos: `FPS = 12` in `src/atoms/craft.js` sets how many pictures a second the 3D scene draws, and `src/styles/skin.css` steps every CSS transition to match. The menu is a tray of boxes that fold open; picking a project runs a cable from it to its key on the synth. The intro is a sheet of paper on which the site is sketched while it loads. There is no light mode.
 
@@ -34,7 +34,7 @@ Mouse, trackpad and touch work too: drag to orbit, scroll or pinch to zoom. The 
 
 **Contact (header):** the Contact button flies you to the Contact synth, presses its CONTACT key and opens the contact card.
 
-**Beats:** press BEATS on the synth to play Vick's tracks (each press plays the next of 6; STOP stops). Each track comes with one of his motion backgrounds: it fills the background behind the desk and projects onto the table top under the synths, and the screen twinkles in its colours. The files live in `assets/beats/` (web-sized copies; the originals are kept in Google Drive, *Synth Elementa – Beats assets*).
+**Beats:** press BEATS on the synth to play Vick's tracks (each press plays the next of 6; STOP stops). Each track comes with one of his motion backgrounds: it fills the background behind the desk and projects onto the table top under the synths, and the screen twinkles in its colours. The files live in `assets/beats/` (web-sized copies; the originals are kept in Google Drive, _Synth Elementa – Beats assets_).
 
 **Big knobs:** while you turn one, a lit ring shows its range and a light dot follows the knob; it fades away when you let go.
 
@@ -118,10 +118,10 @@ gd: { name: 'DESIGN', col: '#1fa957', items: [
 
 Netlify hosts the site and deploys it from git (GitHub Pages is not used):
 
-| Branch | Environment | URL |
-| --- | --- | --- |
-| `main` | production | https://vick-does-creative.netlify.app |
-| `version-01` | staging | https://version-01--vick-does-creative.netlify.app |
+| Branch       | Environment | URL                                                |
+| ------------ | ----------- | -------------------------------------------------- |
+| `main`       | production  | https://vick-does-creative.netlify.app             |
+| `version-01` | staging     | https://version-01--vick-does-creative.netlify.app |
 
 Work on a short branch off `version-01`, open a PR into `version-01`, check the staging site, then open a PR from `version-01` into `main`. `main` only changes through a merged pull request. The full process, checklists and sources are in [`docs/GIT-WORKFLOW.md`](docs/GIT-WORKFLOW.md).
 

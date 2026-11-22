@@ -1,27 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Vick Does Creative · Content admin</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400..900&display=swap">
-<style>{{ADMIN_CSS}}</style>
-</head>
-<body>
-<div id="root"><div class="center"><span class="spin"></span><span id="lm">Loading your content…</span></div></div>
-<script type="module">
-/* Vick Does Creative · content admin, as a Claude artifact. Same interface as the site's /admin (admin/app.js);
-   content is kept in this artifact's database and Claude carries it to the site on request. Built by build.py. */
-const PATHS = {{PATHS}};
-const SITE_CSS = {{SITECSS}};
-const DEFAULT_MENU = {{MENU}};
-const icon = (n, s = 24, cls = '') => `<svg class="ic${cls ? ' ' + cls : ''}" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" aria-hidden="true"><path d="${PATHS[n] || PATHS.globe}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-{{APP}}
-{{STORE}}
-const slow = setTimeout(() => { const m = document.getElementById('lm'); if (m) m.textContent = 'Still connecting to your content… it may be offline right now.' }, 10000);
-artifactStore(DEFAULT_MENU).then(store => { clearTimeout(slow); startAdmin(document.getElementById('root'), { store, icon }) }).catch(e => {
-  clearTimeout(slow); document.getElementById('root').innerHTML = `<div class="center"><b>${e?.message === 'signed-out' ? 'Sign in to claude.ai to edit your content.' : 'Couldn’t reach your content.'}</b><span>${e?.message === 'signed-out' ? 'This admin keeps your portfolio content in its own database.' : 'Reopen this page in a moment; nothing you saved is lost.'}</span></div>` });
-</script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Vick Does Creative · Content admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400..900&display=swap" />
+    <style>
+      {{ADMIN_CSS}}
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div class="center"><span class="spin"></span><span id="lm">Loading your content…</span></div>
+    </div>
+    <script type="module">
+      /* Vick Does Creative · content admin, as a Claude artifact. Same interface as the site's /admin (admin/app.js);
+         content is kept in this artifact's database and Claude carries it to the site on request. Built by build.py. */
+      const PATHS = {{PATHS}};
+      const SITE_CSS = {{SITECSS}};
+      const DEFAULT_MENU = {{MENU}};
+      const icon = (n, s = 24, cls = '') => `<svg class="ic${cls ? ' ' + cls : ''}" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" aria-hidden="true"><path d="${PATHS[n] || PATHS.globe}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      {{APP}}
+      {{STORE}}
+      const slow = setTimeout(() => { const m = document.getElementById('lm'); if (m) m.textContent = 'Still connecting to your content… it may be offline right now.' }, 10000);
+      artifactStore(DEFAULT_MENU).then(store => { clearTimeout(slow); startAdmin(document.getElementById('root'), { store, icon }) }).catch(e => {
+        clearTimeout(slow); document.getElementById('root').innerHTML = `<div class="center"><b>${e?.message === 'signed-out' ? 'Sign in to claude.ai to edit your content.' : 'Couldn’t reach your content.'}</b><span>${e?.message === 'signed-out' ? 'This admin keeps your portfolio content in its own database.' : 'Reopen this page in a moment; nothing you saved is lost.'}</span></div>` });
+    </script>
+  </body>
 </html>

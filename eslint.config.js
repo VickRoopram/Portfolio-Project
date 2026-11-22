@@ -3,7 +3,13 @@
  * No plugins and no packages: only rules built into ESLint, so it runs anywhere with `npm run lint` (npx fetches ESLint).
  * TypeScript Netlify Functions (*.mts) are checked by scripts/ci-functions.mjs instead.
  */
-const g = (names) => Object.fromEntries(names.split(/\s+/).filter(Boolean).map((n) => [n, 'readonly']));
+const g = (names) =>
+  Object.fromEntries(
+    names
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((n) => [n, 'readonly']),
+  );
 
 const BROWSER = g(`
   window document navigator location history screen console performance localStorage sessionStorage
@@ -40,5 +46,8 @@ export default [
   // Node scripts (CI, setup) and this file
   { files: ['scripts/**', 'eslint.config.js'], languageOptions: { globals: NODE } },
   // The Claude artifact admin runs inside claude.ai, which provides these
-  { files: ['tools/admin-artifact/**'], languageOptions: { globals: { ...BROWSER, claude: 'readonly', SITE_CSS: 'readonly' } } },
+  {
+    files: ['tools/admin-artifact/**'],
+    languageOptions: { globals: { ...BROWSER, claude: 'readonly', SITE_CSS: 'readonly' } },
+  },
 ];
