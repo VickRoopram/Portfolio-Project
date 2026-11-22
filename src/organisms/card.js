@@ -31,7 +31,7 @@ export function openCard(ch, i, o = {}) {
   $('nextT').innerHTML = `<small>Next</small>${name(1)}`; $('prevT').innerHTML = `<small>Previous</small>${name(-1)}`;
   $('next').setAttribute('aria-label', `Next project: ${name(1)}`); $('prev').setAttribute('aria-label', `Previous project: ${name(-1)}`);
   card.style.setProperty('--accent', CH[ch].col); const same = ch === ONE && was?.ch === ch && !card.hidden; // already on the About page: only scroll
-  if (!same) ct.innerHTML = cardHTML(ch, i); card.dataset.one = String(ch === ONE); card.dataset.wide = String(!!CH[ch].items[i]?.case); card.dataset.cw = String(CH[ch].items[i]?.cw || '');
+  if (!same) ct.innerHTML = cardHTML(ch, i); card.dataset.one = String(ch === ONE); card.dataset.wide = String(!!CH[ch].items[i]?.case); card.dataset.proj = String(ch !== ONE && ch !== 'cv');
   if (!turn && !same) { card.hidden = true; void card.offsetWidth; card.hidden = false } // a new book: the sheet drops in
   const sec = ch === ONE && i ? ct.querySelector(`[data-sec="${i}"]`) : null;
   ct.scrollTo({ top: sec ? sec.getBoundingClientRect().top - ct.getBoundingClientRect().top + ct.scrollTop - 14 : 0, behavior: same && !reduceMotion ? 'smooth' : 'auto' });
