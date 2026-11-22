@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" fill="none" stroke="#2a1b12" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+<!-- truck -->
+<path d="M14 84 L15 52 Q15 49 18 49 L70 48 Q73 48 73 51 L74 84"/>
+<path d="M74 60 L95 59 Q99 59 101 62 L111 74 L112 85"/>
+<path d="M80 63 L94 62 L102 73 L80 74 Z" fill="#cfe0f7"/>
+<path d="M12 85 L24 85 M40 85 L82 86 M98 86 L114 85"/>
+<circle cx="32" cy="87" r="8"/><circle cx="32" cy="87" r="2.2" fill="#2a1b12"/>
+<circle cx="90" cy="88" r="8"/><circle cx="90" cy="88" r="2.2" fill="#2a1b12"/>
+<path d="M22 60 L60 59 M22 69 L52 68" stroke-width="2.4"/>
+<!-- stopwatch -->
+<circle cx="128" cy="36" r="19" fill="#fff"/>
+<path d="M128 15 L128 11 M122 10 L134 10 M143 20 L147 16"/>
+<path d="M128 36 L128 24" stroke="#1f6ed4" stroke-width="3.6"/>
+<path d="M128 36 L137 41" stroke="#1f6ed4" stroke-width="3.6"/>
+<circle cx="128" cy="36" r="2" fill="#2a1b12"/>
+<path d="M4 100 Q40 96 80 99 T156 98" stroke-width="2.2" stroke-dasharray="2 7"/>
+</svg>

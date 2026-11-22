@@ -26,8 +26,12 @@ export function openCard(ch, i, o = {}) {
     front.removeAttribute('id'); front.classList.add('leaf-front'); leaf.style.cssText = `top:${ct.offsetTop}px;left:${ct.offsetLeft}px;width:${ct.offsetWidth}px;height:${ct.offsetHeight}px`;
     leaf.append(front, Object.assign(document.createElement('div'), { className: 'leaf-back' })); card.append(leaf); front.scrollTop = top; setTimeout(() => leaf.remove(), 600);
   }
+  /* the arrows say where they go: the next project's name always, the previous one's on hover (desktop and tablet) */
+  const name = d => CH[ch].items[(i + d + n) % n]?.t || '';
+  $('nextT').innerHTML = `<small>Next</small>${name(1)}`; $('prevT').innerHTML = `<small>Previous</small>${name(-1)}`;
+  $('next').setAttribute('aria-label', `Next project: ${name(1)}`); $('prev').setAttribute('aria-label', `Previous project: ${name(-1)}`);
   card.style.setProperty('--accent', CH[ch].col); const same = ch === ONE && was?.ch === ch && !card.hidden; // already on the About page: only scroll
-  if (!same) ct.innerHTML = cardHTML(ch, i); card.dataset.one = String(ch === ONE);
+  if (!same) ct.innerHTML = cardHTML(ch, i); card.dataset.one = String(ch === ONE); card.dataset.wide = String(!!CH[ch].items[i]?.case);
   if (!turn && !same) { card.hidden = true; void card.offsetWidth; card.hidden = false } // a new book: the sheet drops in
   const sec = ch === ONE && i ? ct.querySelector(`[data-sec="${i}"]`) : null;
   ct.scrollTo({ top: sec ? sec.getBoundingClientRect().top - ct.getBoundingClientRect().top + ct.scrollTop - 14 : 0, behavior: same && !reduceMotion ? 'smooth' : 'auto' });
@@ -41,7 +45,7 @@ $('tomenu').onclick = () => { const c = S.card; drum('blip'); closeCard(); if (c
 $('cancel').onclick = () => { drum('blip'); closeCard() };
 const step = d => { if (!S.card) return; ensureAudio(); openCard(S.card.ch, S.card.i + d); playNote(60 + [0, 4, 7, 12, 7, 4, 2, 5, 9, 11, 14, 16][S.card.i % 12]) };
 $('prev').innerHTML = icon('chevron-left', 20); $('next').innerHTML = icon('chevron-right', 20); $('cls').innerHTML = icon('close', 20);
-$('prev').onclick = () => step(-1); $('next').onclick = () => step(1); $('cls').onclick = closeCard;
+$('prev').onclick = $('prevT').onclick = () => step(-1); $('next').onclick = $('nextT').onclick = () => step(1); $('cls').onclick = closeCard;
 const lb = $('lb');
 ct.onclick = e => { const b = e.target.closest('.pic'); if (b) { lb.querySelector('img').src = b.dataset.src; lb.hidden = false } };
 lb.onclick = () => lb.hidden = true;
