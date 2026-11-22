@@ -10,16 +10,17 @@
  *   llms.txt              a short guide for AI assistants (https://llmstxt.org)
  *   robots.txt            who may crawl what (everyone, everything but /admin and /api), and where the sitemap is
  *   sitemap.xml           the two pages
+ *   library/manifest.json what /library/ shows: every token (from tokens.css), component (src/**) and asset, with sizes
  *
  *   npm run generate          write them
- *   npm run generate:check    CI: fail if any is out of date with src/content.js (run `npm run generate` and commit)
+ *   npm run generate:check    CI: fail if the search files are out of date (warn for the library manifest)
  *
  * No dependencies. Content edited in /admin lives in Netlify Blobs, not git, so it isn't in these files until it's
  * copied into src/content.js (docs/SEO.md).
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { spawnSync } from 'node:child_process';
+import { spawnSync, execFileSync } from 'node:child_process';
 import { CH, LINKS, PROFILE as P } from '../src/content.js';
 
 const CHECK = process.argv.includes('--check');
@@ -411,6 +412,65 @@ const sitemap = () => `<?xml version="1.0" encoding="UTF-8"?>
 </urlset>
 `;
 
+/* ── the component and asset library (/library/) ─────────────────────────────────────────────────────────── */
+function manifest() {
+  const files = execFileSync('git', ['ls-files'], { encoding: 'utf8' })
+    .trim()
+    .split('\n')
+    .filter((f) => existsSync(f));
+  const head = (src) =>
+    (src.match(/^\s*\/\*\*?([\s\S]*?)\*\//)?.[1] || '')
+      .replace(/^\s*\*\s?/gm, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  const brief = (s) => (s.length > 260 ? s.slice(0, 257).replace(/\s\S*$/, '') + '…' : s);
+  // tokens, by tier, straight from tokens.css
+  const css = readFileSync('src/styles/tokens.css', 'utf8');
+  const tiers = [];
+  for (const line of css.slice(css.indexOf(':root {'), css.indexOf('@supports')).split('\n')) {
+    const tier = line.match(/\/\* ── (\d · [^─]+?) ─/);
+    if (tier) tiers.push({ tier: tier[1].trim(), tokens: [] });
+    const tok = line.match(/^\s*(--[\w-]+):\s*(.+?);\s*(?:\/\* (.*?) \*\/)?\s*$/);
+    if (tok && tiers.length) tiers.at(-1).tokens.push({ name: tok[1], value: tok[2], note: tok[3] || '' });
+  }
+  // components: every module and stylesheet, with its header comment and what it exports
+  const LAYERS = ['core', 'atoms', 'molecules', 'organisms', 'page', 'styles'];
+  const components = files
+    .filter((f) => /^src\/.+\.(js|css)$/.test(f))
+    .map((f) => {
+      const src = readFileSync(f, 'utf8'),
+        layer = f.split('/')[1].replace(/\.(js|css)$/, '');
+      return {
+        file: f,
+        layer: LAYERS.includes(layer) ? layer : 'app',
+        about: brief(head(src)),
+        exports: [...src.matchAll(/^export (?:async )?(?:function\*?|const|let|class) ([\w$]+)/gm)].map((m) => m[1]),
+        lines: src.split('\n').length,
+      };
+    });
+  // assets: every file under assets/, with its size, pixel size and the files that use it
+  const code = files.filter(
+    (f) => /\.(js|css|html)$/.test(f) && !f.startsWith('library/') && !f.startsWith('portfolio/'),
+  );
+  const sources = Object.fromEntries(code.map((f) => [f, readFileSync(f, 'utf8')]));
+  const assets = files
+    .filter((f) => f.startsWith('assets/') && !/\.(txt|md)$/.test(f))
+    .map((f) => {
+      const name = f.split('/').pop(),
+        stem = name.replace(/\.\w+$/, '').replace(/@2x$/, ''),
+        re = new RegExp(`['"\`/(]${stem.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(@2x)?(\\.\\w+)?['"\`)]`);
+      const d = size(f);
+      return {
+        path: f,
+        kind: f.split('/')[1],
+        bytes: readFileSync(f).length,
+        ...(d ? { w: d[0], h: d[1] } : {}),
+        usedBy: Object.keys(sources).filter((s) => re.test(sources[s])),
+      };
+    });
+  return JSON.stringify({ tiers, components, assets }, null, 1) + '\n';
+}
+
 /* ── write or check ──────────────────────────────────────────────────────────────────────────────────────── */
 if (P.title.length > 60)
   console.warn(`! PROFILE.title is ${P.title.length} characters; search results cut it after about 60.`);
@@ -450,15 +510,23 @@ const out = {
   'llms.txt': llms(),
   'robots.txt': robots(),
   'sitemap.xml': sitemap(),
+  'library/manifest.json': pretty('library/manifest.json', manifest()),
 };
 let stale = 0;
 for (const [file, body] of Object.entries(out)) {
   const now = existsSync(file) ? readFileSync(file, 'utf8') : null;
   if (now === body) continue;
   if (CHECK) {
-    stale++;
-    const msg = `${file} is out of date with src/content.js. Run \`npm run generate\` and commit the result.`;
-    console.log(process.env.GITHUB_ACTIONS ? `::error file=${file},title=Generated files::${msg}` : `✗ ${msg}`);
+    // the library's manifest is a convenience: stale is a warning. What search engines read must be current: an error.
+    const soft = file.startsWith('library/'),
+      level = soft ? 'warning' : 'error';
+    if (!soft) stale++;
+    const msg = `${file} is out of date with the code. Run \`npm run generate\` and commit the result.`;
+    console.log(
+      process.env.GITHUB_ACTIONS
+        ? `::${level} file=${file},title=Generated files::${msg}`
+        : `${soft ? '!' : '✗'} ${msg}`,
+    );
   } else {
     mkdirSync(dirname(file), { recursive: true });
     writeFileSync(file, body);

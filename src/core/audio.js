@@ -225,7 +225,7 @@ export function foley(k, vol = 1) {
     },
   })[k]?.();
 }
-/* Beep, the tour guide (organisms/tour.js), chirps before he speaks: two or three quick square-wave notes, a different little phrase
+/* Bleep, the tour guide (organisms/tour.js), chirps before he speaks: two or three quick square-wave notes, a different little phrase
    for each thing he explains. Like the foley it goes straight to the speakers (no echo, no waveform on the notebook) and obeys mute. */
 const CHIRPS = [
   [0, 7, 12],

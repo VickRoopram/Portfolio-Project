@@ -39,7 +39,7 @@ import { FPS, BOIL_EVERY, boil } from './atoms/craft.js';
 import './organisms/tour.js';
 import { updateJam } from './organisms/jam.js';
 
-/* where a thing on the bench is on screen right now (for Beep, the tour guide, to point at): its box's corners through the camera */
+/* where a thing on the bench is on screen right now (for Bleep, the tour guide, to point at): its box's corners through the camera */
 const SPOTS = {
     synth: GROUPS.projects.box,
     remote: GROUPS.contact.box,

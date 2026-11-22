@@ -1,4 +1,4 @@
-/* The tour. A cardboard question mark sits bottom left (#help, index.html). Click it and Beep pops out: a small wooden TV that floats,
+/* The tour. A cardboard question mark sits bottom left (#help, index.html). Click it and Bleep pops out: a small wooden TV that floats,
    with eyes and a mouth on his screen. He explains the site one thing at a time, in a cardboard speech bubble that comes from his mouth:
    a heading of three words at most and one or two lines under it. Arrows step on and back; "Skip tour" sits bottom middle;
    a bar fills as the tour goes (no numbers) and a cross on the bubble's corner closes it.
@@ -62,7 +62,7 @@ const STEPS = [
 const INK = '#2a1b12',
   CREAM = '#fbf1dd',
   RED = '#e0301a';
-/* Beep: a wooden cabinet (the wood from the texture library), a cream card bezel, a dark tube with his face on it, two knobs, a speaker,
+/* Bleep: a wooden cabinet (the wood from the texture library), a cream card bezel, a dark tube with his face on it, two knobs, a speaker,
    two aerials, a sticker of Vick's logo mark (the first four paths of assets/ui/logo-on-dark.svg, in ink on cream card), and his plug dangling underneath. The face (.tv-face) is moved to look; eyes and mouths are swapped by data-eyes / data-m */
 const BOX = 'M24 45Q22 38 30 37L170 35Q180 35 181 44L183 156Q183 165 174 166L30 168Q21 168 21 159Z';
 const TV = `<svg class="tv" viewBox="0 0 200 204" aria-hidden="true" focusable="false" data-eyes="open" data-m="rest">
@@ -138,7 +138,7 @@ function build() {
   ring.hidden = true;
   ring.setAttribute('aria-hidden', 'true');
   ring.innerHTML = '<svg><path pathLength="1"/></svg>';
-  /* the lights go down while he talks: everything dims except the thing he's explaining (a hole in the dark, where the ring is) and Beep himself */
+  /* the lights go down while he talks: everything dims except the thing he's explaining (a hole in the dark, where the ring is) and Bleep himself */
   dim = document.createElement('div');
   dim.id = 'tour-dim';
   dim.setAttribute('aria-hidden', 'true');
@@ -431,7 +431,7 @@ try {
   help.classList.add('nudge');
 }
 
-/* Beep peeps out from behind the question mark and ducks back in: twice soon after you arrive (to say "play with me first"), then once in a while */
+/* Bleep peeps out from behind the question mark and ducks back in: twice soon after you arrive (to say "play with me first"), then once in a while */
 const PEEP = `<span class="peep" aria-hidden="true"><svg viewBox="0 0 60 58"><defs><pattern id="pWood" patternUnits="userSpaceOnUse" width="80" height="80"><image href="assets/tex/wood.jpg" width="80" height="80"/></pattern></defs>
   <g fill="none" stroke="${INK}" stroke-linecap="round"><path d="M26 16L17 4M33 16L44 3" stroke-width="4"/><path d="M26 16L17 4M33 16L44 3" stroke="#c9a06c" stroke-width="1.6"/><circle cx="17" cy="4" r="2.6" fill="${CREAM}" stroke-width="1.6"/><circle cx="44" cy="3" r="2.6" fill="${RED}" stroke-width="1.6"/></g>
   <path d="M6 18Q5 14 10 14L50 13Q55 13 55 18L56 50Q56 55 51 55L10 56Q5 56 5 51Z" fill="#b9834f" stroke="${CREAM}" stroke-width="6" stroke-linejoin="round"/>

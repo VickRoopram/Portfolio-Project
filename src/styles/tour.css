@@ -1,4 +1,4 @@
-/* ── TOUR: the cardboard question mark, Beep (a floating wooden TV) and his cardboard speech bubble (organisms/tour.js).
+/* ── TOUR: the cardboard question mark, Bleep (a floating wooden TV) and his cardboard speech bubble (organisms/tour.js).
    Same rules as the rest of the skin: photo textures from the texture library, an ink line round every piece, no shadows, everything on twos. ── */
 
 /* the question mark: cut from kraft card, its corrugated edge showing down one side. Cream under the pointer, like every utility button */
@@ -114,7 +114,7 @@ body[data-card='true'] #help {
   }
 }
 
-/* Beep peeping out from behind the question mark (tour.js peep): up and out to the side, a look left and right, and back in */
+/* Bleep peeping out from behind the question mark (tour.js peep): up and out to the side, a look left and right, and back in */
 #help .peep {
   position: absolute;
   z-index: -1;
@@ -276,7 +276,7 @@ body[data-tour='on'] > :not(#tour):not(#help) {
   pointer-events: none;
 }
 
-/* Beep and his bubble: one piece that floats together, so the bubble's tail stays at his mouth */
+/* Bleep and his bubble: one piece that floats together, so the bubble's tail stays at his mouth */
 #tour {
   --tv: 186px;
   --ty: calc(var(--tv) * 0.6);
