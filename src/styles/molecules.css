@@ -113,8 +113,6 @@ html.phone .beats .ill{width:120px}
   #card[data-wide="true"]{width:calc(100% - 32px)}
   /* cw:75 → a centred window three quarters of the screen wide (Graphic design) */
   #card[data-wide="true"][data-cw="75"]{width:75%;right:12.5%}
-  #card[data-wide="true"] .d>.clips:not(.pic){max-width:none}
-  #card[data-wide="true"] .d .tools.end{max-width:none;justify-content:flex-end}
   #card[data-wide="true"] .d{max-width:none}
   #card[data-wide="true"] .d>:not(.pic):not(.desk-only){max-width:76ch}
   #card[data-wide="true"] .d .steps{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
@@ -126,6 +124,9 @@ html.phone .beats .ill{width:120px}
   #card[data-wide="true"] .d .feat>div{padding:var(--s3);font-size:var(--t-sm)}
   #card[data-wide="true"] .d .tags.end{max-width:none}
   #card[data-wide="true"] .hero-pic{margin-top:var(--s3)}
+  /* loops and tool badges use the full width of the images, not the text column */
+  #card[data-wide="true"] .d>:is(.clips,.tools):not(.pic):not(.desk-only){max-width:none}
+  #card[data-wide="true"] .d>.tools{justify-content:flex-end}
 }
 /* the lamp's hover tip: a bulb icon, lit when the lamp is on, and On / Off */
 .lamp-tip{display:inline-flex;align-items:center;gap:6px}

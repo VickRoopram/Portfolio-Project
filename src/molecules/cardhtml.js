@@ -24,7 +24,7 @@ export function cardHTML(ch, i) {
   const placed = new Set();
   const cs = it.case ? ' case' : '';
   /* <div class="vid vid-N"></div> places it.vid[N]: a short muted loop that plays by itself (with a poster while it loads) */
-  const vid = v => `<figure class="clip"><video src="${v.s}" poster="${v.p}" autoplay muted loop playsinline preload="metadata" aria-label="${v.a}"></video></figure>`;
+  const vid = v => `<figure class="clip"><video src="${v.s}" poster="${v.p}" autoplay muted loop playsinline preload="auto" oncanplay="this.muted=true;this.play().catch(()=>{})" aria-label="${v.a}"></video></figure>`;
   if (it.d) h += `<div class="d${cs}"${acc}>${it.d.replace(/<div class="(fig|ill|vid) \1-(\d+)"><\/div>/g, (m, kind, n) => {
     if (kind === 'vid') return it.vid?.[+n] ? vid(it.vid[+n]) : '';
     const g = it.img?.[+n]; if (!g || +n === 0) return ''; placed.add(+n);
