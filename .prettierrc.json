@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/prettierrc",
+  "printWidth": 120,
+  "singleQuote": true,
+  "semi": true,
+  "trailingComma": "all",
+  "arrowParens": "always",
+  "bracketSpacing": true,
+  "htmlWhitespaceSensitivity": "css",
+  "proseWrap": "preserve",
+  "endOfLine": "lf",
+  "overrides": [
+    { "files": ["*.md"], "options": { "printWidth": 100 } },
+    { "files": [".vscode/*.json"], "options": { "parser": "jsonc", "trailingComma": "none" } }
+  ]
+}

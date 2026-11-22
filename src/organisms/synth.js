@@ -10,7 +10,7 @@ import { canvasTex, radialTex } from '../atoms/textures.js';
 import { M, C, RUBBER, decal } from '../atoms/materials.js';
 import { printed, engraved } from '../atoms/labels.js';
 import { fxOf, FXMATS } from '../molecules/fx.js';
-import { wonk, tape, rnd, card } from '../atoms/craft.js';
+import { wonk, tape, rnd } from '../atoms/craft.js';
 import { pressable, itemCtrl, knob, screw, cap, boardCap } from '../molecules/controls.js';
 
 export const synth = new THREE.Group(); scene.add(synth);

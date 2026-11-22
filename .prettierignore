@@ -1,0 +1,6 @@
+# Prettier formats everything else in the repo (npm run format). Kept out:
+package-lock.json
+assets/
+node_modules/
+.netlify/
+tools/admin-artifact/out/

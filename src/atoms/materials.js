@@ -1,5 +1,4 @@
 /* Material atoms. One look: a cardboard model (14 Nov 2026). Every surface is card or paper from atoms/craft.js. */
-import * as THREE from 'three';
 import { card } from './craft.js';
 
 /* a decal lying on a surface: pulled toward the camera in the depth test, so it never z-fights, however far away the camera is */

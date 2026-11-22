@@ -24,7 +24,6 @@ const label = open => { mnu.setAttribute('aria-expanded', String(open)); mnu.set
 export const menuOpen = () => !menu.hidden && !menu.classList.contains('out');
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const chev = `<span class="go">${icon('chevron-right', 20)}</span>`;
 /* a closed box seen from above: two flaps with its name lettered across the seam, and whatever's inside underneath */
 const flaps = t => `<i class="fl l"><b>${t}</b></i><i class="fl r"><b>${t}</b></i>`;
 /* inside every box is a slip of paper with the box's name on it: you read it when the box is open */

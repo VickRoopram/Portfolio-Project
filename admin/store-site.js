@@ -23,7 +23,7 @@ export async function siteStore({ api, signOut, defaults, noCV, stale }) {
     groups: Object.fromEntries(MANAGED.map(k => [k, { name: CH[k].name, col: CH[k].col, ...(CH[k].glow ? { glow: CH[k].glow } : {}), ...(CH[k].knob ? { knob: CH[k].knob } : {}), items: CH[k].items || [] }])),
     socials: JSON.parse(JSON.stringify(links)), menu: JSON.parse(JSON.stringify(base.menu || defaults.MENU)),
   };
-  let status = {}, app = null, timer = 0, saving = false, again = false, statusEl = null, ui = null;
+  let status = {}, timer = 0, saving = false, again = false, statusEl = null, ui = null;
   const refreshStatus = async () => { try { status = await api('/api/content?stage=status') } catch {} paint() };
 
   async function put() {
@@ -53,7 +53,7 @@ export async function siteStore({ api, signOut, defaults, noCV, stale }) {
 
   const store = {
     load: () => data,
-    attach(a) { app = a; ui = a.ui; refreshStatus(); if (from === 'live') ui.toast('Showing the live content. Your first change starts a new preview.') },
+    attach(a) { ui = a.ui; refreshStatus(); if (from === 'live') ui.toast('Showing the live content. Your first change starts a new preview.') },
     save() { ui?.setSave('busy'); clearTimeout(timer); timer = setTimeout(put, 1200) },
     async upload(blob) {
       const r = await api('/api/media', { method: 'POST', headers: { 'content-type': blob.type, 'x-file-name': encodeURIComponent(blob.name || 'image') }, body: blob });

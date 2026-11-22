@@ -5,7 +5,7 @@
      a layer; PLAY and STOP run it, UNDO takes the last layer off, CLEAR wipes it, the knob sets the tempo. Its note shows what it's doing.
    Notes land on the nearest sixteenth, and playback is scheduled on the audio clock a little ahead of time, so the loop stays tight even
    though the pictures are on twos. "Back to portfolio" (or Esc) puts everything back, and Bleep says hello again. */
-import { $, S, V, act } from '../core/state.js';
+import { $, S, act } from '../core/state.js';
 import { P, VOICES, LIVE, clock, applyP, ensureAudio, playNote, drum } from '../core/audio.js';
 import { PADS } from './synth.js';
 import { RC } from './remote.js';

@@ -21,6 +21,7 @@ const hashes = S => { const c = canon(S), o = { links: fnv(JSON.stringify(c.link
 const ago = iso => { if (!iso) return 'never'; const s = (Date.now() - Date.parse(iso)) / 1000; if (s < 50) return 'just now'; if (s < 3600) return Math.round(s / 60) + ' min ago'; if (s < 86400) return Math.round(s / 3600) + ' h ago';
   return new Date(iso).toLocaleString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) };
 
+// eslint-disable-next-line no-unused-vars -- called by page.html, which inlines this file (build.py)
 async function artifactStore(defaultMenu) {
   const db = await claude.use('db'); if (!db) throw new Error('signed-out');
   const assets = await claude.use('assets');

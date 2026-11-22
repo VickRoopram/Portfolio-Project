@@ -35,7 +35,7 @@ let wasLit = null;
 export function updateUnderlights(dt, hoverGroup) {
   const lit = !S.mode && !S.card && !V.fly ? hoverGroup : null;
   if (lit !== wasLit) { if (lit) foley('marker'); wasLit = lit } // the marker squeaks as its line is drawn on
-  const ease = reduceMotion ? 1 : 1 - Math.exp(-dt * 8), cEase = reduceMotion ? 1 : 1 - Math.exp(-dt * 4), breathe = reduceMotion ? 1 : 1 + .035 * Math.sin(performance.now() / 1000 * 1.6);
+  const ease = reduceMotion ? 1 : 1 - Math.exp(-dt * 8), cEase = reduceMotion ? 1 : 1 - Math.exp(-dt * 4);
   const kbOn = S.mode && onKeys(S.mode) || S.card && onKeys(S.card.ch);
   for (const g of Object.values(GROUPS)) {
     const to = g.key === lit ? 1 : g.key === 'projects' && kbOn ? .75 : 0, wipe = to === 0 && g.k > .004 && !reduceMotion;
