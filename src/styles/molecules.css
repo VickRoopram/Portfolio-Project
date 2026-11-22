@@ -92,7 +92,7 @@ html.phone .beats .ill{width:120px}
 .d.case .ill-steps .ill{grid-row:auto;width:min(100%,220px)}
 .d.case .ill-steps .ill[src$=".png"]{width:64px}
 /* not just the text: images, rows and blocks sit on the centre line too (straight, so both edges line up) */
-.d.case .pic,.hd.case + .pic.hero-pic{box-sizing:border-box;width:100%;margin-inline:auto;rotate:0deg}
+.d.case .pic,.hd.case + .pic.hero-pic,.d.intro + .pic.hero-pic{box-sizing:border-box;width:100%;margin-inline:auto;rotate:0deg}
 .d.case .steps,.d.case .beats,.d.case .tl,.d.case .tags{margin-inline:auto;justify-content:center;justify-items:center}
 .d.case .steps>div,.d.case .beats>div{width:100%}
 /* a quarter more room above User flow, after the opening beats (1.1em → 1.375em; the beats' bottom margin collapses into it) */
