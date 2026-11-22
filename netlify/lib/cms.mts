@@ -165,7 +165,14 @@ export function cleanContent(doc: any) {
       ...(colour(g.knob) ? { knob: g.knob } : {}),
       items: g.items.slice(0, 60).map((it: any) => {
         const o: Record<string, unknown> = { t: text(it?.t, 160), k: text(it?.k, 240) };
+        if (it?.sum) o.sum = text(it.sum, 300);
         if (it?.d) o.d = cleanHTML(it.d);
+        if (colour(it?.acc)) o.acc = it.acc;
+        if (Array.isArray(it?.vid))
+          o.vid = it.vid
+            .map((v: any) => ({ s: img(v?.s), p: img(v?.p), a: text(v?.a, 300) }))
+            .filter((v: any) => v.s)
+            .slice(0, 8);
         if (Array.isArray(it?.img))
           o.img = it.img
             .map((m: any) => ({ s: img(m?.s), a: text(m?.a, 300) }))
@@ -185,7 +192,7 @@ export function cleanContent(doc: any) {
           o.bars = it.bars
             .map((b: any) => [text(b?.[0], 120), text(b?.[1], 40), Math.max(0, Math.min(1, Number(b?.[2]) || 0))])
             .slice(0, 12);
-        for (const f of ['hero', 'contact', 'life']) if (it?.[f]) o[f] = 1;
+        for (const f of ['hero', 'contact', 'life', 'case', 'introFirst']) if (it?.[f]) o[f] = 1;
         return o;
       }),
     };

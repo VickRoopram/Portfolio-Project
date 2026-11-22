@@ -130,15 +130,13 @@ async function artifactStore(defaultMenu) {
     const req = async (kind) => {
       const hh = hashes(app.state);
       try {
-        await db
-          .doc('site/sync')
-          .set({
-            ...sync,
-            request: kind,
-            requestedAt: new Date().toISOString(),
-            requestHash: hh.all,
-            requestGroups: hh.groups,
-          });
+        await db.doc('site/sync').set({
+          ...sync,
+          request: kind,
+          requestedAt: new Date().toISOString(),
+          requestHash: hh.all,
+          requestGroups: hh.groups,
+        });
         ui.toast(
           kind === 'live' ? 'Ready: tell Claude “publish my portfolio”' : 'Ready: tell Claude “sync my portfolio”',
         );

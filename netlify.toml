@@ -1,11 +1,32 @@
+# Netlify: a static site (no build step) plus the content-admin functions in netlify/functions.
+# Deploys: main → production, version-01 → staging (docs/GIT-WORKFLOW.md).
 [build]
   publish = "."
 
+[dev]
+  framework = "#static"
+  port = 8888
+
+# Media is web-sized and rarely changes: let browsers keep it for a week.
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=604800"
 
-[dev]
-  framework = "#static"
-  port = 8888
+# Private tools stay out of search results (robots.txt asks too; this header is the one search engines must obey).
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/library/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+
+# Every page: basic hardening that doesn't change how anything works.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

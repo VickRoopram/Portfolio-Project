@@ -80,3 +80,31 @@ body,
     transform: rotate(360deg);
   }
 }
+
+/* the skip link: hidden until a keyboard reaches it, then it sits over everything, top left */
+.skip {
+  position: fixed;
+  left: var(--s3);
+  top: var(--s3);
+  z-index: 100;
+  padding: var(--s2) var(--s4);
+  background: var(--cream);
+  color: var(--ink);
+  border: var(--edge);
+  font: 400 var(--t-md) / 1.2 var(--body);
+  translate: 0 -200%;
+}
+.skip:focus-visible {
+  translate: none;
+}
+.noscript {
+  position: fixed;
+  inset: auto var(--s4) var(--s4);
+  z-index: 100;
+  margin: 0;
+  padding: var(--s4);
+  background: var(--cream);
+  color: var(--ink);
+  border: var(--edge);
+  font: 400 var(--t-md) / 1.4 var(--body);
+}

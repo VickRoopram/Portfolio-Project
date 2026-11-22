@@ -10,8 +10,8 @@
     "format": "npx --yes prettier@3.8.1 --write .",
     "format:check": "npx --yes prettier@3.8.1 --check .",
     "lint": "npx --yes eslint@10.1.0 .",
-    "seo": "node scripts/build-seo.mjs",
-    "seo:check": "node scripts/build-seo.mjs --check",
+    "generate": "node scripts/generate.mjs",
+    "generate:check": "node scripts/generate.mjs --check",
     "setup": "git config core.hooksPath .githooks && echo 'Git hooks on: no commits or pushes straight to main.'"
   },
   "dependencies": {

@@ -1,7 +1,8 @@
 /**
  * Portfolio content for Vick Does Creative.
  * Edit text, links and images here; the 3D synth in main.js reads from CH.
- * Each channel: { name, col, items:[{ t:title, k:kicker, d:html, img:[], tags:[], links:[[label,url]] }] }
+ * Each channel: { name, col, items:[{ t:title, k:kicker, sum:one-line summary, d:html, img:[], tags:[], links:[[label,url]] }] }
+ * sum is plain text for search engines, AI assistants and /portfolio/ (scripts/generate.mjs); the synth shows t, k and d.
  */
 /* ───────────── CONTENT ───────────── */
 export const im = (n, a) => ({ s: `assets/img/${/\.\w+$/.test(n) ? n : n + '.jpg'}`, a }); // a name without an extension is a .jpg
@@ -70,6 +71,7 @@ export const CH = {
     items: [
       {
         t: 'Self-Promo: Design OS',
+        sum: `My own identity: a Design Operating System, with a logo built from Unicode emotes, business cards, a creative CV and promotional items.`,
         case: 1,
         img: [
           im('g5', 'My brain in a nutshell'),
@@ -81,6 +83,7 @@ export const CH = {
       },
       {
         t: 'A Journey With Kal',
+        sum: `An illustrated, animated Instagram diary about living with Kallmann syndrome and acromegaly: informative, a bit funny, and shared by people around the world.`,
         case: 1,
         introFirst: 1,
         img: [
@@ -105,42 +108,49 @@ export const CH = {
       },
       {
         t: 'A Noob’s Guide to Building a PC',
+        sum: `An 800 × 2000 px infographic of the basic parts of a gaming PC and what each one does.`,
         case: 1,
         img: [im('g15', 'Infographic spread'), im('g16', 'PC build illustration'), im('g18', 'Part illustrations')],
         d: `<p>A digital infographic of the basic parts you need to build a gaming PC and what each one does. It's 800 × 2000 px, so it reads properly on most devices. I built the PC first. That was the research.</p>`,
       },
       {
         t: 'A Pandemic Together',
+        sum: `An illustrated editorial spread about lockdown, written and designed for Frankie, an Australian magazine about design, art and interiors.`,
         case: 1,
         img: [im('g21', 'Editorial spread'), im('g22', 'Spread illustration')],
         d: `<p>An illustrated editorial spread about the lockdown experience, written and designed for <i>Frankie</i>, an Australian bi-monthly magazine about design, art and interiors. The illustrations carry the article instead of decorating it.</p>`,
       },
       {
         t: 'iMvelo Care',
+        sum: `Corporate identity for iMvelo, a mobile spa and wellness centre for women that specialises in care for the elderly.`,
         case: 1,
         img: [im('g26', 'Brochure'), im('g27', 'Web and print')],
         d: `<p>A corporate identity for iMvelo, a mobile spa and wellness centre for women that specialises in care for the elderly. Calm, clear and easy to trust.</p>`,
       },
       {
         t: 'Takkie Wash & Squeaky Kleen',
+        sum: `Team lead on a rebrand of two cleaning brands for a new in-store partnership, so customers can tell which brand does what.`,
         case: 1,
         img: [im('g30', 'Signage'), im('g31', 'Posters')],
         d: `<p>I led a team rebranding two cleaning brands. The problem: a new in-store partnership, and customers who couldn't tell which brand did what. We kept the brands separate, made each cleaning process obvious, and used simple, punchy copy.</p>`,
       },
       {
         t: 'Moving Type: “Yoh!”',
+        sum: `Kinetic type: an animated GIF of the South African slang word “Yoh!” in a comic-texture style.`,
         case: 1,
         img: [im('g33', 'Yoh! character'), im('g35', 'Animation frames')],
         d: `<p>An animated GIF of the South African slang word <i>Yoh!</i>, which you say in shock, severity or irritation. A man in comic-texture style is irritated by chatter, so you see the word exactly where you'd say it.</p>`,
       },
       {
         t: 'Clover Festive Display',
+        sum: `In-store festive display for Clover and its Win-a-Car promotion, built on Clover's line “Way Better Shared”.`,
         case: 1,
         img: [im('g39', 'Festive display'), im('g40', 'Campaign visual')],
         d: `<p><b>Brief:</b> bring Clover's festive season to life in store and dramatise the Win-a-Car promotion.</p><p><b>Solution:</b> built on Clover's line “Way Better Shared”: visuals of the things mothers make to share with family.</p>`,
       },
       {
         t: 'Pulse Hybrid Inverter',
+        sum: `Packaging for a backup power inverter that has to sell itself in store. Bronze at the 2020 SA Gold Pack Design Awards and a Top 100 international entry.`,
         case: 1,
         img: [im('g43', 'Packaging prototypes'), im('g44', 'Packaging layout')],
         d: `<p>Packaging for a backup power inverter that has to sell itself in store, with no sales rep and no manual, and show it's part of a bigger system. Bronze at the 2020 SA Gold Pack awards and a Top 100 international entry. Yes, I used the box.</p>`,
@@ -148,18 +158,21 @@ export const CH = {
       },
       {
         t: 'Saddler Repositioning',
+        sum: `Repositioning Saddler from a white-label business to an on-trend fashion accessory brand: “Your World. Your Way.”`,
         case: 1,
         img: [im('g47', 'Your World. Your Way.'), im('g48', 'Social campaign')],
         d: `<p>Repositioning Saddler from a white-label business to an on-trend fashion accessory brand. The line: “Your World. Your Way.”</p>`,
       },
       {
         t: 'Retro Grade',
+        sum: `A T-shirt range I designed to celebrate 50-plus years of gaming and esports, and the two-page publication that presents it.`,
         case: 1,
         img: [im('g51', 'Retro Grade spread'), im('g52', 'Magazine mock-up'), im('g53', 'Pixel art')],
         d: `<p>A two-page publication for a product I designed: T-shirts celebrating 50-plus years of gaming and esports, based on the games that defined their genres. The research was extremely enjoyable.</p>`,
       },
       {
         t: 'Jonsson Workwear: Siyapusha',
+        sum: `Group lead on the campaign strategy to launch Jonsson's lifestyle footwear, The Kalahari's, which drove the launch collateral and a packaging redesign.`,
         case: 1,
         img: [im('g58', 'Siyapusha campaign'), im('g60', 'Packaging')],
         d: `<p>I led the group that wrote the campaign strategy to launch Jonsson's new lifestyle footwear, The Kalahari's. The strategy drove the launch collateral and a packaging redesign. “Siyapusha: built for the pressure.”</p>`,
@@ -176,6 +189,7 @@ export const CH = {
      acc:'#hex' gives one project its own marker colour (headings, step titles, labels). case:1 opens a wide card (images over 3/4 of the screen on desktop and tablet), with the title above the first image, uncropped */
       {
         t: 'Plug Our Potholes',
+        sum: `UX/UI case study: a community app, developed with Floodlight Studios, where people report potholes, vote for the next area and donate to fix their own roads.`,
         k: '',
         case: 1,
         img: [
@@ -194,6 +208,7 @@ export const CH = {
       },
       {
         t: 'Fleet Receiving',
+        sum: `UX/UI case study: Fleet, a stand-alone receiving system for a distribution centre that tracks every touch point of an offload, so bottlenecks show up.`,
         k: '',
         case: 1,
         acc: '#1f6ed4',
@@ -218,42 +233,49 @@ export const CH = {
       },
       {
         t: 'Floodlight Studios',
+        sum: `Sole UX/UI designer at Floodlight Studios since 2021, designing SaaS products for retail clients including SPAR, in two-week sprints with the developers.`,
         k: '',
         case: 1,
         d: `<p>Since 2021 I've been the only UX/UI designer at Floodlight Studios,<br class="dbr">a studio that builds SaaS products. Our biggest client is SPAR,<br class="dbr">one of the largest supermarket and retail chains in the region.</p><p>The studio also gives us room to pitch and build our own product ideas,<br class="dbr">which I take full advantage of.</p><div class="steps"><div><b>ROLE</b>Sole UX/UI designer</div><div><b>DOMAIN</b>SaaS · retail</div><div><b>TEAMS</b>Front end · back end · design</div><div><b>CADENCE</b>2-week sprints + retros</div></div>`,
       },
       {
         t: 'Designing at retail scale',
+        sum: `How I design retail tools for SPAR: find out who uses each screen and where, design the flows in Figma, hand off in Zeplin with Jira, refine every sprint.`,
         k: '',
         case: 1,
         d: `<p>Retail tools for SPAR get used by a lot of people, in a hurry.<br class="dbr">So I start with the box: who uses this screen, where, and what has to happen next.</p><p>Then I design the flows and screens in Figma, hand them off in Zeplin linked to Jira tickets,<br class="dbr">and refine them with the developers every sprint.</p><div class="tags"><span>Figma</span><span>Zeplin</span><span>Jira</span><span>Design systems</span><span>Prototyping</span></div>`,
       },
       {
         t: 'Systems for Parliament',
+        sum: `Systems for SASSA and Home Affairs presented to the South African Parliament (2020), and a prototype reviewed for a government initiative (2022).`,
         k: '',
         case: 1,
         d: `<p>Systems I designed for SASSA and Home Affairs were presented<br class="dbr">to the South African Parliament in 2020 for possible national use.<br class="dbr">In 2022 another prototype was reviewed for a government initiative.</p><p>Designing for public services means designing for everyone:<br class="dbr">different literacy levels, different devices, and a lot of waiting in queues.</p><div class="tags"><span>Public sector</span><span>Service design</span><span>Prototyping</span></div>`,
       },
       {
         t: 'My method',
+        sum: `My UX method in four steps: constraint, context, expression and future. Research first, then the look that fits the project and its users.`,
         k: '',
         case: 1,
         d: `<p>Homework first. I do the deep, analytical work early<br class="dbr">to set the constraints, the context and the big picture.<br class="dbr">Only then do I choose the taste that fits this project and its users.</p><p>Everything sits on clear logic, for the person using it<br class="dbr">and for whoever improves it next.</p><div class="steps"><div><b>01 CONSTRAINT</b>What must be true</div><div><b>02 CONTEXT</b>Who, where, and why now</div><div><b>03 EXPRESSION</b>The taste that fits</div><div><b>04 FUTURE</b>Room to improve and scale</div></div>`,
       },
       {
         t: 'Workflow & AI stack',
+        sum: `My tools and AI workflow: Figma, Adobe CC, Zeplin and Jira, plus Claude, Figma Make, Canva AI, ChatGPT, Gemini, Vercel and Antigravity.`,
         k: '',
         case: 1,
         d: `<p>Figma is home base, with the full Adobe suite beside it.<br class="dbr">Handoff runs through Zeplin, tracked against Jira tickets.</p><p>On top of that I use AI tools every day: Claude Design and Code, Figma Make, Canva AI,<br class="dbr">ChatGPT and Gemini image generation, and Vercel and Antigravity to build and ship.<br class="dbr">I test the tools the way I test designs: properly.</p><div class="tags"><span>Figma</span><span>Zeplin</span><span>Jira</span><span>Slack</span><span>Claude</span><span>Figma Make</span><span>Vercel</span></div>`,
       },
       {
         t: 'Geek Punch',
+        sum: `A personal product I'm designing and building to take to market. In progress.`,
         k: '',
         case: 1,
         d: `<p>A personal product I'm designing and building, with the aim of taking it to market.<br class="dbr">It's still on the workbench. More soon.</p>`,
       },
       {
         t: 'Training',
+        sum: `UX/UI short course at the University of Cape Town (2021–2022) and a frontend developer bootcamp at Codecamp.org (2021).`,
         k: '',
         case: 1,
         d: `<ol class="tl"><li><time>2021–2022</time><div><b>UX/UI short course</b><br>University of Cape Town</div></li><li><time>2021</time><div><b>Frontend developer bootcamp</b><br>Codecamp.org: HTML5, CSS, JavaScript and React</div></li></ol>`,
@@ -266,6 +288,7 @@ export const CH = {
     items: [
       {
         t: 'A Journey With Kal',
+        sum: `Short animations about life with two rare genetic disorders, made funny so they're easier to relate to.`,
         k: 'Animated shorts',
         img: [im('g10', 'Animated story grid'), im('g9', 'Character animation')],
         d: `<p>Short animations about life with two rare genetic disorders, made funny so they're easier to relate to. The full series is on my creative Instagram and on Behance.</p>`,
@@ -276,28 +299,33 @@ export const CH = {
       },
       {
         t: '“Yoh!” in motion',
+        sum: `A character GIF animated frame by frame in comic halftone, timed so the word lands like a punchline.`,
         k: 'Comic-texture GIF',
         img: [im('g35', 'Animation frames'), im('g33', 'Key frame')],
         d: `<p>A character GIF built frame by frame in comic halftone, timed so the word lands like a punchline. Timing took longer than drawing. It usually does.</p>`,
       },
       {
         t: '3D & animation toolkit',
+        sum: `2D and 3D animation, from personal projects to freelance work. This playable 3D synth is one example.`,
         k: '2D · 3D · video',
         d: `<p>I've animated for most of my life, from personal illustration projects to freelance work, in 2D and 3D. This synth is a small example: a 3D instrument you can play, drawn on twos.</p>`,
         tags: ['After Effects', 'Animate', 'Premiere', 'Blender', 'Spline', 'Fuse', 'Dimension', 'Procreate'],
       },
       {
         t: 'Genesis Printing',
+        sum: `Graphic and motion designer, part time (2017–2019): animated promos alongside print-ready production.`,
         k: 'Graphic & Motion Designer · 2017–2019',
         d: `<p>Part-time motion and graphic work for a print business: animated promos alongside print-ready production.</p>`,
       },
       {
         t: 'Church media & production',
+        sum: `Multimedia engineer and motion designer (2017–2019): live visuals, service graphics and video for Conquering Through Prayer Ministries International.`,
         k: 'Multimedia Engineer · 2017–2019',
         d: `<p>Multimedia engineering and motion design for Conquering Through Prayer Ministries International: live visuals, service graphics and video. I've also worked with Olive Tree Church's production team across its sites.</p>`,
       },
       {
         t: '@vicsdoesmotion',
+        sum: `My creative Instagram, where animation, illustration and motion experiments get tested in public.`,
         k: 'Creative Instagram',
         d: `<p>My creative account. It's where the animation, illustration and motion experiments go to be tested in public.</p>`,
         links: [
@@ -342,7 +370,7 @@ export const LINKS = [
   ['X', 'https://x.com/RoopramVickhal'],
 ];
 
-/* Extra channels: CV & contact, role filters, life strip, about/skills/tools/awards/work/study, experimental */
+/* Extra channels: CV & contact, life, about, tools, experimental */
 CH.cv = {
   name: 'CV & CONTACT',
   col: '#ff5d1a',
@@ -387,81 +415,41 @@ CH.cv = {
   ],
 };
 {
-  const P = (c, i) => CH[c].items[i],
-    soon = (n) => ({
-      t: 'Open slot',
-      k: `${n} · coming soon`,
-      d: `<p>This key is reserved for upcoming ${n.toLowerCase()} work.</p>`,
-    });
-  CH.ds = {
-    name: 'DESIGNER',
-    col: '#3d9ad8',
-    items: [P('ux', 2), P('ux', 5), P('gd', 0), P('gd', 4), P('gd', 8), soon('Designer')],
-  };
-  CH.st = {
-    name: 'STRATEGIST',
-    col: '#1fa957',
-    items: [P('gd', 5), P('gd', 11), P('gd', 9), P('gd', 7), P('ux', 4), soon('Strategist')],
-  };
-  CH.ar = {
-    name: 'ARTIST',
-    col: '#8a8d95',
-    knob: '#f1f1f1',
-    items: [P('gd', 1), P('gd', 3), P('gd', 6), P('gd', 10), P('mo', 2), soon('Artist')],
-  };
-  CH.te = { name: 'TEACHER', col: '#ff5d1a', items: [P('gd', 2), P('mo', 0), soon('Teacher'), soon('Teacher')] };
-  CH.fm = {
-    name: 'FAMILY MAN',
-    col: '#1fa957',
-    items: [
-      {
-        t: 'Family',
-        k: 'Parents & three brothers',
-        d: `<p>I come from a close family: both my parents and three brothers. My dad runs a full-scale branding company, which is where my design life started at 12.</p>`,
-      },
-      {
-        t: 'Lindy',
-        k: 'My partner',
-        d: `<p>My partner, and a big part of my world. She has heard every idea on this site at least twice.</p>`,
-      },
-      {
-        t: 'Faith',
-        k: 'Non-denominational Christian',
-        d: `<p>I'm a non-denominational Protestant Christian, finishing a theology degree at Doxa Deo & SATS (2023–2026). Faith shapes why I create, not only what I create.</p>`,
-      },
-    ],
-  };
-  CH.fi = {
-    name: 'THE FIGHTER',
-    col: '#3d9ad8',
-    items: [
-      {
-        t: 'Jiu-Jitsu',
-        k: 'Training & competing',
-        d: `<p>I train and compete. On the mat, as in design, technique and patience beat brute force.</p>`,
-        links: [['Competition record', 'https://smoothcomp.com/en/event/22190/toplist/100777/73305']],
-      },
-    ],
-  };
-  CH.ex = {
-    name: 'THE EXPLORER',
-    col: '#e0338f',
-    items: [
-      { t: 'Hiking & nature', k: 'Outdoors', d: `<p>Long walks uphill, for fun. It's research with better views.</p>` },
-      {
-        t: 'Dungeons & Dragons',
-        k: 'Tabletop',
-        d: `<p>Worlds, characters and stories built together around a table. It's also where I learned to plan for players who ignore the plan.</p>`,
-      },
-      { t: 'Dogs', k: 'Best friends', d: `<p>I love dogs. No further research needed.</p>` },
-      {
-        t: 'Drawing',
-        k: 'Always sketching',
-        d: `<p>I'm always sketching. Everything on this site started in pencil.</p>`,
-      },
-    ],
-  };
-  CH.life.items = [...CH.fm.items, ...CH.fi.items, ...CH.ex.items];
+  CH.life.items = [
+    {
+      t: 'Family',
+      k: 'Parents & three brothers',
+      d: `<p>I come from a close family: both my parents and three brothers. My dad runs a full-scale branding company, which is where my design life started at 12.</p>`,
+    },
+    {
+      t: 'Lindy',
+      k: 'My partner',
+      d: `<p>My partner, and a big part of my world. She has heard every idea on this site at least twice.</p>`,
+    },
+    {
+      t: 'Faith',
+      k: 'Non-denominational Christian',
+      d: `<p>I'm a non-denominational Protestant Christian, finishing a theology degree at Doxa Deo & SATS (2023–2026). Faith shapes why I create, not only what I create.</p>`,
+    },
+    {
+      t: 'Jiu-Jitsu',
+      k: 'Training & competing',
+      d: `<p>I train and compete. On the mat, as in design, technique and patience beat brute force.</p>`,
+      links: [['Competition record', 'https://smoothcomp.com/en/event/22190/toplist/100777/73305']],
+    },
+    { t: 'Hiking & nature', k: 'Outdoors', d: `<p>Long walks uphill, for fun. It's research with better views.</p>` },
+    {
+      t: 'Dungeons & Dragons',
+      k: 'Tabletop',
+      d: `<p>Worlds, characters and stories built together around a table. It's also where I learned to plan for players who ignore the plan.</p>`,
+    },
+    { t: 'Dogs', k: 'Best friends', d: `<p>I love dogs. No further research needed.</p>` },
+    {
+      t: 'Drawing',
+      k: 'Always sketching',
+      d: `<p>I'm always sketching. Everything on this site started in pencil.</p>`,
+    },
+  ];
   const I = (t, k, d, x = {}) => ({ t, k, d: `<p>${d}</p>`, ...x });
   CH.ab = {
     name: 'ABOUT',
@@ -490,40 +478,6 @@ CH.cv = {
       ),
     ],
   };
-  CH.sk = {
-    name: 'SKILLS',
-    col: '#c98600',
-    items: [
-      ['UX/UI design', 'Advanced', 'Figma, design systems, prototyping and developer handoff.', 0.92],
-      [
-        'Visual & graphic design',
-        'Advanced',
-        'Identity, packaging, editorial and campaign design across the Adobe suite.',
-        0.92,
-      ],
-      ['3D & 2D animation', 'Advanced', 'Blender, Spline, After Effects, Animate and Premiere.', 0.88],
-      ['Illustration', 'Advanced', 'Character and editorial illustration, from sketch to final art.', 0.88],
-      [
-        'AI & workflow automation',
-        'Advanced',
-        'Claude Design & Code, Figma Make, Canva AI, ChatGPT and Gemini image generation, prompt engineering.',
-        0.86,
-      ],
-      [
-        'Strategy & design thinking',
-        'Advanced',
-        'Strategic marketing, campaign strategy and leading teams on rebrands and launches.',
-        0.84,
-      ],
-      [
-        'Web development',
-        'Average',
-        'HTML5, CSS, JavaScript and React; sites and apps shipped with Vercel and Antigravity.',
-        0.56,
-      ],
-      ['Microsoft Office', 'Advanced', 'Word, Excel, PowerPoint, Outlook and Teams.', 0.8],
-    ].map(([t, l, d, v]) => I(t, l + ' · from my CV', d, { bars: [[t, l, v]] })),
-  };
   CH.tl = {
     name: 'TOOLS',
     col: '#7c4ddb',
@@ -542,90 +496,6 @@ CH.cv = {
       ['Slack & Microsoft Office', 'Team', 'Day-to-day communication and documents.'],
     ].map((a) => I(...a)),
   };
-  CH.aw = {
-    name: 'AWARDS',
-    col: '#b58a00',
-    items: [
-      I(
-        'Loeries Student Portfolio Bootcamp',
-        '2020 · Top 3 finalist in Africa',
-        'Selected as one of the top three finalists in the Loeries Student Portfolio Bootcamp.',
-        {
-          links: [
-            [
-              'Loeries feature',
-              'https://modernmarketing.co.za/the-loeries-partnerships-uplift-next-generation-of-influential-creatives/',
-            ],
-          ],
-        },
-      ),
-      I(
-        'SA Gold Pack Design Awards',
-        '2020 · Bronze',
-        'Bronze for the Pulse Hybrid Inverter packaging, plus a Top 100 international entry at WorldStar Student.',
-        {
-          links: [
-            [
-              'Gold Pack brochure',
-              'https://www.studentgoldpack.org.za/files/page/12/sgp_winners_brochure_2020_graphic_design.pdf',
-            ],
-          ],
-        },
-      ),
-      I(
-        'Presented to Parliament',
-        '2020',
-        'Systems for SASSA and Home Affairs presented to the South African Parliament for use across the country.',
-      ),
-      I('Government prototype review', '2022', 'A prototyped system reviewed for use in a government initiative.'),
-    ],
-  };
-  CH.wk = {
-    name: 'WORK',
-    col: '#00a396',
-    items: [
-      I(
-        'Floodlight Studios',
-        'UX/UI Designer · 2021–now',
-        'Full time. The studio’s only UX/UI designer, working on SaaS products, with SPAR as the biggest client.',
-      ),
-      I(
-        'Genesis Printing',
-        'Graphic & Motion Designer · 2017–2019',
-        'Part time. Animated promos alongside print-ready production.',
-      ),
-      I('Katz Cakes', 'Graphic Designer · 2017–2019', 'Part time. Brand and promotional design.'),
-      I(
-        'Conquering Through Prayer Ministries Int.',
-        'Multimedia Engineer & Motion Designer · 2017–2019',
-        'Part time. Live visuals, service graphics and video.',
-      ),
-      I(
-        'Family branding business',
-        'Since age 12',
-        'Learning print setup and production at my dad’s full-scale branding company.',
-      ),
-    ],
-  };
-  CH.sd = {
-    name: 'STUDY',
-    col: '#d14fa8',
-    items: [
-      I('Theology degree', 'Doxa Deo & SATS · 2023–2026', 'In progress, alongside full-time design work.'),
-      I(
-        'UX/UI short course',
-        'University of Cape Town · 2021–2022',
-        'User research, flows, wireframes and prototyping.',
-      ),
-      I('Frontend developer bootcamp', 'Codecamp.org · 2021', 'HTML5, CSS, JavaScript and React.'),
-      I('Adobe software course', 'Adobe MAX · 2020', 'Advanced Adobe workflows.'),
-      I(
-        'National Diploma in Visual Communication',
-        'Durban University of Technology · 2018–2020',
-        'Graphic design diploma; Loeries and Gold Pack recognition in the final year.',
-      ),
-    ],
-  };
   CH.xp = {
     name: 'EXPERIMENTAL',
     col: '#d14fa8',
@@ -634,12 +504,18 @@ CH.cv = {
         'VR-17 Portfolio Synth',
         '3D · WebGL · Web Audio',
         'This portfolio: a playable 3D synthesizer built with Three.js and the Web Audio API, designed from a Figma synth, then rebuilt in cardboard. I was told to think outside the box. I used it.',
+        {
+          sum: 'This portfolio: a playable 3D synthesizer built with Three.js and the Web Audio API, designed in Figma and rebuilt in cardboard.',
+        },
       ),
       I(
         'Retro Grade pixel art',
         'Pixel illustration',
         'Pixel-art characters and scenes from the Retro Grade project. Every pixel placed by hand, like a very patient mosaic.',
-        { img: [im('g53', 'Pixel art'), im('g52', 'Magazine mock-up')] },
+        {
+          sum: 'Hand-placed pixel-art characters and scenes from the Retro Grade project.',
+          img: [im('g53', 'Pixel art'), im('g52', 'Magazine mock-up')],
+        },
       ),
       I('Open slot', 'Experimental · coming soon', "Reserved for the next experiment. I'm doing the homework."),
       I('Open slot', 'Experimental · coming soon', "Reserved for the next experiment. I'm doing the homework."),
@@ -690,5 +566,68 @@ export const DESK = {
     { t: 'kern everything. twice.' },
     { t: 'hear “love it, no changes”' },
     { t: 'touch grass' },
+  ],
+};
+
+/* Who Vick is, as plain facts from the CV, for search engines and AI assistants. scripts/generate.mjs turns this and CH
+   into the page's title, description and structured data (index.html), /portfolio/, llms.txt, robots.txt and sitemap.xml.
+   Only facts Vick has supplied. Change it here, then run `npm run generate`. */
+export const PROFILE = {
+  url: 'https://vick-does-creative.netlify.app/',
+  name: 'Vickhal Roopram',
+  short: 'Vick',
+  brand: 'Vick Does Creative',
+  role: 'UX/UI, illustration and motion designer',
+  jobTitle: 'UX/UI Designer',
+  employer: 'Floodlight Studios',
+  country: 'South Africa',
+  countryCode: 'ZA',
+  email: 'vickhal10@gmail.com',
+  tagline: 'Research like a nerd. Play like a kid. Use the box.',
+  /* the search result: page title (under 60 characters) and description (under 160) */
+  title: 'Vickhal Roopram · UX/UI & Motion Designer, South Africa',
+  description:
+    "I'm Vickhal Roopram, a UX/UI and motion designer in South Africa. UX case studies, branding, packaging and animation, in a portfolio you can play.",
+  /* the one-paragraph introduction on /portfolio/ and in llms.txt */
+  intro:
+    "I'm Vickhal Roopram (Vick), a UX/UI, illustration and motion designer from South Africa. I'm the UX/UI designer at Floodlight Studios, a studio that builds SaaS products, and I've been designing since I was 12. Every project starts with research, because research is what opens up better ideas. Then I make it fun to use.",
+  image: 'assets/ui/og-image.jpg',
+  imageAlt:
+    'The welcome sheet of Vick Does Creative: a hand-drawn cardboard synth on a desk, with the name Vickhal Roopram',
+  skills: [
+    'UX/UI design',
+    'Prototyping',
+    'Design systems',
+    'Motion design',
+    '2D and 3D animation',
+    'Illustration',
+    'Graphic design',
+    'Branding',
+    'Packaging design',
+    'Design thinking',
+    'AI workflow automation',
+    'Figma',
+    'Adobe Creative Cloud',
+    'After Effects',
+    'Blender',
+    'Spline',
+  ],
+  work: [
+    ['UX/UI Designer', 'Floodlight Studios', '2021', ''],
+    ['Graphic & Motion Designer', 'Genesis Printing', '2017', '2019'],
+    ['Graphic Designer', 'Katz Cakes', '2017', '2019'],
+    ['Multimedia Engineer & Motion Designer', 'Conquering Through Prayer Ministries International', '2017', '2019'],
+  ],
+  education: [
+    ['National Diploma in Visual Communication', 'Durban University of Technology', '2018–2020'],
+    ['UX/UI short course', 'University of Cape Town', '2021–2022'],
+    ['Frontend developer bootcamp', 'Codecamp.org', '2021'],
+    ['Theology degree', 'Doxa Deo & SATS', '2023–2026'],
+  ],
+  awards: [
+    'Loeries Student Portfolio Bootcamp: Top 3 finalist in Africa (2020)',
+    'SA Gold Pack Design Awards: Bronze, and a Top 100 international entry at WorldStar Student (2020)',
+    'Systems for SASSA and Home Affairs presented to the South African Parliament (2020)',
+    'Prototype reviewed for a South African government initiative (2022)',
   ],
 };
