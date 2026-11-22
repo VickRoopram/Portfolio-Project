@@ -98,9 +98,23 @@ html.phone .beats .ill{width:120px}
 /* a quarter more room above User flow, after the opening beats (1.1em → 1.375em; the beats' bottom margin collapses into it) */
 .d.case .beats + h3{margin-top:1.375em}
 
+/* case study extras: muted loops side by side, gallery and call to action on the centre line, tool badges under the last image */
+.d .clips{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:var(--s4);margin:var(--s3) auto}
+.clip{margin:0;border:6px solid #fffaf0;border-radius:2px;background:#fffaf0;box-shadow:0 0 0 2px var(--ink),var(--sh-m)}
+.clip video{display:block;width:100%;height:auto;background:#111}
+.gal.case .pic{box-sizing:border-box;margin-inline:auto;rotate:0deg}
+.cta-row.case{justify-content:center}
+.d .tools{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s3);justify-content:flex-end}
+.d .tools span{display:inline-flex;align-items:center;gap:6px;font:400 var(--t-sm)/1 var(--body);color:var(--ink)}
+.d .tools b{display:grid;place-items:center;width:30px;height:30px;border:2px solid var(--ink);border-radius:6px;background:#fffaf0;box-shadow:2px 2px 0 var(--ink);font:400 13px/1 var(--display);letter-spacing:.02em;color:var(--ink);rotate:-2deg}
+.d .tools span:nth-child(even) b{rotate:2deg}
 /* a case study opens wide on desktop and tablet: images fill the sheet (over 3/4 of the screen), text stays a readable width */
 @media (min-width:761px){
   #card[data-wide="true"]{width:calc(100% - 32px)}
+  /* cw:75 → a centred window three quarters of the screen wide (Graphic design) */
+  #card[data-wide="true"][data-cw="75"]{width:75%;right:12.5%}
+  #card[data-wide="true"] .d>.clips:not(.pic){max-width:none}
+  #card[data-wide="true"] .d .tools.end{max-width:none;justify-content:flex-end}
   #card[data-wide="true"] .d{max-width:none}
   #card[data-wide="true"] .d>:not(.pic):not(.desk-only){max-width:76ch}
   #card[data-wide="true"] .d .steps{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
