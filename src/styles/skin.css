@@ -447,4 +447,4 @@ body[data-play="on"] :is(#ctaContact,#mnu,#help,#jam){display:none}
   #card[data-proj="true"]{width:max(75%,min(640px,100% - 32px))}
   #card[data-proj="true"] #cls{position:absolute;top:6px;left:-60px;width:46px;height:46px}
 }
-body[data-card="true"] :is(#joy,#zoom,#reset,#legend,#help){opacity:0;visibility:hidden;pointer-events:none}
+body[data-card="true"] :is(#joy,#zoom,#reset,#legend,#help){opacity:0!important;visibility:hidden!important;pointer-events:none!important}
