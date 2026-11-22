@@ -14,7 +14,7 @@ import { ensureAudio, drum, foley } from '../core/audio.js';
 import { icon } from '../atoms/icons.js';
 
 /* the sections under Projects, in menu order; labels read as sections, not button legends */
-export const PROJECT_MODES = MENU.projects.filter((p) => CH[p.key]).map((p) => [p.key, p.label || CH[p.key].name]);
+const PROJECT_MODES = MENU.projects.filter((p) => CH[p.key]).map((p) => [p.key, p.label || CH[p.key].name]);
 const LABEL = Object.fromEntries(PROJECT_MODES);
 const isSlot = (it) => /^open slot$/i.test(String(it.t).trim()); // placeholders stay on the keys but not in the menu
 
@@ -231,7 +231,7 @@ body.addEventListener('pointerleave', () => {
 });
 
 /* open at a level (the burger opens the root). The card and the menu share one side, so the card closes first */
-export function openMenu(k = 'root', ch, i) {
+function openMenu(k = 'root', ch, i) {
   if (S.card) act.closeCard();
   act.cancelJourney?.();
   hideId++;

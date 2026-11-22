@@ -112,7 +112,7 @@ const dotTex = radialTex(
 );
 const ringMat = (o) =>
   decal(new THREE.MeshBasicMaterial({ color: LED, transparent: true, depthWrite: false, toneMapped: false, ...o }));
-export const KNOB_RINGS = [];
+const KNOB_RINGS = [];
 [
   ['cutoff', 'FILTER'],
   ['q', 'RESONANCE'],

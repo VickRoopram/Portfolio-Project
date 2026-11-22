@@ -40,7 +40,7 @@ export const PNAMES = {
 };
 const WAVES = ['triangle', 'square', 'sawtooth'];
 let ac, master, filter, delay, fb, wet, an, noiseBuf, tdata;
-export let muted = false;
+let muted = false;
 
 export function ensureAudio() {
   if (ac) {
@@ -356,7 +356,7 @@ export const BEATS = [
   { n: 'One more month', src: 'assets/beats/audio/one-more-month.mp3', bpm: 152, bg: 'party-strips' },
 ];
 /* the synthesised fallback patterns */
-export const TRACKS = [
+const TRACKS = [
   {
     n: 'NEON DRIVE',
     bpm: 118,

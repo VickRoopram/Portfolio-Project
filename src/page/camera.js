@@ -71,7 +71,7 @@ export function lookAt(key, box, pol = 0.32) {
   drum('whoosh');
   flyTo(key, 1500);
 }
-export function lockZoom() {
+function lockZoom() {
   V.zoom.min =
     Math.min(frameFor('kb').d, frameFor('cv').d, V.look && BOX[V.look] ? frameFor(V.look).d : Infinity) * 0.97;
   V.zoom.max = fitNow();
@@ -84,7 +84,7 @@ const level = (d) => Math.min(1, Math.max(0, Math.log(V.zoom.max / d) / Math.log
 /* the side panel (card or menu) on desktop: how much width it takes, and whether one is open (or about to open, mid-journey) */
 const sideW = (w) => Math.min(462, w * 0.45);
 const sideOn = () => desktop() && !!(S.card || S.menu || V.side);
-export function frameFor(key) {
+function frameFor(key) {
   const b = BOX[key],
     c = b.getCenter(new THREE.Vector3()),
     s = b.getSize(new THREE.Vector3()),
@@ -205,7 +205,7 @@ function centre() {
     camera.position.add(nudge);
   }
 }
-export function flyTo(key, dur = 2100) {
+function flyTo(key, dur = 2100) {
   V.look = key in POLAR && !['all', 'kb', 'cv', 'desk'].includes(key) ? key : null;
   const f = frameFor(key);
   framedSide = key !== 'all' && key !== 'desk' && sideOn();

@@ -21,7 +21,7 @@ const woodMap = PAPER.wood.map.clone();
 woodMap.repeat.set(0.5, 0.5);
 const woodBump = PAPER.wood.bump.clone();
 woodBump.repeat.copy(woodMap.repeat);
-export const DESK = {
+const DESK = {
   wood: new THREE.MeshStandardMaterial({
     map: woodMap,
     bumpMap: woodBump,

@@ -1,6 +1,5 @@
 /* Shared state and tiny helpers. Every layer reads and writes here, so no module has to import "upward". */
 export const $ = (id) => document.getElementById(id);
-export const pad = (n) => String(n).padStart(2, '0');
 export const lerp = (a, b, k) => a + (b - a) * k;
 export const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 export const desktop = () => innerWidth > 760;

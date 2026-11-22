@@ -9,10 +9,12 @@ import { DESK } from '../content.js';
 import { cardHTML, EMAIL } from '../molecules/cardhtml.js';
 import { icon } from '../atoms/icons.js';
 import { DOODLES } from '../atoms/sketch.js';
+import { $, reduceMotion as reduce } from '../core/state.js';
+import { toast as note } from '../molecules/toast.js';
 
-const $ = (id) => document.getElementById(id),
-  html = document.documentElement,
-  reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const toast = (msg) => note(msg, 2800);
+
+const html = document.documentElement;
 const W = 390,
   H = 672,
   LIFT = 18; // the wall, in its own units (drawn 700 tall, its top 18 left empty); scaled to fit the screen (fit())
@@ -375,18 +377,6 @@ function wire(root) {
         },
         () => toast('Copy blocked: the address is ' + EMAIL),
       );
-}
-function toast(msg) {
-  const t = $('toast');
-  t.textContent = msg;
-  t.hidden = false;
-  t.classList.remove('show');
-  void t.offsetWidth;
-  t.classList.add('show');
-  clearTimeout(toast.h);
-  toast.h = setTimeout(() => {
-    t.hidden = true;
-  }, 2800);
 }
 
 /* ── the menu: the burger opens a sheet of links, one per box ── */

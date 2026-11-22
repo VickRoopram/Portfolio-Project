@@ -50,9 +50,9 @@ scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnviron
    It hangs at the back left: THE light for the whole site. Every piece throws a soft shadow forward and to the right, and every shadow
    on the page (styles/skin.css --sh-s / --sh-m / --sh-l) falls the same way: down and to the right, soft-edged */
 const MAT_CENTRE = new THREE.Vector3(-1.6, 0, 0.1);
-export const hemi = new THREE.HemisphereLight('#ffe9cf', '#3a281c', 0.36);
+const hemi = new THREE.HemisphereLight('#ffe9cf', '#3a281c', 0.36);
 scene.add(hemi);
-export const rim = new THREE.DirectionalLight('#cfe0ff', 0.16);
+const rim = new THREE.DirectionalLight('#cfe0ff', 0.16);
 rim.position.set(9, 6, -12);
 scene.add(rim);
 export const sun = new THREE.SpotLight('#fff1dc', 3.3, 0, 0.82, 0.78, 0);
@@ -71,7 +71,7 @@ sun.shadow.normalBias = 0.03;
 scene.add(sun);
 /* the ground: the only thing on it is the bench's own shadow, one soft patch under and a little forward-right of it (away from the light).
    It's painted, not computed, so nothing else (legs, lamp, plant, the things on the bench) ever marks the floor */
-export const pool = new THREE.Mesh(
+const pool = new THREE.Mesh(
   new THREE.PlaneGeometry(62, 40),
   new THREE.MeshBasicMaterial({
     color: '#0b0604',

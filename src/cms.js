@@ -7,7 +7,7 @@
  * If nothing has been saved yet, or the request fails, the site simply keeps the defaults from content.js.
  */
 const host = location.hostname;
-export const STAGE =
+const STAGE =
   /^(version-01--|deploy-preview-)/.test(host) ||
   /^(localhost|127\.0\.0\.1)$/.test(host) ||
   new URLSearchParams(location.search).has('draft')
@@ -35,7 +35,7 @@ const REVISED = '2026-11-16T21:00';
 export const stale = (k, doc) => !(doc?.updated > REVISED);
 
 /* a menu from /admin replaces the default, if it is well formed */
-export function applyMenu(MENU, m) {
+function applyMenu(MENU, m) {
   const ok = (x) =>
     x && typeof x.label === 'string' && /^(home|about|projects|contact|link|mode:[a-z]{2,8})$/.test(x.go);
   if (Array.isArray(m?.items) && m.items.filter(ok).length) MENU.items = m.items.filter(ok);

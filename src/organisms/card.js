@@ -1,4 +1,4 @@
-/* Detail card: the work first, a tight headline group, then the story, links and gallery. Plus toast, lightbox and HUD state. */
+/* Detail card: the work first, a tight headline group, then the story, links and gallery. Plus the lightbox and HUD state. */
 import { $, S, CTRL, ROWBTN, act, reduceMotion } from '../core/state.js';
 import { CH, onKeys } from '../core/data.js';
 import { ensureAudio, playNote, drum, foley } from '../core/audio.js';
@@ -6,19 +6,8 @@ import { press } from '../molecules/controls.js';
 import { icon } from '../atoms/icons.js';
 
 import { cardHTML, EMAIL, ONE } from '../molecules/cardhtml.js';
+import { toast } from '../molecules/toast.js';
 
-export function toast(msg) {
-  const t = $('toast');
-  t.textContent = msg;
-  t.hidden = false;
-  t.classList.remove('show');
-  void t.offsetWidth;
-  t.classList.add('show');
-  clearTimeout(toast.h);
-  toast.h = setTimeout(() => {
-    t.hidden = true;
-  }, 2600);
-}
 /* HUD: Home greys out at home; phones hide the legend under the card sheet */
 export function updateUI() {
   $('home')?.setAttribute('data-at-home', String(!S.mode && !S.card));

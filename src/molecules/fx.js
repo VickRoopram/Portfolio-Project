@@ -7,7 +7,7 @@ import { haloTexture, canvasTex } from '../atoms/textures.js';
 import { decal } from '../atoms/materials.js';
 import { cutout } from '../atoms/craft.js';
 
-export const FXL = []; // every control with an effect record
+const FXL = []; // every control with an effect record
 /* mark materials (marker rings, strokes, washes, projections) */
 export const FXMATS = {
   push: (...ms) =>
