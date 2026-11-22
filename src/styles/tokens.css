@@ -1,24 +1,97 @@
-/* ── TOKENS: colour, type, spacing, radius, motion. One dark look (light mode removed 13 Nov 2026), its colours matched to
-   Vick's reference render: a cool charcoal room (#0f1013 at the top to #16191f in the middle), warm coral accents. ── */
+/* ═══ DESIGN TOKENS ═════════════════════════════════════════════════════════════════════════════════════════════
+   The one place the site's look is set. Every stylesheet reads these; none should hard-code a value that's here.
+   How it's layered (each tier only refers to the one above it):
+
+     1 · PALETTE     raw colours, named for what they are (espresso, kraft, cream…). Re-colour the site here.
+     2 · ROLES       what a colour is for (floor, ink, card, accent…). Components use these, never the palette.
+     3 · MATERIALS   the photo textures: paper, card, wood (assets/tex).
+     4 · TYPE        font families and the type scale.
+     5 · SPACE       spacing, radius, the hand-cut corner shapes, sizes.
+     6 · MOTION      "on twos": timings are stepped so things move in drawings (~12 a second), like the 3D scene.
+     7 · CURSOR      the cardboard pointer.
+
+   Re-skin: copy this file, change tiers 1, 3 and 4 (and 6 for a different feel), keep the role names.
+   Component-only values (the cut-card polygons, the tour badge) live with their component. Guide: docs/LIBRARY.md
+   ════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
 :root {
-  --floor: #14171c;
-  --card: #1a1d23;
-  --card2: #20242b;
-  --ink: #eef0f4;
-  --mute: #a3a9b4;
-  --line: rgba(238, 240, 244, 0.14);
-  --chip: #252930;
-  --chip-ink: #cfd4dc;
-  --track: #272b33;
-  --shadow: rgba(0, 0, 0, 0.55);
-  --red: #e2614b;
-  --blue: #4f8fc0;
-  --glow: #e2614b;
-  --accent-ui: #ec7a5f;
-  --on-accent: #14171c;
-  --display: 'Montserrat', 'Arial Black', sans-serif;
-  --body: 'Montserrat', 'Noto Sans', system-ui, sans-serif;
-  --mono: 'Courier Prime', 'Courier New', ui-monospace, monospace;
+  /* ── 1 · PALETTE ─────────────────────────────────────────────────────────── */
+  --pal-espresso-950: #1a100b; /* the room: top of the gradient */
+  --pal-espresso-900: #23150e;
+  --pal-espresso-850: #24160f; /* the floor */
+  --pal-espresso-800: #2a1a13;
+  --pal-espresso-700: #2e1d15;
+  --pal-ink: #2a1b12; /* pencil and felt-tip */
+  --pal-umber-600: #5d4534;
+  --pal-umber-500: #6f5846;
+  --pal-umber-400: #7b5d45;
+  --pal-kraft: #c9a06c; /* brown card */
+  --pal-sand-200: #e6d3ae;
+  --pal-sand-100: #ecdcbd;
+  --pal-sand-50: #f3e8d2;
+  --pal-parchment: #f4e6cc;
+  --pal-cream: #fbf1dd;
+  --pal-cream-hi: #fff8ea;
+  --pal-photo: #fffaf0; /* photo paper and polaroid borders */
+  --pal-red: #e0301a; /* the one accent: hover and selectable markers */
+
+  /* ── 2 · ROLES ───────────────────────────────────────────────────────────── */
+  --room: linear-gradient(
+    var(--pal-espresso-950),
+    var(--pal-espresso-900) 30%,
+    var(--pal-espresso-700) 65%,
+    var(--pal-espresso-800)
+  );
+  --floor: var(--pal-espresso-850);
+  --stage-ink: var(--pal-parchment); /* text straight on the room */
+  --ink: var(--pal-ink); /* text and lines on paper and card */
+  --mute: var(--pal-umber-500);
+  --line: rgba(42, 27, 18, 0.35);
+  --cream: var(--pal-cream);
+  --kraft: var(--pal-kraft);
+  --kraft-dk: var(--pal-umber-400);
+  --card: var(--pal-sand-50);
+  --card2: var(--pal-sand-100);
+  --chip: var(--pal-sand-200);
+  --chip-ink: var(--pal-ink);
+  --track: var(--pal-umber-600);
+  --photo: var(--pal-photo);
+  --shadow: rgba(12, 6, 3, 0.45);
+  --brand-red: var(--pal-red); /* fixed: never re-tinted per project */
+  --accent: var(--pal-red); /* re-tinted per project inside the card (organisms/card.js) */
+  --accent-ui: var(--pal-red);
+  --on-accent: var(--pal-cream-hi);
+  --red: var(--pal-red);
+  --glow: var(--pal-red);
+  --blue: var(--pal-red); /* legacy name: focus rings. One accent, so it's red too */
+  /* there's one light, over the bench (core/scene.js); the interface isn't in the room, so it throws no shadow.
+     The names stay (every piece refers to one) but they're empty */
+  --sh-s: 0 0 0 transparent;
+  --sh-m: 0 0 0 transparent;
+  --sh-l: 0 0 0 transparent;
+  --drop: var(--sh-m);
+  --edge: 2.5px solid var(--ink); /* the ink outline round every piece */
+  color-scheme: light;
+
+  /* ── 3 · MATERIALS (photo textures from Vick's library, assets/tex) ───────── */
+  --paper: url('../../assets/tex/paper.jpg');
+  --crumpled: url('../../assets/tex/crumpled.jpg');
+  --kraft-tex: url('../../assets/tex/kraft.jpg');
+  --kraft-dk-tex: url('../../assets/tex/kraft-dark.jpg');
+  --corr-tex: url('../../assets/tex/corrugated.jpg');
+  --wood-tex: url('../../assets/tex/wood.jpg');
+
+  /* ── 4 · TYPE (fonts are self-hosted: @font-face in skin.css, files in assets/fonts) ── */
+  --display: 'Londrina Solid', 'Arial Narrow', 'Impact', sans-serif; /* cut-paper capitals */
+  --body: 'Patrick Hand', 'Comic Sans MS', 'Segoe Print', cursive; /* felt-tip hand */
+  --mono: 'Londrina Solid', 'Arial Narrow', sans-serif; /* labels and numbers */
+  --t-xs: 13px;
+  --t-sm: 15px;
+  --t-md: 18px;
+  --t-lg: 23px;
+  --t-xl: 34px;
+  --t-2xl: clamp(44px, 6.4vw, 84px);
+
+  /* ── 5 · SPACE, SHAPE AND SIZE ───────────────────────────────────────────── */
   --s1: 4px;
   --s2: 8px;
   --s3: 12px;
@@ -29,95 +102,27 @@
   --r1: 6px;
   --r2: 10px;
   --r3: 16px;
-  --t-xs: 11px;
-  --t-sm: 13px;
-  --t-md: 15px;
-  --t-lg: 20px;
-  --t-xl: 30px;
-  --t-2xl: clamp(34px, 5vw, 60px);
-  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --cut: 14px 9px 16px 8px / 9px 15px 8px 14px; /* a hand-cut corner is never the same twice */
+  --cut-s: 7px 4px 8px 5px / 5px 8px 4px 7px;
   --px: clamp(0.36px, calc(100vw / 3840), 0.62px); /* 1 px of the 4K Figma frame */
   --hdr-h: max(58px, calc(var(--px) * 170));
-  color-scheme: dark;
-}
 
-/* ── base ── */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-html,
-body {
-  margin: 0;
-  height: 100%;
-}
-:root {
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-body {
-  background: var(--floor);
-  color: var(--ink);
-  font-family: var(--body);
-  font-variant-numeric: tabular-nums;
-  overflow: hidden;
-}
-img {
-  max-width: 100%;
-}
-[hidden] {
-  display: none !important;
-}
-button:focus-visible,
-a:focus-visible {
-  outline: 2px solid var(--blue);
-  outline-offset: 2px;
-}
-body,
-#card,
-.ch button,
-.tags span,
-.steps div,
-#lbl {
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease,
-    box-shadow 0.25s ease,
-    transform 0.12s ease;
-}
-.m-only {
-  display: none;
-}
-@media (hover: none), (max-width: 760px) {
-  .d-only {
-    display: none;
-  }
-  .m-only {
-    display: inline;
-  }
-}
+  /* ── 6 · MOTION: on twos ─────────────────────────────────────────────────── */
+  --step: steps(3, end); /* transitions: a 250 ms move is three drawings */
+  --ease: steps(4, end); /* animations */
 
-@keyframes pop {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.97);
-  }
+  /* ── 7 · CURSOR (cardboard cut-outs, assets/ui/cursor) ───────────────────── */
+  --cur-arrow: url('../../assets/ui/cursor/arrow.png') 3 2, auto;
+  --cur-point: url('../../assets/ui/cursor/point.png') 12 2, pointer;
+  --cur-grab: url('../../assets/ui/cursor/grab.png') 14 12, grab;
 }
-@keyframes fade {
-  from {
-    opacity: 0;
-  }
-}
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+@supports (cursor: image-set(url('a.png') 1x, url('b.png') 2x) 0 0, auto) {
+  :root {
+    --cur-arrow:
+      image-set(url('../../assets/ui/cursor/arrow.png') 1x, url('../../assets/ui/cursor/arrow@2x.png') 2x) 3 2, auto;
+    --cur-point:
+      image-set(url('../../assets/ui/cursor/point.png') 1x, url('../../assets/ui/cursor/point@2x.png') 2x) 12 2, pointer;
+    --cur-grab:
+      image-set(url('../../assets/ui/cursor/grab.png') 1x, url('../../assets/ui/cursor/grab@2x.png') 2x) 14 12, grab;
   }
 }

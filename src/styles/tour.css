@@ -547,7 +547,7 @@ body[data-tour='on'] > :not(#tour):not(#help) {
 }
 .t-x:hover {
   rotate: 12deg;
-  background-color: #fffaf0;
+  background-color: var(--photo);
 }
 .t-x:active {
   scale: 0.92;
@@ -590,7 +590,7 @@ body[data-tour='on'] > :not(#tour):not(#help) {
 }
 .t-nav:hover {
   translate: -2px 0;
-  background-color: #fffaf0;
+  background-color: var(--photo);
 }
 .t-next:hover {
   translate: 2px 0;

@@ -455,9 +455,9 @@ html.phone .beats .ill {
 }
 .clip {
   margin: 0;
-  border: 6px solid #fffaf0;
+  border: 6px solid var(--photo);
   border-radius: 2px;
-  background: #fffaf0;
+  background: var(--photo);
   box-shadow:
     0 0 0 2px var(--ink),
     var(--sh-m);
@@ -499,7 +499,7 @@ html.phone .beats .ill {
   height: 38px;
   border: 2px solid var(--ink);
   border-radius: 6px;
-  background: #fffaf0;
+  background: var(--photo);
   box-shadow: 2px 2px 0 var(--ink);
   font: 400 15px/1 var(--display);
   letter-spacing: 0.02em;

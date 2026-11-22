@@ -1,8 +1,9 @@
 /* Vick Does Creative: styles, built up atomically. Keep this file at /src/styles.css: the /admin preview loads it. */
-@import url('styles/tokens.css');
+@import url('styles/tokens.css'); /* design tokens: the one place to re-skin */
+@import url('styles/base.css'); /* resets and shared keyframes */
 @import url('styles/atoms.css');
 @import url('styles/molecules.css');
 @import url('styles/organisms.css');
 @import url('styles/skin.css'); /* the cardboard-model skin (14 Nov 2026): paper, card, ink lines, animated on twos */
-@import url('styles/tour.css'); /* Beep the tour guide: the cardboard question mark, the wooden TV and his speech bubble */
+@import url('styles/tour.css'); /* Bleep the tour guide: the cardboard question mark, the wooden TV and his speech bubble */
 @import url('styles/pocket.css'); /* phones: the pocket page held upright, the synth turned sideways */
