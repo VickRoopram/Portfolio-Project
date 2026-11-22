@@ -65,16 +65,16 @@ The idea behind it, in Vick's own framing: he is "a creative software clients us
 
 ## 3. Where everything lives
 
-| Location                                        | What                                                                                                                                                         |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| GitHub `VickRoopram/Portfolio-Project`          | **The only source.** `main` = production, `version-01` = staging, short work branches cut from `version-01`                                                  |
-| Netlify project `vick-does-creative`            | Deploys from git: `main` → https://vick-does-creative.netlify.app, `version-01` → https://version-01--vick-does-creative.netlify.app, PRs → Deploy Previews  |
-| Netlify Blobs (stores `cms`, `media`)           | Content saved in `/admin`: `draft`, `live`, `history/*`, uploaded images. This is the site's database; its schema is `cleanContent` in `netlify/lib/cms.mts` |
-| Vick's Mac `~/Projects/vick-does-creative/repo` | A clone, for local preview (`npm run dev`)                                                                                                                   |
-| Google Drive, _Synth Elementa_                  | Original audio and video (web copies are in `assets/beats`, `assets/vid`)                                                                                    |
-| Figma                                           | Synth design `gXh33LpoadWI0B76ofjD56`; the design library file (`docs/LIBRARY.md` §6)                                                                        |
-| Claude Project "Vick Portfolio"                 | Project instructions, and copies of `BRAND.md` and `GIT-WORKFLOW.md` (`claude/brand.md`, `claude/git-workflow.md`)                                           |
-| Claude artifact                                 | The content admin artifact (`tools/admin-artifact/`). The v1 single-file artifact is retired: the repo is the only code                                      |
+| Location                                        | What                                                                                                                                                             |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GitHub `VickRoopram/Portfolio-Project`          | **The only source.** `main` = production, `version-01` = staging, short work branches cut from `version-01`                                                      |
+| Netlify project `vick-does-creative`            | Deploys from git: `main` → https://vick-does-creative.netlify.app, `version-01` → https://version-01--vick-does-creative.netlify.app, PRs → Deploy Previews      |
+| Netlify Blobs (stores `cms`, `media`)           | Content saved in `/admin`: `draft`, `live`, `history/*`, uploaded images. This is the site's database; its schema is `cleanContent` in `netlify/lib/cms.mts`     |
+| Vick's Mac `~/Projects/vick-does-creative/repo` | A clone, for local preview (`npm run dev`)                                                                                                                       |
+| Google Drive, _Synth Elementa_                  | Original audio and video (web copies are in `assets/beats`, `assets/vid`)                                                                                        |
+| Figma                                           | Synth design `gXh33LpoadWI0B76ofjD56`; the design library [`fkSiHQ1XH6c9lsLi6ECp9E`](https://www.figma.com/design/fkSiHQ1XH6c9lsLi6ECp9E) (`docs/LIBRARY.md` §6) |
+| Claude Project "Vick Portfolio"                 | Project instructions, and copies of `BRAND.md` and `GIT-WORKFLOW.md` (`claude/brand.md`, `claude/git-workflow.md`)                                               |
+| Claude artifact                                 | The content admin artifact (`tools/admin-artifact/`). The v1 single-file artifact is retired: the repo is the only code                                          |
 
 ---
 
