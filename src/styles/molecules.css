@@ -92,15 +92,28 @@ html.phone .beats .ill{width:120px}
 .d.case .ill-steps .ill{grid-row:auto;width:min(100%,220px)}
 .d.case .ill-steps .ill[src$=".png"]{width:64px}
 /* not just the text: images, rows and blocks sit on the centre line too (straight, so both edges line up) */
-.d.case .pic,.hd.case + .pic.hero-pic{box-sizing:border-box;width:100%;margin-inline:auto;rotate:0deg}
+.d.case .pic,.hd.case + .pic.hero-pic,.d.intro + .pic.hero-pic{box-sizing:border-box;width:100%;margin-inline:auto;rotate:0deg}
 .d.case .steps,.d.case .beats,.d.case .tl,.d.case .tags{margin-inline:auto;justify-content:center;justify-items:center}
 .d.case .steps>div,.d.case .beats>div{width:100%}
 /* a quarter more room above User flow, after the opening beats (1.1em → 1.375em; the beats' bottom margin collapses into it) */
 .d.case .beats + h3{margin-top:1.375em}
 
+/* case study extras: muted loops side by side, gallery and call to action on the centre line, tool badges under the last image */
+.d .clips{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:var(--s4);margin:var(--s3) auto}
+.clip{margin:0;border:6px solid #fffaf0;border-radius:2px;background:#fffaf0;box-shadow:0 0 0 2px var(--ink),var(--sh-m)}
+.clip video{display:block;width:100%;height:auto;background:#111}
+.gal.case .pic{box-sizing:border-box;margin-inline:auto;rotate:0deg}
+.cta-row.case{justify-content:center;margin-top:var(--s6);margin-bottom:var(--s5)}
+/* icons only: the tool name stays in the markup for screen readers, hidden on screen */
+.d .tools{display:flex;flex-wrap:wrap;gap:var(--s4);justify-content:flex-end;margin:var(--s5) 0 var(--s6)}
+.d .tools span{display:inline-flex;font-size:0;line-height:0;color:transparent}
+.d .tools b{display:grid;place-items:center;width:38px;height:38px;border:2px solid var(--ink);border-radius:6px;background:#fffaf0;box-shadow:2px 2px 0 var(--ink);font:400 15px/1 var(--display);letter-spacing:.02em;color:var(--ink);rotate:-2deg}
+.d .tools span:nth-child(even) b{rotate:2deg}
 /* a case study opens wide on desktop and tablet: images fill the sheet (over 3/4 of the screen), text stays a readable width */
 @media (min-width:761px){
   #card[data-wide="true"]{width:calc(100% - 32px)}
+  /* cw:75 → a centred window three quarters of the screen wide (Graphic design) */
+  #card[data-wide="true"][data-cw="75"]{width:75%;right:12.5%}
   #card[data-wide="true"] .d{max-width:none}
   #card[data-wide="true"] .d>:not(.pic):not(.desk-only){max-width:76ch}
   #card[data-wide="true"] .d .steps{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
@@ -112,6 +125,9 @@ html.phone .beats .ill{width:120px}
   #card[data-wide="true"] .d .feat>div{padding:var(--s3);font-size:var(--t-sm)}
   #card[data-wide="true"] .d .tags.end{max-width:none}
   #card[data-wide="true"] .hero-pic{margin-top:var(--s3)}
+  /* loops and tool badges use the full width of the images, not the text column */
+  #card[data-wide="true"] .d>:is(.clips,.tools):not(.pic):not(.desk-only){max-width:none}
+  #card[data-wide="true"] .d>.tools{justify-content:flex-end}
 }
 /* the lamp's hover tip: a bulb icon, lit when the lamp is on, and On / Off */
 .lamp-tip{display:inline-flex;align-items:center;gap:6px}
