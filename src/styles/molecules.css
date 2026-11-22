@@ -103,10 +103,11 @@ html.phone .beats .ill{width:120px}
 .clip{margin:0;border:6px solid #fffaf0;border-radius:2px;background:#fffaf0;box-shadow:0 0 0 2px var(--ink),var(--sh-m)}
 .clip video{display:block;width:100%;height:auto;background:#111}
 .gal.case .pic{box-sizing:border-box;margin-inline:auto;rotate:0deg}
-.cta-row.case{justify-content:center}
-.d .tools{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s3);justify-content:flex-end}
-.d .tools span{display:inline-flex;align-items:center;gap:6px;font:400 var(--t-sm)/1 var(--body);color:var(--ink)}
-.d .tools b{display:grid;place-items:center;width:30px;height:30px;border:2px solid var(--ink);border-radius:6px;background:#fffaf0;box-shadow:2px 2px 0 var(--ink);font:400 13px/1 var(--display);letter-spacing:.02em;color:var(--ink);rotate:-2deg}
+.cta-row.case{justify-content:center;margin-top:var(--s6);margin-bottom:var(--s5)}
+/* icons only: the tool name stays in the markup for screen readers, hidden on screen */
+.d .tools{display:flex;flex-wrap:wrap;gap:var(--s4);justify-content:flex-end;margin:var(--s5) 0 var(--s6)}
+.d .tools span{display:inline-flex;font-size:0;line-height:0;color:transparent}
+.d .tools b{display:grid;place-items:center;width:38px;height:38px;border:2px solid var(--ink);border-radius:6px;background:#fffaf0;box-shadow:2px 2px 0 var(--ink);font:400 15px/1 var(--display);letter-spacing:.02em;color:var(--ink);rotate:-2deg}
 .d .tools span:nth-child(even) b{rotate:2deg}
 /* a case study opens wide on desktop and tablet: images fill the sheet (over 3/4 of the screen), text stays a readable width */
 @media (min-width:761px){
