@@ -16,28 +16,18 @@ The home page (https://vick-does-creative.netlify.app/) is a playable 3D cardboa
 
 - [Plug Our Potholes](https://vick-does-creative.netlify.app/portfolio/#ux-plug-our-potholes): UX/UI case study: a community app, developed with Floodlight Studios, where people report potholes, vote for the next area and donate to fix their own roads.
 - [Fleet Receiving](https://vick-does-creative.netlify.app/portfolio/#ux-fleet-receiving): UX/UI case study: Fleet, a stand-alone receiving system for a distribution centre that tracks every touch point of an offload, so bottlenecks show up.
-- [Floodlight Studios](https://vick-does-creative.netlify.app/portfolio/#ux-floodlight-studios): Sole UX/UI designer at Floodlight Studios since 2021, designing SaaS products for retail clients including SPAR, in two-week sprints with the developers.
-- [Designing at retail scale](https://vick-does-creative.netlify.app/portfolio/#ux-designing-at-retail-scale): How I design retail tools for SPAR: find out who uses each screen and where, design the flows in Figma, hand off in Zeplin with Jira, refine every sprint.
-- [Systems for Parliament](https://vick-does-creative.netlify.app/portfolio/#ux-systems-for-parliament): Systems for SASSA and Home Affairs presented to the South African Parliament (2020), and a prototype reviewed for a government initiative (2022).
-- [My method](https://vick-does-creative.netlify.app/portfolio/#ux-my-method): My UX method in four steps: constraint, context, expression and future. Research first, then the look that fits the project and its users.
-- [Workflow & AI stack](https://vick-does-creative.netlify.app/portfolio/#ux-workflow-ai-stack): My tools and AI workflow: Figma, Adobe CC, Zeplin and Jira, plus Claude, Figma Make, Canva AI, ChatGPT, Gemini, Vercel and Antigravity.
-- [Geek Punch](https://vick-does-creative.netlify.app/portfolio/#ux-geek-punch): A personal product I'm designing and building to take to market. In progress.
-- [Training](https://vick-does-creative.netlify.app/portfolio/#ux-training): UX/UI short course at the University of Cape Town (2021–2022) and a frontend developer bootcamp at Codecamp.org (2021).
 
 ## Graphic design
 
-- [Self-Promo: Design OS](https://vick-does-creative.netlify.app/portfolio/#gd-self-promo-design-os): My own identity: a Design Operating System, with a logo built from Unicode emotes, business cards, a creative CV and promotional items.
 - [A Journey With Kal](https://vick-does-creative.netlify.app/portfolio/#gd-a-journey-with-kal): An illustrated, animated Instagram diary about living with Kallmann syndrome and acromegaly: informative, a bit funny, and shared by people around the world.
 - [A Noob’s Guide to Building a PC](https://vick-does-creative.netlify.app/portfolio/#gd-a-noobs-guide-to-building-a-pc): An 800 × 2000 px infographic of the basic parts of a gaming PC and what each one does.
-- [A Pandemic Together](https://vick-does-creative.netlify.app/portfolio/#gd-a-pandemic-together): An illustrated editorial spread about lockdown, written and designed for Frankie, an Australian magazine about design, art and interiors.
 - [iMvelo Care](https://vick-does-creative.netlify.app/portfolio/#gd-imvelo-care): Corporate identity for iMvelo, a mobile spa and wellness centre for women that specialises in care for the elderly.
 - [Takkie Wash & Squeaky Kleen](https://vick-does-creative.netlify.app/portfolio/#gd-takkie-wash-squeaky-kleen): Team lead on a rebrand of two cleaning brands for a new in-store partnership, so customers can tell which brand does what.
-- [Moving Type: “Yoh!”](https://vick-does-creative.netlify.app/portfolio/#gd-moving-type-yoh): Kinetic type: an animated GIF of the South African slang word “Yoh!” in a comic-texture style.
-- [Clover Festive Display](https://vick-does-creative.netlify.app/portfolio/#gd-clover-festive-display): In-store festive display for Clover and its Win-a-Car promotion, built on Clover's line “Way Better Shared”.
+- [Clover Festive Display](https://vick-does-creative.netlify.app/portfolio/#gd-clover-festive-display): In-store festive display for Clover and its Win-a-Car promotion, built on Clover’s line “Way Better Shared”.
 - [Pulse Hybrid Inverter](https://vick-does-creative.netlify.app/portfolio/#gd-pulse-hybrid-inverter): Packaging for a backup power inverter that has to sell itself in store. Bronze at the 2020 SA Gold Pack Design Awards and a Top 100 international entry.
 - [Saddler Repositioning](https://vick-does-creative.netlify.app/portfolio/#gd-saddler-repositioning): Repositioning Saddler from a white-label business to an on-trend fashion accessory brand: “Your World. Your Way.”
 - [Retro Grade](https://vick-does-creative.netlify.app/portfolio/#gd-retro-grade): A T-shirt range I designed to celebrate 50-plus years of gaming and esports, and the two-page publication that presents it.
-- [Jonsson Workwear: Siyapusha](https://vick-does-creative.netlify.app/portfolio/#gd-jonsson-workwear-siyapusha): Group lead on the campaign strategy to launch Jonsson's lifestyle footwear, The Kalahari's, which drove the launch collateral and a packaging redesign.
+- [Jonsson Workwear: Siyapusha](https://vick-does-creative.netlify.app/portfolio/#gd-jonsson-workwear-siyapusha): Group lead on the campaign strategy to launch Jonsson’s lifestyle footwear, The Kalahari’s, which drove the launch collateral and a packaging redesign.
 
 ## Motion & 3D
 

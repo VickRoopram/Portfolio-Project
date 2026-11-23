@@ -5,9 +5,9 @@ import { icon, socialIcon } from '../atoms/icons.js';
 
 const out = (url) => icon(/\.pdf$/i.test(url) ? 'download' : 'external-link', 16); // where a link goes: a file to save, or another site
 export const EMAIL = 'vickhal10@gmail.com';
-/* images shimmer until they arrive, then fade in */
+/* images shimmer until they arrive, then fade in. A portrait image (clearly taller than wide) is marked tall, so it fits the screen's height */
 const pic = (g, cls = '') =>
-  `<button class="pic ${cls}" data-src="${g.s}" aria-label="Enlarge: ${g.a}"><img src="${g.s}" alt="${g.a}" loading="lazy" onload="this.parentNode.classList.add('ok')" onerror="this.parentNode.classList.add('ok')"></button>`;
+  `<button class="pic ${cls}" data-src="${g.s}" aria-label="Enlarge: ${g.a}"><img src="${g.s}" alt="${g.a}" loading="lazy" onload="this.parentNode.classList.add('ok');if(this.naturalHeight>this.naturalWidth*1.15)this.parentNode.classList.add('tall')" onerror="this.parentNode.classList.add('ok')"></button>`;
 /* About is one page you scroll: every About item under the next, each a section you can be sent to (openCard scrolls to it) */
 export const ONE = 'ab';
 export function cardHTML(ch, i) {
@@ -52,9 +52,9 @@ export function cardHTML(ch, i) {
      the admin's clean-up); images not placed that way still go in the gallery at the end */
   const placed = new Set();
   const cs = it.case ? ' case' : '';
-  /* <div class="vid vid-N"></div> places it.vid[N]: a short muted loop that plays by itself (with a poster while it loads) */
+  /* <div class="vid vid-N"></div> places it.vid[N]: a short muted loop that plays by itself (with a poster while it loads); a portrait loop is marked tall */
   const vid = (v) =>
-    `<figure class="clip"><video src="${v.s}" poster="${v.p}" autoplay muted loop playsinline preload="auto" oncanplay="this.muted=true;this.play().catch(()=>{})" aria-label="${v.a}"></video></figure>`;
+    `<figure class="clip"><video src="${v.s}" poster="${v.p}" autoplay muted loop playsinline preload="auto" onloadedmetadata="if(this.videoHeight>this.videoWidth*1.15)this.parentNode.classList.add('tall')" oncanplay="this.muted=true;this.play().catch(()=>{})" aria-label="${v.a}"></video></figure>`;
   if (d)
     h += `<div class="d${cs}"${acc}>${d.replace(/<div class="(fig|ill|vid) \1-(\d+)"><\/div>/g, (m, kind, n) => {
       if (kind === 'vid') return it.vid?.[+n] ? vid(it.vid[+n]) : '';
