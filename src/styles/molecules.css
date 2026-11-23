@@ -376,6 +376,41 @@ html.phone .beats .ill {
   margin-top: var(--s2);
 }
 
+/* every project page (ctr: Design, UX/UI, Motion, Tools, Experimental): each text box and image sits on the centre line, on every screen */
+.hd.ctr {
+  justify-items: center;
+  text-align: center;
+}
+.hd.ctr h2 {
+  margin-left: 0;
+  text-wrap: balance;
+}
+.d.ctr {
+  margin-inline: auto;
+  text-align: center;
+}
+.d.ctr > * {
+  margin-inline: auto;
+}
+.d.ctr h3,
+.d.ctr p {
+  text-wrap: balance;
+}
+.d.ctr :is(ul, ol) {
+  padding-left: 0;
+  list-style-position: inside;
+}
+.d.ctr .tags,
+.cta-row.ctr {
+  justify-content: center;
+}
+.gal.ctr {
+  justify-items: center;
+}
+.pic.lead.ctr,
+.gal.ctr .pic {
+  margin-inline: auto;
+}
 /* UX/UI case studies (case:1): everything centred, on every screen; headings and short paragraphs balanced so the rag mirrors */
 .d.case {
   margin-inline: auto;

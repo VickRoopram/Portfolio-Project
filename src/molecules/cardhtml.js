@@ -10,6 +10,7 @@ const pic = (g, cls = '') =>
   `<button class="pic ${cls}" data-src="${g.s}" aria-label="Enlarge: ${g.a}"><img src="${g.s}" alt="${g.a}" loading="lazy" onload="this.parentNode.classList.add('ok');if(this.naturalHeight>this.naturalWidth*1.15)this.parentNode.classList.add('tall')" onerror="this.parentNode.classList.add('ok')"></button>`;
 /* About is one page you scroll: every About item under the next, each a section you can be sent to (openCard scrolls to it) */
 export const ONE = 'ab';
+const PROJECTS = ['gd', 'ux', 'mo', 'tl', 'xp'];
 export function cardHTML(ch, i) {
   if (ch === ONE && i !== -1)
     return (
@@ -22,9 +23,11 @@ export function cardHTML(ch, i) {
         )
         .join('')
     );
+  /* every project page (Design, UX/UI, Motion, Tools, Experimental) puts each text box and image on the centre line: ctr */
+  const ctr = PROJECTS.includes(ch) ? ' ctr' : '';
   const it = CH[ch].items[Math.max(0, i)],
     acc = it.acc ? ` style="--accent:${it.acc}"` : '',
-    hd = `<header class="hd${it.case ? ' case' : ''}"${acc}><h2>${it.t}</h2>${it.k ? `<p class="k">${it.k}</p>` : ''}</header>`;
+    hd = `<header class="hd${it.case ? ' case' : ''}${ctr}"${acc}><h2>${it.t}</h2>${it.k ? `<p class="k">${it.k}</p>` : ''}</header>`;
   /* a case study (case:1) leads with its title, then the first image whole; everything else leads with a cropped image */
   /* introFirst:1 moves the opening paragraph up, between the title and the cover image */
   let d = it.d,
@@ -38,7 +41,7 @@ export function cardHTML(ch, i) {
   }
   let h = it.case
     ? hd + intro + (it.img?.length ? pic(it.img[0], 'fig hero-pic') : '')
-    : (it.img?.length ? pic(it.img[0], 'lead') : '') + hd;
+    : (it.img?.length ? pic(it.img[0], 'lead' + ctr) : '') + hd;
   if (it.hero)
     h += `<div class="hero"><img src="assets/img/vick.jpg" alt="Portrait of Vickhal Roopram"><div class="d"><p><b>Vickhal Roopram</b><br>UX & Motion Designer<br>27 · South Africa</p></div></div>`;
   if (it.bars)
@@ -51,7 +54,7 @@ export function cardHTML(ch, i) {
   /* <div class="fig fig-N"></div> in a description places img[N] right there, between the sections (a class-only marker, so it survives
      the admin's clean-up); images not placed that way still go in the gallery at the end */
   const placed = new Set();
-  const cs = it.case ? ' case' : '';
+  const cs = (it.case ? ' case' : '') + ctr;
   /* <div class="vid vid-N"></div> places it.vid[N]: a short muted loop that plays by itself (with a poster while it loads); a portrait loop is marked tall */
   const vid = (v) =>
     `<figure class="clip"><video src="${v.s}" poster="${v.p}" autoplay muted loop playsinline preload="auto" onloadedmetadata="if(this.videoHeight>this.videoWidth*1.15)this.parentNode.classList.add('tall')" oncanplay="this.muted=true;this.play().catch(()=>{})" aria-label="${v.a}"></video></figure>`;
