@@ -377,6 +377,9 @@ html.phone .beats .ill {
 }
 
 /* UX/UI case studies (case:1): everything centred, on every screen; headings and short paragraphs balanced so the rag mirrors */
+.d.case {
+  margin-inline: auto;
+}
 .hd.case {
   justify-items: center;
   text-align: center;
