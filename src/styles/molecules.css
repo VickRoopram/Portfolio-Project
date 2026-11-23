@@ -478,6 +478,17 @@ html.phone .beats .ill {
   height: auto;
   background: #111;
 }
+/* a portrait loop (a phone story) stays within the screen's height, centred */
+.clip.tall {
+  justify-self: center;
+  width: fit-content;
+  max-width: 100%;
+}
+.clip.tall video {
+  width: auto;
+  max-width: 100%;
+  max-height: 82vh;
+}
 .gal.case .pic {
   box-sizing: border-box;
   margin-inline: auto;

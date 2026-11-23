@@ -52,9 +52,9 @@ export function cardHTML(ch, i) {
      the admin's clean-up); images not placed that way still go in the gallery at the end */
   const placed = new Set();
   const cs = it.case ? ' case' : '';
-  /* <div class="vid vid-N"></div> places it.vid[N]: a short muted loop that plays by itself (with a poster while it loads) */
+  /* <div class="vid vid-N"></div> places it.vid[N]: a short muted loop that plays by itself (with a poster while it loads); a portrait loop is marked tall */
   const vid = (v) =>
-    `<figure class="clip"><video src="${v.s}" poster="${v.p}" autoplay muted loop playsinline preload="auto" oncanplay="this.muted=true;this.play().catch(()=>{})" aria-label="${v.a}"></video></figure>`;
+    `<figure class="clip"><video src="${v.s}" poster="${v.p}" autoplay muted loop playsinline preload="auto" onloadedmetadata="if(this.videoHeight>this.videoWidth*1.15)this.parentNode.classList.add('tall')" oncanplay="this.muted=true;this.play().catch(()=>{})" aria-label="${v.a}"></video></figure>`;
   if (d)
     h += `<div class="d${cs}"${acc}>${d.replace(/<div class="(fig|ill|vid) \1-(\d+)"><\/div>/g, (m, kind, n) => {
       if (kind === 'vid') return it.vid?.[+n] ? vid(it.vid[+n]) : '';

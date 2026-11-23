@@ -133,17 +133,17 @@ export const CH = {
         ],
         vid: [
           {
-            s: 'assets/vid/gd-tk-call.mp4',
-            p: 'assets/vid/gd-tk-call.jpg',
-            a: 'Animation: Call us, with the phone number, on Takkie Wash blue',
+            s: 'assets/vid/gd-tk-takkie.mp4',
+            p: 'assets/vid/gd-tk-takkie.jpg',
+            a: 'Animation on Takkie Wash yellow: Don’t trip, we got you, the shop address, then the partnership with Squeaky Kleen',
           },
           {
-            s: 'assets/vid/gd-tk-address.mp4',
-            p: 'assets/vid/gd-tk-address.jpg',
-            a: 'Animation: the shop address on Squeaky Kleen yellow',
+            s: 'assets/vid/gd-tk-squeaky.mp4',
+            p: 'assets/vid/gd-tk-squeaky.jpg',
+            a: 'Animation on Squeaky Kleen blue: Busy? We’ll take care of your dirty business, the number and address, then the partnership with Takkie Wash',
           },
         ],
-        d: `<p>I led a team on a brand strategy for two cleaning businesses that had just joined forces.<br class="dbr">Customers couldn’t tell which brand did what,<br class="dbr">so we made each one its own brand and made the partnership known.</p><h3>Two brands</h3><p>Colour and copy keep them apart: Takkie Wash does shoes, Squeaky Kleen does clothes.<br class="dbr">Short, punchy lines make each cleaning service obvious.</p><div class="fig fig-1"></div><div class="fig fig-2"></div><h3>In motion</h3><p>Two animated loops give the number and the address, one in each brand’s colour.</p><div class="clips"><div class="vid vid-0"></div><div class="vid vid-1"></div></div><div class="tools end"><span><b>Ai</b>Illustrator</span><span><b>Id</b>InDesign</span><span><b>Ae</b>After Effects</span><span><b>Ps</b>Photoshop</span></div>`,
+        d: `<p>I led a team on a brand strategy for two cleaning businesses that had just joined forces.<br class="dbr">Customers couldn’t tell which brand did what,<br class="dbr">so we made each one its own brand and made the partnership known.</p><h3>Two brands</h3><p>Colour and copy keep them apart: Takkie Wash is here for the kicks, Squeaky Kleen is the laundromat.<br class="dbr">Short, punchy lines make each cleaning service obvious.</p><div class="fig fig-1"></div><div class="fig fig-2"></div><h3>In motion</h3><p>Each brand got its own animated loop with its line and address,<br class="dbr">ending on the news that it has partnered with the other.</p><div class="clips"><div class="vid vid-0"></div><div class="vid vid-1"></div></div><div class="tools end"><span><b>Ai</b>Illustrator</span><span><b>Id</b>InDesign</span><span><b>Ae</b>After Effects</span><span><b>Ps</b>Photoshop</span></div>`,
       },
       {
         t: 'Clover Festive Display',
