@@ -5,9 +5,9 @@ import { icon, socialIcon } from '../atoms/icons.js';
 
 const out = (url) => icon(/\.pdf$/i.test(url) ? 'download' : 'external-link', 16); // where a link goes: a file to save, or another site
 export const EMAIL = 'vickhal10@gmail.com';
-/* images shimmer until they arrive, then fade in */
+/* images shimmer until they arrive, then fade in. A portrait image (clearly taller than wide) is marked tall, so it fits the screen's height */
 const pic = (g, cls = '') =>
-  `<button class="pic ${cls}" data-src="${g.s}" aria-label="Enlarge: ${g.a}"><img src="${g.s}" alt="${g.a}" loading="lazy" onload="this.parentNode.classList.add('ok')" onerror="this.parentNode.classList.add('ok')"></button>`;
+  `<button class="pic ${cls}" data-src="${g.s}" aria-label="Enlarge: ${g.a}"><img src="${g.s}" alt="${g.a}" loading="lazy" onload="this.parentNode.classList.add('ok');if(this.naturalHeight>this.naturalWidth*1.15)this.parentNode.classList.add('tall')" onerror="this.parentNode.classList.add('ok')"></button>`;
 /* About is one page you scroll: every About item under the next, each a section you can be sent to (openCard scrolls to it) */
 export const ONE = 'ab';
 export function cardHTML(ch, i) {

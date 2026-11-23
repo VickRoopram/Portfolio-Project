@@ -429,6 +429,16 @@ html.phone .beats .ill {
   margin-inline: auto;
   rotate: 0deg;
 }
+/* a portrait image stays within the screen's height, centred, instead of running far past it */
+.pic.pic.tall {
+  width: fit-content;
+  max-width: 100%;
+}
+.pic.tall img {
+  width: auto;
+  max-width: 100%;
+  max-height: 82vh;
+}
 .d.case .steps,
 .d.case .beats,
 .d.case .tl,

@@ -513,7 +513,7 @@
       "layer": "app",
       "about": "Portfolio content for Vick Does Creative. Edit text, links and images here; the 3D synth in main.js reads from CH. Each channel: { name, col, items:[{ t:title, k:kicker, sum:one-line summary, d:html, img:[], tags:[], links:[[label,url]] }] } sum is plain…",
       "exports": ["im", "CH", "LINKS", "MENU", "DESK", "PROFILE"],
-      "lines": 634
+      "lines": 625
     },
     {
       "file": "src/core/audio.js",
@@ -772,7 +772,7 @@
       "layer": "styles",
       "about": "── MOLECULES: atoms grouped into one job. Icon pair, burger, hover tip, toast, card sections. ──",
       "exports": [],
-      "lines": 581
+      "lines": 591
     },
     {
       "file": "src/styles/organisms.css",
@@ -941,7 +941,7 @@
       "bytes": 107362,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g16.jpg",
@@ -949,7 +949,7 @@
       "bytes": 115966,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g18.jpg",
@@ -957,7 +957,7 @@
       "bytes": 116354,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g21.jpg",
@@ -965,7 +965,7 @@
       "bytes": 110220,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g22.jpg",
@@ -973,7 +973,7 @@
       "bytes": 109561,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g26.jpg",
@@ -981,7 +981,7 @@
       "bytes": 78647,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g27.jpg",
@@ -989,7 +989,7 @@
       "bytes": 80232,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g30.jpg",
@@ -997,7 +997,7 @@
       "bytes": 69847,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g31.jpg",
@@ -1005,7 +1005,7 @@
       "bytes": 80606,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g33.jpg",
@@ -1029,7 +1029,7 @@
       "bytes": 115133,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g40.jpg",
@@ -1037,7 +1037,7 @@
       "bytes": 111642,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g43.jpg",
@@ -1045,7 +1045,7 @@
       "bytes": 97603,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g44.jpg",
@@ -1053,7 +1053,7 @@
       "bytes": 67592,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g47.jpg",
@@ -1061,7 +1061,7 @@
       "bytes": 72237,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g48.jpg",
@@ -1069,7 +1069,7 @@
       "bytes": 104983,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g5.jpg",
@@ -1077,7 +1077,7 @@
       "bytes": 71601,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g51.jpg",
@@ -1085,7 +1085,7 @@
       "bytes": 107069,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g52.jpg",
@@ -1109,7 +1109,7 @@
       "bytes": 94894,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g60.jpg",
@@ -1117,7 +1117,7 @@
       "bytes": 84057,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g7.jpg",
@@ -1125,7 +1125,7 @@
       "bytes": 82838,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g8.jpg",
@@ -1133,7 +1133,7 @@
       "bytes": 72079,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g9.jpg",
