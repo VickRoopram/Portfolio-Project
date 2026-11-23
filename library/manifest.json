@@ -513,7 +513,7 @@
       "layer": "app",
       "about": "Portfolio content for Vick Does Creative. Edit text, links and images here; the 3D synth in main.js reads from CH. Each channel: { name, col, items:[{ t:title, k:kicker, sum:one-line summary, d:html, img:[], tags:[], links:[[label,url]] }] } sum is plain…",
       "exports": ["im", "CH", "LINKS", "MENU", "DESK", "PROFILE"],
-      "lines": 634
+      "lines": 625
     },
     {
       "file": "src/core/audio.js",
@@ -772,7 +772,7 @@
       "layer": "styles",
       "about": "── MOLECULES: atoms grouped into one job. Icon pair, burger, hover tip, toast, card sections. ──",
       "exports": [],
-      "lines": 581
+      "lines": 602
     },
     {
       "file": "src/styles/organisms.css",
@@ -941,7 +941,7 @@
       "bytes": 107362,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g16.jpg",
@@ -949,7 +949,7 @@
       "bytes": 115966,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g18.jpg",
@@ -957,7 +957,7 @@
       "bytes": 116354,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g21.jpg",
@@ -965,7 +965,7 @@
       "bytes": 110220,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g22.jpg",
@@ -973,7 +973,7 @@
       "bytes": 109561,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g26.jpg",
@@ -981,7 +981,7 @@
       "bytes": 78647,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g27.jpg",
@@ -989,7 +989,7 @@
       "bytes": 80232,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g30.jpg",
@@ -997,7 +997,7 @@
       "bytes": 69847,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g31.jpg",
@@ -1005,7 +1005,7 @@
       "bytes": 80606,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g33.jpg",
@@ -1029,7 +1029,7 @@
       "bytes": 115133,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g40.jpg",
@@ -1037,7 +1037,7 @@
       "bytes": 111642,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g43.jpg",
@@ -1045,7 +1045,7 @@
       "bytes": 97603,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g44.jpg",
@@ -1053,7 +1053,7 @@
       "bytes": 67592,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g47.jpg",
@@ -1061,7 +1061,7 @@
       "bytes": 72237,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g48.jpg",
@@ -1069,7 +1069,7 @@
       "bytes": 104983,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g5.jpg",
@@ -1077,7 +1077,7 @@
       "bytes": 71601,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g51.jpg",
@@ -1085,7 +1085,7 @@
       "bytes": 107069,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g52.jpg",
@@ -1109,7 +1109,7 @@
       "bytes": 94894,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g60.jpg",
@@ -1117,7 +1117,7 @@
       "bytes": 84057,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g7.jpg",
@@ -1125,7 +1125,7 @@
       "bytes": 82838,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g8.jpg",
@@ -1133,7 +1133,7 @@
       "bytes": 72079,
       "w": 1111,
       "h": 776,
-      "usedBy": ["src/content.js"]
+      "usedBy": []
     },
     {
       "path": "assets/img/g9.jpg",
@@ -1141,6 +1141,110 @@
       "bytes": 74158,
       "w": 1111,
       "h": 776,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-cl1.jpg",
+      "kind": "img",
+      "bytes": 154243,
+      "w": 1600,
+      "h": 1699,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-cl2.jpg",
+      "kind": "img",
+      "bytes": 101933,
+      "w": 714,
+      "h": 500,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-cl3.jpg",
+      "kind": "img",
+      "bytes": 36701,
+      "w": 500,
+      "h": 500,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-im1.jpg",
+      "kind": "img",
+      "bytes": 55831,
+      "w": 1600,
+      "h": 914,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-im2.jpg",
+      "kind": "img",
+      "bytes": 158322,
+      "w": 1600,
+      "h": 1067,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-im3.jpg",
+      "kind": "img",
+      "bytes": 122678,
+      "w": 1600,
+      "h": 1007,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-im4.jpg",
+      "kind": "img",
+      "bytes": 83628,
+      "w": 1600,
+      "h": 1067,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-im5.jpg",
+      "kind": "img",
+      "bytes": 106153,
+      "w": 1600,
+      "h": 1200,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-im6.jpg",
+      "kind": "img",
+      "bytes": 75117,
+      "w": 1600,
+      "h": 1200,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-jw1.jpg",
+      "kind": "img",
+      "bytes": 175664,
+      "w": 1600,
+      "h": 900,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-jw2.jpg",
+      "kind": "img",
+      "bytes": 173396,
+      "w": 1600,
+      "h": 900,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-jw3.jpg",
+      "kind": "img",
+      "bytes": 83012,
+      "w": 1600,
+      "h": 914,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-jw4.jpg",
+      "kind": "img",
+      "bytes": 197391,
+      "w": 1600,
+      "h": 1600,
       "usedBy": ["src/content.js"]
     },
     {
@@ -1165,6 +1269,150 @@
       "bytes": 132013,
       "w": 1400,
       "h": 1102,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-pc1.jpg",
+      "kind": "img",
+      "bytes": 155017,
+      "w": 1332,
+      "h": 1033,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-pc2.jpg",
+      "kind": "img",
+      "bytes": 194399,
+      "w": 1383,
+      "h": 1156,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-pc3.jpg",
+      "kind": "img",
+      "bytes": 341773,
+      "w": 1590,
+      "h": 2200,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-pu1.jpg",
+      "kind": "img",
+      "bytes": 202251,
+      "w": 1600,
+      "h": 914,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-pu2.jpg",
+      "kind": "img",
+      "bytes": 271446,
+      "w": 1600,
+      "h": 1601,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-pu3.jpg",
+      "kind": "img",
+      "bytes": 203294,
+      "w": 1600,
+      "h": 1600,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-pu4.jpg",
+      "kind": "img",
+      "bytes": 134168,
+      "w": 1600,
+      "h": 1600,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-rg1.jpg",
+      "kind": "img",
+      "bytes": 47749,
+      "w": 1436,
+      "h": 760,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-rg2.jpg",
+      "kind": "img",
+      "bytes": 121811,
+      "w": 1436,
+      "h": 630,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-rg3.jpg",
+      "kind": "img",
+      "bytes": 176951,
+      "w": 1436,
+      "h": 890,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-rg4.jpg",
+      "kind": "img",
+      "bytes": 155186,
+      "w": 1436,
+      "h": 1405,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-sd1.jpg",
+      "kind": "img",
+      "bytes": 327806,
+      "w": 1580,
+      "h": 2160,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-sd2.jpg",
+      "kind": "img",
+      "bytes": 298835,
+      "w": 1200,
+      "h": 1394,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-sd3.jpg",
+      "kind": "img",
+      "bytes": 92300,
+      "w": 1600,
+      "h": 1065,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-sd4.jpg",
+      "kind": "img",
+      "bytes": 114456,
+      "w": 1600,
+      "h": 640,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-tk2.jpg",
+      "kind": "img",
+      "bytes": 58523,
+      "w": 1600,
+      "h": 914,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-tk3.jpg",
+      "kind": "img",
+      "bytes": 103755,
+      "w": 1600,
+      "h": 914,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/img/gd-tk4.jpg",
+      "kind": "img",
+      "bytes": 45320,
+      "w": 1600,
+      "h": 914,
       "usedBy": ["src/content.js"]
     },
     {
@@ -1568,6 +1816,48 @@
       "path": "assets/vid/gd-kal-vertigo.mp4",
       "kind": "vid",
       "bytes": 1088846,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/vid/gd-sd-story.jpg",
+      "kind": "vid",
+      "bytes": 250587,
+      "w": 1080,
+      "h": 1920,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/vid/gd-sd-story.mp4",
+      "kind": "vid",
+      "bytes": 1754891,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/vid/gd-tk-squeaky.jpg",
+      "kind": "vid",
+      "bytes": 12177,
+      "w": 1080,
+      "h": 1080,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/vid/gd-tk-squeaky.mp4",
+      "kind": "vid",
+      "bytes": 1391062,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/vid/gd-tk-takkie.jpg",
+      "kind": "vid",
+      "bytes": 41928,
+      "w": 1080,
+      "h": 1080,
+      "usedBy": ["src/content.js"]
+    },
+    {
+      "path": "assets/vid/gd-tk-takkie.mp4",
+      "kind": "vid",
+      "bytes": 595113,
       "usedBy": ["src/content.js"]
     }
   ]
