@@ -104,7 +104,7 @@ export const CH = {
           im('gd-pc2', 'The infographic open on a laptop'),
           im('gd-pc3', 'The full infographic on a phone screen'),
         ],
-        d: `<p>An infographic that teaches kids in Grade 7 and up about the basic parts of a computer.<br class="dbr">It’s fun, relatable and visually engaging, with every part illustrated in great detail.</p><div class="fig fig-1"></div><div class="fig fig-2"></div><div class="tools end"><span><b>Ps</b>Photoshop</span><span><b>Ai</b>Illustrator</span><span><b>Id</b>InDesign</span><span><b>C4D</b>Cinema 4D</span><span><b>Ac</b>Acrobat</span></div>`,
+        d: `<p>A guide for kids in Grade 7 and up to the basic parts of a computer.<br class="dbr">Fun, relatable, visually engaging and illustrated in great detail.</p><div class="fig fig-1"></div><div class="fig fig-2"></div><div class="tools end"><span><b>Ps</b>Photoshop</span><span><b>Ai</b>Illustrator</span><span><b>Id</b>InDesign</span><span><b>C4D</b>Cinema 4D</span><span><b>Ac</b>Acrobat</span></div>`,
       },
       {
         t: 'iMvelo Care',
