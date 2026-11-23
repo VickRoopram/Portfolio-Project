@@ -772,7 +772,7 @@
       "layer": "styles",
       "about": "── MOLECULES: atoms grouped into one job. Icon pair, burger, hover tip, toast, card sections. ──",
       "exports": [],
-      "lines": 602
+      "lines": 608
     },
     {
       "file": "src/styles/organisms.css",

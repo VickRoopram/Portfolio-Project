@@ -96,7 +96,7 @@ export const CH = {
       },
       {
         t: 'A Noob’s Guide to Building a PC',
-        sum: `An 800 × 2000 px infographic of the basic parts of a gaming PC and what each one does.`,
+        sum: `An illustrated infographic that teaches kids in Grade 7 and up about the basic parts of a computer.`,
         case: 1,
         introFirst: 1,
         img: [
@@ -104,7 +104,7 @@ export const CH = {
           im('gd-pc2', 'The infographic open on a laptop'),
           im('gd-pc3', 'The full infographic on a phone screen'),
         ],
-        d: `<p>An infographic on the basic parts you need to build a gaming PC,<br class="dbr">and what each one does. It’s 800 × 2000 px, made for laptops and screens,<br class="dbr">and shared on social media and Reddit. I built the PC first. That was the research.</p><div class="fig fig-1"></div><div class="fig fig-2"></div><div class="tools end"><span><b>Ps</b>Photoshop</span><span><b>Ai</b>Illustrator</span><span><b>Id</b>InDesign</span><span><b>C4D</b>Cinema 4D</span><span><b>Ac</b>Acrobat</span></div>`,
+        d: `<p>A guide for kids in Grade 7 and up to the basic parts of a computer.<br class="dbr">Fun, relatable, visually engaging and illustrated in great detail.</p><div class="fig fig-1"></div><div class="fig fig-2"></div><div class="tools end"><span><b>Ps</b>Photoshop</span><span><b>Ai</b>Illustrator</span><span><b>Id</b>InDesign</span><span><b>C4D</b>Cinema 4D</span><span><b>Ac</b>Acrobat</span></div>`,
       },
       {
         t: 'iMvelo Care',

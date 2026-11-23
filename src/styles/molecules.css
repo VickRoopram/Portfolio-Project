@@ -370,13 +370,51 @@ html.phone .beats {
 html.phone .beats .ill {
   width: 120px;
 }
-/* tags that sign off the page: under the last image, on its right */
+/* tags that sign off the page: under the last image, centred */
 .d .tags.end {
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: var(--s2);
 }
 
+/* every project page (ctr: Design, UX/UI, Motion, Tools, Experimental): each text box and image sits on the centre line, on every screen */
+.hd.ctr {
+  justify-items: center;
+  text-align: center;
+}
+.hd.ctr h2 {
+  margin-left: 0;
+  text-wrap: balance;
+}
+.d.ctr {
+  margin-inline: auto;
+  text-align: center;
+}
+.d.ctr > * {
+  margin-inline: auto;
+}
+.d.ctr h3,
+.d.ctr p {
+  text-wrap: balance;
+}
+.d.ctr :is(ul, ol) {
+  padding-left: 0;
+  list-style-position: inside;
+}
+.d.ctr .tags,
+.cta-row.ctr {
+  justify-content: center;
+}
+.gal.ctr {
+  justify-items: center;
+}
+.pic.lead.ctr,
+.gal.ctr .pic {
+  margin-inline: auto;
+}
 /* UX/UI case studies (case:1): everything centred, on every screen; headings and short paragraphs balanced so the rag mirrors */
+.d.case {
+  margin-inline: auto;
+}
 .hd.case {
   justify-items: center;
   text-align: center;
@@ -397,7 +435,7 @@ html.phone .beats .ill {
   justify-content: center;
 }
 .d.case .tags.end {
-  justify-content: flex-end;
+  justify-content: center;
 }
 .d.case .tl li {
   grid-template-columns: 1fr;
@@ -429,12 +467,15 @@ html.phone .beats .ill {
   margin-inline: auto;
   rotate: 0deg;
 }
-/* a portrait image stays within the screen's height, centred, instead of running far past it */
-.pic.pic.tall {
+/* a portrait image stays within the screen's height, centred, instead of running far past it (the cover too) */
+.pic.pic.pic.tall {
   width: fit-content;
   max-width: 100%;
+  margin-inline: auto;
 }
 .pic.tall img {
+  display: block;
+  margin-inline: auto;
   width: auto;
   max-width: 100%;
   max-height: 82vh;
@@ -504,7 +545,7 @@ html.phone .beats .ill {
   display: flex;
   flex-wrap: wrap;
   gap: var(--s4);
-  justify-content: flex-end;
+  justify-content: center;
   margin: var(--s5) 0 var(--s6);
 }
 .d .tools span {
@@ -575,7 +616,7 @@ html.phone .beats .ill {
     max-width: none;
   }
   #card[data-wide='true'] .d > .tools {
-    justify-content: flex-end;
+    justify-content: center;
   }
 }
 /* the lamp's hover tip: a bulb icon, lit when the lamp is on, and On / Off */
