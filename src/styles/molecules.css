@@ -370,9 +370,9 @@ html.phone .beats {
 html.phone .beats .ill {
   width: 120px;
 }
-/* tags that sign off the page: under the last image, on its right */
+/* tags that sign off the page: under the last image, centred */
 .d .tags.end {
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: var(--s2);
 }
 
@@ -397,7 +397,7 @@ html.phone .beats .ill {
   justify-content: center;
 }
 .d.case .tags.end {
-  justify-content: flex-end;
+  justify-content: center;
 }
 .d.case .tl li {
   grid-template-columns: 1fr;
@@ -429,12 +429,15 @@ html.phone .beats .ill {
   margin-inline: auto;
   rotate: 0deg;
 }
-/* a portrait image stays within the screen's height, centred, instead of running far past it */
-.pic.pic.tall {
+/* a portrait image stays within the screen's height, centred, instead of running far past it (the cover too) */
+.pic.pic.pic.tall {
   width: fit-content;
   max-width: 100%;
+  margin-inline: auto;
 }
 .pic.tall img {
+  display: block;
+  margin-inline: auto;
   width: auto;
   max-width: 100%;
   max-height: 82vh;
@@ -504,7 +507,7 @@ html.phone .beats .ill {
   display: flex;
   flex-wrap: wrap;
   gap: var(--s4);
-  justify-content: flex-end;
+  justify-content: center;
   margin: var(--s5) 0 var(--s6);
 }
 .d .tools span {
@@ -575,7 +578,7 @@ html.phone .beats .ill {
     max-width: none;
   }
   #card[data-wide='true'] .d > .tools {
-    justify-content: flex-end;
+    justify-content: center;
   }
 }
 /* the lamp's hover tip: a bulb icon, lit when the lamp is on, and On / Off */
